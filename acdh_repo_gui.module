@@ -1,0 +1,110 @@
+<?php
+
+function acdh_repo_gui_page_attachments(&$page)
+{
+    // This could in most cases be added in template as well with:
+    // {{ attach_library('acdh-repo/acdh-repo-css-and-js') }}
+    //$page['#attached']['library'][] = 'acdh-repo-gui-css-and-js';
+}
+
+function acdh_repo_gui_theme($existing, $type, $theme, $path)
+{
+    return [
+        'acdh-repo-gui-main' => [
+            'variables' => ['data' => NULL, 'paging' => NULL],
+        ],
+        'acdh-repo-gui-detail' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-basic' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-persons' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-concept' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-project' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-organisations' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-places' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-detail-publications' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
+        'acdh-repo-gui-child' => [
+            'variables' => ['data' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-styles', //include our custom library for this response
+                ]
+            ]
+        ],
+        'acdh-repo-gui-main-page-left-block' => [
+            'variables' => ['result' => NULL],
+        ],
+        'acdh-repo-ds-dl-collection' => [
+            'variables' => ['basic' => NULL, 'extra' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-collection-dl', //include our custom library for this response
+                ]
+            ]
+        ],
+        'acdh-repo-ds-3d-viewer' => [
+            'variables' => ['ObjectUrl' => NULL, 'basic' => NULL]
+        ],
+        'acdh-repo-ds-iiif-viewer' => [
+            'variables' => ['basic' => NULL, 'lorisUrl' => NULL]
+        ]
+    ];
+}
+
+// Setup custom 404!
+// -> add file "page--404.html.twig" to theme template folder
+function acdh_repo_gui_theme_suggestions_page(array $variables)
+{
+    $path_args = explode('/', trim(\Drupal::service('path.current')->getPath(), '/'));
+
+    $suggestions = theme_get_suggestions($path_args, 'page');
+
+    $http_error_suggestions = [
+        'system.404' => 'page__404',
+    ];
+
+    $route_name = \Drupal::routeMatch()->getRouteName();
+
+    if (isset($http_error_suggestions[$route_name])) {
+        $suggestions[] = $http_error_suggestions[$route_name];
+    }
+
+    return $suggestions;
+}
+
+/*
+ * Create a hook for the admin form page to we can use an external javascript file
+ * 
+ */
+function acdh_repo_gui_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+ 
+    //form and user permission settings for the collection download views
+    $form['#attached']['library'][] = 'acdh_repo_gui/mylibrary';
+    $form['#attached']['drupalSettings']['oeaw']['users']['id'] = \Drupal::currentUser()->id();
+    $account = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    $form['#attached']['drupalSettings']['oeaw']['users']['name'] = $account->getUsername();
+    $roles = array();
+    $roles = \Drupal::currentUser()->getRoles();
+    if(count($roles) > 0){ $roles = implode(",", $roles); }
+    $form['#attached']['drupalSettings']['oeaw']['users']['roles'] = $roles;
+    
+    $current_path = \Drupal::service('path.current')->getPath();
+    
+    return $form;
+}
+
+

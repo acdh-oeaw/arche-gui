@@ -1,0 +1,24 @@
+
+{% if result %}
+<h3 class="single-res-heading">{{ "Cite Resource"|trans }}</h3>
+    <div class="cite-selector">
+        <div class="cite-style selected">
+            MLA
+            <a href="javascript://" id="cite-tooltip-mla" data-toggle="cite-tooltip-mla"  data-placement="right" data-html="true" data-trigger="focus"
+            title="&quot;MLA (Modern Language Association) style is most commonly used to write papers and cite sources within the liberal arts and humanities.&quot; <a href='https://owl.english.purdue.edu/owl/resource/747/01/'>Read more...</a>">
+                    <i class="material-icons">&#xE88F;</i>
+            </a>
+        </div>
+    </div>
+
+    <div class="bd-clipboard">
+        <span id="copy-cite-btn" class="btn-clipboard" title="" data-original-title="Copy to clipboard">Copy</span>
+        <span id="copy-cite-btn-confirmation">{{ "Citation information copied"|trans }}!</span>
+    </div>
+    <figure class="highlight">
+        <span class="cite-content active">{{ result.MLA.string | raw }}</span>
+        <span class="cite-content">{{ result.APA.string | raw }}</span>
+        <span class="cite-content">{{ result.CMS.string | raw }}</span>
+    </figure>
+{% endif%}
+

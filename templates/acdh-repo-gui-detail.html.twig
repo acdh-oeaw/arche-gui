@@ -1,0 +1,146 @@
+<link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
+{{ result.insideUri }}
+<!--   MAIN DETAIL VIEW -->
+    <input type="hidden" id="insideUri" name="insideUri" value="{{ result.insideUri }}">
+    <input type="hidden" id="accessRestriction" name="accessRestriction" value="{{ result.accessRestriction }}">
+    <input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
+    
+    <div class="loader-div">
+        <div class="loader-bg">
+            <div class="loader"></div>
+        </div>
+    </div>
+    
+    {% if extra.breadcrumb %}
+        {% set breadcrumbLength = extra.breadcrumb|length  %}
+        {% for key, value in extra.breadcrumb %}
+            {% if value.parenttitle %}
+                {% if breadcrumbLength > 3 and key > 0 and key < breadcrumbLength - 1 %}
+                    {% set breadcrumbTitle = "..." %}
+                {% else %}
+                    {% set breadcrumbTitle = value.parenttitle  %}
+                {% endif %} 
+                <a href='/browser/oeaw_detail/{{value.parentid}}' title='{{ value.parenttitle }}'>{{  breadcrumbTitle }}</a> 
+                {% if breadcrumbLength -1 >= key %}
+                    /  
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <h3 class="single-res-heading">
+            {{ "Overview"|trans }}
+        <div class="res-act-button res-act-button-expertview basic">
+            <i class="material-icons">&#xE896;</i>
+            <span>{{ "Switch to Expert-View"|trans }}</span>
+        </div>
+        {% if basic.getRepoUrl() %}
+        <div class="res-act-button res-act-button-copy-url" id="res-act-button-copy-url" data-copyuri="{{ basic.getRepoUrl() }}">
+            <span id="copy-url-button">
+                <i class="material-icons">&#xE157;</i>
+                {{ "Copy Resource Link"|trans }}
+            </span>
+            <span id="copyLinkTextfield-wrapper">
+                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getRepoUrl()}}">
+                    <i class="material-icons">&#xE14D;</i>
+                </span>
+                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getRepoUrl() }}"/>
+            </span>
+        </div>
+        {% endif %}
+    </h3> 
+    
+    <!-- get the views based on the type -->
+    <div class="single-res-overview single-res-overview-basic">
+        {% if basic.getAcdhType()|lower == 'person'  %}
+            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
+        {% elseif basic.getAcdhType()|lower == 'project' %}
+            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
+        {% elseif basic.getAcdhType()|lower == 'organisation' %}
+            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
+        {% elseif basic.getAcdhType()|lower == 'place' %}
+            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
+        {% elseif basic.getAcdhType()|lower == 'publication' %}
+            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }}            
+        {% else  %}
+           {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
+        {% endif %}
+    </div>
+	
+   <!-- EXPERT VIEW BLOCK -->
+    {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic } ) }}
+   
+    <!-- DISSEMINATION BLOCK -->
+    {% if dissemination %}
+        {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
+    {% endif %}
+    
+    
+    {% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
+        <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
+        
+        {% if basic.getData('acdh:hasSpatialCoverage') %}
+            <div class="res-property">
+                <i class="material-icons">info_outline</i>
+                <span class="res-prop-label">{{ "Spatial Coverage"|trans }}:&nbsp;&nbsp;</span>
+                {% if basic.getData('acdh:hasSpatialCoverage') is iterable and basic.getData('acdh:hasSpatialCoverage')|length > 1 %}
+                    {% for spatial in basic.getData('acdh:hasSpatialCoverage') %}
+                        {% if spatial.insideUri and spatial.title %}
+                            {% if (loop.length <= loop.index)  %}
+                                {% set separator = '' %}
+                            {% else %}    
+                                {% set separator = ',' %}
+                            {% endif %}
+                                <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.insideUri }}">{{ spatial.title }}</a></span> {{ separator|raw }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% if basic.getData('acdh:hasSpatialCoverage')[0].insideUri %}
+                        <span class="res-prop-value"><a href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].insideUri }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
+                    {% else %}
+                        {% if basic.getData('acdh:hasSpatialCoverage')[0]['uri']  %}
+                            <span class="res-prop-value"><a href="{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}</a></span>
+                        {% else %}
+                            <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].value }}</span>
+                        {% endif %}
+                    {% endif %}
+                    
+                {% endif %}
+            </div>
+        {% endif %}
+        <br>
+        {% if basic.getData('acdh:hasDescription')[0] %}
+            <div class="res-property">
+                <i class="material-icons">info_outline</i>
+                <span class="res-prop-label">{{ "Description"|trans }}:&nbsp;&nbsp;</span>
+                <span class="res-prop-value">{{ basic.getData('acdh:hasDescription')[0].title|nl2br }}</span>
+            </div>
+        {% endif %}
+        <br>
+        {% if result.table['acdh:hasNote'][0] %}
+            <div class="res-property">
+                <i class="material-icons">info_outline</i>
+                <span class="res-prop-label">{{ "Note"|trans }}:&nbsp;&nbsp;</span>
+                <span class="res-prop-value">{{ basic.getData('acdh:hasNote')[0].value }}</span>
+            </div>
+        {% endif %}
+    {% endif%}
+    
+    {% if extra.citeWidgetData %}
+        {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
+    {% endif%}
+    
+    {% if  basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'organisation'  %}
+        <div class="res-actions" style="padding: 20px;">
+            <div class="res-act-button" style="display: table; margin: 0 auto;">
+                <a href="#" id="getRepoChildView" class="getRepoChildView"><i class="fa fa-angle-down" aria-hidden="true"></i> &nbsp;<b>{{ "Show More"|trans }}</b>&nbsp; <i class="fa fa-angle-down" aria-hidden="true"></i></a>
+            </div>
+            <div class="res-act-button hideChildView" style="display: none; margin: 0 auto;">
+                <a href="#" id="hideRepoChildView" class="hideRepoChildView"><i class="fa fa-angle-up" aria-hidden="true"></i> &nbsp;<b>{{ "Hide View"|trans }}</b>&nbsp; <i class="fa fa-angle-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+       <div id="child-div-content"></div>
+   {% endif%}
+<br>
+

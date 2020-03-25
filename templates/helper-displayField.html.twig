@@ -1,0 +1,69 @@
+
+
+
+{%  if (delimiter is not defined) %}
+     {% set delimiter = ',' %}
+{% endif%}
+ 
+{%  if data %}
+    <div class="res-property">
+        {% if icon %}
+            <i class="material-icons">{{ icon }}</i>
+        {% endif%}
+        
+        {% if label %}
+            <span class="res-prop-label">{{ label|trans }}:</span>
+        {% endif%}
+        
+         <span class="res-prop-value">
+            {% if data is iterable %}
+                {% for value in data %}
+                    {% if (onlyurl)  %}
+                        <a href="{{ value.uri }}">{{ value.uri }}</a>
+                    {% elseif (repoid)  %}
+                        {% if (value.repoid) and (value.title)  %}
+                            <a href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>
+                        {% elseif (value.repoid)  %}
+                            <a href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.repoid }}</a>
+                        {% else  %}
+                            {{ value.title|nl2br }}
+                        {% endif  %}   
+                    {% elseif (dateformat)  %}
+                        {{ value.value|date(dateformat) }}
+                    {% elseif (isbinary)  %}
+                        {% if(value.value == 0) %}
+                            {{ value.value }} KB
+                        {% else %}
+                            {% set bytes =  value.value %}
+                            {% set kiloBytes = (bytes / 1024)|round(2) %}
+                            {% set megaBytes = (kiloBytes / 1024)|round(2) %}
+                            {% set gigaBytes = (megaBytes / 1024)|round(2) %}
+
+                            {% if (gigaBytes) > 0  %}
+                                {{ gigaBytes }} GB
+                            {% elseif (megaBytes) > 0  %}
+                                {{ megaBytes }} MB
+                            {% elseif (kiloBytes) > 0  %}                            
+                                {{ kiloBytes }} KB
+                            {% endif%}    
+                        {% endif%}    
+                        
+                    {% elseif (value.insideUri) and (value.title)  %}
+                        <a href="/browser/oeaw_detail/{{ value.insideUri }}">{{ value.title|nl2br }}</a>
+                    {% elseif value.title and value.uri %}
+                        <a href="{{ value.uri }}">{{ value.title|nl2br }}</a>
+                    {% elseif value.uri %}
+                        <a href="{{ value.uri }}">{{ value.uri }}</a>
+                    {% elseif value.title %}
+                        {{ value.title }}
+                    {% elseif value.value %}
+                        {{ value.value }}
+                    {% endif%}
+                    <span class="res-prop-delimiter">{{ delimiter|raw }}</span>
+                {% endfor %}
+            {% else %}
+                 {{ data }}
+            {% endif %}
+        </span>
+    </div>
+{% endif%}

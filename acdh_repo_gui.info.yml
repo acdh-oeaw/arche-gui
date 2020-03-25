@@ -1,0 +1,8 @@
+name: acdh_repo_gui
+type: module
+description: 'ÖAW ACDH REPO Gui.'
+core: 8.x
+package: oeaw
+configure: acdh_repo_gui.settings_form
+libraries:
+    - acdh_repo_gui/repo-styles

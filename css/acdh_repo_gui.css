@@ -1,0 +1,11 @@
+/**
+ * TODO
+ */
+
+.bg-black {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+.res-act-button.hideChildView {
+    display: none;
+}

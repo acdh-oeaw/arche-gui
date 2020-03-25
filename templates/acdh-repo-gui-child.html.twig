@@ -1,0 +1,83 @@
+{% if data|length < 1 %}
+  There are no child elements.
+{% elseif data.errorMSG %}  
+  {{ data.errorMSG }}
+{% else %}
+    
+    {{ include('/modules/custom/acdh_repo_gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
+        
+    {% for item in data.data %}
+        
+        <div class="res-el col-block col-lg-12">
+		
+            {% if item.getTitleImage() %}<div class="res-inside-wrap col-lg-6 "> {% endif%} 
+                
+            {% if item.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title">
+                        {%  if item.getAccessRestriction()  %}
+                            {{ include('/modules/custom/acdh_repo_gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                        {% endif%}
+                            <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">{{ item.getTitle() }}</a>
+                    </span>
+                </div>
+            {% endif%}    
+
+           
+            {% if item.getAcdhType() %}
+                <div class="res-property">
+                    <i class="material-icons">&#xE54E;</i>
+                    <span class="res-prop-label">{{ "Type"|trans }}: </span>
+                    <span class="res-rdfType"><a href="/browser/repo_search/&type={{ item.getAcdhType() }}/10">{{ item.getAcdhType() }}</a></span>
+                </div>
+            {% endif%}
+
+            {% if item.getData('acdh:hasAvailableDate') %}
+                {{ item.getPropTitle('acdh:hasAvailableDate') }}
+                <div class="res-property">
+                    {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
+                </div>
+            {% endif%}
+
+            
+            {% if item.getData('acdh:hasDescription') %}
+                <div class="res-property res-property-desc">
+                    <span class="res-description">
+                         {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                    </span>
+                </div>
+            {% endif%}
+
+            <div class="res-actions">
+
+                <div class="res-act-button">
+                    <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
+                        <i class="material-icons">&#xE873;</i>
+                        <span>{{ "Detailed View"|trans }}</span>
+                    </a>	
+                </div>
+                        
+                {% if item.getData('acdh:hasDescription') %}
+                    <div class="res-act-button res-act-button-summary closed">
+                            <i class="material-icons">&#xE145;</i>
+                            <span class="show_summary">{{ "Show Summary"|trans }}</span>
+                            <span class="hide_summary">{{ "Hide Summary"|trans }}</span>
+                    </div>
+                {% endif%}
+                
+            </div>	
+
+            {% if item.getTitleImage() %}</div>{% endif%}
+
+            {% if item.getTitleImage() %}	
+                <div class="res-inside-wrap col-lg-6 ">	
+                    <div class="single-res-thumb">
+                        <a href="/browser/oeaw_detail/{{ item.getRepoID() }}"><img src="{{ item.getTitleImage() }}"></a>
+                    </div>
+                </div>
+            {% endif%}            
+  
+            	                                        
+        </div>
+    {% endfor %} 
+{% endif %}

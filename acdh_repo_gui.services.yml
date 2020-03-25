@@ -1,0 +1,9 @@
+services:
+    acdh_repo_gui:
+        class: '\Drupal\acdh_repo_gui\EventSubscriber\AcdhRepoGuiEventSubscriber'
+        tags:
+            - { name: 'event_subscriber', priority: 350 }
+    acdh_repo_gui.path_processor:
+        class: 'Drupal\acdh_repo_gui\PathProcessor\AcdhRepoGuiPathProcessor'
+        tags:
+            - { name: path_processor_inbound, priority: 350 }

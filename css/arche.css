@@ -1,0 +1,236 @@
+.res-highlighting em{ color: #20bf6b;}
+
+.search-form .contextual-region .block .block-oeaw .block-searchsb-block {
+    background-color: red;
+    
+}
+
+.search-form, 
+.class-form {   
+    -webkit-box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
+    -moz-box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
+    box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
+
+}
+
+.search-form input {
+    max-width: 200px!important;
+}
+.depagree-form input{
+    width: 100%!important;
+}
+
+/** Download collection css  **/
+.collection_info {
+  background: #fff;
+  border-color: #88DBDF;
+  border-radius: 5px;
+  height: auto;
+  padding: 10px;
+  width: 50%;
+  margin: 0 auto;
+  text-align:center;
+}
+.size_text{
+    font-size: 18px;
+    font-weight: bold;
+}
+.size_text_red{
+    font-size: 18px;
+    color: red;
+    font-weight: bold;
+}
+.coll_info_green {
+  box-shadow: 0 1px 3px rgba(99,206,108,0.12), 0 1px 2px rgba(99,206,108,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.coll_info_green:hover {
+  box-shadow: 0 14px 28px rgba(99,206,108,0.25), 0 10px 10px rgba(99,206,108,0.22);
+}
+
+.coll_info_red {
+  box-shadow: 0 1px 3px rgba(225,55,55,0.12), 0 1px 2px rgba(225,55,55,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.coll_info_red:hover {
+  box-shadow: 0 14px 28px rgba(225,55,55,0.25), 0 10px 10px rgba(225,55,55,0.22);
+}
+
+.collection-input-format {
+    background: #fff;
+    border-color: #88DBDF;
+    border-radius: 5px;
+    margin-left: 15px;
+    margin-right: 15px;
+    height: 25px;
+    padding: 10px;
+    width: 200px;
+    box-sizing:border-box;
+    text-align:center;
+}
+
+/** Download collection css end **/
+
+
+/***  DISSERV LOGIN FORM START  ***/ 
+
+#dissServLoginform
+{
+    width:200px;
+    height:auto;
+    margin-top:10px;
+    background-color:#88DBDF;
+    border-radius:3px;
+    box-shadow:0px 0px 10px 0px #424242;
+    padding:10px;
+    box-sizing:border-box;
+    font-family:helvetica;
+    visibility:hidden;
+    display:none;
+}
+
+#dissServLoginform p
+{
+    font-size:14px;
+    color:#E6E6E6;
+}
+#dissServLoginform #username
+{
+    margin-top:5px;
+    width:100%;
+    height:20px;
+    border-radius:3px;
+    padding:5px;
+}
+#dissServLoginform #password
+{
+    
+    margin-top:5px;
+    width:100%;
+    height:20px;
+    border-radius:3px;
+    padding:5px;
+}
+#dissServLoginform #dologin
+{
+    margin-top:10px;
+    width:47%;
+    height:20px;
+    border: 1px solid white;
+    border-radius:3px;
+    color:white;
+    background-color:#88DBDF;
+    font-size:14px;
+}
+#dissServLoginform #cancelLogin
+{
+    margin-top:10px;
+    width:47%;
+    height:20px;
+    border:none;
+    border-radius:3px;
+    border: 1px solid white;
+    color:white;
+    background-color:#88DBDF;
+    font-size:14px;
+}
+#dissServLoginform #loginInfo
+{
+    color:white;
+    font-size:14px;
+    text-align: center;
+}
+#dissServLoginform #loginErrorDiv
+{
+    color:red;
+    font-size:14px;
+    text-align: center;
+}
+/***  DISSERV LOGIN FORM END  ***/ 
+
+.success_box_oeaw
+{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background-color: #88DBDF;
+    border: solid 1px white;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    font-weight: bold;
+    margin:0 auto;
+    text-align: center;
+    display: inline-block;
+    padding: 5px;
+    max-width: 400px;
+    display: none;
+}
+.error_box_oeaw
+{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background-color: #ff6348;
+    border: solid 1px white;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    margin:0 auto;
+    text-align: center;
+    display: inline-block;
+    padding: 5px;
+    max-width: 400px;
+    display: none;
+}
+
+.lng-switcher.active a span {
+    color: #88DBDF;
+}
+.lng-switcher.active a:hover span {
+    color: #444;
+}
+
+/**  LOADER CSS  **/
+#loader-div {
+    display:none;
+}
+.loader-div {
+    display:none;
+}
+.loader-bg{
+    /*position:fixed;*/
+    padding:0;
+    margin:0;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background:rgba(255,255,255,0.9);
+    position:absolute;
+    z-index:1;
+}
+.loader {
+    border: 11px solid #f3f3f3; /* Light grey */
+    border-top: 11px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    position:absolute;
+    left:50%; 
+    top:20%;
+    margin-left:-30px; /*image width/2 */
+    margin-top:-30px; /*image height/2 */
+    
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.shibboleth_login_info {
+    font-weight: bold;
+    color: red !important;
+}

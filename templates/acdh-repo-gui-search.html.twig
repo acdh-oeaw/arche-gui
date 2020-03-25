@@ -1,0 +1,178 @@
+
+{% set properties = {
+    'acdh:hasContact': {
+	'icon': 'person_add',
+        'label': 'Contact(s)',
+        'url_only': false
+    },
+    'acdh:hasEditor': {
+        'icon': 'people',
+        'label': 'Editor(s)',
+        'url_only': false
+    },
+    'acdh:hasAuthor': {
+        'icon': 'people',
+        'label': 'Author(s)',
+        'url_only': false
+    },
+    'acdh:hasCreator': {
+        'icon': 'people',
+        'label': 'Creator(s)',
+        'url_only': false
+    },
+    'acdh:hasContributor': {
+        'icon': 'person',
+        'label': 'Contributor(s)',
+        'url_only': false
+    },
+    'acdh:hasCreatedDate': {
+        'icon': 'today',
+        'label': 'Created Date',
+        'url_only': false
+    },
+    'acdh:hasCreationStartDate': {
+        'icon': 'today',
+        'label': 'Creation Start Date',
+        'url_only': false
+    },
+    'acdh:hasCreationEndDate': {
+        'icon': 'today',
+        'label': 'Creation End Date',
+        'url_only': false
+    },
+    'acdh:hasAvailableDate': {
+        'icon': 'today',
+        'label': 'Available Date',
+        'url_only': false,
+        'dateformat': 'd M Y'
+    },
+    'acdh:hasExtent': {
+        'icon': 'dehaze',
+        'label': 'Extent',
+        'url_only': false
+    },
+
+    'acdh:hasNumberOfItems': {
+        'icon': 'attachment',
+        'label': 'Number of Item(s)',
+        'url_only': false
+    },
+    'acdh:hasBinarySize': {
+        'icon': 'attachment',
+        'label': 'Binary Size',
+        'url_only': false,
+        'isbinary': 'binary'
+    },
+    'acdh:hasCategory': {
+        'icon': 'sort',
+        'label': 'Category',
+        'url_only': false
+    },
+    'acdh:hasLicensor': {
+        'icon': 'copyright',
+        'label': 'Licensor',
+        'url_only': false
+    },
+    'acdh:hasLicense': {
+        'icon': 'copyright',
+        'label': 'License',
+        'url_only': false
+    },
+    'acdh:hasSchema': {
+        'icon': 'format_list_bulleted',
+        'label': 'Schema',
+        'url_only': false
+    },
+    'acdh:hasMetadata': {
+        'icon': 'assignment',
+        'label': 'Metadata',
+        'url_only': false
+    },
+    'acdh:hasUrl': {
+        'icon': 'web',
+        'label': 'Url',
+        'url_only': false
+    },
+    'acdh:hasPid': {
+        'icon': 'fingerprint',
+        'label': 'PID',
+        'url_only': true
+    },
+    'acdh:hasRelatedProject': {
+        'icon': 'track_changes',
+        'label': 'Related Project(s)',
+        'url_only': false
+    },
+    'acdh:isPartOf': {
+        'icon': 'device_hub',
+        'label': 'Part of',
+        'url_only': false
+    },
+    'acdh:isderivedFrom': {
+        'icon': 'device_hub',
+        'label': 'Derived from',
+        'url_only': false
+    },
+    'rdfs:seeAlso': {
+        'icon': 'library_books',
+        'label': 'See Also',
+        'url_only': false
+    },
+    'acdh:hasPrincipalInvestigator': {
+        'icon': 'device_hub',
+        'label': 'Principal Investigator',
+        'url_only': false
+    },
+    'acdh:hasCurator': {
+        'icon': 'people',
+        'label': 'Curator(s)',
+        'url_only': false
+    }
+}
+%}
+
+<div class="arche-detail-view" >
+    
+    <div class="arche-detail-main" id="arche-dv-main">
+        {% if basic.getTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+        
+            {% if  basic.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title">
+                        {%  if basic.getAccessRestriction() %}
+                            {{ include('/modules/custom/acdh_repo_gui/templates/helper-accesResFormat.html.twig', {'data': basic.getAccessRestriction() } ) }}
+                        {% endif%}
+                        {{  basic.getTitle() }}
+                    </span>
+                </div>
+            {% endif%} 
+
+            {% if basic.getAcdhType() %}
+                <div class="res-property">
+                    <i class="material-icons">&#xE54E;</i>
+                    <span class="res-prop-label">{{ "Type"|trans }}:</span> 
+                    <span class="res-prop-value">
+                        <a href="/browser/discover/&type={{ basic.getAcdhType() }}/10">{{ basic.getAcdhType() }}</a>
+                    </span>
+                </div>
+            {% endif%}
+       
+            {% for key, value in properties %}
+                {% if basic.getData(key) %}
+                     {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary } ) }}
+                {% endif%}
+            {% endfor %}
+            
+            
+        {% if basic.getTitleImage() %}</div>{% endif%}
+        
+        {% if basic.getTitleImage() %}	
+            <div class="res-inside-wrap col-lg-4 ">	
+                <div class="single-res-thumb">
+                    <a data-lightbox="{{ basic.getTitle() }}" href="{{ basic.getTitleImage() }}"><img src="{{ basic.getTitleImage() }}"></a>
+                </div>
+            </div>
+        {% endif%}
+    </div>
+
+</div>    

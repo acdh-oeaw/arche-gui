@@ -1,0 +1,54 @@
+<div class="arche-detail-dissemination" id="arche-dv-dissemination">
+    {% if result %}
+        
+        <div class="res-property">
+            <i class="material-icons">&#xE89F;</i>
+            {% for key, value in result %}
+                <div class="res-act-button">
+                    <a href="{{ value }}" title="{{ key }}" class="dissServAhref" >
+                        <span>{{ key|trans }}</span>
+                    </a>
+                </div>
+            {% endfor %} 
+
+            <div class="res-act-button">
+                <a href="/browser/oeaw_turtle_api/{{ repoid }}" class="dissServAhref" >
+                    <span>Turtle File</span>
+                </a>        
+            </div>
+
+            {% if acdhType|lower == "collection" %}
+                {% if repoid %}
+                    <div class="res-act-button">
+                        <a href="/browser/oeaw_coll_dl_script/{{ repoid }}" class="dissServAhref" >
+                            <span>Collection Download Script</span>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div id="shibboleth_login_info" class="shibboleth_login_info" style="display:none"></div>
+
+        <!-- DISS LOGIN FORM START  -->
+        <div id="dissServLoginform">
+            <div id="loginInfo">
+                {{ "Click here to login with your federated account"|trans }} 
+                <a class="shibboleth" href="/browser/federated_login"><i class="fa fa-sign-in" aria-hidden="true"></i></a>     
+                <br>
+                {{ "or" }}
+                <br>
+                {{ "Please provide your login credentials"|trans }}
+            </div>
+            <div id="loginErrorDiv"></div>
+            <input type="text" id="username" placeholder="username" name="username">
+            <input type="password" id="password" name="password" placeholder="password">
+            <div>
+                <input type = "submit" id = "dologin" value = "Login">
+                <input type = "submit" id = "cancelLogin" value = "Cancel">
+            </div>
+        </div>
+        <!-- DISS LOGIN FORM END  -->
+    {% endif %}    	
+</div>
+    

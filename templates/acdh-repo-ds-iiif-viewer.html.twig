@@ -1,0 +1,34 @@
+{% if  errorMSG %}
+    <span style="color:red; font-size: 20px; font-weight: bold;">{{ errorMSG }}</span>
+{% else %}    
+    
+    <div>
+        {%  if templateData['insideUri'] %}
+            <div>
+                <a href="/browser/oeaw_detail/{{ basic.getRepoid() }}"><span>{{ "Back to the resource"|trans }}</span></a>
+                <br/><br/>
+            </div>
+        {% endif %}    
+        {%  if basic.getTitle() %}
+            <h2>{{ basic.getTitle() }} </h2>
+        {% endif %}
+    </div>
+        
+    <div id="iiif_viewer" style="width:750px; height:750px;"></div>
+    
+    <script src="/browser/modules/custom/acdh_repo_gui/js/iiif/openseadragon.js"></script>
+    
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "iiif_viewer",
+            prefixUrl: "/browser/modules/custom/acdh_repo_gui/js/iiif/images/",
+            showNavigator: true,
+            sequenceMode: true,
+            navigatorPosition:   "BOTTOM_LEFT",
+            showRotationControl: true,
+            tileSources:   ["{{ lorisUrl }}"],
+        });
+    </script>
+    
+{% endif %}
+

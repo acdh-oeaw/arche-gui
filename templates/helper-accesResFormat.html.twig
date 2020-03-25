@@ -1,0 +1,12 @@
+
+{%  if data  is iterable %}
+    {% for key,value in data %}
+        {%  if key == 'title' and value == 'public' %}
+            <span class="green-dot" title="public"></span>
+        {%  elseif key == 'title' and value == 'academic' %}
+            <span class="orange-dot" title="academic"></span>
+        {%  elseif key == 'title' and value == 'restricted' %}
+            <span class="red-dot" title="restricted"></span>
+        {% endif%} 
+    {% endfor%}
+{% endif%}

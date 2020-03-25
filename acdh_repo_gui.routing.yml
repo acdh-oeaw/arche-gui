@@ -1,0 +1,119 @@
+repo_root:
+  path: '/repo_root'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_root'
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'
+
+oeaw_detail:
+  path: '/oeaw_detail/{identifier}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_detail'
+  requirements:
+    identifier: '^[^\?]*$'
+    _permission: 'access content'
+    _access: 'TRUE'    
+    
+repo_child_api:    
+    path: '/repo_child_api/{identifier}/{limit}/{page}/{order}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ChildApiController::repo_child_api'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'    
+
+repo_complexsearch:
+  path: '/discover/{metavalue}/{order}/{limit}/{page}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_complexsearch'
+    metavalue: ""
+    order: "datedesc"
+    limit: "10"
+    page: "1"
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'
+    
+#dissemination services
+
+## the collection download python script
+oeaw_dlc_script:
+    path: '/oeaw_coll_dl_script/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_get_collection_dl_script'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+        
+oeaw_dl_collection:
+    path: '/oeaw_dl_collection/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_dl_collection_view'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+    options:
+        no_cache: 'TRUE' 
+
+oeaw_get_collection_data:    
+    path: '/get_collection_data/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_get_collection_data'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
+oeaw_3d_viewer:
+    path: '/oeaw_3d_viewer/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_3d_viewer'
+    requirements:
+        data: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
+oeaw_dlc:
+    path: '/oeaw_dlc/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_dl_collection_binaries'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
+oeaw_iiif_viewer:
+    path: '/iiif_viewer/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_iiif_viewer'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
+#arche apis
+oeaw_turtle_api:    
+    path: '/oeaw_turtle_api/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_turtle_api'
+    requirements:
+        data: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
+
+
+
+
+
+repo_search:
+  path: '/repo_search/{data}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::search_view'
+  requirements:
+    identifier: '^[^\?]*$'
+    _permission: 'access content'
+    _access: 'TRUE' 

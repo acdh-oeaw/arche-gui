@@ -1,0 +1,19 @@
+{
+    "name": "acdh-oeaw/arche-gui",
+    "description": "Drupal module to ACDH ARCHE repository",
+    "type": "drupal-module",
+    "homepage": "https://github.com/acdh-oeaw/arche-gui",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Norbert Czirjak",
+            "email": "norbert.czirjak@oeaw.ac.at"
+        }
+    ],
+    "require": {
+        "acdh-oeaw/arche-core" : "*",
+        "acdh-oeaw/arche-lib" : "*",
+        "acdh-oeaw/arche-lib-disserv" : "*"
+    }
+}
+
