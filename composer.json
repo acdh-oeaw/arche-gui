@@ -23,7 +23,7 @@
                 "[web-root]/sites/default/default.settings.php": "inst/sites/default/default.settings.php",
                 "[web-root]/sites/default/settings.local.php":   "inst/sites/default/settings.local.php",
                 "[web-root]/sites/default/settings.php":         "inst/sites/default/settings.php",
-                "[web-root]/sites/default/files/.htaccess":           "inst/sites/default/files/.htaccess",
+                "[web-root]/sites/default/files/.htaccess":           "inst/sites/default/files/htaccess",
                 "[web-root]/sites/default/files/.ht.sqlite":          "inst/sites/default/files/.ht.sqlite",
                 "[web-root]/sites/default/files/.arche_cache.sqlite": "inst/sites/default/files/.arche_cache.sqlite",
                 "[web-root]/sites/default/files/coll_dl_script/collection_download_repo.py": "inst/sites/default/files/coll_dl_script/collection_download_repo.py",
