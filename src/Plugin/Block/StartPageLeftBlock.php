@@ -32,7 +32,7 @@ class StartPageLeftBlock extends BlockBase
     {
         $result = array();
         $this->RVC = new RootViewController($this->config);
-        $this->config = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config.yaml');
+        $this->config = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml');
         
         $data = $this->RVC->generateRootView('3', '0', 'datedesc');
         

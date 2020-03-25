@@ -31,7 +31,7 @@ class ChildApiController extends ControllerBase {
     private $repo;
     
     public function __construct() {
-        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config.yaml';
+        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         //$this->langConf = $this->config('acdh_repo_gui.settings');

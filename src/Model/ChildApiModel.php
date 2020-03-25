@@ -37,7 +37,7 @@ class ChildApiModel extends ArcheModel {
         //get the requested sorting
         try {
             $query = $this->repodb->query(
-                    "select * from child_views_func(:id, :limit, :offset, :order, :property)", 
+                    "select * from gui.child_views_func(:id, :limit, :offset, :order, :property)", 
                     array(':id' => $identifier,  ':limit' => $limit, ':offset' => $page, ':order' => $ord, ':property' => $prop)
             );
             
@@ -89,7 +89,7 @@ class ChildApiModel extends ArcheModel {
     public function getCount(string $identifier): int {
         
         try {
-            $query = $this->repodb->query("select num from child_view_sum_func(:id)", array(':id' => $identifier));
+            $query = $this->repodb->query("select num from gui.child_view_sum_func(:id)", array(':id' => $identifier));
             $result = $query->fetch();
             if(isset($result->num)) {
                 return (int)$result->num;

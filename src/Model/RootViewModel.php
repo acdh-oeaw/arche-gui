@@ -59,7 +59,7 @@ class RootViewModel extends ArcheModel {
         $order = $this->ordering($order);
         try {
             
-            $query = $this->repodb->query("SELECT * FROM public.root_views_func() order by ".$order." limit ".$limit." offset ".$page.";");
+            $query = $this->repodb->query("SELECT * FROM gui.root_views_func() order by ".$order." limit ".$limit." offset ".$page.";");
             $this->sqlResult = $query->fetchAll();
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
@@ -77,7 +77,7 @@ class RootViewModel extends ArcheModel {
     public function countRoots(): int {
         $result = array();
         try {
-            $query = $this->repodb->query("select count(*) from public.root_views_func();");
+            $query = $this->repodb->query("select count(*) from gui.root_views_func();");
             $this->sqlResult = $query->fetch();
             $this->changeBackDBConnection();
             if(isset($this->sqlResult->count)) {

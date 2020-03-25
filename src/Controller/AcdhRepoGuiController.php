@@ -33,7 +33,7 @@ class AcdhRepoGuiController extends ControllerBase
     private $langConf;
     
     public function __construct() {
-        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config.yaml';
+        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
@@ -42,7 +42,7 @@ class AcdhRepoGuiController extends ControllerBase
         $this->detailViewController = new DVC($this->repo);
         $this->dissServController = new DisseminationServicesController($this->repo);
         $this->generalFunctions = new GeneralFunctions();
-        //$this->langConf = $this->config('acdh_repo_gui.settings');
+        $this->langConf = $this->config('acdh_repo_gui.settings');
     }
     
     /**
@@ -163,8 +163,7 @@ class AcdhRepoGuiController extends ControllerBase
         $dv = array();
         $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
         $dv = $this->detailViewController->generateDetailView($identifier);
-        
-        if(count((array)$dv) == 0) {
+        if(count((array)$dv) < 1) {
              drupal_set_message(
                 $this->langConf->get('errmsg_no_data') ? $this->langConf->get('errmsg_no_data') : 'You do not have data',
                 'error',
@@ -201,7 +200,7 @@ class AcdhRepoGuiController extends ControllerBase
         //$config->metadataMode = RepoResourceInterface::META_NEIGHBORS;  
         //RepoDb::getResourcesBySearchTerms()
         
-        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config.yaml', 'guest');
+        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml', 'guest');
         
         $results = $repodb->getPdoStatementBySearchTerms([new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'Wollmilchsau', '@@')], $config)->fetchAll();
         

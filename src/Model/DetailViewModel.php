@@ -29,7 +29,7 @@ class DetailViewModel extends ArcheModel {
         $result = array();
         try {
             //run the actual query
-            $query = $this->repodb->query(" select * from detail_view_func(:id) ", array(':id' => $identifier));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id) ", array(':id' => $identifier));
             $result = $query->fetchAll();
         } catch (Exception $ex) {
             $result = array();
@@ -53,7 +53,7 @@ class DetailViewModel extends ArcheModel {
         $result = array();
         try {
             //run the actual query
-            $query = $this->repodb->query(" select * from breadcrumb_view_func(:id) order by depth desc ", array(':id' => $identifier));
+            $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id) order by depth desc ", array(':id' => $identifier));
             $result = $query->fetchAll();
         } catch (Exception $ex) {
             $result = array();
