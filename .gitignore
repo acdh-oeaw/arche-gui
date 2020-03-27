@@ -1,4 +1,4 @@
 vendor/*
-config/*
+config/config.yaml
 .htaccess
 config.yaml
