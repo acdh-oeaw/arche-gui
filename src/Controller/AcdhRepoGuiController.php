@@ -60,7 +60,6 @@ class AcdhRepoGuiController extends ControllerBase
         $count = $this->rootViewController->countRoots();
         
         $roots = array();
-      
         $paging = array();
         if((int)$count > 0){
             $roots = $this->rootViewController->generateRootView($limit, $page, $order);

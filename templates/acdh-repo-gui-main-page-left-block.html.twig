@@ -9,7 +9,7 @@
                 <div class="res-property">
                     <span class="res-title">
                         {%  if item.getAccessRestriction()  %}
-                            {{ include('/modules/custom/acdh_repo_gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
                         {% endif%}
                             <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
                     </span>
@@ -25,7 +25,7 @@
             {% if item.getData('acdh:hasAvailableDate') %}
                 {{ item.getPropTitle('acdh:hasAvailableDate') }}
                 <div class="res-property">
-                    {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
                 </div>
             {% endif%}
 
@@ -33,7 +33,7 @@
             {% if item.getData('acdh:hasDescription') %}
                 <div class="res-property res-property-desc">
                     <span class="res-description">
-                         {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                         {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
                     </span>
                 </div>
             {% endif%}

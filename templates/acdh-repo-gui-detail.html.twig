@@ -53,26 +53,26 @@
     <!-- get the views based on the type -->
     <div class="single-res-overview single-res-overview-basic">
         {% if basic.getAcdhType()|lower == 'person'  %}
-            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
         {% elseif basic.getAcdhType()|lower == 'project' %}
-            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
         {% elseif basic.getAcdhType()|lower == 'organisation' %}
-            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
         {% elseif basic.getAcdhType()|lower == 'place' %}
-            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
         {% elseif basic.getAcdhType()|lower == 'publication' %}
-            {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }}            
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }}            
         {% else  %}
-           {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
+           {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
         {% endif %}
     </div>
 	
    <!-- EXPERT VIEW BLOCK -->
-    {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic } ) }}
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic } ) }}
    
     <!-- DISSEMINATION BLOCK -->
     {% if dissemination %}
-        {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
     {% endif %}
     
     
@@ -127,7 +127,7 @@
     {% endif%}
     
     {% if extra.citeWidgetData %}
-        {{ include('/modules/custom/acdh_repo_gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
     {% endif%}
     
     {% if  basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'organisation'  %}

@@ -113,7 +113,7 @@
            
             {% for key, value in properties %}
                 {% if extra.metadata.getData(key) %}
-                     {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': extra.metadata.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': extra.metadata.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid } ) }}
                 {% endif%}
             {% endfor %}    
                 

@@ -70,15 +70,15 @@
             {% endif%}
             
             {%  if basic.getData('acdh:hasAlternativeTitle') %}
-                {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:hasIdentifier') %}
-                {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasIdentifier'), 'icon': "label", 'label': "Identifier"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasIdentifier'), 'icon': "label", 'label': "Identifier"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
-                {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "is Member Of" ,'repoid': true} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "is Member Of" ,'repoid': true} ) }}
             {% endif%}
     
             {%  if (properties) %}
@@ -86,7 +86,7 @@
 
                 {% for key, value in properties %}
                     {% if basic.getData(key) %}
-                         {{ include('/modules/custom/acdh_repo_gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                         {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
                     {% endif%}
                 {% endfor %}
             {% endif%}
