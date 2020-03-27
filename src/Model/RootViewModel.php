@@ -79,6 +79,10 @@ class RootViewModel extends ArcheModel {
         try {
             $query = $this->repodb->query("select count(*) from gui.root_views_func();");
             $this->sqlResult = $query->fetch();
+            echo "<pre>";
+            var_dump($this->sqlResult);
+            echo "</pre>";
+            die();
             $this->changeBackDBConnection();
             if(isset($this->sqlResult->count)) {
                 return $this->sqlResult->count;

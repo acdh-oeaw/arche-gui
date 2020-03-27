@@ -13,8 +13,8 @@ class AcdhRepoGuiConfigEventSubscriber implements EventSubscriberInterface
 {
      public function initRepoGuiCfg(GetResponseEvent $event)
     {
-        global $archeCfg;
-        $archeCfg = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml');
+        //global $archeCfg;
+        //$archeCfg = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/contrib/arche-gui/config/config.yaml');
     }
     
     /**
