@@ -33,11 +33,10 @@ class AcdhRepoGuiController extends ControllerBase
     private $langConf;
     
     public function __construct() {
-        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml';
+        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
-        
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        
+         
         $this->rootViewController = new RVC($this->repo);
         $this->detailViewController = new DVC($this->repo);
         $this->dissServController = new DisseminationServicesController($this->repo);
@@ -61,7 +60,7 @@ class AcdhRepoGuiController extends ControllerBase
         $count = $this->rootViewController->countRoots();
         
         $roots = array();
-        
+      
         $paging = array();
         if((int)$count > 0){
             $roots = $this->rootViewController->generateRootView($limit, $page, $order);
@@ -200,7 +199,7 @@ class AcdhRepoGuiController extends ControllerBase
         //$config->metadataMode = RepoResourceInterface::META_NEIGHBORS;  
         //RepoDb::getResourcesBySearchTerms()
         
-        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml', 'guest');
+        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
         
         $results = $repodb->getPdoStatementBySearchTerms([new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'Wollmilchsau', '@@')], $config)->fetchAll();
         

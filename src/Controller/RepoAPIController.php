@@ -27,7 +27,7 @@ class RepoApiController extends ControllerBase {
     public function __construct() {
         
         $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/';
-        $this->config = $_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config/config.yaml';
+        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         
