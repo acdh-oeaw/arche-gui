@@ -389,17 +389,20 @@ class AcdhRepoGuiController extends ControllerBase
         $basic = array();
         $lorisUrl = '';
         
-         $repoUrl = $this->repo->getBaseUrl().$repoid;
+        $repoUrl = $this->repo->getBaseUrl().$repoid;
         $result = array();
         $result = $this->dissServController->generateView($repoid, 'iiif');
+        if(isset($result['lorisUrl']) && !empty($result['lorisUrl']))
+        {
+           $lorisUrl = $result['lorisUrl'];
+        }
         $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         
         return
             array(
                 '#theme' => 'acdh-repo-ds-iiif-viewer',
                 '#basic' => $basic,
-                '#lorisUrl' => $lorisUrl,
-                
+                '#lorisUrl' => $lorisUrl
             );
     }
     

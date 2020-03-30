@@ -24,13 +24,10 @@ class DisseminationServicesHelper extends ArcheHelper {
     private $result = array();    
     private $dataFor3dObj = array();    
     
-
-
     public function createView(array $data = array(), string $dissemination = '', string $identifier = ''): array {
         
         $this->repoid = $identifier;
         $this->repoUrl = $this->repo->getBaseUrl().$this->repoid;
-       
         
         switch ($dissemination) {
             case 'collection':
@@ -44,7 +41,7 @@ class DisseminationServicesHelper extends ArcheHelper {
                 $this->result = $this->threeDDissService();
                 break;
             case 'iiif':
-                $this->result = $this->getLorisUrl();
+                $this->result['lorisUrl'] = $this->getLorisUrl();
                 break;
             default:
                 break;
@@ -52,12 +49,24 @@ class DisseminationServicesHelper extends ArcheHelper {
         return $this->result;
     }
     
-    private function getLorisUrl() {
-        
-        //$this->generalFunctions->getDissServices($this->repoid);
-        return array();
+    /**
+     * Get the loris url for the loris disserv viewer
+     * 
+     * @return string
+     */
+    private function getLorisUrl(): string {
+        $dissServices = $this->generalFunctions->getDissServices($this->repoid);
+        if(isset($dissServices['iiif']) && !empty($dissServices['iiif'])){
+            return $dissServices['iiif'];
+        }
+        return '';
     }
     
+    /**
+     * 3d dissemination service function
+     * 
+     * @return type
+     */
     private function threeDDissService() {
         $client = new \GuzzleHttp\Client(['verify' => false]);
         
