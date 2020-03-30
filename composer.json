@@ -13,7 +13,8 @@
     "require": {
         "acdh-oeaw/arche-core" : "*",
         "acdh-oeaw/arche-lib" : "*",
-        "acdh-oeaw/arche-lib-disserv" : "*"
+        "acdh-oeaw/arche-lib-disserv" : "*",
+	"acdh-oeaw/arche-lib-schema" : "*"
     },
     "extra": {
         "drupal-scaffold": {
