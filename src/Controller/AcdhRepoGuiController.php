@@ -191,50 +191,46 @@ class AcdhRepoGuiController extends ControllerBase
     
     public function search_view(string $data) {
         
+      //  $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
+       // $ontology = $ontology = new \acdhOeaw\arche\SchemaOntology($repodb, $this->repo->getBaseurl());
+        
+        
         $config = new \acdhOeaw\acdhRepoLib\SearchConfig();
         $config->metadataMode = RepoResourceInterface::META_RESOURCE; 
-        $config->ftsQuery             = 'Wollmilchsau';
-        $config->ftsProperty          = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
+        $config->ftsQuery             = $data;
+       // $config->ftsProperty          = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
         //$config->metadataMode = RepoResourceInterface::META_NEIGHBORS;  
         //RepoDb::getResourcesBySearchTerms()
         
         $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
         
-        $results = $repodb->getPdoStatementBySearchTerms([new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'Wollmilchsau', '@@')], $config)->fetchAll();
+        $results = $repodb->getPdoStatementBySearchTerms(
+                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $data, '@@'), new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $data, '@@')], 
+                $config)->fetchAll();
         
+        foreach ($results as $res) {
+            
+            if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
+                echo "title";
+                echo "<pre>";
+                var_dump($res);
+                echo "</pre>";
+            }
+             if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription') {
+                 echo "Desc";
+                echo "<pre>";
+                var_dump($res);
+                echo "</pre>";
+            }
+            
+            //echo (string) $res->getGraph()->getLiteral($this->repo->getSchema()->searchFts) . "\n";
+        }
+        
+        die();
         echo "<pre>";
         var_dump($results);
         echo "</pre>";
         
-        
-        //getResourcesBySearchTerms
-        //parsePdoStatement
-        
-        //$this->config->getResourcesBySqlQuery($str, $parameters);
-        /*
-        $repo = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/custom/acdh_repo_gui/config.yaml');
-        
-        $config = new SearchConfig();
-       
-        $pdo = new \PDO("pgsql: user=drupal password=123qwe dbname=www-data host=127.0.0.1");
-        
-        $repodb = new acdhOeaw\acdhRepoLib\RepoDb($this->config->getBaseUrl(), $this->config->getSchema(),
-                                $pdo, array());
-        echo "<pre>";
-        var_dump($repodb);
-        echo "</pre>";
-        $config->ftsQuery = 'Wollmilchsau';
-        $results = $this->config->getPdoStatementBySearchTerms([new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'Wollmilchsau', '@@')], $config);
-        //foreach ($results as $res) {
-            
-       // }
-        
-        
-       echo "<pre>";
-       var_dump($results);
-       echo "</pre>";
-        
-        */
         return [
             '#theme' => 'acdh-repo-gui-search',
             '#result' => "sss",

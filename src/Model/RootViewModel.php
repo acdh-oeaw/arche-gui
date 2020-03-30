@@ -12,11 +12,13 @@ class RootViewModel extends ArcheModel {
     
     private $repodb;
     private $sqlResult;
+    private $siteLang = 'en';
     
     public function __construct() {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
     /**
@@ -59,7 +61,17 @@ class RootViewModel extends ArcheModel {
         $order = $this->ordering($order);
         try {
             
-            $query = $this->repodb->query("SELECT * FROM gui.root_views_func() order by ".$order." limit ".$limit." offset ".$page.";");
+            $query = $this->repodb->query("
+                SELECT 
+                DISTINCT(rvf.id),
+                (select te.title from gui.root_views_func() as te  where te.id = rvf.id and te.language='en' limit 1) as title_en,
+                (select td.title from gui.root_views_func() as td  where td.id = rvf.id and td.language='de' limit 1) as title_de,
+                (select ted.description from gui.root_views_func() as ted  where ted.id = rvf.id and ted.language='en' limit 1) as desc_en,
+                (select tdd.description from gui.root_views_func() as tdd  where tdd.id = rvf.id and tdd.language='de' limit 1) as desc_de,
+                rvf.avDate, rvf.accresres, rvf.titleimage
+                from gui.root_views_func() as rvf 
+                order by ".$order." limit ".$limit." offset ".$page.";");
+            
             $this->sqlResult = $query->fetchAll();
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
@@ -77,7 +89,7 @@ class RootViewModel extends ArcheModel {
     public function countRoots(): int {
         $result = array();
         try {
-            $query = $this->repodb->query("select count(*) from gui.root_views_func();");
+            $query = $this->repodb->query("select count(DISTINCT(id)) from gui.root_views_func()");
             $this->sqlResult = $query->fetch();
            
             $this->changeBackDBConnection();

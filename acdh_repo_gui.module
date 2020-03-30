@@ -61,6 +61,9 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         ],
         'acdh-repo-ds-iiif-viewer' => [
             'variables' => ['basic' => NULL, 'lorisUrl' => NULL]
+        ],
+        'helper-lng-switcher' => [
+            'variables' => ['language' => NULL]
         ]
     ];
 }

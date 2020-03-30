@@ -17,11 +17,10 @@ use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 class RootViewHelper extends ArcheHelper {
     
     private $rootViewObjectArray;
-    private $lng = "en";
-    
-    
+    private $siteLang = "en";
+   
     public function createView(array $data = array()): array {
-       
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->formatResultToGui($data);  
         if(count((array)$this->data) == 0) {
             return array();
@@ -40,6 +39,7 @@ class RootViewHelper extends ArcheHelper {
      */
     private function formatResultToGui(array $data) {
         if(count((array)$data) > 0) {
+            
             foreach($data as $k => $v) {
                 if(isset($v->id)) {
                     $this->data[$k]['acdh:hasIdentifier'] = array(
@@ -50,15 +50,34 @@ class RootViewHelper extends ArcheHelper {
                             $v->id
                             )
                         );
-                    if(isset($v->title)) {
-                        $this->data[$k]['acdh:hasTitle'] = array(
+                    
+                    if(isset($v->title_en) || isset($v->title_de)) {
+                        $title = '';
+                        if($this->siteLang == 'en') { 
+                            if(isset($v->title_en)) {
+                                $title = $v->title_en;
+                            }elseif(isset($v->title_de)) {
+                                $title = $v->title_de;
+                            }   
+                        }
+                        if($this->siteLang == 'de') { 
+                            echo "de viewban";
+                            if(isset($v->title_de)) {
+                                $title = $v->title_de;
+                            }elseif(isset($v->title_en)) {
+                                $title = $v->title_en;
+                            }   
+                        }
+                        if(!empty($title)) {
+                            $this->data[$k]['acdh:hasTitle'] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
-                                $v->title, 
-                                $v->title
+                                $title, 
+                                $title
                                 )
                             );
+                        }
                     }
                     if(isset($v->avdate)) {
                         $this->data[$k]['acdh:hasAvailableDate'] = array(
@@ -70,15 +89,32 @@ class RootViewHelper extends ArcheHelper {
                                 )
                             );
                     }
-                    if(isset($v->description)) {
-                        $this->data[$k]['acdh:hasDescription'] = array(
-                            $this->createObj(
-                                $v->id, 
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
-                                $v->description, 
-                                $v->description
-                                )
-                            );
+                    if(isset($v->desc_en) || isset($v->desc_de)) {
+                        $desc = '';
+                        if($this->siteLang == 'en') { 
+                            if(isset($v->desc_en)) {
+                                $desc = $v->desc_en;
+                            }elseif(isset($v->desc_de)) {
+                                $desc = $v->desc_de;
+                            }   
+                        }
+                        if($this->siteLang == 'de') { 
+                            if(isset($v->desc_de)) {
+                                $desc = $v->desc_de;
+                            }elseif(isset($v->desc_en)) {
+                                $desc = $v->desc_en;
+                            }   
+                        }
+                        if(!empty($desc)) {
+                            $this->data[$k]['acdh:hasDescription'] = array(
+                                $this->createObj(
+                                    $v->id, 
+                                    $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
+                                    $desc, 
+                                    $desc
+                                    )
+                                );
+                        }
                     }
                     if(isset($v->accresres)) {
                         $this->data[$k]['acdh:hasAccessRestriction'] = array(
@@ -102,6 +138,7 @@ class RootViewHelper extends ArcheHelper {
                     }    
                 }
             }
+           
         }
     }
     

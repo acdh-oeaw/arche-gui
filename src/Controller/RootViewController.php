@@ -45,9 +45,8 @@ class RootViewController  extends ControllerBase {
         
         $data = $this->model->getViewData($limit, $page, $order, $this->siteLang);
         if(count((array)$data) == 0) {
-            echo "no data";
+            return array();
         }
-        
         
         $numPage = ceil((int)$this->numberOfRoots / (int)$limit);
         //change the page and offset variables, because we want the paging to start from 1 not 0
