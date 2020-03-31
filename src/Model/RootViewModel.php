@@ -63,13 +63,9 @@ class RootViewModel extends ArcheModel {
             
             $query = $this->repodb->query("
                 SELECT 
-                DISTINCT(rvf.id),
-                (select te.title from gui.root_views_func() as te  where te.id = rvf.id and te.language='en' limit 1) as title_en,
-                (select td.title from gui.root_views_func() as td  where td.id = rvf.id and td.language='de' limit 1) as title_de,
-                (select ted.description from gui.root_views_func() as ted  where ted.id = rvf.id and ted.language='en' limit 1) as desc_en,
-                (select tdd.description from gui.root_views_func() as tdd  where tdd.id = rvf.id and tdd.language='de' limit 1) as desc_de,
-                rvf.avDate, rvf.accresres, rvf.titleimage
-                from gui.root_views_func() as rvf 
+                *
+                from gui.root_views_func('".$this->siteLang."') 
+                where title is not null 
                 order by ".$order." limit ".$limit." offset ".$page.";");
             
             $this->sqlResult = $query->fetchAll();
@@ -89,9 +85,8 @@ class RootViewModel extends ArcheModel {
     public function countRoots(): int {
         $result = array();
         try {
-            $query = $this->repodb->query("select count(DISTINCT(id)) from gui.root_views_func()");
+            $query = $this->repodb->query("select count(DISTINCT(id)) from gui.root_views_func() where title is not null  ");
             $this->sqlResult = $query->fetch();
-           
             $this->changeBackDBConnection();
             if(isset($this->sqlResult->count)) {
                 return $this->sqlResult->count;

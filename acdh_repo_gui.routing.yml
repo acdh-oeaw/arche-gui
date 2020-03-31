@@ -104,7 +104,12 @@ oeaw_turtle_api:
         _permission: 'access content'
         _access: 'TRUE'
 
-
+oeaw_change_lng:    
+    path: '/oeaw_change_lng/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_change_lng'
+    requirements:
+        _access: 'TRUE'
 
 
 

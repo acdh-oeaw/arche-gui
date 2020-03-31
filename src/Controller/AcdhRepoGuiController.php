@@ -402,6 +402,21 @@ class AcdhRepoGuiController extends ControllerBase
             );
     }
     
+     /**
+     * Change language session variable API
+     * Because of the special path handling, the basic language selector is not working
+     *
+     * @param string $lng
+     * @return Response
+    */
+    public function oeaw_change_lng(string $lng = 'en'): Response
+    {
+        $_SESSION['language'] = strtolower($lng);
+        $response = new Response();
+        $response->setContent(json_encode("language changed to: ".$lng));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
     
     
     
