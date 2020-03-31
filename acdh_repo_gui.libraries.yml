@@ -27,7 +27,16 @@ acdh-repo-gui-css-and-js:
     js/acdh_repo_gui.js: {}
     js/jquery-1.12.3.min.js: {}
   
-  
+repo-root-view:
+    version: 1.0.0
+    css:
+        base:
+            css/acdh_repo_gui.css: {}
+    js:
+        js/acdh_repo_gui_pager.js: {}
+        js/acdh_repo_gui_root_view.js: {}
+        
+        
 repo-3d-page:
     version: 1.0.0
     css:

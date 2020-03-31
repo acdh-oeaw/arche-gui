@@ -33,6 +33,7 @@ class PagingHelper {
     {
         $out = "";
         $page = $this->data->page;
+        
         if (ceil($this->data->sum / $this->data->limit) > 0){ 
             $out .= '<ul class="pagination">';
             $out .= '<li class="pagination-item"><a id="first-btn" data-pagination="1"><i class="material-icons">first_page</i></a></li>';

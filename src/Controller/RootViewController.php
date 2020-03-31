@@ -38,20 +38,24 @@ class RootViewController  extends ControllerBase {
         return (int)$this->numberOfRoots;
     }
     
-    public function generateRootView(string $limit = "10", string $page = "0", string $order = "datedesc"): array {
+    public function generateRootView(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
+        
         if($this->numberOfRoots == 0){
             $this->numberOfRoots = $this->countRoots();
         }
         
-        $data = $this->model->getViewData($limit, $page, $order, $this->siteLang);
+        $offsetPage = 0;
+        ($page == 0) ? $offsetPage = 0 : "";
+        ($page == 1) ? $offsetPage = 0 : "";
+        ($page > 1) ? $offsetPage = $page - 1 : "";
+         
+        $data = $this->model->getViewData($limit, $offsetPage, $order, $this->siteLang);
         if(count((array)$data) == 0) {
             return array();
         }
         
         $numPage = ceil((int)$this->numberOfRoots / (int)$limit);
-        //change the page and offset variables, because we want the paging to start from 1 not 0
-        ($page == 0) ? $page = 1 : "";
-        ($page == 1) ? $offset = 0 : $offset = ($page -1) * $limit;
+        
         $pagination = '';
         $pagination = $this->pagingHelper->createView(
             array(

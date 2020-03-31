@@ -53,7 +53,7 @@ class RootViewModel extends ArcheModel {
      * 
      * @return array
      */
-    public function getViewData(string $limit = "10", string $page = "0", string $order = "datedesc"): array {
+    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
         
         if($page > 0) {
             $page = $limit * $page;

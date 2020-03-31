@@ -78,27 +78,7 @@
     }
     
 
-    /**
-    * create and change the new URL after click events
-    * 
-    * @type Arguments
-    */
-    function createNewUrl(page, limit, orderBy){
-       if (history.pushState) {
-           var path = window.location.pathname;
-           var newUrlLimit = "&limit="+limit;
-           var newUrlPage = "&page="+page;
-           var newUrlOrder = "&order="+orderBy;
-           var cleanPath = "";
-           if(path.indexOf('&') != -1){
-               cleanPath = path.substring(0, path.indexOf('&'));
-           }else {
-               cleanPath = path;
-           }
-           var newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder;
-           window.history.pushState({path:newurl},'',newurl);
-       }
-   }
+   
     
     /**
     * Do the API request to get the actual child data
@@ -138,6 +118,19 @@
    
    
    //************************* PAGINATION ****************************************//
+   
+   function urlParams() {
+        let searchParams = new URLSearchParams(window.location.href);
+        var urlPage = searchParams.get('page');
+        var urlLimit = searchParams.get('limit');
+        var urlOrder = searchParams.get('order');
+        
+        console.log(urlPage);
+        console.log(urlLimit);
+        console.log(urlOrder);
+        
+   }
+   
    if(window.location.href.indexOf("/oeaw_detail/") > -1) {
        $(document ).delegate( "#prev-btn", "click", function(e) {            
        console.log("prev btn");
@@ -145,9 +138,10 @@
    
    $(document ).delegate( "#next-btn", "click", function(e) {            
        console.log("next btn");
+       urlParams();
         e.preventDefault();
-/*
-  $(".loader-div").show();
+        /*
+        $(".loader-div").show();
         var urlParams = generateUrlParams();
         var urlPage = urlParams['urlPage'];
         var urlLimit = urlParams['urlLimit'];
@@ -179,7 +173,7 @@
         $(".loader-div").hide();
         //to skip the jump to top function
         return false;
-        * */  
+         */
  
     });
     

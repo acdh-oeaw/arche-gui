@@ -55,14 +55,14 @@ class AcdhRepoGuiController extends ControllerBase
         $limit = (int)$limit;
         $page = (int)$page;
         // on the gui we are displaying 1 as the first page.
-        $page = $page-1;
+        //$page = $page-1;
         $count = 0;
         $count = $this->rootViewController->countRoots();
         
         $roots = array();
         $paging = array();
         if((int)$count > 0){
-            $roots = $this->rootViewController->generateRootView($limit, $page, $order);
+            $roots = $this->rootViewController->generateRootView((int)$limit, (int)$page, $order);
         }
         
         if(!isset($roots['data']) || count($roots['data']) <= 0) {
@@ -84,7 +84,7 @@ class AcdhRepoGuiController extends ControllerBase
             '#paging' => $paging,
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-styles',
+                    'acdh_repo_gui/repo-root-view',
                 ]
             ]
         ]; 
@@ -102,6 +102,7 @@ class AcdhRepoGuiController extends ControllerBase
      */
     public function repo_complexsearch(string $metavalue = "root", string $limit = "10", string $page = "1", string $order = "titleasc"): array
     {         
+        
         //this is the root collection view
         if (empty($metavalue) ||  $metavalue == "root") {
             //If a cookie setting exists and the query is coming without a specific parameter
@@ -136,7 +137,7 @@ class AcdhRepoGuiController extends ControllerBase
             '#data' => $roots,
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-styles',
+                    'acdh_repo_gui/repo-root-view',
                 ]
             ]
         ]; 
