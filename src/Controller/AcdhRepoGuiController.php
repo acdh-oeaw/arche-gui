@@ -13,6 +13,7 @@ use acdhOeaw\acdhRepoLib\RepoResourceInterface;
 use acdhOeaw\acdhRepoLib\SearchTerm;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
 use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
+use Drupal\acdh_repo_gui\Controller\SearchViewController as SVC;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 
 
@@ -25,8 +26,8 @@ class AcdhRepoGuiController extends ControllerBase
 {    
     private $config;
     private $repo;
-    private $repoDb;
     private $rootViewController;
+    private $searchViewController;
     private $detailViewController;
     private $dissServController;
     private $siteLang;
@@ -38,6 +39,7 @@ class AcdhRepoGuiController extends ControllerBase
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
          
         $this->rootViewController = new RVC($this->repo);
+        $this->searchViewController = new SVC($this->repo);
         $this->detailViewController = new DVC($this->repo);
         $this->dissServController = new DisseminationServicesController($this->repo);
         $this->generalFunctions = new GeneralFunctions();
@@ -101,8 +103,7 @@ class AcdhRepoGuiController extends ControllerBase
      * @return array
      */
     public function repo_complexsearch(string $metavalue = "root", string $limit = "10", string $page = "1", string $order = "titleasc"): array
-    {         
-        
+    {   
         //this is the root collection view
         if (empty($metavalue) ||  $metavalue == "root") {
             //If a cookie setting exists and the query is coming without a specific parameter
@@ -118,14 +119,16 @@ class AcdhRepoGuiController extends ControllerBase
             return $this->repo_root($limit, $page, $order);
         } 
         
-        //the search view
-        echo "the search view";    
-        $roots = array();
-        $roots = $this->rootViewController->generateRootView();
+        //we have the search view
         
-        if(count($roots) <= 0) {
+        //the search view
+        
+        $searchResult = array();
+        $searchResult = $this->searchViewController->generateView($limit, $page, $order, $metavalue);
+        
+        if(count($searchResult['data']) <= 0) {
             drupal_set_message(
-                $this->langConf->get('errmsg_no_root_resources') ? $this->langConf->get('errmsg_no_root_resources') : 'You do not have Root resources',
+                $this->langConf->get('errmsg_no_search_res') ? $this->langConf->get('errmsg_no_search_res') : 'Your search yielded no results.',
                 'error',
                 false
             );
@@ -134,7 +137,7 @@ class AcdhRepoGuiController extends ControllerBase
         
         return [
             '#theme' => 'acdh-repo-gui-main',
-            '#data' => $roots,
+            '#data' => $searchResult['data'],
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
@@ -192,45 +195,39 @@ class AcdhRepoGuiController extends ControllerBase
     
     public function search_view(string $data) {
         
-      //  $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
-       // $ontology = $ontology = new \acdhOeaw\arche\SchemaOntology($repodb, $this->repo->getBaseurl());
         
+        //$log = new \zozlak\logging\Log(drupal_get_path('module', 'acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
         
         $config = new \acdhOeaw\acdhRepoLib\SearchConfig();
         $config->metadataMode = RepoResourceInterface::META_RESOURCE; 
         $config->ftsQuery             = $data;
-       // $config->ftsProperty          = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
-        //$config->metadataMode = RepoResourceInterface::META_NEIGHBORS;  
-        //RepoDb::getResourcesBySearchTerms()
-        
         $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
+        //$repodb->setQueryLog($log);
         
-        $results = $repodb->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $data, '@@'), new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $data, '@@')], 
+        $resTitle = $repodb->getPdoStatementBySearchTerms(
+                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $data, '@@')], 
+                $config)->fetchAll();
+        $resDesc = $repodb->getPdoStatementBySearchTerms(
+                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $data, '@@')], 
                 $config)->fetchAll();
         
+        $results = array_merge($resTitle, $resDesc);
+        $finalRes = array();
         foreach ($results as $res) {
             
             if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
-                echo "title";
-                echo "<pre>";
-                var_dump($res);
-                echo "</pre>";
+                $finalRes[] = $res;
             }
              if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription') {
-                 echo "Desc";
-                echo "<pre>";
-                var_dump($res);
-                echo "</pre>";
+                $finalRes[] = $res;
             }
-            
-            //echo (string) $res->getGraph()->getLiteral($this->repo->getSchema()->searchFts) . "\n";
         }
         
-        die();
         echo "<pre>";
-        var_dump($results);
+        var_dump($finalRes);
         echo "</pre>";
+        die();
+       
         
         return [
             '#theme' => 'acdh-repo-gui-search',

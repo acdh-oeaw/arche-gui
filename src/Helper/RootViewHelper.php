@@ -21,7 +21,9 @@ class RootViewHelper extends ArcheHelper {
    
     public function createView(array $data = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        
         $this->formatResultToGui($data);  
+      
         if(count((array)$this->data) == 0) {
             return array();
         }

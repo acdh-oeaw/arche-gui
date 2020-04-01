@@ -31,7 +31,7 @@ class ComplexSearchForm extends FormBase
      */
     public function getFormId()
     {
-        return "repo_search_form";
+        return "sks_form";
     }
     
     /**
@@ -42,7 +42,6 @@ class ComplexSearchForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-        
         //the input field
         $this->createSearchInput($form);
         
@@ -67,7 +66,7 @@ class ComplexSearchForm extends FormBase
             $this->createBox($form, $dateData);
             
         }
-        
+        error_log('itt1');
         
         /****  Entities By date *****/
         /*
@@ -107,22 +106,13 @@ class ComplexSearchForm extends FormBase
      */
     public function validateForm(array &$form, FormStateInterface $form_state)
     {
-        error_log("validate form");
         $metavalue = $form_state->getValue('metavalue');
-        error_log("metavalue");
-        error_log(print_r($metavalue, true));
-        
         $types = $form_state->getValue('searchbox_types');
-        error_log("types");
-        error_log(print_r($types, true));
         if (count($types) > 0) {
             $types = array_filter($types);
         }
         
         $formats = $form_state->getValue('searchbox_format');
-        
-        error_log("formats");
-        error_log(print_r($formats, true));
         if (count($formats) > 0) {
             $formats = array_filter($formats);
         }
@@ -131,11 +121,7 @@ class ComplexSearchForm extends FormBase
                 &&  (count($formats) <= 0)  && empty($form_state->getValue('date_start_date'))
                 && empty($form_state->getValue('date_end_date'))) {
             $form_state->setErrorByName('metavalue', $this->t('Missing').': '.t('Keyword').' '.t('or').' '.t('Type'));
-        }
-        
-        
-        
-            
+        }   
     }
     
     /**
@@ -146,7 +132,7 @@ class ComplexSearchForm extends FormBase
      */
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-        
+        error_log('itt3');
         $metavalue = $form_state->getValue('metavalue');
         
         $extras = array();
@@ -171,22 +157,17 @@ class ComplexSearchForm extends FormBase
                 $extras["formats"][] = strtolower($f);
             }
         }
+        error_log('itt');
+        $metavalue = "word=wollmilschau&type=Collection";
+        //$metaVal = $this->oeawFunctions->convertSearchString($metavalue, $extras);
+        $metaVal = urlencode($metavalue);
+        $form_state->setRedirect('repo_complexsearch', [
+            "metavalue" => $metaVal,
+            "order" =>  "datedesc",
+            "limit" => "10",
+            "page" => "1"]
+        );
         
-        if (!empty($startDate) && !empty($endDate)) {
-            $startDate = str_replace('/', '-', $startDate);
-            $startDate = date("Ymd", strtotime($startDate));
-            $endDate = str_replace('/', '-', $endDate);
-            $endDate = date("Ymd", strtotime($endDate));
-            $extras["start_date"] = $startDate;
-            $extras["end_date"] = $endDate;
-        }
-        
-        /*
-        $metaVal = $this->oeawFunctions->convertSearchString($metavalue, $extras);
-        $metaVal = urlencode($metaVal);
-        $form_state->setRedirect('oeaw_complexsearch', ["metavalue" => $metaVal, "limit" => 10,  "page" => 1]);
-         * 
-         */
     }
     
     

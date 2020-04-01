@@ -13,7 +13,8 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  *
  * @author nczirjak
  */
-class RootViewController  extends ControllerBase {
+class RootViewController extends ControllerBase {
+    
     private $config;
     private $repo;
     private $model;
@@ -49,7 +50,7 @@ class RootViewController  extends ControllerBase {
         ($page == 1) ? $offsetPage = 0 : "";
         ($page > 1) ? $offsetPage = $page - 1 : "";
          
-        $data = $this->model->getViewData($limit, $offsetPage, $order, $this->siteLang);
+        $data = $this->model->getViewData($limit, $offsetPage, $order);
         if(count((array)$data) == 0) {
             return array();
         }
@@ -63,7 +64,6 @@ class RootViewController  extends ControllerBase {
                 'numPage' => $numPage, 'sum' => $this->numberOfRoots
             )
         );
-        
         return array('data' => $this->helper->createView($data), 'pagination' => $pagination);
     }
 }
