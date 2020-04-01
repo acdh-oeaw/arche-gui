@@ -1,22 +1,100 @@
 /*
-* DETAIL VIEW METADATA FUNCTION 
+* ROOT VIEW FUNCTION 
+*/
+CREATE OR REPLACE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text)
+AS $func$
+DECLARE 
+	_lang2 text := 'de';
+BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+	
+--get all root ids
+DROP TABLE IF EXISTS  rootids;
+CREATE TEMP TABLE rootids AS (
+	select DISTINCT(r.id) as rootid,
+	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
+	from metadata as m
+	left join relations as r on r.id = m.id
+	where
+		m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+		and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
+		and r.id NOT IN ( 
+			SELECT DISTINCT(r.id) from metadata as m left join relations as r on r.id = m.id
+			where
+				m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+				and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+				and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+		)
+);
+
+DROP TABLE IF EXISTS rootTitles;
+CREATE TEMP TABLE rootTitles AS (
+	select ri.rootid, mv.value, mv.lang
+	from rootids as ri
+	left join 
+	metadata_view as mv on ri.rootid = mv.id
+	where 
+	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
+);
+
+DROP TABLE IF EXISTS rootDescriptions;
+CREATE TEMP TABLE rootDescriptions AS (
+	select ri.rootid, mv.value, mv.lang
+	from rootids as ri
+	left join 
+	metadata_view as mv on ri.rootid = mv.id
+	where 
+	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' 
+);
+
+
+DROP TABLE IF EXISTS rootAccesRes;
+CREATE TEMP TABLE rootAccesRes AS (
+    select ri.rootid, mv.value 
+    from rootids as ri
+    left join relations as r on ri.rootid = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+    left join metadata_view as mv on r.target_id = mv.id
+    where
+        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%'
+);
+
+RETURN QUERY
+    select 
+        ri.rootid,
+        ( CASE WHEN rt.value IS NULL THEN (select rt.value from rootTitles as rt where rt.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rt.value end ) as title,
+        ri.avdate, 
+        ( CASE WHEN rd.value IS NULL THEN (select rd2.value from rootDescriptions as rd2 where rd2.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rd.value end ) as description,
+        ra.value as accesres, 
+        (select mv.value from metadata_view as mv where mv.id = ri.rootid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage
+    from rootids as ri
+    left join rootDescriptions as rd on rd.rootid = ri.rootid and rd.lang = _lang
+    left join rootTitles as rt on rt.rootid = ri.rootid and rt.lang = _lang
+    left join rootAccesRes as ra on ri.rootid  = ra.rootid;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/*
+* DETAIL VIEW FUNCTION 
 */
 CREATE OR REPLACE FUNCTION gui.detail_view_func(_identifier text)
     RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, accessRestriction text )
     
 AS $func$
+DECLARE
+	_main_id bigint := (select i.id from identifiers as i where i.ids =_identifier);
 BEGIN
 	DROP TABLE IF EXISTS detail_meta;
 	CREATE TEMPORARY TABLE detail_meta AS (
-	select mv.id, mv.property, mv.type, mv.value
-	from identifiers as i
-	inner join metadata_view as mv on mv.id = i.id
-	where i.ids = _identifier
-	union
-	select m.id, m.property, m.type, m.value
-	from identifiers as i
-	inner join metadata as m on m.id = i.id
-	where i.ids = _identifier
+		select mv.id, mv.property, mv.type, mv.value
+		from metadata_view as mv 
+		where mv.id = _main_id				
+		union
+		select m.id, m.property, m.type, m.value
+		from metadata as m 
+		where m.id = _main_id
 	);
 
 	DROP TABLE IF EXISTS detail_meta_rel;
@@ -29,76 +107,186 @@ BEGIN
 	
 	RETURN QUERY
 	select dm.id, dm.property, dm.type, dm.value, dmr.value as relvalue, dmr.acdhid,
-	(select r.val from raw as r where r.prop = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and r.id = dm.id ) as accessRestriction
+	CASE WHEN dm.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' THEN dmr.value
+	ELSE ''
+	END
 	from detail_meta as dm
-	left join detail_meta_rel as dmr on dmr.id = dm.value	
+	left join detail_meta_rel as dmr on dmr.id = dm.value
 	order by property; 
 END
 $func$
 LANGUAGE 'plpgsql';
 
 /*
-* root view all metadata 
+* COLLECTION VIEW FUNCTION 
 */
-CREATE OR REPLACE FUNCTION gui.root_view_func()
-    RETURNS table (id bigint, property text, type text, value text, acdhid  text)
+CREATE OR REPLACE FUNCTION gui.collection_views_func(_pid text, _lang text DEFAULT 'en' )
+    RETURNS table (mainid bigint, parentid bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, depth integer)
 AS $func$
 BEGIN
-  /* get root ids */
-  DROP TABLE IF EXISTS  rootids;
-  CREATE TEMP TABLE rootids AS (
-	select DISTINCT(r.id) as rootid
-	from metadata as m
-	left join relations as r on r.id = m.id
-	where
- 	m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-	and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-	and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-	and r.id NOT IN ( 
-		SELECT DISTINCT(r.id) from metadata as m left join relations as r on r.id = m.id
-		where
- 			m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-			and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-			and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-	)
-	order by r.id asc
-  );
 
-  /* get root raw metadata by the rootids */
-  DROP TABLE IF EXISTS root_meta;
-  CREATE TEMPORARY TABLE root_meta AS (
-  select mv.id, mv.property, mv.type, mv.value
-	from identifiers as i
-	inner join metadata_view as mv on mv.id = i.id
-	inner join rootids as ri on ri.rootid = i.id
-	union
-	select m.id, m.property, m.type, m.value
-	from identifiers as i
-	inner join metadata as m on m.id = i.id
-	inner join rootids as ri on ri.rootid = i.id
-	
-  );
+DROP TABLE IF EXISTS accessres;
+	CREATE TEMP TABLE accessres AS (
+	select 
+	distinct(r.target_id) as accessid , mv.value,
+	mv.lang
+	from relations as r
+	left join metadata_view as mv on mv.id = r.target_id
+	where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+	and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+	and mv.lang = _lang
+);
 
-  /* get the root relation properties */
-  DROP TABLE IF EXISTS root_meta_rel;
-	CREATE TEMPORARY TABLE root_meta_rel AS (
-	select DISTINCT(m.id), m.value, i.ids as acdhId, rm.id as resId, rm.property, rm.type
-	from metadata as m
-	left join root_meta as rm on CAST(rm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-	left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/uuid/%' as varchar)
-	where rm.type = 'REL'  );
+DROP TABLE IF EXISTS colldata;
+	CREATE TEMPORARY TABLE colldata(mainid bigint, parentid bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, depth integer);
+	INSERT INTO colldata( 
+		WITH RECURSIVE subordinates AS (
+		   SELECT
+			  mv.id as mainid,
+			CAST(mv.value as bigint) as parentid, 
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and id = mv.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and id = mv.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense' and id = mv.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and id = mv.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename' and id = mv.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and id = mv.id limit 1),
+			   1 as depthval
+		   FROM
+			metadata_view as mv
+		   WHERE
+			  mv.value = _pid
+			   and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+		   UNION
+			  SELECT
+				 mv2.id,
+			CAST(mv2.value as bigint) as m2val, 
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and id = mv2.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and id = mv2.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense' and id = mv2.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and id = mv2.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename' and id = mv2.id limit 1),
+			(select value from metadata_view where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and id = mv2.id limit 1),
+				depthval + 1 
+			  FROM
+				 metadata_view as mv2
+			  INNER JOIN subordinates s ON s.mainid = CAST(mv2.value as bigint) and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+		) select * from subordinates
+	);
 
-  RETURN QUERY
-  Select
-	rm.id, rm.property, rm.type, rm.value,  NULL::text AS acdhId
-  from root_meta as rm
-  where rm.type != 'REL'
-  UNION
-  SELECT
-	rmr.resid as id, rmr.property, rmr.type, rmr.value, rmr.acdhId
-  from root_meta_rel as rmr;
-
+RETURN QUERY
+   select mv.mainid, mv.parentid, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath, mv.depth 
+   from 
+   colldata as mv
+   left join accessres as ar on CAST(mv.accesres as integer) = ar.accessid;
 END
 $func$
 LANGUAGE 'plpgsql';
 
+/*
+* CHILD VIEW FUNCTION 
+*/
+CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en' )
+    RETURNS table (childid bigint, property text, value text, order_prop text, order_val text, orderid bigint, lang text)
+AS $func$
+DECLARE limitint bigint := cast ( _limit as bigint);
+DECLARE pageint bigint := cast ( _page as bigint);
+
+BEGIN
+    /* get child ids */
+    DROP TABLE IF EXISTS child_ids;
+    CREATE TEMPORARY TABLE child_ids(childid bigint NOT NULL, prop text NOT NULL, value text NOT NULL);
+	INSERT INTO child_ids( 
+            select 
+                r.id as childid, mv.property, mv.value
+            from relations as r
+            left join identifiers as i on i.id = r.target_id 
+            left join metadata_view as mv on mv.id = r.id
+            where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+		and mv.property = _orderprop
+		and i.ids = _parentid
+            order by  
+		(CASE WHEN _orderby = 'asc' THEN mv.value END) ASC,
+                 mv.value DESC
+            limit limitint
+            offset pageint
+	); 
+	ALTER TABLE child_ids ADD COLUMN id SERIAL PRIMARY KEY;
+	
+RETURN QUERY
+    select 
+        CAST(ci.childid as bigint),  mv.property, 
+        CASE 
+            WHEN
+                 mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' 
+            THEN     
+                (select mv2.value from metadata_view as mv2 where id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' LIMIT 1) 
+            ELSE 
+                mv.value 
+        END,
+        ci.prop, ci.value, CAST(ci.id as bigint),
+        mv.lang
+    from 
+        child_ids as ci
+    left join 
+        metadata_view as mv on mv.id = ci.childid
+    where 
+        mv.property in (
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle',
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription',
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage',
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction',
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'
+        ) 
+    Order by ci.id
+    ;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+
+/*
+* BREADCRUMB VIEW METADATA FUNCTION 
+*/
+CREATE OR REPLACE FUNCTION gui.breadcrumb_view_func(_pid text, _lang text DEFAULT 'en' )
+    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer)
+AS $func$
+BEGIN
+
+    DROP TABLE IF EXISTS breadcrumbdata;
+    CREATE TEMPORARY TABLE breadcrumbdata(mainid bigint, parentid bigint, depth integer);
+	INSERT INTO breadcrumbdata( 
+            WITH RECURSIVE subordinates AS (
+                SELECT
+                    mv.id as mainid,
+                    CAST(mv.value as bigint) as parentid,
+                    1 as depthval
+                FROM
+                    metadata_view as mv
+                WHERE
+                    mv.id = CAST(_pid as bigint)
+                    and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+                UNION
+                SELECT
+                    mv2.id,
+                    CAST(mv2.value as bigint) as m2val,
+                    depthval + 1 
+                FROM
+                    metadata_view as mv2
+                INNER JOIN subordinates s ON s.parentid = mv2.id and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+		) select * from subordinates
+	);
+
+RETURN QUERY
+    select 
+        bd.mainid, bd.parentid, 
+	mv.value,
+        bd.depth 
+    from 
+        breadcrumbdata as bd
+    left join 
+        metadata_view as mv on mv.id = bd.parentid 
+     where  
+        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
+END
+$func$
+LANGUAGE 'plpgsql';
