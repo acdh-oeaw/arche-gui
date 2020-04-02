@@ -195,6 +195,9 @@ class SearchViewHelper extends ArcheHelper {
                     if($f == 'words'){
                         $arr = explode('+', $arr);
                     }
+                    if($f == 'type'){
+                        $arr = explode('+', $arr);
+                    }
                     $this->searchObj->$f = $arr;
                 }
             }

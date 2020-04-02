@@ -44,41 +44,73 @@ class SearchViewModel extends ArcheModel {
         //helper function to create object from the metavalue string
         $this->metaObj = $metavalue;
        
-        if(isset($metavalue->words)) {
+        if(isset($this->metaObj->words) && isset($this->metaObj->type)) {
+            $this->getWordsFromDB($this->metaObj);
+        } else if(isset($this->metaObj->type)) {
+            $this->getTypesFromDB();
+        } else if(isset($this->metaObj->words)) {
             $this->getWordsFromDB();
-        }
-        if(isset($metavalue->type)) {
-            echo 'we have type';
         }
         if(isset($metavalue->years)) {
             echo 'we have years';
         }
-       
         //$this->searchCfg->ftsQuery             = "Wollmilchsau";
         //$repodb->setQueryLog($log);
         
         return $this->sqlResult;
     }
     
-    
+    /**
+     * Get just the types from the db
+     */
+    private function getTypesFromDB() {
+        $this->searchCfg->metadataMode = RepoResourceInterface::META_RESOURCE; 
+        $result = array();
+        foreach ($this->metaObj->type as $t) {
+            $result = $this->repolibDB->getPdoStatementBySearchTerms(
+                [new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#'.$t, '=')], 
+                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+        }
+        if(count($result) > 0 ){
+            $this->mergeResults($result);
+        }
+        if(count($this->searchData) > 0) {
+           $this->filterTitleDescription(); 
+        }
+    }
     
     /**
      * get the resources with the words from the search url
      */
-    private function getWordsFromDB() {
+    private function getWordsFromDB(object $types = null) {
         
         $this->searchCfg->metadataMode = RepoResourceInterface::META_RESOURCE; 
         $result = array();
+        $isType = false;
+        $typeStr = '';
+        //new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', '=')
+        if( isset($types) && count($types->type) > 0) {
+            foreach($this->metaObj->type as $t) {
+                foreach ($this->metaObj->words as $w) {
+                    $result['title'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                        [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#'.$t, '=' )], 
+                        $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+                    $result['description'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                        [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#'.$t, '=' )], 
+                        $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+                }   
+            }
+        }else {
         
-        foreach ($this->metaObj->words as $w) {
-            $result['title'] = $this->repolibDB->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', '=')], 
-                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
-            $result['description'] = $this->repolibDB->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', '=')], 
-                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+            foreach ($this->metaObj->words as $w) {
+                $result['title'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                    [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $w, '@@')], 
+                    $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+                $result['description'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                    [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $w, '@@')], 
+                    $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+            }
         }
-        
         if(count($result['title']) > 0 ){
             $this->mergeResults($result['title']);
         }
