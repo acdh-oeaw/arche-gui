@@ -18,6 +18,7 @@ abstract class ArcheHelper {
     protected $generalFunctions;
     protected $config;
     protected $repo;
+    private $siteLang;
     
     public function __construct() {
         $this->generalFunctions = new GeneralFunctions();

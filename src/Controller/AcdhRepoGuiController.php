@@ -134,7 +134,6 @@ class AcdhRepoGuiController extends ControllerBase
             );
             return array();
         }
-        
         return [
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $searchResult['data'],

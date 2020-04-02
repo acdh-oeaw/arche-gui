@@ -16,25 +16,34 @@ use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
 class SearchViewHelper extends ArcheHelper {
     
     private $searchViewObjectArray;
-    private $siteLang = "en";
+    private $metadata;
+    private $searchObj;
+    private $data = array();
     
     public function createView(array $data = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        //$this->data = $data;
         
-       
+        
+        //format the data for the gui object
         $this->formatResultToGui($data); 
-        
+       
         if(count((array)$this->data) == 0) {
             return array();
         }
         
         foreach ($this->data as $k => $v) {
-          
             $this->searchViewObjectArray[] = new ResourceObject($v, $this->repo);
         }
+        
         return $this->searchViewObjectArray;
     }
     
+    /**
+     * Root result format for the gui object
+     * 
+     * @param array $data
+     */
     /**
      * We need to format the root results for the gui
      * @return array
@@ -43,29 +52,84 @@ class SearchViewHelper extends ArcheHelper {
         if(count((array)$data) > 0) {
             foreach($data as $k => $v) {
                 
-                
-                if($v->property == $this->repo->getSchema()->__get('drupal')->vocabsNamespace.'hasTitle') {
-                   $this->data[$v->id]['acdh:hasTitle'] = array(
+                if(isset($v->id)) {
+                    $this->data[$k]['acdh:hasIdentifier'] = array(
                         $this->createObj(
                             $v->id, 
-                            $v->property, 
-                            $v->value, 
-                            $v->value,
-                            $v->lang
-                            )
-                        ); 
-                }
-                
-                if($v->property == $this->repo->getSchema()->__get('drupal')->vocabsNamespace.'hasDescription') {
-                   $this->data[$v->id]['acdh:hasDescription'] = array(
-                        $this->createObj(
+                            $this->repo->getSchema()->__get('id'), 
                             $v->id, 
-                            $v->property, 
-                            $v->value, 
-                            $v->value,
-                            $v->lang
+                            $v->id,
+                            $v->language
                             )
                         );
+                    
+                    if(isset($v->title)) {
+                        $this->data[$k]['acdh:hasTitle'] = array(
+                        $this->createObj(
+                            $v->id, 
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
+                            $v->title, 
+                            $v->title,
+                            $v->language
+                            )
+                        );
+                    }
+                    if(isset($v->avdate)) {
+                        $this->data[$k]['acdh:hasAvailableDate'] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAvailableDate", 
+                                $v->avdate, 
+                                $v->avdate,
+                                $v->language
+                                )
+                            );
+                    }
+                    if(isset($v->description)) {
+                        $this->data[$k]['acdh:hasDescription'] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
+                                $v->description, 
+                                $v->description,
+                                $v->language
+                                )
+                            );
+                    }
+                    if(isset($v->accesres)) {
+                        $this->data[$k]['acdh:hasAccessRestriction'] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAccessRestriction", 
+                                str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres), 
+                                $v->accesres,
+                                $v->language
+                                )
+                            );
+                    }
+                    if(isset($v->titleimage)) {
+                        $this->data[$k]['acdh:hasTitleImage'] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitleImage", 
+                                $v->titleimage, 
+                                $v->titleimage,
+                                $v->language
+                                )
+                            );
+                    }  
+                    //get the acdh type
+                    if(isset($v->property)) {
+                        $this->data[$k]['rdf:type'] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('namespaces')->rdfs."type", 
+                                $v->property, 
+                                $v->property,
+                                $v->language
+                                )
+                            );
+                    }
                 }
             }
         }
@@ -87,6 +151,54 @@ class SearchViewHelper extends ArcheHelper {
         $obj->value = $value;
         $obj->lang = $lang;
         return $obj;
+    }
+    
+    
+    
+    /**
+     * Create object from the search values
+     * @param string $metavalue
+     * @return object
+     */
+    public function createMetaObj(string $metavalue): object {
+        $this->searchObj =  new \stdClass();
+        $this->metadata = $metavalue;
+        $this->setUpMetadata();
+        return $this->searchObj;
+    }
+    
+    /**
+     * the search object creation steps
+     */
+    private function setUpMetadata()
+    {
+        $this->metadata = urldecode($this->metadata);
+        $this->metadata = str_replace(' ', '+', $this->metadata);
+        $this->explodeSearchString();
+    }
+    
+    /**
+    * Fill the search object with the search metadata
+    */
+    public function explodeSearchString()
+    {
+        $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "solrsearch");
+        $strArr = explode('&', $this->metadata);
+                
+        foreach ($filters as $f) {
+            foreach ($strArr as $arr) {
+                if (strpos($arr, $f) !== false) {
+                    $arr = str_replace($f.'=', '', $arr);
+                    if (($f == "mindate") || ($f == "maxdate")) {
+                        $arr = str_replace('+', '', $arr);
+                    }
+                    if($f == 'words'){
+                        $arr = explode('+', $arr);
+                    }
+                    $this->searchObj->$f = $arr;
+                }
+            }
+        }
     }
     
 }

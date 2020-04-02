@@ -19,8 +19,10 @@ class SearchViewModel extends ArcheModel {
     private $repodb;
     private $repolibDB;
     private $sqlResult;
-    private $siteLang = 'en';
+    private $siteLang;
     private $searchCfg;
+    private $metaObj;
+    private $searchData = array();
     
     public function __construct() {
         //set up the DB connections
@@ -29,6 +31,7 @@ class SearchViewModel extends ArcheModel {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->searchCfg = new \acdhOeaw\acdhRepoLib\SearchConfig();
         $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
+        $this->metaObj = new \stdClass();
     }
     
      /**
@@ -36,34 +39,94 @@ class SearchViewModel extends ArcheModel {
      * 
      * @return array
      */
-    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", string $metavalue = ''): array {
+    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array {
         
         //helper function to create object from the metavalue string
-        
-        $this->searchCfg->metadataMode = RepoResourceInterface::META_RESOURCE; 
-        $this->searchCfg->ftsQuery             = "Wollmilchsau";
-        //$repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
+        $this->metaObj = $metavalue;
+       
+        if(isset($metavalue->words)) {
+            $this->getWordsFromDB();
+        }
+        if(isset($metavalue->type)) {
+            echo 'we have type';
+        }
+        if(isset($metavalue->years)) {
+            echo 'we have years';
+        }
+       
+        //$this->searchCfg->ftsQuery             = "Wollmilchsau";
         //$repodb->setQueryLog($log);
         
-        $resTitle = $this->repolibDB->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', "Wollmilchsau", '@@')], 
-                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
-        $resDesc = $this->repolibDB->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', "Wollmilchsau", '@@')], 
-                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
-
-        $results = array_merge($resTitle, $resDesc);
+        return $this->sqlResult;
+    }
+    
+    
+    
+    /**
+     * get the resources with the words from the search url
+     */
+    private function getWordsFromDB() {
         
-        foreach ($results as $res) {
-            
-            if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
-                $this->sqlResult[] = $res;
-            }
-             if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription') {
-                $this->sqlResult[] = $res;
-            }
+        $this->searchCfg->metadataMode = RepoResourceInterface::META_RESOURCE; 
+        $result = array();
+        
+        foreach ($this->metaObj->words as $w) {
+            $result['title'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', '=')], 
+                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
+            $result['description'] = $this->repolibDB->getPdoStatementBySearchTerms(
+                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $w, '@@'), new SearchTerm('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', '=')], 
+                $this->searchCfg)->fetchAll(\PDO::FETCH_CLASS, 'ArrayObject');
         }
         
-        return $this->sqlResult;
+        if(count($result['title']) > 0 ){
+            $this->mergeResults($result['title']);
+        }
+        if(count($result['description']) > 0) {
+            $this->mergeResults($result['description']);
+        }
+        
+        if(count($this->searchData) > 0) {
+           $this->filterTitleDescription(); 
+        }
+    }
+    
+    
+    private function mergeResults(array $data) {
+        foreach($data as $d) {
+            $this->searchData[$d->id][] = $d;
+        }
+    }
+    
+    private function filterTitleDescription() {
+        
+        foreach ($this->searchData as $result) {
+            $obj = new \stdClass();
+            foreach ($result as $res) {
+                if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
+                    $obj->title = $res->value;
+                    $obj->language = $res->lang;
+                    $obj->id = $res->id;
+                }
+                if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription') {
+                     $obj->description = $res->value;
+                     $obj->id = $res->id;
+                     $obj->language = $res->lang;
+                }
+                if($res->property  == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+                    $obj->property = $res->value;
+                }
+                if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
+                    $obj->avdate = $res->value;
+                }
+                if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction') {
+                    $obj->accesres = $res->value;
+                }
+                if($res->property  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage') {
+                    $obj->titleimage = $res->value;
+                } 
+            }
+            $this->sqlResult[] = $obj;
+        }
     }
 }

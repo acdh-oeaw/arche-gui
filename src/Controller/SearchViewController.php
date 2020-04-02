@@ -32,7 +32,10 @@ class SearchViewController extends ControllerBase {
     }
     
     public function generateView(int $limit = 10, int $page = 0, string $order = 'datedesc', string $metavalue = ''): array {
-        $data = $this->model->getViewData($limit, $page, $order, '');
+        
+        $metaobj = new \stdClass();
+        $metaobj = $this->helper->createMetaObj($metavalue); 
+        $data = $this->model->getViewData($limit, $page, $order, $metaobj);
         
         $pagination = '';
         return array('data' => $this->helper->createView($data), 'pagination' => $pagination);

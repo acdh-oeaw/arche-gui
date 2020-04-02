@@ -10,20 +10,20 @@
                 {% if item.getTitle() %}
                     <div class="res-property">
                         <span class="res-title">
-                           
-                                {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
-                           
-                                <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
+                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                            <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
                         </span>
                     </div>
                 {% endif%}    
-
-                <div class="res-property">
-                    <i class="material-icons">&#xE54E;</i>
-                    <span class="res-prop-label">{{ "Type"|trans }}: </span>
-                    <span class="res-rdfType"><a href="/browser/repo_search/&type=Collection/10">{{ "Collection"|trans }}</a></span>
-                </div>
-
+                
+                {% if item.getAcdhType() %}
+                    <div class="res-property">
+                        <i class="material-icons">&#xE54E;</i>
+                        <span class="res-prop-label">{{ "Type"|trans }}: </span>
+                        <span class="res-rdfType"><a href="/browser/repo_search/&type={{ item.getAcdhType() }}/10">{{ item.getAcdhType()|trans }}</a></span>
+                    </div>
+                {% endif%}  
+                
                 {% if item.getData('acdh:hasAvailableDate') %}
                     {{ item.getPropTitle('acdh:hasAvailableDate') }}
                     <div class="res-property">
