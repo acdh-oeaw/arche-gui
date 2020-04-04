@@ -22,12 +22,8 @@ class SearchViewHelper extends ArcheHelper {
     
     public function createView(array $data = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        //$this->data = $data;
-        
-        
-        //format the data for the gui object
-        $this->formatResultToGui($data); 
-       
+        $this->formatResultToGui($data);  
+      
         if(count((array)$this->data) == 0) {
             return array();
         }
@@ -39,11 +35,7 @@ class SearchViewHelper extends ArcheHelper {
         return $this->searchViewObjectArray;
     }
     
-    /**
-     * Root result format for the gui object
-     * 
-     * @param array $data
-     */
+    
     /**
      * We need to format the root results for the gui
      * @return array
@@ -51,15 +43,13 @@ class SearchViewHelper extends ArcheHelper {
     private function formatResultToGui(array $data) {
         if(count((array)$data) > 0) {
             foreach($data as $k => $v) {
-                
                 if(isset($v->id)) {
                     $this->data[$k]['acdh:hasIdentifier'] = array(
                         $this->createObj(
                             $v->id, 
                             $this->repo->getSchema()->__get('id'), 
                             $v->id, 
-                            $v->id,
-                            $v->language
+                            $v->id
                             )
                         );
                     
@@ -69,8 +59,7 @@ class SearchViewHelper extends ArcheHelper {
                             $v->id, 
                             $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
                             $v->title, 
-                            $v->title,
-                            $v->language
+                            $v->title
                             )
                         );
                     }
@@ -80,8 +69,7 @@ class SearchViewHelper extends ArcheHelper {
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAvailableDate", 
                                 $v->avdate, 
-                                $v->avdate,
-                                $v->language
+                                $v->avdate
                                 )
                             );
                     }
@@ -91,8 +79,7 @@ class SearchViewHelper extends ArcheHelper {
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
                                 $v->description, 
-                                $v->description,
-                                $v->language
+                                $v->description
                                 )
                             );
                     }
@@ -102,8 +89,7 @@ class SearchViewHelper extends ArcheHelper {
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAccessRestriction", 
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres), 
-                                $v->accesres,
-                                $v->language
+                                $v->accesres
                                 )
                             );
                     }
@@ -113,20 +99,18 @@ class SearchViewHelper extends ArcheHelper {
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitleImage", 
                                 $v->titleimage, 
-                                $v->titleimage,
-                                $v->language
+                                $v->titleimage
                                 )
                             );
-                    }  
+                    } 
                     //get the acdh type
-                    if(isset($v->property)) {
+                    if(isset($v->acdhtype)) {
                         $this->data[$k]['rdf:type'] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('namespaces')->rdfs."type", 
-                                $v->property, 
-                                $v->property,
-                                $v->language
+                                $v->acdhtype, 
+                                $v->acdhtype
                                 )
                             );
                     }
@@ -143,17 +127,14 @@ class SearchViewHelper extends ArcheHelper {
      * @param string $value
      * @return object
      */
-    private function createObj(int $id, string $property, string $title, string $value, string $lang ): object {
+    private function createObj(int $id, string $property, string $title, string $value ): object {
         $obj = new \stdClass();
         $obj->id = $id;
         $obj->property = $property; //;
         $obj->title = $title;
         $obj->value = $value;
-        $obj->lang = $lang;
         return $obj;
     }
-    
-    
     
     /**
      * Create object from the search values
@@ -196,6 +177,12 @@ class SearchViewHelper extends ArcheHelper {
                         $arr = explode('+', $arr);
                     }
                     if($f == 'type'){
+                        $arr = explode('+', $arr);
+                        if (($key = array_search('or', $arr)) !== false) {
+                            unset($arr[$key]);
+                        }
+                    }
+                    if($f == 'years'){
                         $arr = explode('+', $arr);
                     }
                     $this->searchObj->$f = $arr;

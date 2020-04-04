@@ -13,6 +13,12 @@ class RootViewModel extends ArcheModel {
     private $repodb;
     private $sqlResult;
     private $siteLang = 'en';
+     /* ordering */
+    private $limit;
+    private $offset;
+    private $order;
+    /* ordering */
+    
     
     public function __construct() {
         //set up the DB connections
@@ -21,31 +27,26 @@ class RootViewModel extends ArcheModel {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
-    /**
-     * The ordering for the root sql
-     * 
-     * @param type $order
-     * @return string
-     */
-    private function ordering($order = "datedesc"): string {
+    private function initPaging(int $limit, int $page, string $order) {
+        $this->limit = $limit;
+        ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page -1);
         
         switch ($order) {
             case 'dateasc':
-                $order = "avdate asc";
+                $this->order = "avdate asc";
                 break;
             case 'datedesc':
-                $order = "avdate desc";
+                $this->order = "avdate desc";
                 break;
             case 'titleasc':
-                $order = "title asc";
+                $this->order = "title asc";
                 break;
             case 'titledesc':
-                $order = "title desc";
+                $this->order = "title desc";
                 break;
             default:
-                $order = "avdate desc";
+                $this->order = "avdate desc";
         }
-        return $order;
     }
         
     /**
@@ -55,10 +56,8 @@ class RootViewModel extends ArcheModel {
      */
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
         
-        if($page > 0) {
-            $page = $limit * $page;
-        }
-        $order = $this->ordering($order);
+        $this->initPaging($limit, $page, $order);
+        
         try {
             
             $query = $this->repodb->query("
@@ -66,7 +65,7 @@ class RootViewModel extends ArcheModel {
                 *
                 from gui.root_views_func('".$this->siteLang."') 
                 where title is not null 
-                order by ".$order." limit ".$limit." offset ".$page.";");
+                order by ".$this->order." limit ".$this->limit." offset ".$this->offset.";");
             
             $this->sqlResult = $query->fetchAll();
             $this->changeBackDBConnection();
