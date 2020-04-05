@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -22,6 +16,7 @@ class SearchViewController extends ControllerBase {
     private $repo;
     private $model;
     private $helper;
+    private $numberOfResults;
     
     public function __construct($repo) {
         $this->repo = $repo;
@@ -35,10 +30,20 @@ class SearchViewController extends ControllerBase {
         
         $metaobj = new \stdClass();
         $metaobj = $this->helper->createMetaObj($metavalue); 
+        
         $data = $this->model->getViewData($limit, $page, $order, $metaobj);
         
+        $numPage = ceil((int)$data['count'] / (int)$limit);
+        
         $pagination = '';
-        return array('data' => $this->helper->createView($data), 'pagination' => $pagination);
+        $pagination = $this->pagingHelper->createView(
+            array(
+                'limit' => $limit, 'page' => $page, 'order' => $order,
+                'numPage' => $numPage, 'sum' => $data['count']
+            )
+        );
+        
+        return array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
     }
     
 }

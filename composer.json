@@ -14,7 +14,8 @@
         "acdh-oeaw/arche-core" : "*",
         "acdh-oeaw/arche-lib" : "*",
         "acdh-oeaw/arche-lib-disserv" : "*",
-	"acdh-oeaw/arche-lib-schema" : "*"
+	"acdh-oeaw/arche-lib-schema" : "*",
+	"zozlak/logging" : "*"
     },
     "extra": {
         "drupal-scaffold": {

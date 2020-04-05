@@ -31,7 +31,7 @@ class RootViewController extends ControllerBase {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
-    public function countRoots(): int {
+    private function countRoots(): int {
         //count the actual root values
         $this->numberOfRoots = 0;
         $this->numberOfRoots = $this->model->countRoots($this->siteLang);
@@ -44,13 +44,8 @@ class RootViewController extends ControllerBase {
         if($this->numberOfRoots == 0){
             $this->numberOfRoots = $this->countRoots();
         }
-        
-        $offsetPage = 0;
-        ($page == 0) ? $offsetPage = 0 : "";
-        ($page == 1) ? $offsetPage = 0 : "";
-        ($page > 1) ? $offsetPage = $page - 1 : "";
-         
-        $data = $this->model->getViewData($limit, $offsetPage, $order);
+       
+        $data = $this->model->getViewData($limit, $page, $order);
         if(count((array)$data) == 0) {
             return array();
         }

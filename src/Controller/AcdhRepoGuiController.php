@@ -122,7 +122,7 @@ class AcdhRepoGuiController extends ControllerBase
         //we have the search view
         
         //the search view
-        
+        $paging = array();
         $searchResult = array();
         $searchResult = $this->searchViewController->generateView($limit, $page, $order, $metavalue);
         
@@ -134,9 +134,15 @@ class AcdhRepoGuiController extends ControllerBase
             );
             return array();
         }
+        
+        if( count($searchResult['pagination']) > 0 ) {
+            $paging = $searchResult['pagination'][0];
+        }
+        
         return [
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $searchResult['data'],
+            '#paging' => $paging,
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
