@@ -31,7 +31,7 @@ class RootViewController extends ControllerBase {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
-    private function countRoots(): int {
+    public function countRoots(): int {
         //count the actual root values
         $this->numberOfRoots = 0;
         $this->numberOfRoots = $this->model->countRoots($this->siteLang);

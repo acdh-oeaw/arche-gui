@@ -95,6 +95,11 @@ class SearchViewModel extends ArcheModel {
         return $typeStr;
     }
     
+    /**
+     * Count the words defined from the search input fields
+     * 
+     * @return int
+     */
     private function countWordsFromDb(): int {
         $typeStr = $this->formatTypeFilter();
         $wordStr = '';
@@ -122,12 +127,17 @@ class SearchViewModel extends ArcheModel {
         }
     }
     
+    /**
+     * Count the types defined from the search input fields
+     * 
+     * @return int
+     */
     private function countTypesFromDB(): int {
         $str = $this->formatTypeFilter();
         $return = 0;
         try {
             $query = $this->repodb->query("
-                select * 
+                select COUNT(*) 
                 from 
                 gui.search_types_view_func(
                 ".$str."
@@ -147,6 +157,11 @@ class SearchViewModel extends ArcheModel {
         }
     }
     
+    /**
+     * Collect the words and/or type/years keywords 
+     * 
+     * @return type
+     */
     private function getWordsFromDB() {
         $typeStr = $this->formatTypeFilter();
         $wordStr = '';
@@ -173,6 +188,7 @@ class SearchViewModel extends ArcheModel {
     }
     
     /**
+     * 
      * 
      * @return type
      */
