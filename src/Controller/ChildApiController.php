@@ -89,7 +89,7 @@ class ChildApiController extends ControllerBase {
         }
        
         end:
-       
+            
         $build = [
             '#theme' => 'acdh-repo-gui-child',
             '#data' => $this->data,

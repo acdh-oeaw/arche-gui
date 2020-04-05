@@ -89,10 +89,11 @@ class ChildApiModel extends ArcheModel {
     public function getCount(string $identifier): int {
         
         try {
-            $query = $this->repodb->query("select num from gui.child_view_sum_func(:id)", array(':id' => $identifier));
+            $query = $this->repodb->query("select childid as count from gui.child_sum_views_func(:id)", array(':id' => $identifier));
             $result = $query->fetch();
-            if(isset($result->num)) {
-                return (int)$result->num;
+            $this->changeBackDBConnection();
+            if(isset($result->count)) {
+                return (int)$result->count;
             }
         } catch (Exception $ex) {
             return 0;
