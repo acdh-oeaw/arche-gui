@@ -16,7 +16,8 @@ jQuery(function($) {
     
     var params = getUrlParams(actionPage);
     
-    $(document).ready(function() {
+    
+    $(document).ready(function() { 
     });
     
     function getUrlParams(actionPage = 'detail_view'){
@@ -66,9 +67,7 @@ jQuery(function($) {
         }
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
-        
-    } 
-   
+    }
     
     $(document ).delegate( "#prev-btn", "click", function(e) {
         let newPageNumber = $(this).data('pagination');
@@ -79,6 +78,19 @@ jQuery(function($) {
         let newPageNumber = $(this).data('pagination');
         createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
     });
+    
+    //Results info-bar pagination selectors on click
+    $(document).delegate( '#resPerPageButton > a', "click", function(event) {
+        console.log('limit changed');
+        let newLimit = $(this).html();
+        createNewUrl(params.urlPage, newLimit, params.urlOrder, actionPage, params.searchStr);
+    
+    });
+    $(document).delegate( '#sortByDropdown > a', "click", function(event) {
+        console.log("order changed");
+        let newOrder = $(this).data('value');
+        createNewUrl(params.urlPage, params.urlLimit, newOrder, actionPage, params.searchStr);
+    });
             
     
     /**
@@ -88,28 +100,32 @@ jQuery(function($) {
     */
     function createNewUrl(page, limit, orderBy, actionPage = ' detail_view', searchStr = ''){
         var newurl = '';
+        
         //if (history.pushState) {
-            if(actionPage == 'root') {
-               newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
-               console.log(newurl);
-            } else if(actionPage = 'search') {
-                newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
-                console.log(newurl);
-            }else {
-                var path = window.location.pathname;
-                var newUrlLimit = "&limit="+limit;
-                var newUrlPage = "&page="+page;
-                var newUrlOrder = "&order="+orderBy;
-                var cleanPath = "";
-                if(path.indexOf('&') != -1){
-                    cleanPath = path.substring(0, path.indexOf('&'));
-                } else {
-                    cleanPath = path;
-                }
-                newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
-           }   
-           
-           window.history.pushState({path:newurl},'',newurl);
+        if(actionPage == 'root') {
+           newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
+        } else if(actionPage == 'search') {
+            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
+        }else {
+            var path = window.location.pathname;
+            var newUrlLimit = "&limit="+limit;
+            var newUrlPage = "&page="+page;
+            var newUrlOrder = "&order="+orderBy;
+            var cleanPath = "";
+            if(path.indexOf('&') != -1){
+                cleanPath = path.substring(0, path.indexOf('&'));
+            } else {
+                cleanPath = path;
+            }
+            console.log("detail new url:");
+            
+            newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
+            console.log(newurl);
+            window.history.pushState({path:newurl},'',newurl);
+            window.location = newurl;
+        }  
+        window.history.pushState({path:newurl},'',newurl);
+        window.location = newurl;
        //}
    }
    

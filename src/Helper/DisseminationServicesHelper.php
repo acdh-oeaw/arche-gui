@@ -162,6 +162,7 @@ class DisseminationServicesHelper extends ArcheHelper {
                 $v['dir'] = true;
             }else {
                 $v['dir'] = false;
+                $v['icon'] = "jstree-file";
             }
             $v['accessRestriction'] = $v['accesres'];
             $v['encodedUri'] = $this->repo->getBaseUrl().$v['mainid'];

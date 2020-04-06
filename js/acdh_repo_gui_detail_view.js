@@ -90,7 +90,7 @@
     * @returns {undefined}
     */
    function getChildData(insideUri, limit, page, orderby) {
-       console.log('/browser/repo_child_api/'+insideUri+'/'+limit+'/'+page+'/'+orderby);
+       $(".loader-div").show();
        $.ajax({
            url: '/browser/repo_child_api/'+insideUri+'/'+limit+'/'+page+'/'+orderby,
            data: {'ajaxCall':true},
@@ -105,6 +105,7 @@
                createNewUrl(page, limit, orderby);
                $('.getRepoChildView').hide();
                $(".loader-div").hide();
+               $('#resPerPageButton').html(limit);
                $('.res-act-button.hideChildView').css('display', 'table');
                return false;
            },
