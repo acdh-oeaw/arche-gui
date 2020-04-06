@@ -57,13 +57,14 @@ class SearchViewModel extends ArcheModel {
         if(isset($this->metaObj->words)) {
             $count = $this->countWordsFromDb();
             $this->getWordsFromDb();
+        } else if(isset($this->metaObj->years)) {
+            $count = $this->countYearsFromDb();
+            $this->getYearsFromDb();
+            
         } else if(isset($this->metaObj->type)) {
             $count = $this->countTypesFromDb();
             //user selected just type
             $this->getTypesFromDB();
-        } else if(isset($this->metaObj->years)) {
-            //user selected just words
-            //$this->getYearsFromDB();
         }
         //$this->searchCfg->ftsQuery             = "Wollmilchsau";
         
@@ -74,23 +75,45 @@ class SearchViewModel extends ArcheModel {
         
     }
     
-    private function formatTypeFilter(): string {
-        $typeStr = '';
-        $count = count($this->metaObj->type);
-        if($count > 0){
-            $typeStr .= 'ARRAY [ ';
-            $i = 0;
-            foreach($this->metaObj->type as $t){
-                $typeStr .= "'https://vocabs.acdh.oeaw.ac.at/schema#$t'";
-                if($count - 1 != $i) {
-                    $typeStr .= ', ';
-                } else {
-                    $typeStr .= ' ]';
+    private function formatYearsFilter(): string {
+        $yearsStr = "";
+        if(isset($this->metaObj->years)) {
+            $count = count($this->metaObj->years);
+            if($count > 0){
+                $i = 0;
+                foreach($this->metaObj->years as $y){
+                    $yearsStr .= $y; 
+                    if($count - 1 != $i) {
+                        $yearsStr .= ' or ';
+                    }
+                    $i++;
                 }
-                $i++;
+            }else {
+               $yearsStr = "";
             }
-        }else {
-           $typeStr = "'{}'";
+        }
+        return $yearsStr;
+    }
+    
+    private function formatTypeFilter(): string {
+        $typeStr = "";
+        if(isset($this->metaObj->type)) {
+            $count = count($this->metaObj->type);
+            if($count > 0){
+                $typeStr .= 'ARRAY [ ';
+                $i = 0;
+                foreach($this->metaObj->type as $t){
+                    $typeStr .= "'https://vocabs.acdh.oeaw.ac.at/schema#$t'";
+                    if($count - 1 != $i) {
+                        $typeStr .= ', ';
+                    } else {
+                        $typeStr .= ' ]';
+                    }
+                    $i++;
+                }
+            }else {
+               $typeStr = "";
+            }
         }
         return $typeStr;
     }
@@ -107,13 +130,59 @@ class SearchViewModel extends ArcheModel {
         foreach($this->metaObj->words as $w){
             $wordStr .= $w.' ';
         }
-        try {
-            $query = $this->repodb->query("
+        
+        if(empty($typeStr)) {
+            $queryStr = "
+                SELECT 
+                COUNT(*)
+                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."') 
+                ;";
+            
+        }else {
+            $queryStr = "
                 SELECT 
                 COUNT(*)
                 from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
-                ;");
+                ;";
+        }
+        try {
             
+            $query = $this->repodb->query($queryStr);
+            
+            $return = $query->fetch();
+            $this->changeBackDBConnection();
+            if(isset($return->count)){
+                return (int)$return->count;
+            }
+            return 0;
+        } catch (Exception $ex) {
+            return 0;
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            return 0;
+        }
+    }
+    
+    private function countYearsFromDb(): int {
+        $typeStr = $this->formatTypeFilter();
+        $yearsStr = $this->formatYearsFilter();
+        $return = 0;
+        
+        if(empty($typeStr)) {
+            $queryStr = "
+                SELECT 
+                COUNT(*)
+                from gui.search_years_view_func('".$yearsStr."') 
+                ;";
+            
+        }else {
+            $queryStr = "
+                SELECT 
+                COUNT(*)
+                from gui.search_years_view_func('".$yearsStr."', '".$this->siteLang."', ".$typeStr.") 
+                ;";
+        }
+        try {
+            $query = $this->repodb->query($queryStr);
             $return = $query->fetch();
             $this->changeBackDBConnection();
             if(isset($return->count)){
@@ -163,19 +232,30 @@ class SearchViewModel extends ArcheModel {
      * @return type
      */
     private function getWordsFromDB() {
+        //pdo Invalid text representation for text array -> try to find solution
         $typeStr = $this->formatTypeFilter();
         $wordStr = '';
         foreach($this->metaObj->words as $w){
             $wordStr .= $w.' ';
         }
-        
-        try {
-            $query = $this->repodb->query("
+        if(empty($typeStr)) {
+            $queryStr = "
+                SELECT 
+                *
+                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."') 
+                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
+                ;";
+        }else{
+            $queryStr = "
                 SELECT 
                 *
                 from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
                 order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;");
+                ;";
+        }
+        
+        try {
+            $query = $this->repodb->query($queryStr);
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
@@ -218,18 +298,27 @@ class SearchViewModel extends ArcheModel {
     
     
     private function getYearsFromDB() {
-        $years = $this->metaObj->years;
-        $str = "";
+        $typeStr = $this->formatTypeFilter();
+        $yearsStr = $this->formatYearsFilter();
+        $return = 0;
+        
+        if(empty($typeStr)) {
+            $queryStr = "
+                SELECT 
+                *
+                from gui.search_years_view_func('".$yearsStr."') order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
+                ;";
+            
+        }else {
+            $queryStr = "
+                SELECT 
+                *
+                from gui.search_years_view_func('".$yearsStr."', '".$this->siteLang."', ".$typeStr.") order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
+                ;";
+        }
         
         try {
-            $query = $this->repodb->query("
-                select * 
-                from 
-                gui.search_years_view_func(
-                ARRAY[".$str."]
-                , '".$this->siteLang."') 
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;");
+            $query = $this->repodb->query($queryStr);
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
@@ -240,56 +329,6 @@ class SearchViewModel extends ArcheModel {
             return array();
         }
     }
-    
-    private function yearsSqlString() {
-        $str = " WITH ids AS (
-                SELECT id FROM ((
-            SELECT DISTINCT id
-            FROM metadata
-            WHERE property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' AND value_t::date >= '2020-01-01'
-        ) t0 JOIN (
-            SELECT DISTINCT id
-            FROM metadata
-            WHERE property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' AND value_t::date <= '2020-02-01'
-        ) t1 USING (id) ) t1   LIMIT '10' OFFSET '10'
-            )
-            
-                    SELECT id, property, type, lang, value
-                    FROM metadata JOIN ids USING (id)
-                  UNION
-                    SELECT id, null, 'ID' AS type, null, ids AS VALUE 
-                    FROM identifiers JOIN ids USING (id)
-                  UNION
-                    SELECT id, property, 'REL' AS type, null, target_id::text AS value
-                    FROM relations JOIN ids USING (id)
-                
-            UNION
-            SELECT id, 'search://match'::text AS property, 'http://www.w3.org/2001/XMLSchema#boolean'::text AS type, ''::text AS lang, 'true'::text AS value FROM ids";
-    }
-   
-    private function binariesSqlString() {
-        $str = "WITH ids AS (
-                SELECT id FROM (
-            SELECT DISTINCT id 
-            FROM full_text_search 
-            WHERE websearch_to_tsquery('simple', 'Wollmilchsau') @@ segments  AND property = 'BINARY'
-        ) t1   LIMIT '10' OFFSET '0'
-            )
-            
-                    SELECT id, property, type, lang, value
-                    FROM metadata JOIN ids USING (id)
-                  UNION
-                    SELECT id, null, 'ID' AS type, null, ids AS VALUE 
-                    FROM identifiers JOIN ids USING (id)
-                  UNION
-                    SELECT id, property, 'REL' AS type, null, target_id::text AS value
-                    FROM relations JOIN ids USING (id)
-                
-            UNION
-            SELECT id, 'search://match'::text AS property, 'http://www.w3.org/2001/XMLSchema#boolean'::text AS type, ''::text AS lang, 'true'::text AS value FROM ids";
-    }
-    
-    
     
     private function initPaging(int $limit, int $page, string $order) {
         $this->limit = $limit;
@@ -312,5 +351,4 @@ class SearchViewModel extends ArcheModel {
                 $this->order = "avdate desc";
         }
     }
-    
 }

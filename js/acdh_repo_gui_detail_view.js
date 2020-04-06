@@ -116,69 +116,35 @@
        });
    }
    
-   
-   //************************* PAGINATION ****************************************//
-   
-   function urlParams() {
-        let searchParams = new URLSearchParams(window.location.href);
-        var urlPage = searchParams.get('page');
-        var urlLimit = searchParams.get('limit');
-        var urlOrder = searchParams.get('order');
-        
-        console.log(urlPage);
-        console.log(urlLimit);
-        console.log(urlOrder);
-        
+   /**
+    * create and change the new URL after click events
+    * 
+    * @type Arguments
+    */
+    function createNewUrl(page, limit, orderBy, actionPage = ' detail_view'){
+        var newurl = '';
+        if (history.pushState) {
+            if(actionPage == ' root') {
+               newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
+            }else {
+                var path = window.location.pathname;
+                var newUrlLimit = "&limit="+limit;
+                var newUrlPage = "&page="+page;
+                var newUrlOrder = "&order="+orderBy;
+                var cleanPath = "";
+                if(path.indexOf('&') != -1){
+                    cleanPath = path.substring(0, path.indexOf('&'));
+                } else {
+                    cleanPath = path;
+                }
+                newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
+           } 
+               
+           
+           window.history.pushState({path:newurl},'',newurl);
+       }
    }
    
-   if(window.location.href.indexOf("/oeaw_detail/") > -1) {
-       $(document ).delegate( "#prev-btn", "click", function(e) {            
-       console.log("prev btn");
-   });
-   
-   $(document ).delegate( "#next-btn", "click", function(e) {            
-       console.log("next btn");
-       urlParams();
-        e.preventDefault();
-        /*
-        $(".loader-div").show();
-        var urlParams = generateUrlParams();
-        var urlPage = urlParams['urlPage'];
-        var urlLimit = urlParams['urlLimit'];
-        var urlOrder = urlParams['urlOrder'];
-        var maxPageLimit = urlParams['maxPageLimit'];
-        var insideUri = urlParams['insideUri'];
-
-        if ($(this).hasClass('disabled')){
-            $(".loader-div").hide();
-            return false;
-        }
-
-        if(maxPageLimit == parseInt(urlPage) + 1){
-            urlPage = parseInt(urlPage) + 1;
-            $( "#next-btn" ).addClass('disabled');
-            getData(insideUri, urlLimit, urlPage, urlOrder);
-        }else if (maxPageLimit == urlPage) {
-            $( "#next-btn" ).addClass('disabled');
-            $(".loader-div").hide();
-            return false;
-        }else {
-            $( "#next-btn" ).removeClass('disabled');                
-            urlPage = parseInt(urlPage) + 1;
-            getData(insideUri, urlLimit, urlPage, urlOrder);
-        }
-        $('#actualPageSpan').html(urlPage);
-        createNewUrl(urlPage, urlLimit, urlOrder);
-        $(".loader-div").delay(2000).fadeOut("fast");
-        $(".loader-div").hide();
-        //to skip the jump to top function
-        return false;
-         */
- 
-    });
-    
-       
-   }
    
   
             
