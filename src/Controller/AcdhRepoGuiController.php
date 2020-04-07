@@ -41,7 +41,7 @@ class AcdhRepoGuiController extends ControllerBase
         $this->rootViewController = new RVC($this->repo);
         $this->searchViewController = new SVC($this->repo);
         $this->detailViewController = new DVC($this->repo);
-        $this->dissServController = new DisseminationServicesController($this->repo);
+        //$this->dissServController = new DisseminationServicesController($this->repo);
         $this->generalFunctions = new GeneralFunctions();
         $this->langConf = $this->config('acdh_repo_gui.settings');
     }
@@ -198,77 +198,10 @@ class AcdhRepoGuiController extends ControllerBase
         
     }
     
-    public function search_view(string $data) {
-        
-        
-        //$log = new \zozlak\logging\Log(drupal_get_path('module', 'acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
-        
-        $config = new \acdhOeaw\acdhRepoLib\SearchConfig();
-        $config->metadataMode = RepoResourceInterface::META_RESOURCE; 
-        $config->ftsQuery             = $data;
-        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
-        //$repodb->setQueryLog($log);
-        
-        $resTitle = $repodb->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', $data, '@@')], 
-                $config)->fetchAll();
-        $resDesc = $repodb->getPdoStatementBySearchTerms(
-                [new SearchTerm('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription', $data, '@@')], 
-                $config)->fetchAll();
-        
-        $results = array_merge($resTitle, $resDesc);
-        $finalRes = array();
-        foreach ($results as $res) {
-            
-            if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
-                $finalRes[] = $res;
-            }
-             if($res['property']  == 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription') {
-                $finalRes[] = $res;
-            }
-        }
-        
-        echo "<pre>";
-        var_dump($finalRes);
-        echo "</pre>";
-        die();
-       
-        
-        return [
-            '#theme' => 'acdh-repo-gui-search',
-            '#result' => "sss",
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles',
-                ]
-            ]
-        ]; 
-    }
-    
     
     ////////// DISSEMINATION SERVICES /////////
     
-    /**
-     * Download Whole Collection python script
-     *
-     * @param string $url
-     * @return Response
-     */
-    public function oeaw_get_collection_dl_script(string $repoid): Response
-    {
-        if(empty($repoid)) {
-            $result = '';
-        }else {
-            $repoid = $this->repo->getBaseUrl().$repoid;
-            $result = $this->generalFunctions->changeCollDLScript($repoid);
-        }
-        
-        $response = new Response();
-        $response->setContent($result);
-        $response->headers->set('Content-Type', 'application/x-python-code');
-        $response->headers->set('Content-Disposition', 'attachment; filename=collection_download_script.py');
-        return $response;
-    }
+    
     
     /**
      * This API will generate the turtle file from the resource.
@@ -289,54 +222,7 @@ class AcdhRepoGuiController extends ControllerBase
         return new Response("No data!", 400);
     }
     
-    /**
-     * The collection view GUI view with the metadata and the js treeview
-     * 
-     * @param string $repoid
-     * @return type
-     */
-    public function oeaw_dl_collection_view(string $repoid) {
-        $view = array();
-        $repoid = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
-        
-        $extra['metadata'] = $this->detailViewController->generateObjDataForDissService($repoid);
-        $extra['repoid'] = $repoid;
-        
-        return [
-            '#theme' => 'acdh-repo-ds-dl-collection',
-            '#basic' => $view,
-            '#extra' => $extra,
-            '#cache' => ['max-age' => 0,], 
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-collection-dl',
-                ]
-            ]
-        ]; 
-    }
     
-    /**
-     *
-     * This generates the jstree data for the collection download view
-     *
-     * @param string $uri
-     * @return Response
-    */
-    public function oeaw_get_collection_data(string $repoid) : Response
-    {
-        $result = array();
-        if (empty($repoid)) {
-            $errorMSG = t('Missing').': Identifier';
-        } else {
-            $DSC = new DisseminationServicesController($this->repo);
-            $result = $DSC->generateView($repoid, 'collection');
-        }
-        
-        $response = new Response();
-        $response->setContent(json_encode($result));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
-    }
     
     /**
      * Display the 3d object (nxs, ply) inside a js viewer
@@ -370,10 +256,7 @@ class AcdhRepoGuiController extends ControllerBase
             );
     }
     
-    public function oeaw_dl_collection_binaries(string $repoid) : Response
-    {
-        
-    }
+    
     
     
     /**

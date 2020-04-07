@@ -41,7 +41,7 @@ repo_complexsearch:
 oeaw_dlc_script:
     path: '/oeaw_coll_dl_script/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_get_collection_dl_script'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_get_collection_dl_script'
     requirements:
         uri: '^[^\?]*$'
         _permission: 'access content'
@@ -50,7 +50,7 @@ oeaw_dlc_script:
 oeaw_dl_collection:
     path: '/oeaw_dl_collection/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_dl_collection_view'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_dl_collection_view'
     requirements:
         uri: '^[^\?]*$'
         _permission: 'access content'
@@ -61,7 +61,7 @@ oeaw_dl_collection:
 oeaw_get_collection_data:    
     path: '/get_collection_data/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_get_collection_data'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_get_collection_data'
     requirements:
         uri: '^[^\?]*$'
         _permission: 'access content'
@@ -76,10 +76,10 @@ oeaw_3d_viewer:
         _permission: 'access content'
         _access: 'TRUE'
 
-oeaw_dlc:
-    path: '/oeaw_dlc/{repoid}'
+repo_dl_collection_binaries:
+    path: '/repo_dl_collection_binaries/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_dl_collection_binaries'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_dl_collection_binaries'
     requirements:
         uri: '^[^\?]*$'
         _permission: 'access content'
@@ -111,14 +111,3 @@ oeaw_change_lng:
     requirements:
         _access: 'TRUE'
 
-
-
-
-repo_search:
-  path: '/repo_search/{data}'
-  defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::search_view'
-  requirements:
-    identifier: '^[^\?]*$'
-    _permission: 'access content'
-    _access: 'TRUE' 

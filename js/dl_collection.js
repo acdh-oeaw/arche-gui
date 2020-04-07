@@ -60,7 +60,6 @@
     function generateCollection(url, disabledUrls = [], username = "", password= "") {
                 
         var actualUserRestriction = getActualuserRestriction();
-        
         var loadedData = [];
         $('#collectionBrowser')
         .jstree({
@@ -172,9 +171,10 @@
         var actualUserRestriction = 'public';
         actualUserRestriction = getActualuserRestriction();
         
-        var url = $('#insideUri').val();
+        var url = $('#repoid').val();
         
         if(!getCookie(url)){
+            //to generate the actual collection tree
             window.setTimeout( generateCollection(url), 5000 );
         }
         
@@ -197,8 +197,10 @@
                 //if we have a directory then do not open the fedora url
                 if(data.node.original.dir === false){
                     let id = data.instance.get_node(data.selected[0]).id;
+                    
                     //check the permissions for the file download
                     var resourceRestriction = data.instance.get_node(data.selected[0]).original.accessRestriction;
+                    
                     if( ((resourceRestriction.search('public') == -1) && resourceRestriction.indexOf(actualUserRestriction) == -1 ) 
                             || actualUserRestriction == 'admin' ) {
                         $('#not_enough_permission').hide();
@@ -230,7 +232,6 @@
         })
         //handle the checkboxes to download the selected files as a zip
         .on("check_node.jstree uncheck_node.jstree", function (node, data) {
-            
             $('#selected_files_size_div').show();
             $('#dl_link').hide();
             $('#dl_link_txt').hide();
@@ -250,7 +251,6 @@
                 selectedItems = [];
                 var actualResource = data.instance.get_checked(true);
                 
-                
                 if(actualResource.length > 4000) {
                     $.each( actualResource, function( i, res ){
                         $("#collectionBrowser").jstree("uncheck_node", res.id);
@@ -264,18 +264,20 @@
                         if( res ){
 
                             var id = res.id;
-                            var size = res.original.binarySize;
+                            var size = res.original.binarysize;
                             var uri = res.original.uri;
                             var uri_dl = res.original.encodedUri;
                             var filename = res.original.filename;
-                            var path = res.original.path;
+                            var path = res.original.locationpath;
                             var resourceRestriction = "public";
                             if(res.original.hasOwnProperty("accessRestriction")){
                                 resourceRestriction = res.original.accessRestriction;
                             }
                             var enabled = false;
+                            
                             //check the rights
                             if( ((resourceRestriction != 'public') &&  resourceRestriction != actualUserRestriction) && actualUserRestriction != 'admin' ){
+                                
                                 if (disableChkArray.length > 0) {
                                     $.each( disableChkArray, function( key, value ) {
                                         $("#"+value).css('color','red');
@@ -288,6 +290,7 @@
                                     $("#collectionBrowser").jstree().enable_node(id);
                                 }
                             }else {
+                                
                                 enabled = true;
                                 $("#collectionBrowser").jstree().enable_node(id);
                                 $("#"+id).css('color','black');
@@ -296,6 +299,7 @@
                             if(size && uri){
                                // if( ((resourceRestriction == 'public') &&  resourceRestriction == actualUserRestriction) || actualUserRestriction == 'admin' ){
                                if(enabled === true) {
+                                   
                                     selectedItems.push({id: id, size: size, uri: uri, uri_dl: uri_dl, filename: filename, path: path});
                                     sumSize += Number(size);
                                     if(sumSize > 6299999999){
@@ -322,13 +326,14 @@
             $("#loader-div").show();
             //disable the button after the click
             $(this).prop('disabled', true);
-            var insideUri = $('#insideUri').val();
+            var repoid = $('#repoid').val();
             e.preventDefault();
             var uriStr = "";
             //object for the file list
             var myObj = {};
 
             $.each(selectedItems, function(index, value) {
+                
                 uriStr += value.uri_dl+"__";
                 
                 var resArr = {};
@@ -339,10 +344,10 @@
             });
             
             $.ajax({
-                url: '/browser/oeaw_dlc/'+insideUri,
+                url: '/browser/repo_dl_collection_binaries/'+repoid,
                 type: "POST",
                 async: false,
-                data: {jsonData : JSON.stringify(myObj)},
+                data: {jsonData : JSON.stringify(myObj), repoid: repoid },
                 timeout: 3600,
                 success: function(data, status) {
                     $('#dl_link_a').html('<a href="'+data+'" target="_blank">'+Drupal.t("Download Collection")+'</a>');
@@ -432,7 +437,7 @@
                         $("#collectionBrowser").jstree().enable_checkbox(v.id+"_anchor");
                         $("#collectionBrowser").jstree().enable_node(v.id+"_anchor");
                     });
-                    setCookie(insideUri, disableChkIDArray);
+                    setCookie(repoid, disableChkIDArray);
                     $("#loader-div").delay(2000).fadeOut("fast");
                     $('#success_login_msg').show(0).delay(2000).fadeOut(1000).hide(0);
                     
