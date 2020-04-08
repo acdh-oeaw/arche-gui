@@ -72,13 +72,13 @@
         }
         
     </style>
-    <!--
+    
     <div id="loader-div">
         <div class="loader-bg">
             <div class="loader"></div>
         </div>
     </div>
-   -->
+   
     <div>
         
         {%  if extra.metadata.getRepoId() %}
@@ -94,7 +94,7 @@
         
     </div>
     
-    <input type="hidden" id="insideUri" name="insideUri" value="{{ extra.metadata.getRepoId() }}">
+    <input type="hidden" id="repoid" name="repoid" value="{{ extra.metadata.getRepoId() }}">
     <input type="hidden" id="estDLTime" name="estDLTime" value="{{ extra.estDLTime }}">
     
     <div id="content_collection">
