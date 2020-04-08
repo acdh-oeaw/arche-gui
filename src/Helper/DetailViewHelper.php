@@ -18,7 +18,7 @@ use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 class DetailViewHelper extends ArcheHelper {
     
     private $detailViewObjectArray;
-    private $lng = "en";
+    private $siteLang;
     
     /**
      * 
@@ -28,13 +28,16 @@ class DetailViewHelper extends ArcheHelper {
      * @return array
      */
     public function createView(array $data = array(), string $dissemination = ''): array {
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
+        
         $this->extendActualObj();
         
         if(count((array)$this->data) == 0) {
             return array();
         }
-        $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repo);
+        
+        $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repo, $this->siteLang);
         
         return $this->detailViewObjectArray;
     }

@@ -22,7 +22,7 @@ class RootViewHelper extends ArcheHelper {
     public function createView(array $data = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->formatResultToGui($data);  
-      
+       
         if(count((array)$this->data) == 0) {
             return array();
         }
@@ -41,8 +41,17 @@ class RootViewHelper extends ArcheHelper {
     private function formatResultToGui(array $data) {
         if(count((array)$data) > 0) {
             foreach($data as $k => $v) {
+                $lang = 'en';
+                if(isset($d->language)) {
+                    if(!empty($d->language)) {
+                       $lang = $d->language; 
+                    }else{
+                        $lang = $this->siteLang;
+                    }
+                }
+                
                 if(isset($v->id)) {
-                    $this->data[$k]['acdh:hasIdentifier'] = array(
+                    $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
                         $this->createObj(
                             $v->id, 
                             $this->repo->getSchema()->__get('id'), 
@@ -52,7 +61,7 @@ class RootViewHelper extends ArcheHelper {
                         );
                     
                     if(isset($v->title)) {
-                        $this->data[$k]['acdh:hasTitle'] = array(
+                        $this->data[$k]['acdh:hasTitle'][$lang] = array(
                         $this->createObj(
                             $v->id, 
                             $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
@@ -62,7 +71,7 @@ class RootViewHelper extends ArcheHelper {
                         );
                     }
                     if(isset($v->avdate)) {
-                        $this->data[$k]['acdh:hasAvailableDate'] = array(
+                        $this->data[$k]['acdh:hasAvailableDate'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAvailableDate", 
@@ -72,7 +81,7 @@ class RootViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->description)) {
-                        $this->data[$k]['acdh:hasDescription'] = array(
+                        $this->data[$k]['acdh:hasDescription'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
@@ -82,7 +91,7 @@ class RootViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->accesres)) {
-                        $this->data[$k]['acdh:hasAccessRestriction'] = array(
+                        $this->data[$k]['acdh:hasAccessRestriction'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAccessRestriction", 
@@ -92,7 +101,7 @@ class RootViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->titleimage)) {
-                        $this->data[$k]['acdh:hasTitleImage'] = array(
+                        $this->data[$k]['acdh:hasTitleImage'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitleImage", 
@@ -100,7 +109,16 @@ class RootViewHelper extends ArcheHelper {
                                 $v->titleimage
                                 )
                             );
-                    }    
+                    } 
+                    $this->data[$k]['rdf:type'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
+                                )
+                            );
+                    
                 }
             }
         }

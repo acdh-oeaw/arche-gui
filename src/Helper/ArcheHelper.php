@@ -24,6 +24,7 @@ abstract class ArcheHelper {
         $this->generalFunctions = new GeneralFunctions();
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
     /**
@@ -61,8 +62,18 @@ abstract class ArcheHelper {
      */
     protected function extendActualObj(bool $root = false) {
         $result = array();
-        
+      
         foreach($this->data as $d) {
+            //add the language to every resource
+            $lang = 'en';
+            if(isset($d->language)) {
+                if(!empty($d->language)) {
+                   $lang = $d->language; 
+                }else{
+                    $lang = $this->siteLang;
+                }
+            }
+            
             if(isset($d->type) && !empty($d->type) && $d->type == "REL") {
                 $d->repoid = "";
                 $d->repoid = $d->value;
@@ -80,7 +91,7 @@ abstract class ArcheHelper {
                     $d->insideUri = $this->makeInsideUri($d->acdhid);
                 }
                 $d->shortcut = $this->createShortcut($d->property);
-                $result[$d->shortcut][] = $d;
+                $result[$d->shortcut][$lang][] = $d;
             }else if(isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
                 $d->property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
@@ -95,15 +106,13 @@ abstract class ArcheHelper {
                     $d->uri = $d->value;
                 }
                 //add the identifier into the final data
-                $result['acdh:hasIdentifier'][] = $d;
+                $result['acdh:hasIdentifier'][$lang][] = $d;
             }
-            
-            
         }
         if($root == true) {
             ksort($result);
         }
-        
+       
         $this->data = $result;
     }
     

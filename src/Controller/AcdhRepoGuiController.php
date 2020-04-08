@@ -79,7 +79,7 @@ class AcdhRepoGuiController extends ControllerBase
         if( count($roots['pagination']) > 0 ) {
             $paging = $roots['pagination'][0];
         }
-       
+        
         return [
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $roots['data'],
@@ -178,7 +178,7 @@ class AcdhRepoGuiController extends ControllerBase
             );
             return array();
         }
-        
+       
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,

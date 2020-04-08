@@ -43,8 +43,16 @@ class SearchViewHelper extends ArcheHelper {
     private function formatResultToGui(array $data) {
         if(count((array)$data) > 0) {
             foreach($data as $k => $v) {
+                $lang = 'en';
+                if(isset($d->language)) {
+                    if(!empty($d->language)) {
+                       $lang = $d->language; 
+                    }else{
+                        $lang = $this->siteLang;
+                    }
+                }
                 if(isset($v->id)) {
-                    $this->data[$k]['acdh:hasIdentifier'] = array(
+                    $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
                         $this->createObj(
                             $v->id, 
                             $this->repo->getSchema()->__get('id'), 
@@ -54,7 +62,7 @@ class SearchViewHelper extends ArcheHelper {
                         );
                     
                     if(isset($v->title)) {
-                        $this->data[$k]['acdh:hasTitle'] = array(
+                        $this->data[$k]['acdh:hasTitle'][$lang] = array(
                         $this->createObj(
                             $v->id, 
                             $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
@@ -64,7 +72,7 @@ class SearchViewHelper extends ArcheHelper {
                         );
                     }
                     if(isset($v->avdate)) {
-                        $this->data[$k]['acdh:hasAvailableDate'] = array(
+                        $this->data[$k]['acdh:hasAvailableDate'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAvailableDate", 
@@ -74,7 +82,7 @@ class SearchViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->description)) {
-                        $this->data[$k]['acdh:hasDescription'] = array(
+                        $this->data[$k]['acdh:hasDescription'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
@@ -84,7 +92,7 @@ class SearchViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->accesres)) {
-                        $this->data[$k]['acdh:hasAccessRestriction'] = array(
+                        $this->data[$k]['acdh:hasAccessRestriction'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAccessRestriction", 
@@ -94,7 +102,7 @@ class SearchViewHelper extends ArcheHelper {
                             );
                     }
                     if(isset($v->titleimage)) {
-                        $this->data[$k]['acdh:hasTitleImage'] = array(
+                        $this->data[$k]['acdh:hasTitleImage'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitleImage", 
@@ -105,7 +113,7 @@ class SearchViewHelper extends ArcheHelper {
                     } 
                     //get the acdh type
                     if(isset($v->acdhtype)) {
-                        $this->data[$k]['rdf:type'] = array(
+                        $this->data[$k]['rdf:type'][$lang] = array(
                             $this->createObj(
                                 $v->id, 
                                 $this->repo->getSchema()->__get('namespaces')->rdfs."type", 
