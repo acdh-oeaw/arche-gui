@@ -29,7 +29,7 @@ class DetailViewModel extends ArcheModel {
         $result = array();
         try {
             //run the actual query
-            $query = $this->repodb->query(" select * from public.detail_view_func(:id) ", array(':id' => $identifier));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id) ", array(':id' => $identifier));
             $result = $query->fetchAll();
         } catch (Exception $ex) {
             $result = array();
