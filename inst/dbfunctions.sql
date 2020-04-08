@@ -712,3 +712,37 @@ left join rdftype as rdt on ri.id  = rdt.id
 END
 $func$
 LANGUAGE 'plpgsql';
+
+/**
+* API CALLS
+**/
+
+/**
+* API getDATA
+**/
+
+CREATE OR REPLACE FUNCTION gui.apiGetData(_class text, _searchStr text, _lang text DEFAULT 'en' )
+    RETURNS table (id bigint, property text, value text, lang text)
+AS $func$
+
+BEGIN
+	DROP TABLE IF EXISTS ids;
+	CREATE TEMPORARY TABLE ids(id bigint NOT NULL);
+	INSERT INTO ids(
+		select  
+			mv.id
+		from metadata_view as mv
+		where
+		mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+		and mv.value = _class 
+	);
+
+return query
+select mv.id, mv.property, mv.value, mv.lang
+from ids as i 
+left join metadata_view as mv on mv.id = i.id
+where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and LOWER(mv.value) like '%' ||_searchStr || '%'
+and mv.lang = _lang;
+END
+$func$
+LANGUAGE 'plpgsql';
