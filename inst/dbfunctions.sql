@@ -249,7 +249,6 @@ RETURN QUERY
 			'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate',
 			'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 		) 
-		--and mv.lang = _lang*/
 		Order by ci.id
 		;
 END

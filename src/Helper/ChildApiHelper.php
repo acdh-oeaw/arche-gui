@@ -17,7 +17,7 @@ use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 class ChildApiHelper extends ArcheHelper {
     
     private $rootViewObjectArray;
-    private $lng = "en";
+    private $siteLang = "en";
         
     /**
      * Child view create
@@ -26,6 +26,7 @@ class ChildApiHelper extends ArcheHelper {
      * @return array
      */    
     public function createView(array $data = array()): array {
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
         $this->extendActualObj();  
         
@@ -50,25 +51,33 @@ class ChildApiHelper extends ArcheHelper {
         
         foreach($this->data as $k => $v) {
             foreach($v as $obj) {
+                $lang = 'en';
+                if(isset($obj->lang)) {
+                    if(!empty($obj->lang)) {
+                       $lang = $obj->lang; 
+                    }else{
+                        $lang = $this->siteLang;
+                    }
+                }
                 if(isset($obj->property)) {
                     $obj->shortcut = $this->createShortcut($obj->property);
                     if(isset($obj->value)) {
                         $obj->title = $obj->value;
                     }
                     $obj->id = $obj->childid;
-                    if(!isset($result[$k]['acdh:hasIdentifier'])){
+                    if(!isset($result[$k]['acdh:hasIdentifier'][$lang])){
                         $o = new \stdClass();
                         $o->id = '';
                         $o->id = $obj->id;
-                        $result[$k]['acdh:hasIdentifier'][0] = $o;
+                        $result[$k]['acdh:hasIdentifier'][$lang][0] = $o;
                     }
                     //we need to change the postgre datetime format to php date to we can modify it with the twig template
                     if(isset($result[$k]['acdh:hasAvailableDate'])){
-                        $time = strtotime($result[$k]['acdh:hasAvailableDate'][0]->value);
+                        $time = strtotime($result[$k]['acdh:hasAvailableDate'][$lang][0]->value);
                         $newformat = date('Y-m-d h:m:s',$time);
-                        $result[$k]['acdh:hasAvailableDate'][0]->title = $newformat;
+                        $result[$k]['acdh:hasAvailableDate'][$lang][0]->title = $newformat;
                     }
-                    $result[$k][$obj->shortcut][] = $obj;
+                    $result[$k][$obj->shortcut][$lang][] = $obj;
                 }
             }
         }
