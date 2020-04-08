@@ -7,7 +7,8 @@ AS $func$
 DECLARE 
 	_lang2 text := 'de';
 BEGIN
-    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+--RAISE NOTICE USING MESSAGE = _lang;
+	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 	
 --get all root ids
 DROP TABLE IF EXISTS  rootids;
@@ -20,12 +21,9 @@ CREATE TEMP TABLE rootids AS (
 		m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
 		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
 		and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
-		and r.id NOT IN ( 
-			SELECT DISTINCT(r.id) from metadata as m left join relations as r on r.id = m.id
-			where
-				m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-				and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-				and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+		and NOT EXISTS ( 
+			SELECT 1 from relations as r2 where r2.id = m.id  
+				and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
 		)
 );
 
@@ -52,26 +50,25 @@ CREATE TEMP TABLE rootDescriptions AS (
 
 DROP TABLE IF EXISTS rootAccesRes;
 CREATE TEMP TABLE rootAccesRes AS (
-    select ri.rootid, mv.value 
-    from rootids as ri
-    left join relations as r on ri.rootid = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-    left join metadata_view as mv on r.target_id = mv.id
-    where
-        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%'
+select ri.rootid, mv.value 
+from rootids as ri
+left join relations as r on ri.rootid = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+left join metadata_view as mv on r.target_id = mv.id
+where
+mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%'
 );
 
 RETURN QUERY
-    select 
-        ri.rootid,
-        ( CASE WHEN rt.value IS NULL THEN (select rt.value from rootTitles as rt where rt.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rt.value end ) as title,
-        ri.avdate, 
-        ( CASE WHEN rd.value IS NULL THEN (select rd2.value from rootDescriptions as rd2 where rd2.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rd.value end ) as description,
-        ra.value as accesres, 
-        (select mv.value from metadata_view as mv where mv.id = ri.rootid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage
-    from rootids as ri
-    left join rootDescriptions as rd on rd.rootid = ri.rootid and rd.lang = _lang
-    left join rootTitles as rt on rt.rootid = ri.rootid and rt.lang = _lang
-    left join rootAccesRes as ra on ri.rootid  = ra.rootid;
+select ri.rootid,
+( CASE WHEN rt.value IS NULL THEN (select rt.value from rootTitles as rt where rt.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rt.value end ) as title,
+ri.avdate, 
+( CASE WHEN rd.value IS NULL THEN (select rd2.value from rootDescriptions as rd2 where rd2.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rd.value end ) as description,
+ra.value as accesres, 
+(select mv.value from metadata_view as mv where mv.id = ri.rootid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage
+from rootids as ri
+left join rootDescriptions as rd on rd.rootid = ri.rootid and rd.lang = _lang
+left join rootTitles as rt on rt.rootid = ri.rootid and rt.lang = _lang
+left join rootAccesRes as ra on ri.rootid  = ra.rootid;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -333,6 +330,9 @@ LANGUAGE 'plpgsql';
 * SEARCH SQL
 */
 
+/**
+* Search types
+*/
 CREATE OR REPLACE FUNCTION gui.search_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _acdhyear text[] DEFAULT '{}')
   RETURNS table (id bigint, title text, avDate date, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
@@ -414,24 +414,25 @@ mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'h
 
 RETURN QUERY
 select DISTINCT(ti.id),
-( CASE WHEN rt.value IS NULL THEN (select rt.value from titles as rt where rt.id = ti.id and lang = 'de' limit 1) ELSE rt.value end ) as title,
+( CASE WHEN rt.value IS NULL THEN (select rt.value from titles as rt where rt.id = ti.id and lang = _lang2 limit 1) ELSE rt.value end ) as title,
 ( CASE WHEN CAST(ad.value as DATE) IS NULL THEN ( NULL) ELSE CAST(ad.value as DATE) end ) as avdate,
-( CASE WHEN rd.value IS NULL THEN (select rd2.value from descriptions as rd2 where rd2.id = ti.id and lang = 'de' limit 1) ELSE rd.value end ) as description,
+( CASE WHEN rd.value IS NULL THEN (select rd2.value from descriptions as rd2 where rd2.id = ti.id and lang = _lang2 limit 1) ELSE rd.value end ) as description,
 ra.value as accesres, 
 (select mv.value from metadata_view as mv where mv.id = ti.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage,
 rdt.value as acdhtype
 from typeids as ti
-left join descriptions as rd on rd.id = ti.id and rd.lang = 'en'
-left join titles as rt on rt.id = ti.id and rt.lang = 'en'
+left join descriptions as rd on rd.id = ti.id and rd.lang = _lang
+left join titles as rt on rt.id = ti.id  and rt.lang = _lang
 left join accesRes as ra on ti.id  = ra.id
 left join availableDate as ad on ti.id  = ad.id
-left join rdftype as rdt on ti.id  = rdt.id
-where rt.value is not null;
+left join rdftype as rdt on ti.id  = rdt.id;
 END
 $func$
 LANGUAGE 'plpgsql';
 
-
+/**
+* Search years and types
+*/
 CREATE OR REPLACE FUNCTION gui.search_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _acdhtype text[] DEFAULT '{}')
   RETURNS table (id bigint, title text, avDate date, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
@@ -556,6 +557,9 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+/**
+* Search words types and years
+*/
 CREATE OR REPLACE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text[] DEFAULT '{}')
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
