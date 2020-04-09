@@ -60,6 +60,7 @@
     function generateCollection(url, disabledUrls = [], username = "", password= "") {
                 
         var actualUserRestriction = getActualuserRestriction();
+        
         var loadedData = [];
         $('#collectionBrowser')
         .jstree({
@@ -94,7 +95,6 @@
                         if ( v == true ) { userAllowedToDL = true; } 
                     }
                     if(k == 'accessRestriction') {
-                        
                         var result = v.split('/');
                         var resRestriction = result.slice(-1)[0];
                         if(!resRestriction) { resRestriction = "public"; }
@@ -102,12 +102,12 @@
                         if(  ((resRestriction != 'public') &&  resRestriction != actualUserRestriction) && actualUserRestriction != 'admin'){
                             userAllowedToDL === false;
                             disableChkArray.push(key+'_anchor');
-                            disableChkUrlArray.push(value.original.uri);
+                            disableChkUrlArray.push(value.original.uri_dl);
                             var obj = {};
-                            obj = {"id": value.id, "url": value.original.uri, "accessRestriction": resRestriction};
+                            obj = {"id": value.id, "url": value.original.uri_dl, "accessRestriction": resRestriction};
                             //get one url for the permission levels
                             if(!resourceGroupsData.hasOwnProperty(resRestriction)) {
-                                resourceGroupsData[resRestriction] = value.original.uri;
+                                resourceGroupsData[resRestriction] = value.original.uri_dl;
                             }
                             
                             disableChkIDArray.push(obj);
@@ -131,13 +131,17 @@
         var result = [];
         $.each(urls, function(i,u){
             $.when(
-                $.ajax(u+'/fcr:metadata', 
+                $.ajax(u+'/metadata', 
                 { 
                     type: 'HEAD',
-                    username: username,
-                    password: password,
+                    //username: username,
+                    //password: password,
                     error: function(error) {
+                        console.log(error);
                         callback(false);   
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
                     }
                 })
             )
@@ -342,12 +346,14 @@
                 resArr['path'] = value.path;
                 myObj[index] = resArr;
             });
+            var username = $("input#username").val();
+            var password = $("input#password").val();
             
             $.ajax({
                 url: '/browser/repo_dl_collection_binaries/'+repoid,
                 type: "POST",
-                async: false,
-                data: {jsonData : JSON.stringify(myObj), repoid: repoid },
+                //async: false,
+                data: {jsonData : JSON.stringify(myObj), repoid: repoid, username: username, password: password },
                 timeout: 3600,
                 success: function(data, status) {
                     $('#dl_link_a').html('<a href="'+data+'" target="_blank">'+Drupal.t("Download Collection")+'</a>');

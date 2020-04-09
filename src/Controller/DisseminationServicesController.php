@@ -69,8 +69,10 @@ class DisseminationServicesController extends ControllerBase {
             $response->setContent(json_encode(""));
             return $response;
         }
-        
-        $fileLocation = $this->helper->collectionDownload($binaries, $repoid);
+        ($_POST['username']) ? $username = $_POST['username'] : $username = '';
+        ($_POST['password']) ? $password = $_POST['password'] : $password = '';
+       
+        $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
         $response->setContent(json_encode($fileLocation));
         return $response;
     }

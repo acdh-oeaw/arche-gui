@@ -1,14 +1,22 @@
 jQuery(function($) {
     "use strict";
     var actionPage = '';
-        
+    let orderTexts = {
+        titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
+        dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
+    };
+    
     if(window.location.href.indexOf("/oeaw_detail/") > -1) {
         actionPage = 'detail_view';
     }
 
     if(window.location.href.indexOf("/discover/") > -1) {
-        if(window.location.href.indexOf("/discover/root/") > -1) {
-            actionPage = 'root';
+        if(window.location.href.indexOf("/discover/root") > -1) {
+            actionPage = 'root_main';
+            if(window.location.href.indexOf("/discover/root/") > -1) {
+                actionPage = 'root';
+            }
+            
         }else{
             actionPage = 'search';
         }
@@ -26,19 +34,28 @@ jQuery(function($) {
         var urlOrder;
         var searchStr;
         
-        if(actionPage == 'root'){
-            let searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/discover/root/") + 15);
-            //split the url to get the order limit and page values
-            var searchValues = searchParams.split('/');
-            if(searchValues[0]){
-                urlOrder = searchValues[0];
+        if(actionPage == 'root' || actionPage == 'root_main'){
+            
+            var searchParams = '';
+            
+            if(actionPage == 'root'){
+                searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/discover/root/") + 15);
+                var searchValues = searchParams.split('/');
+                if(searchValues[0]){
+                    urlOrder = searchValues[0];
+                }
+                if(searchValues[1]){
+                    urlLimit = searchValues[1];
+                }
+                if(searchValues[2]){
+                    urlPage = searchValues[2];
+                }
+            } else {
+                urlPage = 1;
+                urlLimit = 10;
+                urlOrder = 'datedesc';
             }
-            if(searchValues[1]){
-                urlLimit = searchValues[1];
-            }
-            if(searchValues[2]){
-                urlPage = searchValues[2];
-            }
+            
         } else if(actionPage == 'search'){
             let searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/discover/") + 10);
             
@@ -59,12 +76,14 @@ jQuery(function($) {
             }
             
         } else {
-            
             let searchParams = new URLSearchParams(window.location.href);
             urlPage = searchParams.get('page');
             urlLimit= searchParams.get('limit');
             urlOrder= searchParams.get('order');
         }
+        //change the gui values
+        $('#sortByButton').html(orderTexts[urlOrder]);
+        $('#resPerPageButton').html(urlLimit);
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
     }
@@ -81,13 +100,11 @@ jQuery(function($) {
     
     //Results info-bar pagination selectors on click
     $(document).delegate( '#resPerPageButton > a', "click", function(event) {
-        console.log('limit changed');
         let newLimit = $(this).html();
         createNewUrl(params.urlPage, newLimit, params.urlOrder, actionPage, params.searchStr);
     
     });
     $(document).delegate( '#sortByDropdown > a', "click", function(event) {
-        console.log("order changed");
         let newOrder = $(this).data('value');
         createNewUrl(params.urlPage, params.urlLimit, newOrder, actionPage, params.searchStr);
     });
@@ -117,10 +134,7 @@ jQuery(function($) {
             } else {
                 cleanPath = path;
             }
-            console.log("detail new url:");
-            
             newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
-            console.log(newurl);
             window.history.pushState({path:newurl},'',newurl);
             window.location = newurl;
         }  

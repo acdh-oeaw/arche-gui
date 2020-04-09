@@ -267,14 +267,14 @@ class DisseminationServicesHelper extends ArcheHelper {
      * @param type $repoid
      * @return string
      */
-    public function collectionDownload(array $binaries, string $repoid): string {
+    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string {
         $this->repoUrl = $this->repo->getBaseUrl().$repoid;
         //1. setup tmp dir
         if($this->collectionCreateDlDirectory() === false) {
             return '';
         }
         //2. download the selected files
-        $this->collectionDownloadFiles($binaries);
+        $this->collectionDownloadFiles($binaries, $username, $password);
         //3. add the turtle file into the collection
         if($this->collectionGetTurtle() === false) {
             \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$url);
@@ -292,9 +292,16 @@ class DisseminationServicesHelper extends ArcheHelper {
         
     }
     
-    public function collectionDownloadFiles(array $binaries)
+    /**
+     * Download the selected binaries
+     * 
+     * @param array $binaries
+     * @param string $username
+     * @param string $password
+     */
+    public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '')
     {
-        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $client = new \GuzzleHttp\Client(['auth' => [$username, $password], 'verify' => false]);
         ini_set('max_execution_time', 1800);
         
         foreach ($binaries as $b) {
@@ -348,6 +355,11 @@ class DisseminationServicesHelper extends ArcheHelper {
         }
     }
     
+    /**
+     * Get the turtle file and copy it to the collection download directory
+     * 
+     * @return bool
+     */
     private function collectionGetTurtle(): bool {
         $ttl = '';
         $ttl = $this->turtleDissService();
