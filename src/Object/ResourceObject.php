@@ -8,12 +8,23 @@ class ResourceObject {
     private $acdhid;
     private $repoid;
     private $repoUrl;
+    private $language;
    
-    public function __construct(array $data, $config) {
+    public function __construct(array $data, $config, string $language = 'en') {
         $this->properties = array();
         $this->config = $config;
+        $this->language = $language;
+        
         foreach($data as $k => $v) {
-            $this->setData($k, $v);  
+            if(isset($v[$language])) {
+                $this->setData($k, $v[$language]);  
+            }else{
+                if(($language == 'en') && isset($v['de'])){
+                    $this->setData($k, $v['de']);  
+                }else if(($language == 'de') && isset($v['en'])){
+                    $this->setData($k, $v['en']);  
+                }
+            }
         }
     }
     public function getData(string $property): array {
