@@ -84,6 +84,7 @@ class AcdhRepoGuiController extends ControllerBase
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $roots['data'],
             '#paging' => $paging,
+            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
@@ -143,6 +144,7 @@ class AcdhRepoGuiController extends ControllerBase
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $searchResult['data'],
             '#paging' => $paging,
+            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
@@ -184,6 +186,7 @@ class AcdhRepoGuiController extends ControllerBase
             '#basic' => $dv->basic,
             '#extra' => $dv->extra,
             '#dissemination' => (isset($dv->dissemination)) ? $dv->dissemination : array(),
+            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-styles',
@@ -244,6 +247,7 @@ class AcdhRepoGuiController extends ControllerBase
                     array(
                         '#theme' => 'acdh-repo-ds-3d-viewer',
                         '#ObjectUrl' => $result['result'],
+                        '#cache' => ['max-age' => 0], 
                         '#basic' => $basic
                     );
             }
@@ -252,6 +256,7 @@ class AcdhRepoGuiController extends ControllerBase
             array(
                 '#theme' => 'acdh-repo-ds-3d-viewer',
                 '#ObjectUrl' => $result['result'],
+                '#cache' => ['max-age' => 0], 
                 '#basic' => $basic
             );
     }
@@ -284,6 +289,7 @@ class AcdhRepoGuiController extends ControllerBase
             array(
                 '#theme' => 'acdh-repo-ds-iiif-viewer',
                 '#basic' => $basic,
+                '#cache' => ['max-age' => 0], 
                 '#lorisUrl' => $lorisUrl
             );
     }

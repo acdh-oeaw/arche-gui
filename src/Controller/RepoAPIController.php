@@ -31,10 +31,6 @@ class RepoApiController extends ControllerBase {
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         
-        //$this->rootViewController = new RVC($this->config);
-        //$this->detailViewController = new DVC($this->config);
-        //$this->generalFunctions = new GeneralFunctions();
-        //$this->langConf = $this->config('acdh_repo_gui.settings');
     }
     
     /**
@@ -62,6 +58,7 @@ class RepoApiController extends ControllerBase {
         $build = [
             '#theme' => 'oeaw_child_view',
             '#result' => $childArray,
+            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'oeaw/oeaw-styles', //include our custom library for this response

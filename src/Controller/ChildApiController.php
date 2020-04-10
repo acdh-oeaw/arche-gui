@@ -93,6 +93,7 @@ class ChildApiController extends ControllerBase {
         $build = [
             '#theme' => 'acdh-repo-gui-child',
             '#data' => $this->data,
+            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
