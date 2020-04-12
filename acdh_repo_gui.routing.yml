@@ -111,3 +111,11 @@ oeaw_change_lng:
     requirements:
         _access: 'TRUE'
 
+##### APIs #######
+
+repo_api_persons:    
+    path: '/api/persons/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_persons'
+    requirements:
+        _access: 'TRUE'

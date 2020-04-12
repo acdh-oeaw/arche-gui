@@ -10,7 +10,6 @@ use acdhOeaw\acdhRepoLib\RepoResource;
 use acdhOeaw\acdhRepoLib\RepoDb;
 use acdhOeaw\acdhRepoLib\SearchConfig;
 use acdhOeaw\acdhRepoLib\RepoResourceInterface;
-use acdhOeaw\acdhRepoLib\SearchTerm;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
 use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
 use Drupal\acdh_repo_gui\Controller\SearchViewController as SVC;

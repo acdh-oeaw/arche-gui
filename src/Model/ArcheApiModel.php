@@ -28,12 +28,11 @@ class ArcheApiModel extends ArcheModel {
      */
     public function getViewData(string $identifier = "getData", object $properties = null): array {
         $this->properties = $properties;
-                
         switch ($identifier) {
             case "getData":
                 return $this->getData();
                 break;
-            case "Persons":
+            case "persons":
                 return $this->getData();
                 break;
             default:
@@ -50,13 +49,11 @@ class ArcheApiModel extends ArcheModel {
     private function getData(): array {
         $result = array();
         //run the actual query
-        
         try {
-            $query = $this->repodb->query("SELECT * from gui.apiGetData('".$this->properties->type."', '".$this->properties->searchStr."') 
-                ;"  
-            );
-            $result = $query->fetchAll();
-           
+            $query = $this->repodb->query(
+                    "SELECT * from gui.apiGetData('".$this->properties->type."', '".$this->properties->searchStr."');" 
+                    );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
