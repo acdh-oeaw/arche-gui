@@ -119,3 +119,42 @@ repo_api_persons:
         _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_persons'
     requirements:
         _access: 'TRUE'
+        
+repo_api_places:    
+    path: '/api/places/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_places'
+    requirements:
+        _access: 'TRUE'        
+
+repo_api_publications:    
+    path: '/api/publications/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_publications'
+    requirements:        
+        _access: 'TRUE'        
+
+repo_api_organisations:    
+    path: '/api/organisations/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_organisations'
+    requirements:        
+        _access: 'TRUE'  
+
+repo_api_getdata:    
+    path: '/api/getData/{type}/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getData'
+    requirements:        
+        _access: 'TRUE'  
+        
+repo_api_getmetadata:    
+    path: '/api/getMetadata/{type}/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMetadata'
+    requirements:        
+        _access: 'TRUE'        
+        
+
+        
+        

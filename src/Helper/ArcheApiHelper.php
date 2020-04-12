@@ -27,31 +27,26 @@ class ArcheApiHelper extends ArcheHelper {
         
         $this->data = $data;
         $this->apiType = $apiType;
-        
-        switch ($this->apiType) {
-            case 'persons':
-                $this->createPersonsView();
-                break;
-
-            default:
-                break;
-        }
-        
+        $this->formatView();
         return $this->result;
     }
     
-    private function createPersonsView() {
+    private function formatView() {
         $this->result = array();
         foreach ($this->data as $k => $val) {
             foreach($val as $v){
                 $title = $v->value;
                 $lang = $v->lang;
+                $altTitle = '';
+                if($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
+                    $altTitle = $v->value;    
+                }
                 $this->result[$k]->title[$lang] = $title;
                 $this->result[$k]->uri = $this->repo->getBaseUrl().$k;
                 $this->result[$k]->identifier = $k;
+                $this->result[$k]->altTitle = $altTitle;
             }
         }
         $this->result = array_values($this->result);
     }
-    
 }

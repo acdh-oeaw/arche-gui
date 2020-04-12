@@ -26,19 +26,11 @@ class ArcheApiModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "getData", object $properties = null): array {
+    public function getViewData(string $identifier = "getMetaData", object $properties = null): array {
         $this->properties = $properties;
-        switch ($identifier) {
-            case "getData":
-                return $this->getData();
-                break;
-            case "persons":
-                return $this->getData();
-                break;
-            default:
-                return array();
-                break;
-        }
+        
+        return $this->getData();
+        
     }
     
     /**
