@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
 use acdhOeaw\acdhRepoLib\RepoDb;
-use acdhOeaw\arche\Ontology;
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
 /**
@@ -196,12 +195,15 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
         
-        
-        $ontology = new \acdhOeaw\arche\Ontology($this->repodb, 'https://repo.hephaistos.arz.oeaw.ac.at');
-        echo "<pre>";
+         echo "<pre>";
         var_dump($this->repo->getBaseUrl());
-        var_dump($ontology);
+        var_dump($this->repodb);
         echo "</pre>";
+        
+        
+        $ontology = new \acdhOeaw\arche\Ontology($this->repodb, $this->config->getBaseUrl());
+        
+       
         
         die();
         $class = $ontology->getClass($classUri);
