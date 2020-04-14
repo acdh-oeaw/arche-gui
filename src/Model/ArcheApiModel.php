@@ -64,7 +64,12 @@ class ArcheApiModel extends ArcheModel {
     private function getOntology(): array {
         $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
-        $ontology = new \acdhOeaw\arche\Ontology($conn, $this->properties->baseUrl.'%');
+        $cfg = (object) [
+            'skipNamespace' => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
+            'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
+            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
+        ];
+        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         return (array)$ontology->getClass($this->properties->type);
     }
 }
