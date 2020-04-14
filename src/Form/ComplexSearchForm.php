@@ -66,7 +66,7 @@ class ComplexSearchForm extends FormBase
             $this->createBox($form, $dateData);
             
         }
-        error_log('itt1');
+        
         
         /****  Entities By date *****/
         /*
@@ -132,7 +132,7 @@ class ComplexSearchForm extends FormBase
      */
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-        error_log('itt3');
+        
         $metavalue = $form_state->getValue('metavalue');
         
         $extras = array();
@@ -157,9 +157,7 @@ class ComplexSearchForm extends FormBase
                 $extras["formats"][] = strtolower($f);
             }
         }
-        error_log('itt');
-        $metavalue = "word=wollmilschau&type=Collection";
-        //$metaVal = $this->oeawFunctions->convertSearchString($metavalue, $extras);
+        
         $metaVal = urlencode($metavalue);
         $form_state->setRedirect('repo_complexsearch', [
             "metavalue" => $metaVal,
