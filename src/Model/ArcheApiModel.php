@@ -26,11 +26,12 @@ class ArcheApiModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "getMetaData", object $properties = null): array {
+    public function getViewData(string $identifier = "metadata", object $properties = null): array {
         $this->properties = $properties;
-        
+        if($identifier == 'metadata') {
+            return $this->getOntology();
+        } 
         return $this->getData();
-        
     }
     
     /**
@@ -54,5 +55,16 @@ class ArcheApiModel extends ArcheModel {
         
         $this->changeBackDBConnection();
         return $result;
-    }   
+    }
+    
+    /**
+     * get the onotology data based on the acdh type
+     * @return array
+     */
+    private function getOntology(): array {
+        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $conn = new \PDO($dbconnStr);
+        $ontology = new \acdhOeaw\arche\Ontology($conn, $this->properties->baseUrl.'%');
+        return (array)$ontology->getClass($this->properties->type);
+    }
 }

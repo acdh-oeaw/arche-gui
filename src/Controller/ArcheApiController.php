@@ -6,8 +6,8 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
 use acdhOeaw\acdhRepoLib\RepoDb;
+use acdhOeaw\acdhRepoLib\RepoResource;
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
 /**
@@ -29,10 +29,10 @@ class ArcheApiController extends ControllerBase
     public function __construct() {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
-        $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->model = new ArcheApiModel();
         $this->helper = new ArcheApiHelper();
+        $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
     }
     
    
@@ -195,29 +195,13 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
         
-         echo "<pre>";
-        var_dump($this->repo->getBaseUrl());
-        var_dump($this->repodb);
-        echo "</pre>";
-        
-        
-        $ontology = new \acdhOeaw\arche\Ontology($this->repodb, $this->config->getBaseUrl());
-        
-       
-        
-        die();
-        $class = $ontology->getClass($classUri);
-
-
-
-        
         $obj = new \stdClass();
         $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#'.ucfirst($type);
-        
+        $obj->baseUrl = $this->repo->getBaseUrl();
         //get the data
-        $this->modelData = $this->model->getViewData('getMetadata', $obj);
+        $this->modelData = $this->model->getViewData('metadata', $obj);
         
-        $this->result = $this->helper->createView($this->modelData, 'getMetadata');
+        $this->result = $this->helper->createView($this->modelData, 'metadata', $lng);
         if(count($this->result) == 0 ){
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }

@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
-use acdhOeaw\acdhRepoLib\RepoDb;
 use acdhOeaw\acdhRepoLib\SearchConfig;
 use acdhOeaw\acdhRepoLib\RepoResourceInterface;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
