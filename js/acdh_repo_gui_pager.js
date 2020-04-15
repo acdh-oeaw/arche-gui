@@ -2,7 +2,6 @@ jQuery(function($) {
     "use strict";
     var actionPage = '';
     
-    
     if(window.location.href.indexOf("/oeaw_detail/") > -1) {
         actionPage = 'detail_view';
     }
@@ -13,7 +12,6 @@ jQuery(function($) {
             if(window.location.href.indexOf("/discover/root/") > -1) {
                 actionPage = 'root';
             }
-            
         }else{
             actionPage = 'search';
         }
@@ -24,6 +22,8 @@ jQuery(function($) {
     
     $(document).ready(function() { 
         addExtraSortingForViews();
+        var params = getUrlParams(actionPage);
+        getUrlParams(actionPage);
     });
     
     function addExtraSortingForViews() {
@@ -105,19 +105,21 @@ jQuery(function($) {
             urlLimit= searchParams.get('limit');
             urlOrder= searchParams.get('order');
         }
-        
-        urlOrder = urlOrder.replace('#','');
-        urlLimit = urlLimit.replace('#','');
-        urlPage = urlPage.replace('#','');
+        if(urlOrder){
+            urlOrder = urlOrder.replace('#','');
+        }
+        if(urlLimit){
+            urlLimit = urlLimit.replace('#','');
+        }
+        if(urlPage){
+            urlPage = urlPage.replace('#','');
+        }
         
         let orderTexts = {
             titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
             dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
         };
         
-        console.log(urlOrder);
-        console.log(orderTexts[urlOrder]);
-        console.log(urlLimit);
         //change the gui values
         $('#sortByButton').html(orderTexts[urlOrder]);
         $('#resPerPageButton').html(urlLimit);

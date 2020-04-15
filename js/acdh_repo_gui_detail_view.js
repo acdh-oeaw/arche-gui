@@ -10,7 +10,6 @@
         //get the uuid
         var uuid = getIDFromUrl(window.location.href);
         uuid = uuid.replace('id.acdh.oeaw.ac.at/uuid/', '');
-        console.log(uuid);
         var urlPage = searchParams.get('page');
         var urlLimit = searchParams.get('limit');
         var urlOrder = searchParams.get('order');
@@ -20,7 +19,6 @@
             urlLimit = 10;
             urlOrder = 'titleasc';
         }
-        
         getChildData(uuid, urlLimit, urlPage, urlOrder); 
         
     });
@@ -77,8 +75,6 @@
         return res;
     }
     
-
-   
     
     /**
     * Do the API request to get the actual child data
@@ -144,22 +140,23 @@
            
            window.history.pushState({path:newurl},'',newurl);
        }
-   }
-   
-   
+    }
+    
+    function createNewUrlForInsideClick(id) {
+        var newurl = window.location.protocol + "//" + window.location.host + '/browser/oeaw_detail/'+id;
+        window.history.pushState({path:newurl},'',newurl);
+    }
    
     $(document).ready(function() {
-        
-        
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */
         if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-            //block-mainpagecontent
+            
             $(document ).delegate( "a", "click", function(e) {
-            //$('a').click(function(e){
                 $("#loader-div").show();
                 var url = $(this).attr('href');
+                //if the url is arche url
                 if(url && url.indexOf("/browser/oeaw_detail/") >= 0 || url && url.indexOf("/browser//oeaw_detail/") >= 0 ) {
                     $('html, body').animate({scrollTop: '0px'}, 0);
                     url = url.substring(url.indexOf("/browser/"));
@@ -173,7 +170,7 @@
                         type: "POST",
                         success: function(data, status) {
                             //change url
-                            createNewUrl(id);
+                            createNewUrlForInsideClick(id);
                             $('#block-mainpagecontent').html(data);
                         },
                         error: function(message) {
@@ -182,6 +179,9 @@
                     });
                     $("#loader-div").hide();
                     e.preventDefault();
+                }
+                else {
+                   window.open(url, '_blank'); 
                 }
                 $("#loader-div").hide();
             });

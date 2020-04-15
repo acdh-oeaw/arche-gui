@@ -32,6 +32,7 @@ class DetailViewHelper extends ArcheHelper {
         $this->data = $data;
         
         $this->extendActualObj();
+        $this->getVocabsForDetailViewTable();
         
         if(count((array)$this->data) == 0) {
             return array();
@@ -42,6 +43,35 @@ class DetailViewHelper extends ArcheHelper {
         return $this->detailViewObjectArray;
     }
   
+    private function getVocabsForDetailViewTable()
+    {
+        $vf = new \Drupal\acdh_repo_gui\Helper\CacheVocabsHelper();
+        $vocabs = array();
+        $vocabs = $vf->getVocabsTitle($this->siteLang);
+        $lang = $this->siteLang;
+        if (count((array)$vocabs[$this->siteLang]) > 0) {
+            
+            // k is the property
+            
+            foreach ($vocabs[$this->siteLang] as $k => $v) {
+                //if we have the property inside our table results
+                if (isset($this->data[$k]) && count($this->data[$k]) > 0) {
+                    
+                    foreach ($this->data[$k][$this->siteLang] as $tk => $tv) {
+                        foreach ($vocabs[$this->siteLang][$k] as $vocab) {
+                            if (isset($vocab->uri) && !empty($vocab->uri) && isset($tv->relvalue)) {
+                                if ($vocab->uri == $tv->relvalue) {
+                                    $this->data[$k][$this->siteLang][$tk]->uri = $vocab->uri;
+                                    $this->data[$k][$this->siteLang][$tk]->title = $vocab->label;
+                                    //$this->data[$k][$tk]['lang'] = $vocab->language;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
    
     
 }
