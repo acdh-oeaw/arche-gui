@@ -1,10 +1,7 @@
 jQuery(function($) {
     "use strict";
     var actionPage = '';
-    let orderTexts = {
-        titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
-        dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
-    };
+    
     
     if(window.location.href.indexOf("/oeaw_detail/") > -1) {
         actionPage = 'detail_view';
@@ -26,7 +23,33 @@ jQuery(function($) {
     
     
     $(document).ready(function() { 
+        addExtraSortingForViews();
     });
+    
+    function addExtraSortingForViews() {
+        var currentURL = window.location.toString();
+        //extend the search dropdown for the persons
+        if (currentURL.indexOf("type=Person/") >= 0 || currentURL.indexOf("type=Person&") >= 0) {
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="lastnameasc" href="#">Last Name (ASC)</a>');
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="lastnamedesc" href="#">Last Name (DESC)</a>');            
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="lastnameasc" href="#">Last Name (ASC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="lastnamedesc" href="#">Last Name (DESC)</a>');
+        }
+        //extend the collection with 
+        if (currentURL.indexOf("type=Collection/") >= 0 || currentURL.indexOf("type=Collection&") >= 0) {
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
+        }
+
+        if (currentURL.indexOf("discover/root") >= 0) {
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
+        }
+    }
     
     function getUrlParams(actionPage = 'detail_view'){
         var urlPage;
@@ -76,16 +99,34 @@ jQuery(function($) {
             }
             
         } else {
+            //detail view child paging
             let searchParams = new URLSearchParams(window.location.href);
             urlPage = searchParams.get('page');
             urlLimit= searchParams.get('limit');
             urlOrder= searchParams.get('order');
         }
+        
+        urlOrder = urlOrder.replace('#','');
+        urlLimit = urlLimit.replace('#','');
+        urlPage = urlPage.replace('#','');
+        
+        let orderTexts = {
+            titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
+            dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
+        };
+        
+        console.log(urlOrder);
+        console.log(orderTexts[urlOrder]);
+        console.log(urlLimit);
         //change the gui values
         $('#sortByButton').html(orderTexts[urlOrder]);
         $('#resPerPageButton').html(urlLimit);
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
+    }
+    
+    function changePagerGui() {
+        
     }
     
     $(document ).delegate( "#prev-btn", "click", function(e) {
@@ -123,7 +164,8 @@ jQuery(function($) {
            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
         } else if(actionPage == 'search') {
             newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
-        }else {
+        } else {
+            
             var path = window.location.pathname;
             var newUrlLimit = "&limit="+limit;
             var newUrlPage = "&page="+page;
@@ -135,8 +177,6 @@ jQuery(function($) {
                 cleanPath = path;
             }
             newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
-            window.history.pushState({path:newurl},'',newurl);
-            window.location = newurl;
         }  
         window.history.pushState({path:newurl},'',newurl);
         window.location = newurl;

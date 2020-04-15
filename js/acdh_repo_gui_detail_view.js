@@ -147,7 +147,46 @@
    }
    
    
-  
+   
+    $(document).ready(function() {
+        
+        
+        /**
+         * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
+         */
+        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
+            //block-mainpagecontent
+            $(document ).delegate( "a", "click", function(e) {
+            //$('a').click(function(e){
+                $("#loader-div").show();
+                var url = $(this).attr('href');
+                if(url && url.indexOf("/browser/oeaw_detail/") >= 0 || url && url.indexOf("/browser//oeaw_detail/") >= 0 ) {
+                    $('html, body').animate({scrollTop: '0px'}, 0);
+                    url = url.substring(url.indexOf("/browser/"));
+                    $(".loader-div").show();
+                    var id = url;
+                    id = id.replace("/browser/oeaw_detail/", "");
+                    id = id.replace("/browser//oeaw_detail/", "");
+                    url = url+"&ajax=1";
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        success: function(data, status) {
+                            //change url
+                            createNewUrl(id);
+                            $('#block-mainpagecontent').html(data);
+                        },
+                        error: function(message) {
+                            $('#block-mainpagecontent').html("Resource does not exists!");
+                        }
+                    });
+                    $("#loader-div").hide();
+                    e.preventDefault();
+                }
+                $("#loader-div").hide();
+            });
+        }
+   });
             
 });
 
