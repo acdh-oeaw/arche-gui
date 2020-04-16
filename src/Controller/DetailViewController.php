@@ -75,7 +75,6 @@ class DetailViewController extends ControllerBase {
             $tooltip = $this->helper->formatTooltip($tooltip);
             $this->basicViewData->extra->tooltip = $tooltip;
         }
-        
         return $this->basicViewData;
     }
     

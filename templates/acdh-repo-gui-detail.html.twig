@@ -84,24 +84,22 @@
                 <span class="res-prop-label">{{ "Spatial Coverage"|trans }}:&nbsp;&nbsp;</span>
                 {% if basic.getData('acdh:hasSpatialCoverage') is iterable and basic.getData('acdh:hasSpatialCoverage')|length > 1 %}
                     {% for spatial in basic.getData('acdh:hasSpatialCoverage') %}
-                        {% if spatial.insideUri and spatial.title %}
+                        {% if spatial.id and spatial.title %}
                             {% if (loop.length <= loop.index)  %}
                                 {% set separator = '' %}
                             {% else %}    
                                 {% set separator = ',' %}
                             {% endif %}
-                                <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.insideUri }}">{{ spatial.title }}</a></span> {{ separator|raw }}
+                                <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.id }}">{{ spatial.title }}</a></span> {{ separator|raw }}
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    {% if basic.getData('acdh:hasSpatialCoverage')[0].insideUri %}
-                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].insideUri }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
+                    {% if basic.getData('acdh:hasSpatialCoverage')[0].id %}
+                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].id }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
+                    {% elseif basic.getData('acdh:hasSpatialCoverage')[0].title %}
+                        <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</span>
                     {% else %}
-                        {% if basic.getData('acdh:hasSpatialCoverage')[0]['uri']  %}
-                            <span class="res-prop-value"><a id='archeHref'  href="{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}</a></span>
-                        {% else %}
                             <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].value }}</span>
-                        {% endif %}
                     {% endif %}
                     
                 {% endif %}
