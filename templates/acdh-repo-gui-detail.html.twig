@@ -20,7 +20,7 @@
                 {% else %}
                     {% set breadcrumbTitle = value.parenttitle  %}
                 {% endif %} 
-                <a href='/browser/oeaw_detail/{{value.parentid}}' title='{{ value.parenttitle }}'>{{  breadcrumbTitle }}</a> 
+                <a id='archeHref' href='/browser/oeaw_detail/{{value.parentid}}' title='{{ value.parenttitle }}'>{{  breadcrumbTitle }}</a> 
                 {% if breadcrumbLength -1 >= key %}
                     /  
                 {% endif %}
@@ -96,10 +96,10 @@
                     {% endfor %}
                 {% else %}
                     {% if basic.getData('acdh:hasSpatialCoverage')[0].insideUri %}
-                        <span class="res-prop-value"><a href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].insideUri }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
+                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].insideUri }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
                     {% else %}
                         {% if basic.getData('acdh:hasSpatialCoverage')[0]['uri']  %}
-                            <span class="res-prop-value"><a href="{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}</a></span>
+                            <span class="res-prop-value"><a id='archeHref'  href="{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].url }}</a></span>
                         {% else %}
                             <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].value }}</span>
                         {% endif %}

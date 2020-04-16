@@ -153,7 +153,8 @@
          */
         if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
             
-            $(document ).delegate( "a", "click", function(e) {
+            $(document ).delegate( "a#archeHref", "click", function(e) {
+                var reloadTable = false;
                 $("#loader-div").show();
                 var url = $(this).attr('href');
                 //if the url is arche url
@@ -172,11 +173,13 @@
                             //change url
                             createNewUrlForInsideClick(id);
                             $('#block-mainpagecontent').html(data);
+                            reloadTable = true;
                         },
                         error: function(message) {
-                            $('#block-mainpagecontent').html("Resource does not exists!");
+                            $('#block-mainpagecontent').html("Resource does not exists!.");
                         }
                     });
+                    //
                     $("#loader-div").hide();
                     e.preventDefault();
                 }
@@ -184,6 +187,10 @@
                    window.open(url, '_blank'); 
                 }
                 $("#loader-div").hide();
+                if(reloadTable) {
+                    
+                }
+                
             });
         }
    });

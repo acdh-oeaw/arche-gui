@@ -19,12 +19,12 @@
             {% if data is iterable %}
                 {% for value in data %}
                     {% if (onlyurl)  %}
-                        <a href="{{ value.uri }}">{{ value.uri }}</a>
+                        <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
-                            <a href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>
                         {% elseif (value.repoid)  %}
-                            <a href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.repoid }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.repoid }}</a>
                         {% else  %}
                             {{ value.title|nl2br }}
                         {% endif  %}   
@@ -49,11 +49,11 @@
                         {% endif%}    
                         
                     {% elseif (value.insideUri) and (value.title)  %}
-                        <a href="/browser/oeaw_detail/{{ value.insideUri }}">{{ value.title|nl2br }}</a>
+                        <a id='archeHref' href="/browser/oeaw_detail/{{ value.insideUri }}">{{ value.title|nl2br }}</a>
                     {% elseif value.title and value.uri %}
-                        <a href="{{ value.uri }}">{{ value.title|nl2br }}</a>
+                        <a id='archeHref' href="{{ value.uri }}">{{ value.title|nl2br }}</a>
                     {% elseif value.uri %}
-                        <a href="{{ value.uri }}">{{ value.uri }}</a>
+                        <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
                     {% elseif value.title %}
                         {{ value.title }}
                     {% elseif value.value %}
