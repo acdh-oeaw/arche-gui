@@ -35,7 +35,11 @@ class ArcheApiController extends ControllerBase
         $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
     }
     
-   
+    /**
+     * Get the Persons data for the Metadata Editor
+     * @param string $searchStr
+     * @return Response
+     */
     public function repo_persons(string $searchStr): Response
     {   
         /*
@@ -65,6 +69,11 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Get the Places data for the Metadata Editor
+     * @param string $searchStr
+     * @return Response
+     */
     public function repo_places(string $searchStr): Response
     {   
         /*
@@ -94,6 +103,11 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Get the publications data for the Metadata Editor
+     * @param string $searchStr
+     * @return Response
+     */
     public function repo_publications(string $searchStr): Response
     {   
         /*
@@ -124,6 +138,11 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Get the organisations data for the Metadata Editor
+     * @param string $searchStr
+     * @return Response
+     */
     public function repo_organisations(string $searchStr): Response
     {   
         /*
@@ -153,6 +172,12 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Get the user defined acdh type data for the Metadata Editor
+     * @param string $type
+     * @param string $searchStr
+     * @return Response
+     */
     public function repo_getData(string $type ,string $searchStr): Response
     {   
         /*
@@ -182,6 +207,12 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Get the ontology metadata
+     * @param string $type
+     * @param string $lng
+     * @return Response
+     */
     public function repo_getMetadata(string $type ,string $lng): Response
     {   
         /*
@@ -208,6 +239,35 @@ class ArcheApiController extends ControllerBase
         $response->setContent(json_encode($this->result));
         $response->headers->set('Content-Type', 'application/json');
         
+        return $response;
+    }
+    
+    /**
+     * Get the actual resource inverse data
+     * Where the id is available, but not identifier, pid or ispartof
+     * @return Response
+     */
+    public function repo_inverse_result(string $repoid): Response {
+        
+        if (empty($repoid) ) {
+            return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $obj = new \stdClass();
+        $obj->repoid = $repoid;
+        $obj->baseUrl = $this->repo->getBaseUrl();
+        //get the data
+        $this->modelData = $this->model->getViewData('inverse', $obj);
+        
+        $this->result = $this->helper->createView($this->modelData, 'inverse');
+        
+        if(count($this->result) == 0 ){
+            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $response = new Response();
+        $response->setContent(json_encode(array('data' => $this->result)));
+        $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 }

@@ -28,10 +28,18 @@ class ArcheApiModel extends ArcheModel {
      */
     public function getViewData(string $identifier = "metadata", object $properties = null): array {
         $this->properties = $properties;
-        if($identifier == 'metadata') {
-            return $this->getOntology();
-        } 
-        return $this->getData();
+        
+        switch ($identifier) {
+            case 'metadata':
+                return $this->getOntology();
+                break;
+            case 'inverse':
+                return $this->getInverseData();
+                break;
+            default:
+                return $this->getData();
+                break;
+        }
     }
     
     /**
@@ -71,5 +79,28 @@ class ArcheApiModel extends ArcheModel {
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         return (array)$ontology->getClass($this->properties->type);
+    }
+    
+    /**
+     * get the resource inverse data
+     * Inverse is where the value is not identifier, pid or ispartof
+     * @return array
+     */
+    private function getInverseData(): array {
+         $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                    "SELECT * from gui.inverse_data_func('".$this->properties->repoid."');" 
+                    );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
+        } catch (Exception $ex) {
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+             $result = array();
+        }
+        
+        $this->changeBackDBConnection();
+        return $result;
     }
 }

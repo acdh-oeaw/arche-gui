@@ -746,6 +746,36 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+/**
+*  INVERSE TABLE SQL
+**/
+CREATE OR REPLACE FUNCTION gui.inverse_data_func(_identifier text, _lang text DEFAULT 'en')
+  RETURNS table (id bigint, property text, title text)
+AS $func$
+DECLARE 
+
+BEGIN
+	
+--get all inverse ids
+DROP TABLE IF EXISTS  inverseIds;
+CREATE TEMP TABLE inverseIds AS (
+	select 
+	DISTINCT(mv.id), mv.property 
+	from metadata_view as mv
+	where 
+	mv.value = _identifier
+	and mv.property NOT IN ('https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' , 'https://vocabs.acdh.oeaw.ac.at/schema#hasPid')
+);
+RETURN QUERY
+	select 
+	DISTINCT(iv.id), iv.property, mv.value 
+	from inverseIds as iv
+	left join metadata_view as mv on mv.id = iv.id
+	where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
+	--and mv.lang = _lang;
+END
+$func$
+LANGUAGE 'plpgsql';
 
 
 
@@ -780,3 +810,4 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
+

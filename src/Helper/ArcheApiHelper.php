@@ -28,26 +28,54 @@ class ArcheApiHelper extends ArcheHelper {
             return array();
         }
         
-        if($apiType == 'metadata'){
-            $this->creatMetadataObj($data);
-            if(count($data['properties']) > 0){
-                $this->data = $data['properties'];
-            }
-            
-            $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
-            $this->result['id'] = $data['class'];
-            $this->result['type'] = "object";
-            $this->result['title'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $data['class']);
-            $this->formatMetadataView();
-           
-        }else{
-            $this->data = $data;
-            $this->apiType = $apiType;
-            $this->formatView();
+        switch ($apiType) {
+            case 'metadata':
+                $this->setupMetadataType($data);
+                break;
+            case 'inverse':
+                $this->data = $data;
+                $this->formatInverseData($data);
+                break;
+            default:
+                $this->data = $data;
+                $this->apiType = $apiType;
+                $this->formatView();
+                break;
         }
         
         return $this->result;
     }
+    
+    /**
+     * Create the inverse result for the datatable
+     * @param array $data
+     */
+    private function formatInverseData(array $data = array()) {
+        $this->result = array();
+        foreach($this->data as $id => $obj){
+            foreach($obj as $o) {
+                $arr = array(
+                    str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:', $o->property),
+                    "<a id='archeHref' href='/browser/oeaw_detail/$id'>$o->title</a>"
+                );
+                $this->result[] = $arr;
+            }
+        }
+    }
+    
+    private function setupMetadataType(array $data = array()) {
+        $this->creatMetadataObj($data);
+        if(count($data['properties']) > 0){
+            $this->data = $data['properties'];
+        }
+            
+        $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
+        $this->result['id'] = $data['class'];
+        $this->result['type'] = "object";
+        $this->result['title'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $data['class']);
+        $this->formatMetadataView();
+    }
+    
     
     /**
      * Format the data for the metadata api request

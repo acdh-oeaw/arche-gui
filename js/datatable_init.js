@@ -120,6 +120,7 @@ jq2(function( $ ) {
             //get the uri
             var uri = jq2('#showInverse').data('tableuri');
             //genereate the data
+            console.log(uri);
             jq2('table.inverseTable').DataTable({
                 "ajax": {
                     "url": "/browser/oeaw_inverse_result/"+uri,
