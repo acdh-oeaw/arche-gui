@@ -70,4 +70,17 @@ class DetailViewHelper extends ArcheHelper {
             }
         }
     }
+    
+    /**
+     * Format the sql result for the gui
+     * @param type $tooltip
+     * @return array
+     */
+    public function formatTooltip($tooltip): array {
+        $result = array();
+        foreach ($tooltip as $t){
+            $result[$t->type] = $t;
+        }
+        return $result;
+    }
 }

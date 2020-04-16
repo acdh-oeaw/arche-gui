@@ -747,3 +747,36 @@ $func$
 LANGUAGE 'plpgsql';
 
 
+
+
+/**
+* TOOLTIP ONTOLOGY SQL
+**/
+
+CREATE OR REPLACE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text, description text, type text)
+AS $func$
+DECLARE 
+
+BEGIN
+DROP TABLE IF EXISTS  ontologyData;
+	CREATE TEMP TABLE ontologyData AS (
+		select mv.id, 
+		mv2.property, mv2.value, mv2.lang
+		from metadata_view as mv
+		left join metadata_view as mv2 on mv.id = mv2.id and mv.value in ('http://www.w3.org/2002/07/owl#DatatypeProperty', 'http://www.w3.org/2002/07/owl#ObjectProperty')
+		where 
+		mv2.property in ('http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2004/02/skos/core#altLabel')
+		and mv2.lang = _lang
+		order by mv.id
+	);
+RETURN QUERY	
+	select DISTINCT(od.id), 
+	(select od3.value from ontologyData as od3 where od3.id = od.id and od3.property = 'http://www.w3.org/2004/02/skos/core#altLabel' limit 1) as title,
+		(select od2.value from ontologyData as od2 where od2.id = od.id and od2.property = 'http://www.w3.org/2000/01/rdf-schema#comment' limit 1) as description,
+	REPLACE(mv.value, 'https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:')
+	from ontologyData as od
+	left join metadata_view as mv on mv.id = od.id and mv.type = 'ID' and mv.value like 'https://vocabs.acdh%';
+END
+$func$
+LANGUAGE 'plpgsql';

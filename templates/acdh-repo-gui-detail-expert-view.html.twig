@@ -1,6 +1,6 @@
 <!-- expert view -->
 <div class="single-res-overview single-res-overview-expert">
-    TOOLTIPs
+    
      {% if  basic.getTitle() %}
         <div class="res-property">
             <span class="res-title">
@@ -24,12 +24,12 @@
 
                 <tr>
                     <td width='40%'>
-                        {% if extras["tooltip"][key]['desc'] %}
+                        {% if extra[key].description %}
                             <div style='float:left;'>
                                 {{ key }}
                             </div>
                             <div style='float:right;'>
-                                <a  class="" data-toggle="tooltip" data-placement="right" data-html="true" title="{{ extras["tooltip"][key]['desc'] }}">
+                                <a  class="" data-toggle="tooltip" data-placement="right" data-html="true" title="{{ extra[key].description}}">
                                     <i class="material-icons" style='font-size:17px; color: #88DBDF;'>&#xE88F;</i>
                                 </a>
                             </div>

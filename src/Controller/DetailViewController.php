@@ -68,12 +68,19 @@ class DetailViewController extends ControllerBase {
             $this->basicViewData->extra->breadcrumb = $breadcrumb;
         } 
         
+        //get the tooltip
+        $tooltip = array();
+        $tooltip = $this->model->getTooltipOntology();
+        if(count($tooltip) > 0 ){
+            $tooltip = $this->helper->formatTooltip($tooltip);
+            $this->basicViewData->extra->tooltip = $tooltip;
+        }
+        
         return $this->basicViewData;
     }
     
     /**
-     * 
-     * generate the basic metadata for the root resource/collection in the dissemination services view
+     * Generate the basic metadata for the root resource/collection in the dissemination services view
      * 
      * @param string $identifier -> full repoUrl
      * @return object

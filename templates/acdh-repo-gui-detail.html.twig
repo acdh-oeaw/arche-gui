@@ -1,8 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
-{{ result.insideUri }}
+
 <!--   MAIN DETAIL VIEW -->
-    <input type="hidden" id="insideUri" name="insideUri" value="{{ result.insideUri }}">
-    <input type="hidden" id="accessRestriction" name="accessRestriction" value="{{ result.accessRestriction }}">
+    <input type="hidden" id="insideUri" name="insideUri" value="{{ basic.getRepoId() }}">
     <input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
     
     <div class="loader-div">
@@ -68,7 +67,7 @@
     </div>
 	
    <!-- EXPERT VIEW BLOCK -->
-    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic } ) }}
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic, 'extra': extra.tooltip } ) }}
    
     <!-- DISSEMINATION BLOCK -->
     {% if dissemination %}
