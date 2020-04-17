@@ -67,10 +67,10 @@ oeaw_get_collection_data:
         _permission: 'access content'
         _access: 'TRUE'
 
-oeaw_3d_viewer:
+repo_3d_viewer:
     path: '/oeaw_3d_viewer/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_3d_viewer'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_3d_viewer'
     requirements:
         data: '^[^\?]*$'
         _permission: 'access content'
@@ -85,20 +85,20 @@ repo_dl_collection_binaries:
         _permission: 'access content'
         _access: 'TRUE'
 
-oeaw_iiif_viewer:
+repo_iiif_viewer:
     path: '/iiif_viewer/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_iiif_viewer'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_iiif_viewer'
     requirements:
         uri: '^[^\?]*$'
         _permission: 'access content'
         _access: 'TRUE'
 
 #arche apis
-oeaw_turtle_api:    
+repo_turtle_api:    
     path: '/oeaw_turtle_api/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::oeaw_turtle_api'
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_turtle_api'
     requirements:
         data: '^[^\?]*$'
         _permission: 'access content'

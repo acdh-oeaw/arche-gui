@@ -27,7 +27,6 @@ class AcdhRepoGuiController extends ControllerBase
     private $rootViewController;
     private $searchViewController;
     private $detailViewController;
-    private $dissServController;
     private $siteLang;
     private $langConf;
     
@@ -39,7 +38,6 @@ class AcdhRepoGuiController extends ControllerBase
         $this->rootViewController = new RVC($this->repo);
         $this->searchViewController = new SVC($this->repo);
         $this->detailViewController = new DVC($this->repo);
-        //$this->dissServController = new DisseminationServicesController($this->repo);
         $this->generalFunctions = new GeneralFunctions();
         $this->langConf = $this->config('acdh_repo_gui.settings');
     }
@@ -204,93 +202,10 @@ class AcdhRepoGuiController extends ControllerBase
     
     
     
-    /**
-     * This API will generate the turtle file from the resource.
-     *
-     * @param string $identifier - the UUID
-     * @param string $page
-     * @param string $limit
-     */
-    public function oeaw_turtle_api(string $repoid): Response
-    {
-        if (!empty($repoid)) {
-            $result = array();
-            $result = $this->dissServController->generateView($repoid, 'turtle_api');
-            if(count($result) > 0) {
-                return new Response($result[0], 200, ['Content-Type'=> 'text/turtle']);
-            }
-        }
-        return new Response("No data!", 400);
-    }
     
     
     
-    /**
-     * Display the 3d object (nxs, ply) inside a js viewer
-     * 
-     * @param string $repoid -> repoid only
-     * @return array
-     */
-    public function oeaw_3d_viewer(string $repoid) : array
-    {   
-        $basic = array();
-        if (!empty($repoid)) {
-            $repoUrl = $this->repo->getBaseUrl().$repoid;
-            $result = array();
-            $result = $this->dissServController->generateView($repoid, '3d');
-            $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
-        
-            if(count($result) > 0 && isset($result['result'])) {
-                return
-                    array(
-                        '#theme' => 'acdh-repo-ds-3d-viewer',
-                        '#ObjectUrl' => $result['result'],
-                        '#cache' => ['max-age' => 0], 
-                        '#basic' => $basic
-                    );
-            }
-        }
-        return
-            array(
-                '#theme' => 'acdh-repo-ds-3d-viewer',
-                '#ObjectUrl' => $result['result'],
-                '#cache' => ['max-age' => 0], 
-                '#basic' => $basic
-            );
-    }
-    
-    
-    
-    
-    /**
-     * Generate loris url based on the repoid and passing it back to the iiif template
-     * 
-     * @param string $repoid -> repoid
-     * @return array
-     */
-    public function oeaw_iiif_viewer(string $repoid) : array
-    {
-        //RepoResource->getDissServ()['rawIIIf']->getUrl() -> when it is ready
-        $basic = array();
-        $lorisUrl = '';
-        
-        $repoUrl = $this->repo->getBaseUrl().$repoid;
-        $result = array();
-        $result = $this->dissServController->generateView($repoid, 'iiif');
-        if(isset($result['lorisUrl']) && !empty($result['lorisUrl']))
-        {
-           $lorisUrl = $result['lorisUrl'];
-        }
-        $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
-        
-        return
-            array(
-                '#theme' => 'acdh-repo-ds-iiif-viewer',
-                '#basic' => $basic,
-                '#cache' => ['max-age' => 0], 
-                '#lorisUrl' => $lorisUrl
-            );
-    }
+   
     
      /**
      * Change language session variable API
