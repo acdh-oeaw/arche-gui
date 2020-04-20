@@ -59,8 +59,10 @@ class BlocksModel extends ArcheModel {
             );
             $result = $query->fetchAll();
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
              $result = array();
         }
         
@@ -89,8 +91,10 @@ class BlocksModel extends ArcheModel {
             $result = $query->fetchAll();
             
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
              $result = array();
         }
         

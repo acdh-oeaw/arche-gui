@@ -156,8 +156,10 @@ class SearchViewModel extends ArcheModel {
             }
             return 0;
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         }
     }
@@ -190,8 +192,10 @@ class SearchViewModel extends ArcheModel {
             }
             return 0;
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         }
     }
@@ -220,8 +224,10 @@ class SearchViewModel extends ArcheModel {
             }
            
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         }
     }
@@ -261,8 +267,10 @@ class SearchViewModel extends ArcheModel {
             $this->changeBackDBConnection();
            
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }
     }
@@ -290,8 +298,10 @@ class SearchViewModel extends ArcheModel {
             $this->changeBackDBConnection();
            
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }
     }
@@ -324,8 +334,10 @@ class SearchViewModel extends ArcheModel {
             $this->changeBackDBConnection();
            
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }
     }

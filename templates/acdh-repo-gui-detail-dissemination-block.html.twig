@@ -10,16 +10,6 @@
                     </a>
                 </div>
             {% endfor %} 
-
-            {% if acdhType|lower == "collection" %}
-                {% if repoid %}
-                    <div class="res-act-button">
-                        <a href="/browser/oeaw_coll_dl_script/{{ repoid }}" class="dissServAhref" >
-                            <span>Collection Download Script</span>
-                        </a>
-                    </div>
-                {% endif %}
-            {% endif %}
         </div>
 
         <div id="shibboleth_login_info" class="shibboleth_login_info" style="display:none"></div>

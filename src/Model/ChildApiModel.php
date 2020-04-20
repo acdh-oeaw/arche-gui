@@ -45,8 +45,10 @@ class ChildApiModel extends ArcheModel {
             $this->reorderResult();
            
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->data = array();
         } catch(\Drupal\Core\Database\DatabaseExceptionWrapper $ex ) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->data = array();
         }
         
@@ -96,8 +98,10 @@ class ChildApiModel extends ArcheModel {
                 return (int)$result->count;
             }
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch(\Drupal\Core\Database\DatabaseExceptionWrapper $ex ) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         }
         $this->changeBackDBConnection();

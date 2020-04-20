@@ -34,7 +34,11 @@ class ArcheApiHelper extends ArcheHelper {
                 break;
             case 'inverse':
                 $this->data = $data;
-                $this->formatInverseData($data);
+                $this->formatInverseData();
+                break;
+             case 'checkIdentifier':
+                $this->data = $data;
+                $this->formatCheckIdentifierData();
                 break;
             default:
                 $this->data = $data;
@@ -48,9 +52,8 @@ class ArcheApiHelper extends ArcheHelper {
     
     /**
      * Create the inverse result for the datatable
-     * @param array $data
      */
-    private function formatInverseData(array $data = array()) {
+    private function formatInverseData() {
         $this->result = array();
         foreach($this->data as $id => $obj){
             foreach($obj as $o) {
@@ -199,5 +202,23 @@ class ArcheApiHelper extends ArcheHelper {
             }
         }
         $this->result = array_values($this->result);
+    }
+    
+    /**
+     * Format the checkIdentifier api call result
+     */
+    private function formatCheckIdentifierData() {
+        $this->result = array();
+        foreach ($this->data as $val) {
+            if($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
+                $this->result['hasAvailableDate'] = date('Y-m-d', strtotime($val->value));
+            }
+            if($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
+                $this->result['title'] = $val->value;
+            }
+            if($val->property == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+                $this->result['rdfType'] = $val->value;
+            }
+        }
     }
 }

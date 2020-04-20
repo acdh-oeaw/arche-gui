@@ -271,6 +271,43 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
+    /**
+     * Check the repoid is already available in the system or not
+     * $repoid = number
+     * @param string $repoid 
+     * @return Response
+     */
+    public function repo_checkIdentifier(string $repoid): Response
+    {   
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/getData/checkIdentifier/MYVALUE?_format=json
+        */
+        
+        $response = new Response();
+        
+        if (empty($repoid)) {
+            return new JsonResponse(array("Please provide a repoid"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $obj = new \stdClass();
+        $obj->repoid = (int)$repoid;
+        //get the data
+        $this->modelData = $this->model->getViewData('checkIdentifier', $obj);
+        if(count($this->modelData) == 0 ){
+            return new JsonResponse(array("The identifier is free"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $this->result = $this->helper->createView($this->modelData, 'checkIdentifier');
+        if(count($this->result) == 0 ){
+            return new JsonResponse(array("The identifier is free"), 404, ['Content-Type'=> 'application/json']);
+        }
+        $response->setContent(json_encode($this->result));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
     
     
 }

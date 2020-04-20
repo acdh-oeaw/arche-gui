@@ -36,6 +36,9 @@ class ArcheApiModel extends ArcheModel {
             case 'inverse':
                 return $this->getInverseData();
                 break;
+            case 'checkIdentifier':
+                return $this->checkIdentifier();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -56,8 +59,10 @@ class ArcheApiModel extends ArcheModel {
                     );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
              $result = array();
         }
         
@@ -95,11 +100,45 @@ class ArcheApiModel extends ArcheModel {
                     );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
              $result = array();
         }
         
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    /**
+     * Check the repoid in the DB
+     * @return array
+     */
+    private function checkIdentifier(): array {
+         $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                    "select 
+                        DISTINCT(i.id),  mv.property, mv.value, mv.lang
+                    from identifiers as i
+                    left join metadata_view as mv on mv.id = i.id
+                    where i.id = ".$this->properties->repoid."
+                        and property in (
+                                'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 
+                                'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate', 
+                                'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                        );" 
+                    );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS);
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+             $result = array();
+        }
         $this->changeBackDBConnection();
         return $result;
     }

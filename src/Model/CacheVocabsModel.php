@@ -67,8 +67,10 @@ class CacheVocabsModel
 
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = new \stdClass();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = new \stdClass();
         }
         
@@ -93,8 +95,10 @@ class CacheVocabsModel
             $result = true;
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = false;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = false;
         }
         return $result;
@@ -135,10 +139,13 @@ class CacheVocabsModel
                 )->execute();
             return true;
         } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return false;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return false;
         } catch (\Drupal\Core\Database\IntegrityConstraintViolationException $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return false;
         }
     }

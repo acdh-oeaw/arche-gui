@@ -150,9 +150,16 @@ repo_inverse_result:
     defaults:
         _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_inverse_result'
     requirements:
-        data: '^[^\?]*$'
         _permission: 'access content'
         _access: 'TRUE'
+        
+repo_checkIdentifier:    
+    path: '/api/checkIdentifier/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_checkIdentifier'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'        
         
 
         
