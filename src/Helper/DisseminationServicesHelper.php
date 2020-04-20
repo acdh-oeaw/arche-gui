@@ -21,8 +21,7 @@ class DisseminationServicesHelper extends ArcheHelper {
     private $data;
     private $repoid;
     private $repoUrl;
-    private $result = array();    
-    private $dataFor3dObj = array(); 
+    private $result = array();
     private $collectionDate;
     private $collectionTmpDir;
     
@@ -36,11 +35,8 @@ class DisseminationServicesHelper extends ArcheHelper {
                 $this->data = $data;
                 $this->createCollection();
                 break;
-            case 'turtle_api':
-                $this->result = array($this->turtleDissService());
-                break;
             case '3d':
-                $this->result = $this->threeDDissService();
+                $this->threeDDissService();
                 break;
             case 'iiif':
                 $this->result['lorisUrl'] = $this->getLorisUrl();
@@ -71,7 +67,7 @@ class DisseminationServicesHelper extends ArcheHelper {
      */
     private function threeDDissService() {
         $client = new \GuzzleHttp\Client(['verify' => false]);
-        
+        $this->result = array();
         try {
             $request = new \GuzzleHttp\Psr7\Request('GET', $this->repoUrl);
             //send async request
@@ -114,24 +110,23 @@ class DisseminationServicesHelper extends ArcheHelper {
                                     }
                                 }
                                 $url = '/sites/default/files/'.$dir.'/'.$filename;
-                                $this->dataFor3dObj['result'] = $url;
-                                $this->dataFor3dObj['error'] = "";
+                                $this->result['result'] = $url;
+                                $this->result['error'] = "";
                             }
                         } else {
-                            $this->dataFor3dObj['error'] = t('File extension').' '.t('Error');
-                            $this->dataFor3dObj['result'] = "";
+                            $this->result['error'] = t('File extension').' '.t('Error');
+                            $this->result['result'] = "";
                         }
                     }
                 } else {
-                    $this->dataFor3dObj['error'] = t('No files available.');
-                    $this->dataFor3dObj['result'] = "";
+                    $this->result['error'] = t('No files available.');
+                    $this->result['result'] = "";
                 }
             });
             $promise->wait();
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
-            $this->dataFor3dObj['error'] = $ex->getMessage();
+            $this->result['error'] = $ex->getMessage();
         }
-        return $this->dataFor3dObj;
     }
     
     
@@ -279,17 +274,13 @@ class DisseminationServicesHelper extends ArcheHelper {
         if($this->collectionGetTurtle() === false) {
             \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$url);
         }
-        
         //4. tar the files
         //5. remove the downloaded files and leave just the tar file.
         if($this->collectionTarFiles() === false) {
             return false;
         }
-        
         $wwwurl = str_replace('/api/', '', $this->repo->getBaseUrl() );
-                
         return $wwwurl.'/browser/sites/default/files/collections/'.$this->collectionDate.'/collection.tar';
-        
     }
     
     /**

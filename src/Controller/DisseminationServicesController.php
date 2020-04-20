@@ -29,7 +29,7 @@ class DisseminationServicesController extends ControllerBase {
     private $detailViewController;
     
     private $disseminations = array(
-        'collection', '3d', 'iiif', 'turtle_api'
+        'collection', '3d', 'iiif'
     );
     
     public function __construct() {
@@ -146,27 +146,6 @@ class DisseminationServicesController extends ControllerBase {
         $response->headers->set('Content-Disposition', 'attachment; filename=collection_download_script.py');
         return $response;
     }
-    
-    /**
-     * This API will generate the turtle file from the resource.
-     *
-     * @param string $identifier - the UUID
-     * @param string $page
-     * @param string $limit
-     */
-    public function repo_turtle_api(string $repoid): Response
-    {
-        
-        if (!empty($repoid)) {
-            $result = array();
-            $result = $this->generateView($repoid, 'turtle_api');
-            if(count($result) > 0) {
-                return new Response($result[0], 200, ['Content-Type'=> 'text/turtle']);
-            }
-        }
-        return new Response("No data!", 400);
-    }
-    
     
     /**
      * Generate loris url based on the repoid and passing it back to the iiif template

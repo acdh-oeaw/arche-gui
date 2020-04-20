@@ -94,16 +94,6 @@ repo_iiif_viewer:
         _permission: 'access content'
         _access: 'TRUE'
 
-#arche apis
-repo_turtle_api:    
-    path: '/oeaw_turtle_api/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_turtle_api'
-    requirements:
-        data: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
 oeaw_change_lng:    
     path: '/oeaw_change_lng/{lng}'
     defaults:
