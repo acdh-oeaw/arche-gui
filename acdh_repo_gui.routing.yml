@@ -160,7 +160,14 @@ repo_checkIdentifier:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'        
-        
+
+repo_recacheControlledVocabs:    
+    path: '/api/controlledvocabs/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_recacheControlledVocabs'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'          
 
         
         

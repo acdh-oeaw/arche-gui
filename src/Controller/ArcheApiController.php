@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
-use acdhOeaw\acdhRepoLib\RepoResource;
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
 /**
@@ -303,6 +302,33 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("The identifier is free"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    /**
+     * Recache the controlled vocabs
+     * 
+     * @param string $lng
+     * @return Response
+     */
+    public function repo_recacheControlledVocabs(string $lng): Response {
+        
+        $response = new Response();
+        
+        ini_set('max_execution_time', 3600);
+        ini_set('max_input_time', 360);
+                 
+        $helper = new \Drupal\acdh_repo_gui\Helper\CacheVocabsHelper($lng);
+        $this->result = array();
+        $this->result = $helper->getControlledVocabStrings();
+       
+        if (isset($this->result['error'])) {
+            return new JsonResponse(array($this->result['error']." not cached/generated"), 404, ['Content-Type'=> 'application/json']);
+        } 
+     
+        $response->setContent(json_encode("Update is ready!"));
         $response->headers->set('Content-Type', 'application/json');
         
         return $response;
