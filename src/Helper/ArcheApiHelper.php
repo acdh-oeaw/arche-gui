@@ -36,10 +36,16 @@ class ArcheApiHelper extends ArcheHelper {
                 $this->data = $data;
                 $this->formatInverseData();
                 break;
-             case 'checkIdentifier':
+            case 'checkIdentifier':
                 $this->data = $data;
                 $this->formatCheckIdentifierData();
                 break;
+            case 'gndPerson':
+                $this->data = $data;
+                $this->createGNDFile();
+                break;
+            
+            
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -218,6 +224,31 @@ class ArcheApiHelper extends ArcheHelper {
             }
             if($val->property == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
                 $this->result['rdfType'] = $val->value;
+            }
+        }
+    }
+    
+    /**
+     * create the GNDfile for the GND API
+     */
+    private function createGNDFile() {
+        $host = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost().'/browser/oeaw_detail/');
+        $fileLocation = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/beacon.txt';
+        
+        $this->result = array();
+        
+        if (count($this->data) > 0) {
+            $resTxt = "";
+            foreach ($this->data as $val) {
+                $resTxt .= $val->gnd."|".$host.$val->repoid." \n";
+            }
+
+            if (!empty($resTxt)) {
+                $resTxt = "#FORMAT: BEACON \n".$resTxt;
+                file_save_data($resTxt, "public://beacon.txt", FILE_EXISTS_REPLACE);
+                $this->result = array('fileLocation' => $fileLocation);
+            } else {
+                $this->result = array();
             }
         }
     }

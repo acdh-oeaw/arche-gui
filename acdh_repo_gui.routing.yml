@@ -131,6 +131,20 @@ repo_api_organisations:
     requirements:        
         _access: 'TRUE'  
 
+repo_api_concepts:    
+    path: '/api/concepts/{searchStr}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_concepts'
+    requirements:        
+        _access: 'TRUE'  
+
+repo_api_gndPerson:    
+    path: '/api/gnd'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_gndPerson'
+    requirements:        
+        _access: 'TRUE'  
+
 repo_api_getdata:    
     path: '/api/getData/{type}/{searchStr}'
     defaults:

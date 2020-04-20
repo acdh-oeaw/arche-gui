@@ -39,6 +39,9 @@ class ArcheApiModel extends ArcheModel {
             case 'checkIdentifier':
                 return $this->checkIdentifier();
                 break;
+            case 'gndPerson':
+                return $this->getGNDPersonData();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -116,7 +119,7 @@ class ArcheApiModel extends ArcheModel {
      * @return array
      */
     private function checkIdentifier(): array {
-         $result = array();
+        $result = array();
         //run the actual query
         try {
             $query = $this->repodb->query(
@@ -130,6 +133,37 @@ class ArcheApiModel extends ArcheModel {
                                 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate', 
                                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
                         );" 
+                    );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS);
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+             $result = array();
+        }
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    
+    /**
+     * Generate GND person data
+     * 
+     * @return array
+     */
+    private function getGNDPersonData(): array {
+        $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                    "select 
+			DISTINCT(mv.id) as repoid, i.ids as gnd 
+                    from metadata_view as mv
+                    left join identifiers as i on mv.id = i.id 
+                    where
+                        mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Person'
+                        and i.ids like '%gnd%';"
                     );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {

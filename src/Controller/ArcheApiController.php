@@ -138,6 +138,41 @@ class ArcheApiController extends ControllerBase
     }
     
     /**
+     * Get the concepts data for the Metadata Editor
+     * @param string $searchStr
+     * @return Response
+     */
+    public function repo_concepts(string $searchStr): Response
+    {   
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/concepts/MYVALUE?_format=json
+        */
+        
+        $response = new Response();
+        
+        if (empty($searchStr)) {
+            return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $obj = new \stdClass();
+        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Concept';
+        $obj->searchStr = strtolower($searchStr);
+        //get the data
+        $this->modelData = $this->model->getViewData('concepts', $obj);
+        
+        $this->result = $this->helper->createView($this->modelData, 'concepts');
+        if(count($this->result) == 0 ){
+            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $response->setContent(json_encode($this->result));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    /**
      * Get the organisations data for the Metadata Editor
      * @param string $searchStr
      * @return Response
@@ -329,6 +364,36 @@ class ArcheApiController extends ControllerBase
         } 
      
         $response->setContent(json_encode("Update is ready!"));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    
+    public function repo_gndPerson(): Response
+    {   
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/getData/gnd?_format=json
+        */
+        
+        $response = new Response();
+        
+        $obj = new \stdClass();
+        //get the data
+        $this->modelData = $this->model->getViewData('gndPerson', $obj);
+        if(count($this->modelData) == 0 ){
+            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $this->result = $this->helper->createView($this->modelData, 'gndPerson');
+        
+        $response->setContent(json_encode(array("status" => "File created", "url" => $fileLocation)));
+        if(!isset($this->result["fileLocation"]) || empty($this->result["fileLocation"]) ){
+            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $response->setContent(json_encode(array("status" => "File created", "url" => $this->result["fileLocation"])));
         $response->headers->set('Content-Type', 'application/json');
         
         return $response;
