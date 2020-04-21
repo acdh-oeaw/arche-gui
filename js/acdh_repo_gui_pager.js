@@ -108,10 +108,10 @@ jQuery(function($) {
         if(urlOrder){
             urlOrder = urlOrder.replace('#','');
         }
-        if(urlLimit){
+        if(urlLimit && $.isNumeric(urlLimit) === false){
             urlLimit = urlLimit.replace('#','');
         }
-        if(urlPage){
+        if(urlPage && $.isNumeric(urlPage) === false){
             urlPage = urlPage.replace('#','');
         }
         
@@ -125,10 +125,6 @@ jQuery(function($) {
         $('#resPerPageButton').html(urlLimit);
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
-    }
-    
-    function changePagerGui() {
-        
     }
     
     $(document ).delegate( "#prev-btn", "click", function(e) {
@@ -162,7 +158,7 @@ jQuery(function($) {
         var newurl = '';
         
         //if (history.pushState) {
-        if(actionPage == 'root') {
+        if(actionPage == 'root' || actionPage == 'root_main') {
            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
         } else if(actionPage == 'search') {
             newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 

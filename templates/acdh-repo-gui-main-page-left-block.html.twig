@@ -3,7 +3,7 @@
         
         <div class="res-el col-block col-lg-12">
 		
-        {% if item.getTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+        {% if item.isTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
    
             {% if item.getTitle() %}
                 <div class="res-property">
@@ -57,12 +57,14 @@
                 
             </div>	
 
-            {% if item.getTitleImage() %}</div>{% endif%}
+            {% if item.isTitleImage() %}</div>{% endif%}
 
-            {% if item.getTitleImage() %}	
+            {% if item.isTitleImage() %}	
                 <div class="res-inside-wrap col-lg-4 ">	
                     <div class="single-res-thumb">
-                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}"><img src="data:image/png;base64,{{ item.getTitleImage() }}" /></a>
+                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                            {{ item.getTitleImage()|raw }}
+                        </a>
                     </div>
                 </div>
             {% endif%}   

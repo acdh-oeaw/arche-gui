@@ -134,7 +134,7 @@
 <div class="arche-detail-view" >
     
     <div class="arche-detail-main" id="arche-dv-main">
-        {% if basic.getTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+        {% if basic.isTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
         
             {% if  basic.getTitle() %}
                 <div class="res-property">
@@ -164,12 +164,14 @@
             {% endfor %}
             
             
-        {% if basic.getTitleImage() %}</div>{% endif%}
+        {% if basic.isTitleImage() %}</div>{% endif%}
         
-        {% if basic.getTitleImage() %}	
+        {% if basic.isTitleImage() %}	
             <div class="res-inside-wrap col-lg-4 ">	
                 <div class="single-res-thumb">
-                    <a data-lightbox="{{ basic.getTitle() }}" href="{{ basic.getTitleImage() }}"><img src="{{ basic.getTitleImage() }}"></a>
+                    <a data-lightbox="{{ basic.getTitle() }}" href="{{ basic.getTitleImage() }}">
+                        {{ basic.getTitleImage()|raw }}
+                    </a>
                 </div>
             </div>
         {% endif%}

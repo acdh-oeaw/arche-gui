@@ -2,6 +2,8 @@
 
 namespace Drupal\acdh_repo_gui\Object;
 
+use GuzzleHttp;
+
 class ResourceObject {
     private $config;
     private $properties;
@@ -178,14 +180,38 @@ class ResourceObject {
         if(isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
             if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
                 $img = ''; 
-                if($img = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
-                    if(!empty($img)) {
-                        return $imageData = base64_encode($img);
+                $client = new \GuzzleHttp\Client();
+                $response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'/metadata');
+                if($response->getStatusCode() == 200){
+                    //thumbnail supported
+                    if (strpos($response->getBody(), '"image/png"') !== false) {
+                        echo 'thumbnail';
+                         return '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />';
+                    } else {
+                        if($img = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
+                            if(!empty($img)) {
+                                echo 'image';
+                                return '<img src="data:image/png;base64,'.base64_encode($img).'" /> ';
+                            }
+                        }
                     }
-                }              
+                }
             }
         }
         return '';
+    }
+    
+    /**
+     * Check if we have a titleimage id or not
+     * @return bool
+     */
+    public function isTitleImage(): bool {
+        if(isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
+            if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
