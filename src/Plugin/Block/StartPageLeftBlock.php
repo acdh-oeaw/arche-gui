@@ -35,7 +35,9 @@ class StartPageLeftBlock extends BlockBase
         $this->config = Repo::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml');
         
         $data = $this->RVC->generateRootView('3', '0', 'datedesc');
-        
+        if(!isset($data['data'])) {
+            $data['data'] = array();
+        }
         //getRepoID
         return [
             '#theme' => 'acdh-repo-gui-main-page-left-block',
