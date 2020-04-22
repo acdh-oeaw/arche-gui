@@ -113,6 +113,7 @@ class AcdhRepoGuiController extends ControllerBase
             if (empty($page)) {
                 $page = "1";
             }
+            
             return $this->repo_root($limit, $page, $order);
         } 
         
@@ -196,16 +197,6 @@ class AcdhRepoGuiController extends ControllerBase
         
         
     }
-    
-    
-    ////////// DISSEMINATION SERVICES /////////
-    
-    
-    
-    
-    
-    
-   
     
      /**
      * Change language session variable API

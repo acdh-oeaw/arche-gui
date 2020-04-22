@@ -1,3 +1,28 @@
+/**
+* COUNT THE ROOTS
+**/
+CREATE OR REPLACE FUNCTION gui.count_root_views_func()
+  RETURNS table (id bigint)
+AS $func$
+DECLARE 
+BEGIN	
+
+RETURN QUERY
+	select COUNT(DISTINCT(r.id))
+	from metadata as m
+	left join relations as r on r.id = m.id
+	where
+		m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+		and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
+		and NOT EXISTS ( 
+			SELECT 1 from relations as r2 where r2.id = m.id  
+				and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+		);
+END
+$func$
+LANGUAGE 'plpgsql';	
+
 /*
 * ROOT VIEW FUNCTION 
 */

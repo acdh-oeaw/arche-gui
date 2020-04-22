@@ -83,14 +83,14 @@ class RootViewModel extends ArcheModel {
      * Count the actual root resources
      * @return int
      */
-    public function countRoots(): int {
+    public function countRoots(): int {        
         $result = array();
         try {
-            $query = $this->repodb->query("select count(DISTINCT(id)) from gui.root_views_func() where title is not null  ");
+            $query = $this->repodb->query("select id from gui.count_root_views_func();  ");
             $this->sqlResult = $query->fetch();
             $this->changeBackDBConnection();
-            if(isset($this->sqlResult->count)) {
-                return $this->sqlResult->count;
+            if(isset($this->sqlResult->id)) {
+                return (int)$this->sqlResult->id;
             }    
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
