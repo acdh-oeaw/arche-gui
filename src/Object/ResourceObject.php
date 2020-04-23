@@ -180,22 +180,29 @@ class ResourceObject {
         if(isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
             if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
                 $img = ''; 
-                $client = new \GuzzleHttp\Client();
-                $response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'/metadata');
-                if($response->getStatusCode() == 200){
-                    //thumbnail supported
-                    if (strpos($response->getBody(), '"image/png"') !== false) {
-                        echo 'thumbnail';
-                         return '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />';
-                    } else {
-                        if($img = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
-                            if(!empty($img)) {
-                                echo 'image';
-                                return '<img src="data:image/png;base64,'.base64_encode($img).'" /> ';
-                            }
+                try {
+                    $client = new \GuzzleHttp\Client();
+                    $response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'/metadata');
+                    if($response->getStatusCode() == 200){
+                        //thumbnail supported
+                        if (strpos($response->getBody(), '"image/png"') !== false) {
+                             $img = '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />';
+                        } 
+                    }
+                } catch (\Exception $ex) {
+                    $img = ''; 
+                } catch (\GuzzleHttp\Exception\RequestException $ex){
+                    $img = ''; 
+                }
+                
+                if(empty($img)){
+                    if($img = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
+                        if(!empty($img)) {
+                            $img = '<img src="data:image/png;base64,'.base64_encode($img).'" /> ';
                         }
                     }
                 }
+                return $img;
             }
         }
         return '';
