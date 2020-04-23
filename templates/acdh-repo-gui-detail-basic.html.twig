@@ -108,7 +108,7 @@
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url',
-        'url_only': false
+        'url_only': true
     },
     'acdh:hasPid': {
         'icon': 'fingerprint',
@@ -186,7 +186,7 @@
        
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'onlyurl': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid } ) }}
                 {% endif%}
             {% endfor %}
             

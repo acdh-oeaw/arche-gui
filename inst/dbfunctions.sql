@@ -26,8 +26,8 @@ LANGUAGE 'plpgsql';
 /*
 * ROOT VIEW FUNCTION 
 */
-CREATE OR REPLACE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, language text)
+CREATE OR REPLACREATE OR REPLACE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text, titleimage text, description text, avDate timestamp, accesres text )
 AS $func$
 DECLARE 
 	_lang2 text := 'de';
@@ -35,10 +35,24 @@ BEGIN
 --RAISE NOTICE USING MESSAGE = _lang;
 	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 	
---get all root ids
-DROP TABLE IF EXISTS  rootids;
-CREATE TEMP TABLE rootids AS (
-	select DISTINCT(r.id) as rootid,
+RETURN QUERY
+WITH root_data as (
+	select DISTINCT(r.id) as id,
+	(CASE WHEN 
+		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
+	THEN
+		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
+	ELSE
+	 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
+	 END) as title,
+	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' LIMIT 1) as titleImage,
+	(CASE WHEN 
+		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang LIMIT 1) IS NULL
+	THEN
+		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang2 LIMIT 1)
+	ELSE
+	 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang LIMIT 1)
+	 END) as description,
 	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
 	from metadata as m
 	left join relations as r on r.id = m.id
@@ -50,51 +64,12 @@ CREATE TEMP TABLE rootids AS (
 			SELECT 1 from relations as r2 where r2.id = m.id  
 				and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
 		)
-);
-
-DROP TABLE IF EXISTS rootTitles;
-CREATE TEMP TABLE rootTitles AS (
-	select ri.rootid, mv.value, mv.lang
-	from rootids as ri
-	left join 
-	metadata_view as mv on ri.rootid = mv.id
-	where 
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
-);
-
-DROP TABLE IF EXISTS rootDescriptions;
-CREATE TEMP TABLE rootDescriptions AS (
-	select ri.rootid, mv.value, mv.lang
-	from rootids as ri
-	left join 
-	metadata_view as mv on ri.rootid = mv.id
-	where 
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' 
-);
-
-
-DROP TABLE IF EXISTS rootAccesRes;
-CREATE TEMP TABLE rootAccesRes AS (
-select ri.rootid, mv.value 
-from rootids as ri
-left join relations as r on ri.rootid = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-left join metadata_view as mv on r.target_id = mv.id
-where
-mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%'
-);
-
-RETURN QUERY
-select ri.rootid,
-( CASE WHEN rt.value IS NULL THEN (select rt.value from rootTitles as rt where rt.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rt.value end ) as title,
-ri.avdate, 
-( CASE WHEN rd.value IS NULL THEN (select rd2.value from rootDescriptions as rd2 where rd2.rootid = ri.rootid and lang = _lang2 limit 1) ELSE rd.value end ) as description,
-ra.value as accesres, 
-(select mv.value from metadata_view as mv where mv.id = ri.rootid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage,
-null as language
-from rootids as ri
-left join rootDescriptions as rd on rd.rootid = ri.rootid and rd.lang = _lang
-left join rootTitles as rt on rt.rootid = ri.rootid and rt.lang = _lang
-left join rootAccesRes as ra on ri.rootid  = ra.rootid;
+) select 
+rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
+(select mv.value from metadata_view as mv where mv.id = r.target_id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.value like 'http%')
+from root_data as rd
+left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+where rd.title is not null;
 END
 $func$
 LANGUAGE 'plpgsql';

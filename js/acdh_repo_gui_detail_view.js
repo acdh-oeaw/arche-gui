@@ -29,6 +29,7 @@
         $('.res-act-button.hideChildView').hide();
         $('#getRepoChildView').show();
         $('#child-div-content').hide();
+        $(".loader-div").hide();
     });
     
     //if the url already contains the aparameters then we just get and load the data

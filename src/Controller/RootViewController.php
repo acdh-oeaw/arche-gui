@@ -15,7 +15,6 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  */
 class RootViewController extends ControllerBase {
     
-    private $config;
     private $repo;
     private $model;
     private $helper;

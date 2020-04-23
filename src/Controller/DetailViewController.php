@@ -29,7 +29,6 @@ class DetailViewController extends ControllerBase {
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
         $this->generalFunctions = new GF();
-        
     }
     
     /**
@@ -75,6 +74,7 @@ class DetailViewController extends ControllerBase {
             $tooltip = $this->helper->formatTooltip($tooltip);
             $this->basicViewData->extra->tooltip = $tooltip;
         }
+        
         return $this->basicViewData;
     }
     

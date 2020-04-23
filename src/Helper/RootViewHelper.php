@@ -30,7 +30,6 @@ class RootViewHelper extends ArcheHelper {
         foreach ($this->data as $k => $v) {
             $this->rootViewObjectArray[] = new ResourceObject($v, $this->repo);
         }
-        
         return $this->rootViewObjectArray;
     }
     

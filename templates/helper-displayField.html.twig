@@ -19,7 +19,11 @@
             {% if data is iterable %}
                 {% for value in data %}
                     {% if (onlyurl)  %}
-                        <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                        {% if (value.uri)  %}
+                            <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                         {% else  %}
+                             <a id='archeHref' href="{{ value.title }}">{{ value.title }}</a>
+                         {% endif  %}     
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>

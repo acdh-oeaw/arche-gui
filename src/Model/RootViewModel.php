@@ -55,7 +55,6 @@ class RootViewModel extends ArcheModel {
      * @return array
      */
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
-        
         $this->initPaging($limit, $page, $order);
         
         try {
