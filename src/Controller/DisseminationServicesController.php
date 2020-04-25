@@ -194,9 +194,10 @@ class DisseminationServicesController extends ControllerBase {
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         
             if(count($result) > 0 && isset($result['result'])) {
-                $result = $result['result'];
+                $result = str_replace('/api/','/browser', $this->repo->getBaseUrl()).$result['result'];
             }
         }
+        
         return
             array(
                 '#theme' => 'acdh-repo-ds-3d-viewer',

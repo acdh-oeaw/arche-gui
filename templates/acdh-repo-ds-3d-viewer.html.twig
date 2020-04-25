@@ -56,7 +56,7 @@
             presenter = new Presenter("draw-canvas");
             presenter.setScene({
                 meshes: {
-                    "MS_Name" : { url: '{{ url('<front>') }}{{  ObjectUrl|raw  }}' }
+                    "MS_Name" : { url: '{{  ObjectUrl|raw  }}' }
                 },
                 modelInstances : {
                     "Model1" : { mesh : "MS_Name" }
