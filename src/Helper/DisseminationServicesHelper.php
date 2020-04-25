@@ -93,7 +93,7 @@ class DisseminationServicesHelper extends ArcheHelper {
                         if ($extension == "nxs" || $extension == "ply") {
                             if (!empty($filename)) {
                                 $dir = str_replace(".", "_", $filename);
-                                $tmpDir = $_SERVER['DOCUMENT_ROOT'].'/sites/default/files/'.$dir.'/';
+                                $tmpDir = \Drupal::service('file_system')->realpath(file_default_scheme() . "://")."/".$dir."/";
                                 //if the file dir is not exists then we will create it
                                 // and we will download the file
                                 if (!file_exists($tmpDir) || !file_exists($tmpDir.'/'.$filename)) {
