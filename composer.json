@@ -17,6 +17,14 @@
 	"acdh-oeaw/arche-lib-schema" : "*",
 	"zozlak/logging" : "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\acdh_repo_gui\\Object\\": "src/Object"
+        }
+    },
     "extra": {
         "drupal-scaffold": {
             "file-mapping": {

@@ -1,7 +1,3 @@
-/**
- * TODO
- */
-
 .bg-black {
     background-color: #000 !important;
     color: #fff !important;
@@ -18,6 +14,7 @@
     width: 100%;
     height: 100%;
     background:rgba(255,255,255,0.7);
+    z-index: 9999;
 }
 .loader {
     border: 11px solid #f3f3f3; /* Light grey */
