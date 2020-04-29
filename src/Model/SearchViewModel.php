@@ -27,7 +27,8 @@ class SearchViewModel extends ArcheModel {
     /* ordering */
     private $limit;
     private $offset;
-    private $order;
+    private $orderby;
+    private $orderby_column;
     /* ordering */
     
     public function __construct() {
@@ -134,15 +135,15 @@ class SearchViewModel extends ArcheModel {
         if(empty($typeStr)) {
             $queryStr = "
                 SELECT 
-                COUNT(*)
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."') 
+                id
+                from gui.search_count_words_view_func('".$wordStr."', '".$this->siteLang."') 
                 ;";
             
         }else {
             $queryStr = "
                 SELECT 
-                COUNT(*)
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
+                id
+                from gui.search_count_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
                 ;";
         }
         try {
@@ -151,8 +152,8 @@ class SearchViewModel extends ArcheModel {
             
             $return = $query->fetch();
             $this->changeBackDBConnection();
-            if(isset($return->count)){
-                return (int)$return->count;
+            if(isset($return->id)){
+                return (int)$return->id;
             }
             return 0;
         } catch (Exception $ex) {
@@ -248,16 +249,16 @@ class SearchViewModel extends ArcheModel {
             $queryStr = "
                 SELECT 
                 *
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."') 
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;";
+                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', "
+                    . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."', "
+                    . "'".$this->orderby_column."') ;";
         }else{
             $queryStr = "
                 SELECT 
                 *
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;";
+                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', "
+                    . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."',"
+                    . " '".$this->orderby_column."' ".$typeStr.");";
         }
         
         try {
@@ -348,19 +349,24 @@ class SearchViewModel extends ArcheModel {
         
         switch ($order) {
             case 'dateasc':
-                $this->order = "avdate asc";
+                $this->orderby = "asc";
+                $this->orderby_column = "avdate";
                 break;
             case 'datedesc':
-                $this->order = "avdate desc";
+                $this->orderby = "desc";
+                $this->orderby_column = "avdate";
                 break;
             case 'titleasc':
-                $this->order = "title asc";
+                $this->orderby = "asc";
+                $this->orderby_column = "title";
                 break;
             case 'titledesc':
-                $this->order = "title desc";
+                $this->orderby = "desc";
+                $this->orderby_column = "title";
                 break;
             default:
-                $this->order = "avdate desc";
+                $this->orderby = "desc";
+                $this->orderby_column = "avdate";
         }
     }
 }

@@ -567,20 +567,112 @@ LANGUAGE 'plpgsql';
 /**
 * Search words types and years
 */
-CREATE OR REPLACE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text[] DEFAULT '{}')
+CREATE OR REPLACE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate', _rdftype text[] DEFAULT '{}', _acdhyears text[] DEFAULT '{}')
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
-DECLARE 
+
+DECLARE	
 	_lang2 text := 'de';
+	limitint bigint := cast ( _limit as bigint);
+	pageint bigint := cast ( _page as bigint);
 BEGIN
 RAISE NOTICE USING MESSAGE = _rdftype;
 RAISE NOTICE USING MESSAGE = _acdhyears;
 	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-	
+RAISE NOTICE USING MESSAGE = _orderby_prop;
+RAISE NOTICE USING MESSAGE = _orderby;
 DROP TABLE IF EXISTS  wordsids;
 CREATE TEMP TABLE wordsids AS (        
 WITH ids AS (
-	SELECT t1.id FROM (
+		SELECT DISTINCT fts.id,
+		COALESCE(
+			(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+			(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
+		)
+		 as title,
+		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate
+		FROM full_text_search as fts
+		WHERE 
+		websearch_to_tsquery('simple', _searchstr) @@ segments  
+			AND 
+			(
+			 fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
+			or 
+			fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'
+			)
+		
+        ) select DISTINCT(ids.id), ids.title, ids.avdate from ids where ids.title is not null
+	);
+
+DROP TABLE IF EXISTS  wordsidsFiltered;
+CREATE TEMP TABLE wordsidsFiltered AS (   
+WITH ids2 AS (    
+select DISTINCT(i.id), i.title, i.avdate from wordsids as i
+left join full_text_search as fts on fts.id = i.id
+left join full_text_search as fts3 on fts3.id = i.id
+WHERE
+	CASE WHEN 
+		_rdftype  = '{}' THEN
+		(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+		fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
+	WHEN _rdftype  != '{}' THEN
+		(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+		fts.raw = ANY (_rdftype) )
+	WHEN 
+		_acdhyears  = '{}' THEN
+		(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+		fts3.raw IS NOT NULL)
+	WHEN 
+		_acdhyears  != '{}' THEN
+		(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
+	fts3.raw = ANY (_acdhyears) )
+	END
+	order by i.id
+	) select * from ids2 
+	order by  
+		(CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) END) ASC,
+         (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) DESC
+		limit limitint
+		offset pageint
+);
+
+DROP TABLE IF EXISTS  wordsFinal;
+CREATE TEMP TABLE wordsFinal AS (   
+WITH ids3 AS (  
+	select wf.*,
+	COALESCE(
+			(select mv.value from metadata_view as mv where mv.id = wf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+			(select mv.value from metadata_view as mv where mv.id = wf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
+		) description,
+	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
+	(select mv.value from relations as r left join metadata_view as mv on r.target_id = mv.id where wf.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
+mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
+	from wordsidsFiltered as wf
+	) select * from ids3
+);
+
+RETURN QUERY
+select 
+wf.id, wf.title, CAST(wf.avdate as timestamp), wf.description, wf.accessres, wf.titleimage, wf.acdhtype
+from wordsFinal as wf;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION gui.search_count_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text[] DEFAULT '{}')
+  RETURNS table (id bigint)
+AS $func$
+
+DECLARE	
+	_rdftype text[] := '{}';
+	_acdhyears text[] := '{}';
+	_lang2 text := 'de';
+	_lang text := 'en';
+	BEGIN
+DROP TABLE IF EXISTS  wordsids;
+CREATE TEMP TABLE wordsids AS (        
+WITH ids AS (
 		SELECT DISTINCT fts.id
 		FROM full_text_search as fts
 		WHERE 
@@ -590,125 +682,41 @@ WITH ids AS (
 			 fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
 			or 
 			fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'
-			) 
-        ) t1   
-	) select * from ids
-);
-
-
-DROP TABLE IF EXISTS filterTypes;
-CREATE TEMP TABLE filterTypes AS (
-	select DISTINCT(wi.id)
-	from wordsids as wi
-	left join 
-	metadata_view as mv on wi.id = mv.id
-	where 
+			)
+		
+        ) select ids.id from ids
+	);
+	
+DROP TABLE IF EXISTS  wordsidsFiltered;
+CREATE TEMP TABLE wordsidsFiltered AS (   
+WITH ids2 AS (    
+select DISTINCT(i.id) from wordsids as i
+left join full_text_search as fts on fts.id = i.id
+left join full_text_search as fts3 on fts3.id = i.id
+WHERE
 	CASE WHEN 
 		_rdftype  = '{}' THEN
-		(mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-		mv.value LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
-	ELSE 
-		(mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-		mv.value = ANY (_rdftype) )
-	END
-);
-
-DROP TABLE IF EXISTS filterYears;
-CREATE TEMP TABLE filterYears AS (
-	select DISTINCT(wi.id)
-	from wordsids as wi
-	left join 
-	metadata_view as mv on wi.id = mv.id
-	where 
-	CASE WHEN 
+		(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+		fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
+	WHEN _rdftype  != '{}' THEN
+		(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+		fts.raw = ANY (_rdftype) )
+	WHEN 
 		_acdhyears  = '{}' THEN
-		(mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-		mv.value IS NOT NULL)
-	ELSE 
-		(mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
-		mv.value = ANY (_acdhyears))
+		(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+		fts3.raw IS NOT NULL)
+	WHEN 
+		_acdhyears  != '{}' THEN
+		(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
+	fts3.raw = ANY (_acdhyears) )
 	END
+	order by i.id
+	) select * from ids2
 );
-
-
-DROP TABLE IF EXISTS resultIds;
-CREATE TEMP TABLE resultIds AS (
-	select DISTINCT(ft.id)
-	from filterTypes as ft
-	inner join 
-	filterYears as fy on fy.id = ft.id
-);
-
-
-
-DROP TABLE IF EXISTS titles;
-CREATE TEMP TABLE titles AS (
-	select ri.id, mv.value, mv.lang
-	from resultIds as ri
-	left join 
-	metadata_view as mv on ri.id = mv.id
-	where 
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
-);
-
-DROP TABLE IF EXISTS descriptions;
-CREATE TEMP TABLE descriptions AS (
-	select ri.id, mv.value, mv.lang
-	from resultIds as ri
-	left join 
-	metadata_view as mv on ri.id = mv.id
-	where 
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' 
-);
-
-
-DROP TABLE IF EXISTS availableDate;
-CREATE TEMP TABLE availableDate AS (
-	select ri.id, mv.value
-	from resultIds as ri
-	left join 
-	metadata_view as mv on ri.id = mv.id
-	where 
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' 
-);
-
-DROP TABLE IF EXISTS rdftype;
-CREATE TEMP TABLE rdftype AS (
-	select ri.id, mv.value
-	from resultIds as ri
-	left join 
-	metadata_view as mv on ri.id = mv.id
-	where 
-	mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-);
-
-
-DROP TABLE IF EXISTS accesRes;
-CREATE TEMP TABLE accesRes AS (
-select ri.id, mv.value 
-from resultIds as ri
-left join relations as r on ri.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-left join metadata_view as mv on r.target_id = mv.id
-where
-mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%'
-);
-
 RETURN QUERY
-select ri.id,
-( CASE WHEN rt.value IS NULL THEN (select rt.value from titles as rt where rt.id = ri.id and lang = _lang2 limit 1) ELSE rt.value end ) as title,
-( CASE WHEN CAST(ad.value as timestamp) IS NULL THEN ( NULL) ELSE CAST(ad.value as timestamp) end ) as avdate,
-( CASE WHEN rd.value IS NULL THEN (select rd2.value from descriptions as rd2 where rd2.id = ri.id and lang = _lang2 limit 1) ELSE rd.value end ) as description,
-ra.value as accesres, 
-(select mv.value from metadata_view as mv where mv.id = ri.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' ) as titleimage,
-rdt.value as acdhtype
-from resultIds as ri
-left join descriptions as rd on rd.id = ri.id and rd.lang = _lang
-left join titles as rt on rt.id = ri.id and rt.lang = _lang
-left join accesRes as ra on ri.id = ra.id
-left join availableDate as ad on ri.id = ad.id
-left join rdftype as rdt on ri.id  = rdt.id
-;
-
+select 
+Count(wf.id)
+from wordsidsFiltered as wf;
 END
 $func$
 LANGUAGE 'plpgsql';
