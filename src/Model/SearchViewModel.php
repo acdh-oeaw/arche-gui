@@ -57,23 +57,26 @@ class SearchViewModel extends ArcheModel {
         //user selected words and type
         if(isset($this->metaObj->words)) {
             $count = $this->countWordsFromDb();
-            $this->getWordsFromDb();
+            if((int)$count > 0){
+                $this->getWordsFromDb();
+            }
         } else if(isset($this->metaObj->years)) {
             $count = $this->countYearsFromDb();
-            $this->getYearsFromDb();
-            
+            if((int)$count > 0){
+                $this->getYearsFromDb();
+            }
         } else if(isset($this->metaObj->type)) {
             $count = $this->countTypesFromDb();
-            //user selected just type
-            $this->getTypesFromDB();
+            if((int)$count > 0){
+                //user selected just type
+                $this->getTypesFromDB();
+            }
         }
-        //$this->searchCfg->ftsQuery             = "Wollmilchsau";
         
         if($this->sqlResult == null ) {
             $this->sqlResult = array();
         }
         return array('count' => $count, 'data' => $this->sqlResult);
-        
     }
     
     private function formatYearsFilter(): string {
@@ -119,6 +122,29 @@ class SearchViewModel extends ArcheModel {
         return $typeStr;
     }
     
+    private function formatYearsArrayFilter(): string {
+        $yearsStr = "";
+        if(isset($this->metaObj->years)) {
+            $count = count($this->metaObj->years);
+            if($count > 0){
+                $yearsStr .= "'";
+                $i = 0;
+                foreach($this->metaObj->years as $y){
+                    $yearsStr .= "$y%";
+                    if($count - 1 != $i) {
+                        $yearsStr .= '|';
+                    }else{
+                        $yearsStr .= "'";
+                    } 
+                    $i++;
+                }
+            }else {
+               $yearsStr = "";
+            }
+        }
+        return $yearsStr;
+    }
+    
     /**
      * Count the words defined from the search input fields
      * 
@@ -126,30 +152,33 @@ class SearchViewModel extends ArcheModel {
      */
     private function countWordsFromDb(): int {
         $typeStr = $this->formatTypeFilter();
+        $yearsStr = $this->formatYearsArrayFilter();
         $wordStr = '';
         $return = 0;
         foreach($this->metaObj->words as $w){
             $wordStr .= $w.' ';
         }
         
-        if(empty($typeStr)) {
-            $queryStr = "
+        $queryStr = "
                 SELECT 
                 id
-                from gui.search_count_words_view_func('".$wordStr."', '".$this->siteLang."') 
-                ;";
-            
-        }else {
-            $queryStr = "
-                SELECT 
-                id
-                from gui.search_count_words_view_func('".$wordStr."', '".$this->siteLang."', ".$typeStr.") 
-                ;";
+                from gui.search_count_words_view_func('".$wordStr."', '".$this->siteLang."' ";
+        
+        if(!empty($typeStr)) {
+            $queryStr .= ", ".$typeStr." ";
+        }else{
+            $queryStr .= ", ARRAY[]::text[] ";
         }
+        
+        if(!empty($yearsStr)) {
+            $queryStr .= ", ".$yearsStr."); ";
+        }else{
+            $queryStr .= "); ";
+        }
+        
         try {
             
             $query = $this->repodb->query($queryStr);
-            
             $return = $query->fetch();
             $this->changeBackDBConnection();
             if(isset($return->id)){
@@ -170,26 +199,23 @@ class SearchViewModel extends ArcheModel {
         $yearsStr = $this->formatYearsFilter();
         $return = 0;
         
-        if(empty($typeStr)) {
-            $queryStr = "
-                SELECT 
-                COUNT(*)
-                from gui.search_years_view_func('".$yearsStr."') 
-                ;";
-            
-        }else {
-            $queryStr = "
-                SELECT 
-                COUNT(*)
-                from gui.search_years_view_func('".$yearsStr."', '".$this->siteLang."', ".$typeStr.") 
-                ;";
+        $queryStr = "
+            SELECT 
+            id
+            from gui.search_count_years_view_func('".$yearsStr."', '".$this->siteLang."' ";
+        
+         if(!empty($typeStr)) {
+            $queryStr .= ", ".$typeStr." );";
+        }else{
+            $queryStr .= ", ARRAY[]::text[] );";
         }
+        
         try {
             $query = $this->repodb->query($queryStr);
             $return = $query->fetch();
             $this->changeBackDBConnection();
-            if(isset($return->count)){
-                return (int)$return->count;
+            if(isset($return->id)){
+                return (int)$return->id;
             }
             return 0;
         } catch (Exception $ex) {
@@ -207,22 +233,37 @@ class SearchViewModel extends ArcheModel {
      * @return int
      */
     private function countTypesFromDB(): int {
-        $str = $this->formatTypeFilter();
-        $return = 0;
+        $typeStr = $this->formatTypeFilter();
+        $yearsStr = $this->formatYearsArrayFilter();
+        
+        $queryStr = "
+                SELECT 
+                id
+                from gui.search_count_types_view_func(";
+        
+        if(!empty($typeStr)) {
+            $queryStr .= " ".$typeStr." ";
+        }else{
+            $queryStr .= " ARRAY[]::text[] ";
+        }
+        
+        $queryStr .= ", '".$this->siteLang."'";
+        
+        if(!empty($yearsStr)) {
+            $queryStr .= ", ".$yearsStr."); ";
+        }else{
+            $queryStr .= "); ";
+        }
+        
         try {
-            $query = $this->repodb->query("
-                select COUNT(*) 
-                from 
-                gui.search_types_view_func(
-                ".$str."
-                , '".$this->siteLang."') 
-                ;");
             
+            $query = $this->repodb->query($queryStr);
             $return = $query->fetch();
             $this->changeBackDBConnection();
-            if(isset($return->count)){
-                return (int)$return->count;
+            if(isset($return->id)){
+                return (int)$return->id;
             }
+            return 0;
            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -245,20 +286,25 @@ class SearchViewModel extends ArcheModel {
         foreach($this->metaObj->words as $w){
             $wordStr .= $w.' ';
         }
-        if(empty($typeStr)) {
-            $queryStr = "
-                SELECT 
-                *
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', "
-                    . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."', "
-                    . "'".$this->orderby_column."') ;";
+        $yearsStr = $this->formatYearsArrayFilter();
+       
+        $queryStr = "
+            SELECT 
+            *
+            from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', "
+                . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."',"
+                . " '".$this->orderby_column."' ";
+
+        if(!empty($typeStr)) {
+            $queryStr .= ", ".$typeStr." ";
         }else{
-            $queryStr = "
-                SELECT 
-                *
-                from gui.search_words_view_func('".$wordStr."', '".$this->siteLang."', "
-                    . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."',"
-                    . " '".$this->orderby_column."' ".$typeStr.");";
+            $queryStr .= ", ARRAY[]::text[]  ";
+        }
+        
+        if(!empty($yearsStr)) {
+            $queryStr .= ", ".$yearsStr."); ";
+        }else{
+            $queryStr .= "); ";
         }
         
         try {
@@ -283,17 +329,33 @@ class SearchViewModel extends ArcheModel {
      */
     private function getTypesFromDB() {
         
-        $str = $this->formatTypeFilter();
+        $typeStr = $this->formatTypeFilter();
+        $yearsStr = $this->formatYearsArrayFilter();
         
-        try {
-            $query = $this->repodb->query("
+        $queryStr = "
                 select * 
                 from 
-                gui.search_types_view_func(
-                ".$str."
-                , '".$this->siteLang."') 
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;");
+                gui.search_types_view_func(";
+        
+        if(!empty($typeStr)) {
+            $queryStr .= " ".$typeStr." ";
+        }else{
+            $queryStr .= " ARRAY[]::text[] ";
+        }
+        
+        $queryStr .= ", '".$this->siteLang."', '".$this->limit."', "
+                . "'".$this->offset."', '".$this->orderby."', "
+                . "'".$this->orderby_column."' ";
+        
+        if(!empty($yearsStr)) {
+            $queryStr .= ", ".$yearsStr."); ";
+        }else{
+            $queryStr .= "); ";
+        }
+        echo $queryStr;
+        
+        try {
+            $query = $this->repodb->query($queryStr);
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
@@ -312,22 +374,21 @@ class SearchViewModel extends ArcheModel {
         $typeStr = $this->formatTypeFilter();
         $yearsStr = $this->formatYearsFilter();
         $return = 0;
+        //select * from gui.search_years_view_func('2015 or 2016', 'en', '100', '0', 'asc', 'title', ARRAY['https://vocabs.acdh.oeaw.ac.at/schema#Resource']);
         
-        if(empty($typeStr)) {
-            $queryStr = "
-                SELECT 
-                *
-                from gui.search_years_view_func('".$yearsStr."') order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;";
-            
-        }else {
-            $queryStr = "
-                SELECT 
-                *
-                from gui.search_years_view_func('".$yearsStr."', '".$this->siteLang."', ".$typeStr.") order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                ;";
+        $queryStr = "
+            SELECT 
+            *
+            from gui.search_years_view_func('".$yearsStr."', '".$this->siteLang."', "
+                . "'".$this->limit."', ' ".$this->offset."', '".$this->orderby."',"
+                . " '".$this->orderby_column."' ";
+
+        if(!empty($typeStr)) {
+            $queryStr .= " , ".$typeStr." );";
+        }else{
+            $queryStr .= ", ARRAY[]::text[] ); ";
         }
-        
+       
         try {
             $query = $this->repodb->query($queryStr);
             

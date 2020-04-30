@@ -80,12 +80,12 @@ class AcdhRepoGuiController extends ControllerBase
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $roots['data'],
             '#paging' => $paging,
-            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
                 ]
-            ]
+            ],
+            '#cache' => ['max-age' => 0]
         ]; 
         
     }
@@ -141,12 +141,12 @@ class AcdhRepoGuiController extends ControllerBase
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $searchResult['data'],
             '#paging' => $paging,
-            '#cache' => ['max-age' => 0], 
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',
                 ]
-            ]
+            ],
+            '#cache' => ['max-age' => 0]
         ]; 
     }
     
