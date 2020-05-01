@@ -352,8 +352,7 @@ class SearchViewModel extends ArcheModel {
         }else{
             $queryStr .= "); ";
         }
-        echo $queryStr;
-        
+                
         try {
             $query = $this->repodb->query($queryStr);
             
