@@ -146,6 +146,7 @@ class MetadataGuiHelper {
                 }
                 
                 $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
+                //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
         }
         asort($this->result['properties']['basic']);
@@ -189,6 +190,37 @@ class MetadataGuiHelper {
         }
         
         return '-';
+    }
+    /*
+    - if we have minCardinality and minCardinality >=1 => m
+    - if we have minCardinality and it is 0 or empty => o
+    - if we have recommendedClass and it is not empty => r
+    - if we have cardinality and it is 1 => m
+    - if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
+    */
+    private function metadataGuiCardinalityByMartina(object $data): string {
+        $cardinality = '';
+        //- if we have minCardinality and minCardinality >=1 => m
+        //if we have cardinality and it is 1 => m
+        if(isset($data->min) && $data->min >= 1) {
+            $cardinality = 'm';
+        }
+        //if we have minCardinality and it is 0 or empty => o
+        if(isset($data->min) || $data->min == 0) {
+            $cardinality = 'o';
+        }
+        //if we have recommendedClass and it is not empty => r
+        if(isset($data->recommended) && $data->recommended === true) {
+            $cardinality = 'r';
+        }
+                
+        //if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
+        if((isset($data->max) && $data->max > 1) || (isset($data->max) && empty($data->max)) ) {
+            $cardinality .= '*';
+        }
+        
+        return $cardinality;
+        
     }
     
 }
