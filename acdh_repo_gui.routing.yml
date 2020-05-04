@@ -159,6 +159,13 @@ repo_api_getmetadata:
     requirements:        
         _access: 'TRUE'  
 
+repo_api_getmetadatagui:    
+    path: '/api/getMetadataGui/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMetadataGui'
+    requirements:        
+        _access: 'TRUE'          
+
 repo_inverse_result:    
     path: '/oeaw_inverse_result/{repoid}'
     defaults:

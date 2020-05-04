@@ -33,6 +33,9 @@ class ArcheApiModel extends ArcheModel {
             case 'metadata':
                 return $this->getOntology();
                 break;
+             case 'metadataGui':
+                return $this->getOntologyGui();
+                break;
             case 'inverse':
                 return $this->getInverseData();
                 break;
@@ -87,6 +90,46 @@ class ArcheApiModel extends ArcheModel {
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         return (array)$ontology->getClass($this->properties->type);
+    }
+    
+    /**
+     * get the onotology data for the js plugin
+     * @return array
+     */
+    private function getOntologyGui(): array {
+        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $conn = new \PDO($dbconnStr);
+        $cfg = (object) [
+            'skipNamespace' => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
+            'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
+            'cardinality'   => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
+            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
+            'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'            
+        ];
+        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        
+        $collectionProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;
+        $projectProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
+        $resourceProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
+        
+        /*
+        echo "<pre>";
+        var_dump('project');
+        var_dump($projectProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
+        echo "</pre>";
+        
+        echo "<pre>";
+        var_dump('collection');
+        var_dump($collectionProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
+        echo "</pre>";
+        
+        echo "<pre>";
+        var_dump('resource');
+        var_dump($resourceProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
+        echo "</pre>";
+        */
+        
+        return array('collection' => $collectionProp, 'project' => $projectProp, 'resource' => $resourceProp);
     }
     
     /**

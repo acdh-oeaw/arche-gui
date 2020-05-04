@@ -277,6 +277,42 @@ class ArcheApiController extends ControllerBase
     }
     
     /**
+     * Get the ontology metadata for the JS plugin table
+     * @param string $lng
+     * @return Response
+     */
+    public function repo_getMetadataGui(string $lng = 'en'): Response
+    {   
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/getMetadataGui/en?_format=json
+        * "optional" means "$min empty or equal to 0"
+        * "mandatory" is "$min greater than 0 and $recommended not equal true"
+        * "recommended" is "$min greater than 0 and $recommended equal to true"
+        */
+        
+        $response = new Response();
+        
+        $obj = new \stdClass();
+        $obj->baseUrl = $this->repo->getBaseUrl();
+        $obj->language = $lng;
+        //get the data
+        $this->modelData = $this->model->getViewData('metadataGui', $obj);
+        
+        if(count($this->modelData) == 0 ){
+            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+        }
+        $this->result = $this->helper->createView($this->modelData, 'metadataGui', $lng);
+        if(count($this->result) == 0 ){
+            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+        }
+        $response->setContent(json_encode($this->result));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    /**
      * Get the actual resource inverse data
      * Where the id is available, but not identifier, pid or ispartof
      * @return Response

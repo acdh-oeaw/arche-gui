@@ -6,6 +6,7 @@ use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
 use acdhOeaw\acdhRepoLib\RepoDb;
+use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
 
 /**
  * Description of ArcheApiHelper
@@ -20,8 +21,7 @@ class ArcheApiHelper extends ArcheHelper {
     private $properties;
     private $siteLang;
     private $requiredClasses = array();
-       
-   
+    
     public function createView(array $data = array(), string $apiType = '', string $lng ='en'): array {
         (!empty($lng)) ? $this->siteLang = strtolower($lng)  : $this->siteLang = "en";
         if(count($data) == 0  && !empty($apiType)) {
@@ -31,6 +31,10 @@ class ArcheApiHelper extends ArcheHelper {
         switch ($apiType) {
             case 'metadata':
                 $this->setupMetadataType($data);
+                break;
+            case 'metadataGui':
+                $mdgh = new \Drupal\acdh_repo_gui\Helper\MetadataGuiHelper();
+                $this->result = $mdgh->getData($data);
                 break;
             case 'inverse':
                 $this->data = $data;
@@ -44,8 +48,6 @@ class ArcheApiHelper extends ArcheHelper {
                 $this->data = $data;
                 $this->createGNDFile();
                 break;
-            
-            
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -72,6 +74,10 @@ class ArcheApiHelper extends ArcheHelper {
         }
     }
     
+    /**
+     * Create the reponse header
+     * @param array $data
+     */
     private function setupMetadataType(array $data = array()) {
         $this->creatMetadataObj($data);
         if(count($data['properties']) > 0){
@@ -84,6 +90,8 @@ class ArcheApiHelper extends ArcheHelper {
         $this->result['title'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $data['class']);
         $this->formatMetadataView();
     }
+    
+    
     
     
     /**
@@ -252,4 +260,8 @@ class ArcheApiHelper extends ArcheHelper {
             }
         }
     }
+    
+    
+    
+    
 }
