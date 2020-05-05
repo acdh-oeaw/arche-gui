@@ -182,12 +182,18 @@ class ResourceObject {
                 $img = ''; 
                 try {
                     $client = new \GuzzleHttp\Client();
-                    $response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'/metadata');
+                    //$response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'');
+                    $response = $client->get('https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value);
+                    
                     if($response->getStatusCode() == 200){
-                        //thumbnail supported
-                        if (strpos($response->getBody(), '"image/png"') !== false) {
-                             $img = '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />';
-                        } 
+                        if( (isset($response->getHeader('Content-Length')[0]) && $response->getHeader('Content-Length')[0] > 0)){
+                            if(isset($response->getHeader('Content-Type')[0]) && 
+                                    ($response->getHeader('Content-Type')[0] == 'image/png' || $response->getHeader('Content-Type')[0] == 'image/jpg'
+                                    || $response->getHeader('Content-Type')[0] == 'image/jpeg')
+                            ) {
+                               $img = '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />'; 
+                            }
+                        }
                     }
                 } catch (\Exception $ex) {
                     $img = ''; 

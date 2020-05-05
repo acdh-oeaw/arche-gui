@@ -17,15 +17,32 @@ jQuery(function($) {
         }
     }
     
-    var params = getUrlParams(actionPage);
-    
+    //var params = getUrlParams(actionPage);
     
     $(document).ready(function() { 
         addExtraSortingForViews();
         var params = getUrlParams(actionPage);
-        getUrlParams(actionPage);
+        
+        //we already have an url
+        if(window.location.href.indexOf("/oeaw_detail/") > -1) {
+            if(window.location.href.indexOf("&page=") > -1) {
+                //get the uuid/repoid
+                var repoid = getIDFromUrl(window.location.href);
+                getChildData(repoid, params.urlLimit, params.urlPage, params.urlOrder, function(result){
+                    if(params.urlOrder != null && params.urlLimit != null) {
+                        updateGui(params.urlOrder, params.urlLimit)
+                    }
+                });
+            }
+        }
+        
+        if(params.urlOrder != null && params.urlLimit != null) {
+            updateGui(params.urlOrder, params.urlLimit)
+        }
+        
     });
     
+    //add some extra sorting fields
     function addExtraSortingForViews() {
         var currentURL = window.location.toString();
         //extend the search dropdown for the persons
@@ -51,6 +68,7 @@ jQuery(function($) {
         }
     }
     
+    // get the actual url params like limit/order/offset based on the view
     function getUrlParams(actionPage = 'detail_view'){
         var urlPage;
         var urlLimit;
@@ -121,34 +139,98 @@ jQuery(function($) {
         };
         
         //change the gui values
-        $('#sortByButton').html(orderTexts[urlOrder]);
-        $('#resPerPageButton').html(urlLimit);
+        $('.sortByButton').html(orderTexts[urlOrder]);
+        $('.resPerPageButton').html(urlLimit);
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
     }
     
+    //update the gui elements
+    function updateGui(order, limit) {
+        let orderTexts = {
+            titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
+            dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
+        };
+        
+        //change the gui values
+        $('.sortByButton').html(orderTexts[order]);
+        $('.resPerPageButton').html(limit);
+    }
+    
+    //the pager buttons
+    $(document ).delegate( "#first-btn", "click", function(e) {
+        let newPageNumber = $(this).data('pagination');
+        let params = getUrlParams(actionPage);
+        var uuid = getIDFromUrl(window.location.href);
+        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+            if( params.urlOrder != null && params.urlLimit != null) {
+                updateGui( params.urlOrder, params.urlLimit)
+            }
+        });
+    });
+    
+    $(document ).delegate( "#last-btn", "click", function(e) {
+        let newPageNumber = $(this).data('pagination');
+        let params = getUrlParams(actionPage);
+        var uuid = getIDFromUrl(window.location.href);
+        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+            if( params.urlOrder != null && params.urlLimit != null) {
+                updateGui( params.urlOrder, params.urlLimit)
+            }
+        });
+        //createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+    });
+    
     $(document ).delegate( "#prev-btn", "click", function(e) {
         let newPageNumber = $(this).data('pagination');
-        createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        let params = getUrlParams(actionPage);
+        var uuid = getIDFromUrl(window.location.href);
+        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+            if( params.urlOrder != null && params.urlLimit != null) {
+                updateGui( params.urlOrder, params.urlLimit)
+            }
+        });
     });
     
     $(document ).delegate( "#next-btn", "click", function(e) { 
         let newPageNumber = $(this).data('pagination');
-        createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        let params = getUrlParams(actionPage);
+        var uuid = getIDFromUrl(window.location.href);
+        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+            if( params.urlOrder != null && params.urlLimit != null) {
+                updateGui( params.urlOrder, params.urlLimit)
+            }
+        });
     });
     
     //Results info-bar pagination selectors on click
     $(document).delegate( '#resPerPageButton > a', "click", function(event) {
         let newLimit = $(this).html();
-        createNewUrl(params.urlPage, newLimit, params.urlOrder, actionPage, params.searchStr);
+        let params = getUrlParams(actionPage);
+        createNewUrl(1, newLimit, params.urlOrder, actionPage, params.searchStr);
     
     });
     $(document).delegate( '#sortByDropdown > a', "click", function(event) {
         let newOrder = $(this).data('value');
+        let params = getUrlParams(actionPage);
         createNewUrl(params.urlPage, params.urlLimit, newOrder, actionPage, params.searchStr);
     });
-            
     
+  
+    function getCleanPath() {
+        let path = window.location.pathname;
+        var cleanPath = "";
+        if(path.indexOf('&') != -1){
+            cleanPath = path.substring(0, path.indexOf('&'));
+        } else {
+            cleanPath = path;
+        }
+        return cleanPath;
+    }
     /**
     * create and change the new URL after click events
     * 
@@ -156,30 +238,117 @@ jQuery(function($) {
     */
     function createNewUrl(page, limit, orderBy, actionPage = ' detail_view', searchStr = ''){
         var newurl = '';
-        
         //if (history.pushState) {
         if(actionPage == 'root' || actionPage == 'root_main') {
            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/root/' + orderBy + '/' + limit + '/' + page; 
+           window.history.pushState({path:newurl},'',newurl);
+           window.location = newurl;
         } else if(actionPage == 'search') {
             newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
+            window.history.pushState({path:newurl},'',newurl);
+            window.location = newurl;
         } else {
-            
-            var path = window.location.pathname;
-            var newUrlLimit = "&limit="+limit;
-            var newUrlPage = "&page="+page;
-            var newUrlOrder = "&order="+orderBy;
-            var cleanPath = "";
-            if(path.indexOf('&') != -1){
-                cleanPath = path.substring(0, path.indexOf('&'));
-            } else {
-                cleanPath = path;
-            }
+            //child view
+            let newUrlLimit = "&limit="+limit;
+            let newUrlPage = "&page="+page;
+            let newUrlOrder = "&order="+orderBy;
+            let cleanPath = getCleanPath();
             newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
+            window.history.pushState({path:newurl},'',newurl);
+            
         }  
-        window.history.pushState({path:newurl},'',newurl);
-        window.location = newurl;
-       //}
-   }
+    }
+    
+    /**
+     * Get the uuid from the url
+     * 
+     * @param {type} str
+     * @returns {String}
+     */
+    function getIDFromUrl(str) {
+        var reg = /^\d+$/;
+	var res = "";
+        if(str.indexOf('/oeaw_detail/') >= 0) {
+            var n = str.indexOf("/oeaw_detail/");
+            res = str.substring(n+13, str.length);
+            
+            if(res.indexOf('&') >= 0) {
+                res = res.substring(0, res.indexOf('&'));
+            }
+            if(res.indexOf('?') >= 0) {
+                res = res.substring(0, res.indexOf('?'));
+            }
+        }
+        res = res.replace('id.acdh.oeaw.ac.at/uuid/', '');
+        return res;
+    }
+    
+    /** Handle the child button click **/
+    $(document ).delegate( ".getRepoChildView", "click", function(e) {
+        //$(".loader-div").show();
+        e.preventDefault();
+        let searchParams = new URLSearchParams(window.location.href);
+        //get the uuid
+        var uuid = getIDFromUrl(window.location.href);
+        var urlPage = searchParams.get('page');
+        var urlLimit = searchParams.get('limit');
+        var urlOrder = searchParams.get('order');
+        if(!urlPage && !urlLimit && !urlOrder) {
+            urlPage = 1;
+            urlLimit = 10;
+            urlOrder = 'titleasc';
+        }
+            
+        getChildData(uuid, urlLimit, urlPage, urlOrder, function(result){
+            createNewUrl(urlPage, urlLimit, urlOrder); 
+            if(urlOrder != null && urlLimit != null) {
+                updateGui(urlOrder, urlLimit)
+            }
+        });
+            
+        //$(".loader-div").hide();
+        return false;
+        
+    });
+    
+    /**
+    * Do the API request to get the actual child data
+    * 
+    * @param {type} insideUri
+    * @param {type} limit
+    * @param {type} page
+    * @param {type} orderby
+    * @returns {undefined}
+    */
+    function getChildData(insideUri, limit, page, orderby, callbackFunction) {
+        $(".loader-div").show();
+        $.ajax({
+            url: '/browser/repo_child_api/'+insideUri+'/'+limit+'/'+page+'/'+orderby,
+            data: {'ajaxCall':true},
+            async: true,
+            success: function(result){
+                //empty the data div, to display the new informations
+                $('#child-div-content').show();
+                $('#child-div-content').html(result);
+                $('#limit-sel').val(limit);
+                $('#actualPageSpan').val(page);
+                $('#orderby').val(orderby);
+                $('.getRepoChildView').hide();
+                $('#resPerPageButton').html(limit);
+                $('.res-act-button.hideChildView').css('display', 'table');
+                if(typeof callbackFunction == 'function'){
+                    callbackFunction.call(this, result);
+                }
+                $(".loader-div").hide();
+                return true;
+            },
+            error: function(error){
+                $('#child-div-content').html('<div>There is no data...</div>');
+                $(".loader-div").hide();
+                return false;
+            }
+        });
+    }
    
    
     

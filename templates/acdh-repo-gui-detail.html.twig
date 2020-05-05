@@ -127,7 +127,7 @@
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
     {% endif%}
     
-    {% if  basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'organisation'  %}
+    {% if  basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'organisation'  or  basic.getAcdhType()|lower == 'project'  %}
         <div class="res-actions" style="padding: 20px;">
             <div class="res-act-button" style="display: table; margin: 0 auto;">
                 <a href="#" id="getRepoChildView" class="getRepoChildView"><i class="fa fa-angle-down" aria-hidden="true"></i> &nbsp;<b>{{ "Show More"|trans }}</b>&nbsp; <i class="fa fa-angle-down" aria-hidden="true"></i></a>
@@ -137,7 +137,7 @@
             </div>
         </div>
 
-       <div id="child-div-content"></div>
+       <div id="child-div-content" style="display: none"></div>
    {% endif%}
 <br>
 

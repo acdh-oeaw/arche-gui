@@ -13,13 +13,24 @@ class ChildApiModel extends ArcheModel {
     private $repodb;
     private $result = array();
     private $data = array();
+    private $childProperties = array();
+    private $rootAcdhType;
+    private $sqlTypes;
+    private $siteLang = 'en';
     
     public function __construct() {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
+    public function getAcdhtype(): string {
+        if(!empty($this->rootAcdhType)) {
+            return $this->rootAcdhType;
+        }
+        return '';
+    }
     /**
      * Get the actual page view data
      * 
@@ -34,16 +45,22 @@ class ChildApiModel extends ArcheModel {
         $prop = $order->property;
         $ord = $order->order;
         
+        $queryStr = "select * from gui.child_views_func('".$identifier."', '".$limit."',  "
+                    . " '".$page."', '".$ord."', '".$prop."', '".$this->siteLang."' ";
+            
+            if(!empty($this->sqlTypes)) {
+                $queryStr .= ", ".$this->sqlTypes." ";
+            }else{
+                $queryStr .= ", ARRAY[]::text[] ";
+            }
+            $queryStr .= " );";
+            
         //get the requested sorting
         try {
-            $query = $this->repodb->query(
-                    "select * from gui.child_views_func(:id, :limit, :offset, :order, :property)", 
-                    array(':id' => $identifier,  ':limit' => $limit, ':offset' => $page, ':order' => $ord, ':property' => $prop)
-            );
+            $query = $this->repodb->query($queryStr);
             
-            $this->result = $query->fetchAll();
-            $this->reorderResult();
-           
+            $this->data = $query->fetchAll();
+            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->data = array();
@@ -91,11 +108,21 @@ class ChildApiModel extends ArcheModel {
     public function getCount(string $identifier): int {
         
         try {
-            $query = $this->repodb->query("select childid as count from gui.child_sum_views_func(:id)", array(':id' => $identifier));
+            $queryStr = "select * from gui.child_sum_views_func('".$identifier."'";
+            
+            if(!empty($this->sqlTypes)) {
+                $queryStr .= ", ".$this->sqlTypes." ";
+            }else{
+                $queryStr .= ", ARRAY[]::text[] ";
+            }
+            $queryStr .= " );";
+        
+            $query = $this->repodb->query($queryStr);
             $result = $query->fetch();
+          
             $this->changeBackDBConnection();
-            if(isset($result->count)) {
-                return (int)$result->count;
+            if(isset($result->countid)) {
+                return (int)$result->countid;
             }
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -107,16 +134,115 @@ class ChildApiModel extends ArcheModel {
         $this->changeBackDBConnection();
         return 0;
     }
+   
+    /**
+     * Get the root resource acdh type
+     * 
+     * @param string $repoid
+     * @return string
+     */
+    private function getProperties(string $repoid): string {
+      
+        try {
+            $query = $this->repodb->query(
+                    "select value from metadata_view where id = :id and property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1", 
+                    array(':id' => $repoid)
+            );
+            
+            $result = $query->fetch();
+            if(isset($result->value)){
+                return $result->value;
+            }
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+        } catch(\Drupal\Core\Database\DatabaseExceptionWrapper $ex ) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+        }
+        
+        $this->changeBackDBConnection();
+        return '';
+    }
     
     /**
-     * Reorder the sql result based on the orderid
+     * Get the properties for the sql search by the root resource acdh type
+     * @param string $class
+     * @return array
      */
-    private function reorderResult() {
-        if(count((array)$this->result) > 0) {
-            foreach($this->result as $v) {
-                if(isset($v->orderid)){
-                    $this->data[$v->orderid][] = $v;
+    public function getPropertiesByClass(string $repoid) {
+        
+        $class = $this->getProperties($repoid);
+        $property = '';
+        $this->rootAcdhType = $class;
+        if(!empty($class)){
+            $class = strtolower(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $class));
+        }
+        
+        switch ($class) {
+            case 'organisation':
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasContributor', 'https://vocabs.acdh.oeaw.ac.at/schema#hasFunder',
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasOwner', 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicensor', 
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasRightsHolder'
+                );        
+                break;
+            case 'publication':
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication', 'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasReferencedBy'
+                );        
+                break;
+            case 'person':
+                $this->childProperties = array(
+                    'http://www.w3.org/2004/02/skos/core#narrower'
+                );        
+                break;
+            case 'project':
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasRelatedProject'
+                );        
+                break;
+            case 'institute':
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasMember'
+                );        
+                break;
+            case 'place':
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasSpatialCoverage'
+                );        
+                break;
+            default:
+                $this->childProperties = array(
+                    'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                ); 
+            break;
+        }
+        //create the sql string array for the query
+        $this->formatTypeFilter();
+    } 
+    
+    /**
+     * Format the acdh type for the sql query as an array
+     * @return string
+     */
+    private function formatTypeFilter() {
+        $this->sqlTypes = "";
+        if(isset($this->childProperties)) {
+            $count = count($this->childProperties);
+            if($count > 0){
+                $this->sqlTypes .= 'ARRAY [ ';
+                $i = 0;
+                foreach($this->childProperties as $t){
+                    $this->sqlTypes .= "'$t'";
+                    if($count - 1 != $i) {
+                        $this->sqlTypes .= ', ';
+                    } else {
+                        $this->sqlTypes .= ' ]';
+                    }
+                    $i++;
                 }
+            }else {
+               $this->sqlTypes = "";
             }
         }
     }

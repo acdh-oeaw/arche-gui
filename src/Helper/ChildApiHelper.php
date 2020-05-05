@@ -16,7 +16,7 @@ use Drupal\acdh_repo_gui\Helper\ArcheHelper;
  */
 class ChildApiHelper extends ArcheHelper {
     
-    private $rootViewObjectArray;
+    private $childViewObjectArray;
     private $siteLang = "en";
         
     /**
@@ -27,60 +27,121 @@ class ChildApiHelper extends ArcheHelper {
      */    
     public function createView(array $data = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        $this->data = $data;
-        $this->extendActualObj();  
+        $this->formatResultToGui($data);  
         
         if(count((array)$this->data) == 0) {
             return array();
         }
         
         foreach ($this->data as $k => $v) {
-            $this->rootViewObjectArray[] = new ResourceObject($v, $this->repo);
+            $this->childViewObjectArray[] = new ResourceObject($v, $this->repo);
         }
-        return $this->rootViewObjectArray;
+        return $this->childViewObjectArray;
     }
     
-   
-    /**
-     * We need to overwrite the basic function, because the child view has a different sql output
-     * 
-     * @param bool $root
+   /**
+     * We need to format the root results for the gui
+     * @return array
      */
-    protected function extendActualObj(bool $root = false) {
-        $result = array();
-        
-        foreach($this->data as $k => $v) {
-            foreach($v as $obj) {
+    private function formatResultToGui(array $data) {
+        if(count((array)$data) > 0) {
+            foreach($data as $k => $v) {
                 $lang = 'en';
-                if(isset($obj->lang)) {
-                    if(!empty($obj->lang)) {
-                       $lang = $obj->lang; 
+                if(isset($d->language)) {
+                    if(!empty($d->language)) {
+                       $lang = $d->language; 
                     }else{
                         $lang = $this->siteLang;
                     }
                 }
-                if(isset($obj->property)) {
-                    $obj->shortcut = $this->createShortcut($obj->property);
-                    if(isset($obj->value)) {
-                        $obj->title = $obj->value;
+                
+                if(isset($v->id)) {
+                    $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
+                        $this->createObj(
+                            $v->id, 
+                            $this->repo->getSchema()->__get('id'), 
+                            $v->id, 
+                            $v->id
+                            )
+                        );
+                    
+                    if(isset($v->title)) {
+                        $this->data[$k]['acdh:hasTitle'][$lang] = array(
+                        $this->createObj(
+                            $v->id, 
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle", 
+                            $v->title, 
+                            $v->title
+                            )
+                        );
                     }
-                    $obj->id = $obj->childid;
-                    if(!isset($result[$k]['acdh:hasIdentifier'][$lang])){
-                        $o = new \stdClass();
-                        $o->id = '';
-                        $o->id = $obj->id;
-                        $result[$k]['acdh:hasIdentifier'][$lang][0] = $o;
+                    if(isset($v->avdate)) {
+                        $this->data[$k]['acdh:hasAvailableDate'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAvailableDate", 
+                                $v->avdate, 
+                                $v->avdate
+                                )
+                            );
                     }
-                    //we need to change the postgre datetime format to php date to we can modify it with the twig template
-                    if(isset($result[$k]['acdh:hasAvailableDate'])){
-                        $time = strtotime($result[$k]['acdh:hasAvailableDate'][$lang][0]->value);
-                        $newformat = date('Y-m-d h:m:s',$time);
-                        $result[$k]['acdh:hasAvailableDate'][$lang][0]->title = $newformat;
+                    if(isset($v->description)) {
+                        $this->data[$k]['acdh:hasDescription'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasDescription", 
+                                $v->description, 
+                                $v->description
+                                )
+                            );
                     }
-                    $result[$k][$obj->shortcut][$lang][] = $obj;
+                    if(isset($v->accesres)) {
+                        $this->data[$k]['acdh:hasAccessRestriction'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasAccessRestriction", 
+                                str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres), 
+                                $v->accesres
+                                )
+                            );
+                    }
+                    if(isset($v->titleimage)) {
+                        $this->data[$k]['acdh:hasTitleImage'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitleImage", 
+                                $v->titleimage, 
+                                $v->titleimage
+                                )
+                            );
+                    } 
+                    $this->data[$k]['rdf:type'][$lang] = array(
+                            $this->createObj(
+                                $v->id, 
+                                'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
+                                )
+                            );
+                    
                 }
             }
         }
-        $this->data = $result;
+    }
+    /**
+     * Create the root object for gui 
+     * @param int $id
+     * @param string $property
+     * @param string $title
+     * @param string $value
+     * @return object
+     */
+    private function createObj(int $id, string $property, string $title, string $value ): object {
+        $obj = new \stdClass();
+        $obj->id = $id;
+        $obj->property = $property; //;
+        $obj->title = $title;
+        $obj->value = $value;
+        return $obj;
     }
 }

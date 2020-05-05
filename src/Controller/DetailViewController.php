@@ -21,7 +21,7 @@ class DetailViewController extends ControllerBase {
     private $helper;
     private $basicViewData;
     private $repoUrl;
-    private $repoId;
+    private $repoid;
     private $generalFunctions;
     
     public function __construct($repo) {

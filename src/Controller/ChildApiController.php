@@ -29,6 +29,7 @@ class ChildApiController extends ControllerBase {
     private $childNum;
     private $pagingHelper;
     private $repo;
+    private $repoid;
     
     public function __construct() {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
@@ -49,22 +50,22 @@ class ChildApiController extends ControllerBase {
      * @param string $limit
      */
     public function repo_child_api(string $identifier, string $limit, string $page, string $order): Response
-    {
-        
+    {   
         if (preg_match("/^\d+$/", $identifier)) {
+            $this->repoid = $identifier;
             $identifier = $this->repo->getBaseUrl().$identifier;
         } else if (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
             $identifier = $this->repo->getSchema()->__get('drupal')->uuidNamespace.$identifier;
         }
-        
+        $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($identifier);
-
+        
         if($this->childNum < 1) {
             goto end;
         }
         
         $this->data->sum = $this->childNum;
-
+        $this->data->acdhType = strtolower(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $this->model->getAcdhtype()));
         $this->data->limit = $limit;
         $this->data->page = $page;
         $this->data->order = $order;
@@ -83,13 +84,12 @@ class ChildApiController extends ControllerBase {
         $this->data->pagination = $this->data->pagination[0];
         $data = $this->model->getViewData($identifier, (int)$limit, (int)$offset, $order);
         $this->data->data = $this->helper->createView($data);
-        
         if(count((array)$this->data->data) <= 0) {
-            $this->data->errorMSG = $this->langConf->get('errmsg_no_child_resources') ? $this->langConf->get('errmsg_no_child_resources') : 'There are no Child resources';
+            $this->data->errorMSG = 'There are no Child resources';
         }
        
         end:
-            
+        
         $build = [
             '#theme' => 'acdh-repo-gui-child',
             '#data' => $this->data,

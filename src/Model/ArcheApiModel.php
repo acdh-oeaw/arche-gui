@@ -112,23 +112,6 @@ class ArcheApiModel extends ArcheModel {
         $projectProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
         $resourceProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
         
-        /*
-        echo "<pre>";
-        var_dump('project');
-        var_dump($projectProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
-        echo "</pre>";
-        
-        echo "<pre>";
-        var_dump('collection');
-        var_dump($collectionProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
-        echo "</pre>";
-        
-        echo "<pre>";
-        var_dump('resource');
-        var_dump($resourceProp['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle']);
-        echo "</pre>";
-        */
-        
         return array('collection' => $collectionProp, 'project' => $projectProp, 'resource' => $resourceProp);
     }
     

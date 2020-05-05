@@ -4,6 +4,28 @@
   {{ data.errorMSG }}
 {% else %}
     
+    {% if data.acdhType|lower == "concept" %}
+        {% set childTitle =  "Narrower(s)" %}
+    {% elseif data.acdhType|lower == "person" %}
+        {% set childTitle = "Contributed to" %}
+    {% elseif data.acdhType|lower == "project" %}
+        {% set childTitle =  "Related collection(s)" %}
+    {% elseif data.acdhType|lower == "organisation" %}
+        {% set childTitle =  "Involved in" %}
+    {% elseif data.acdhType|lower == "place" %}
+        {% set childTitle =  "Spatial coverage in" %}
+    {% elseif data.acdhType|lower == "publication" %}
+        {% set childTitle =  "Related resource(s)" %}
+    {% else %}
+        {% set childTitle =  "Child Resource(s)" %}
+    {% endif %}
+    <div class="res-el res-info res-child-info col-block col-lg-12">
+        <div class="result-basic-info">
+            <span class="results-info-bar">
+                <h3>{{ childTitle|trans }}</h3>
+            </span>
+        </div>
+    </div>
     {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
         
     {% for item in data.data %}
@@ -81,5 +103,6 @@
   
             	                                        
         </div>
-    {% endfor %} 
+    {% endfor %}
+    {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
 {% endif %}

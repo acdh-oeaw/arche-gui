@@ -191,31 +191,37 @@ LANGUAGE 'plpgsql';
 * CHILD VIEW FUNCTION 
 */
 
-CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en' )
-    RETURNS table (childid bigint, property text, value text, order_prop text, order_val text, orderid bigint, lang text)
+CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}' )
+    RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
-DECLARE limitint bigint := cast ( _limit as bigint);
-DECLARE pageint bigint := cast ( _page as bigint);
-
+	DECLARE _lang2 text := 'de';
+	DECLARE limitint bigint := cast ( _limit as bigint);
+	DECLARE pageint bigint := cast ( _page as bigint);
 BEGIN
+	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 
-RAISE NOTICE USING MESSAGE = _lang;
-RAISE NOTICE USING MESSAGE = _parentid;
-RAISE NOTICE USING MESSAGE = _orderby;
-RAISE NOTICE USING MESSAGE = _orderprop;
-RAISE NOTICE USING MESSAGE = _limit;
-RAISE NOTICE USING MESSAGE = _page;
-
-	/* get child ids */
-	DROP TABLE IF EXISTS child_ids;
-	CREATE TEMPORARY TABLE child_ids(childid bigint NOT NULL, prop text NOT NULL, value text NOT NULL);
-	INSERT INTO child_ids( 
+DROP TABLE IF EXISTS child_ids;
+	CREATE TEMP TABLE child_ids AS(
+	WITH ids AS (
 		select 
-			r.id as childid, mv.property, mv.value
+			r.id,
+			COALESCE(
+				(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+				(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
+			) as title,
+			(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
+			COALESCE(
+				(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+				(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
+			) description,
+			(select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
+			mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+			(select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
+			(select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
 		from relations as r
 		left join identifiers as i on i.id = r.target_id 
 		left join metadata_view as mv on mv.id = r.id
-		where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+		where r.property = ANY (_rdftype)
 		and mv.property = _orderprop
 		and i.ids = _parentid
 		order by  
@@ -223,34 +229,12 @@ RAISE NOTICE USING MESSAGE = _page;
          mv.value DESC
 		limit limitint
 		offset pageint
-	); 
-	ALTER TABLE child_ids ADD COLUMN id SERIAL PRIMARY KEY;
+	) select * from ids		
+);
 	
 RETURN QUERY
-		select 
-		CAST(ci.childid as bigint),  mv.property, 
-		CASE 
-		WHEN mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' 
-		THEN  
-		(select mv2.value from metadata_view as mv2 where id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' LIMIT 1) 
-		ELSE 
-		mv.value 
-		END,
-		ci.prop, ci.value, CAST(ci.id as bigint),
-		mv.lang
-		from child_ids as ci
-		left join metadata_view as mv on mv.id = ci.childid
-		where 
-		mv.property in (
-			'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle',
-			'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription',
-			'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage',
-			'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction',
-			'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate',
-			'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
-		) 
-		Order by ci.id
-		;
+	select ci.id, ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
+	from child_ids as ci;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -259,29 +243,26 @@ LANGUAGE 'plpgsql';
 * CHILD VIEW SUM
 */
 
-CREATE OR REPLACE FUNCTION gui.child_sum_views_func(_parentid text)
-    RETURNS table (childid bigint)
+CREATE OR REPLACE FUNCTION gui.child_sum_views_func(_parentid text, _rdftype text[] DEFAULT '{}')
+    RETURNS table (countid bigint)
 AS $func$
 
 BEGIN
-	/* get child ids */
-	DROP TABLE IF EXISTS child_ids;
-	CREATE TEMPORARY TABLE child_ids(childid bigint NOT NULL);
-	INSERT INTO child_ids( 
-		select 
-			r.id as childid
-		from relations as r
-		left join identifiers as i on i.id = r.target_id 
-		where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-		and i.ids = _parentid
-	); 
-	ALTER TABLE child_ids ADD COLUMN id SERIAL PRIMARY KEY;
+    DROP TABLE IF EXISTS child_ids;
+    CREATE TEMP TABLE child_ids AS(
+    WITH ids AS (
+            select 
+                    r.id			
+            from relations as r
+            left join identifiers as i on i.id = r.target_id
+            where r.property = ANY (_rdftype)
+            and i.ids = _parentid
+    ) select * from ids		
+);
 	
 RETURN QUERY
-		select 
-		COUNT(*)
-		from child_ids 
-		;
+	select count(ci.id)
+	from child_ids as ci;
 END
 $func$
 LANGUAGE 'plpgsql';
