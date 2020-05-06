@@ -32,6 +32,7 @@ class DetailViewHelper extends ArcheHelper {
         $this->data = $data;
         
         $this->extendActualObj();
+        $this->mergeAccessRes();
         $this->getVocabsForDetailViewTable();
         
         if(count((array)$this->data) == 0) {
@@ -41,6 +42,21 @@ class DetailViewHelper extends ArcheHelper {
         $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repo, $this->siteLang);
         
         return $this->detailViewObjectArray;
+    }
+    
+    //remove the duplicate value from the accessres
+    private function mergeAccessRes() {
+        foreach($this->data as $k => $v){
+            if($k == 'acdh:hasAccessRestriction') {
+                foreach($v as $lk => $lang) {
+                    foreach($lang as $key => $val) {
+                        if (strpos($val->relvalue, 'https://vocabs.') === false) {
+                            unset($this->data[$k][$lk][$key]);
+                        }
+                    }
+                }
+            }
+        }
     }
   
     /**
@@ -59,6 +75,7 @@ class DetailViewHelper extends ArcheHelper {
                     foreach ($this->data[$k][$this->siteLang] as $tk => $tv) {
                         foreach ($vocabs[$this->siteLang][$k] as $vocab) {
                             if (isset($vocab->uri) && !empty($vocab->uri) && isset($tv->relvalue)) {
+                                
                                 if ($vocab->uri == $tv->relvalue) {
                                     $this->data[$k][$this->siteLang][$tk]->uri = $vocab->uri;
                                     $this->data[$k][$this->siteLang][$tk]->title = $vocab->label;

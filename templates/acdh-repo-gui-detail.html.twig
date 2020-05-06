@@ -105,7 +105,7 @@
                 {% endif %}
             </div>
         {% endif %}
-        <br>
+        
         {% if basic.getData('acdh:hasDescription')[0] %}
             <div class="res-property">
                 <i class="material-icons">info_outline</i>
@@ -113,7 +113,7 @@
                 <span class="res-prop-value">{{ basic.getData('acdh:hasDescription')[0].title|nl2br }}</span>
             </div>
         {% endif %}
-        <br>
+        
         {% if result.table['acdh:hasNote'][0] %}
             <div class="res-property">
                 <i class="material-icons">info_outline</i>

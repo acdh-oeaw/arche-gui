@@ -146,6 +146,8 @@ class GeneralFunctions {
         if ($code == 1) {
             if (strpos($data, 'hdl.handle.net') !== false) {
                 $data = str_replace("http://", "", $data);
+            }elseif (strpos($data, $this->repo->getBaseUrl()) !== false) {
+                $data = str_replace($this->repo->getBaseUrl(), "", $data);
             } elseif (strpos($data, 'https') !== false) {
                 $data = str_replace("https://", "", $data);
             } else {
