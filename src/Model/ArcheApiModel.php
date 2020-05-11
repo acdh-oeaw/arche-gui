@@ -45,6 +45,9 @@ class ArcheApiModel extends ArcheModel {
             case 'gndPerson':
                 return $this->getGNDPersonData();
                 break;
+            case 'countCollsBins':
+                return $this->countCollectionsBinaries();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -64,6 +67,31 @@ class ArcheApiModel extends ArcheModel {
                     "SELECT * from gui.apiGetData('".$this->properties->type."', '".$this->properties->searchStr."');" 
                     );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+             $result = array();
+        }
+        
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    /**
+     * Count the main collections and binary files for the ckeditor plugin api endpoint
+     * 
+     * @return array
+     */
+    private function countCollectionsBinaries(): array {
+        $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                    "SELECT * from gui.count_binaries_collection_func();" 
+                    );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();

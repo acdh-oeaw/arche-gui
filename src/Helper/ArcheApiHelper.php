@@ -48,6 +48,10 @@ class ArcheApiHelper extends ArcheHelper {
                 $this->data = $data;
                 $this->createGNDFile();
                 break;
+            case 'countCollsBins':
+                $this->data = $data;
+                $this->formatCollsBinsCount();
+                break;
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -91,7 +95,29 @@ class ArcheApiHelper extends ArcheHelper {
         $this->formatMetadataView();
     }
     
-    
+    /**
+     * format the collections and binaries count response
+     */
+    private function formatCollsBinsCount() {
+        $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
+       
+        $collections = "0";
+        $files = "0";
+        if (isset($this->data[0]->collections) && !empty($this->data[0]->collections)) {
+            $collections = $this->data[0]->collections." ".t("collections");
+        }
+        if (isset($this->data[0]->binaries) && !empty($this->data[0]->binaries)) {
+            $files = $this->data[0]->binaries." ".t("files");
+        }
+
+        if (empty($files)) {
+            $files = "0";
+        }
+        if (empty($collections)) {
+            $collections = "0";
+        }
+        $this->result['text'] = $collections. " ".t("with")." ".$files;
+    }
     
     
     /**

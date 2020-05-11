@@ -438,32 +438,27 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
-     public function repo_metadataGUI(): Response
+   
+    public function repo_getOntologyJSPluginData(): Response
     {   
         /*
         * Usage:
-        *  https://domain.com/browser/api/getMetadataGui/Language?_format=json
+        *  https://domain.com/browser/api/getOntologyJSPluginData/Language?_format=json
         */
         
         $response = new Response();
         
         $obj = new \stdClass();
         //get the data
-        $this->modelData = $this->model->getViewData('gndPerson', $obj);
+        $this->modelData = $this->model->getViewData('countCollsBins', $obj);
         if(count($this->modelData) == 0 ){
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
         
-        $this->result = $this->helper->createView($this->modelData, 'gndPerson');
-        
-        $response->setContent(json_encode(array("status" => "File created", "url" => $fileLocation)));
-        if(!isset($this->result["fileLocation"]) || empty($this->result["fileLocation"]) ){
-            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
-        }
-        
-        $response->setContent(json_encode(array("status" => "File created", "url" => $this->result["fileLocation"])));
+        $this->result = $this->helper->createView($this->modelData, 'countCollsBins');
+        $response->setContent(json_encode($this->result));
         $response->headers->set('Content-Type', 'application/json');
-        
+                
         return $response;
     }
     

@@ -807,3 +807,46 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+/**
+* COUNT THE binaries and main collections for the Ckeditor plugin
+**/
+CREATE OR REPLACE FUNCTION gui.count_binaries_collection_func()
+RETURNS table (collections bigint, binaries bigint)
+AS $func$
+DECLARE 
+BEGIN
+
+DROP TABLE IF EXISTS count_binaries;
+CREATE TEMP TABLE count_binaries AS (
+	WITH count_binaries as (
+		select 
+			COUNT(id) as id
+		from metadata_view 
+		where property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize'
+		and CAST(value as bigint) > 0
+	) Select id from count_binaries
+);
+DROP TABLE IF EXISTS count_main_collections;
+CREATE TEMP TABLE count_main_collections AS (
+	WITH count_main_collections as (
+		select DISTINCT(r.id) as id
+		from metadata as m
+		left join relations as r on r.id = m.id
+		where
+			m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+			and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+			and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
+			and NOT EXISTS ( 
+				SELECT 1 from relations as r2 where r2.id = m.id  
+					and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+			)
+	) select count(*) as id from count_main_collections
+);
+RETURN QUERY
+select 
+c.id as collections,
+(select b.id as binaries FROM count_binaries as b) as binaries
+FROM count_main_collections as c;
+END
+$func$
+LANGUAGE 'plpgsql';
