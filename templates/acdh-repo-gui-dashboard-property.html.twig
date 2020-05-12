@@ -1,0 +1,20 @@
+ <table class="display table table-striped" id='db-properties' cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Counts</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key,value in basic %}
+            <tr>
+                <td width='70%'>
+                    {{ value.property }}
+                </td>
+                <td width='30%'>
+                    {{ value.cnt }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
