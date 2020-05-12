@@ -49,9 +49,13 @@ class DetailViewController extends ControllerBase {
             return new \stdClass();
         }
         
+        //new cached vocabs solution is on the way
+        $vocabs = array();
+        //$vocabs = $this->model->getVocabsCacheData($this->repo->getBaseUrl());
+        
         //extend the data object with the shortcuts
         $this->basicViewData = new \stdClass();
-        $this->basicViewData->basic = $this->helper->createView($dv);
+        $this->basicViewData->basic = $this->helper->createView($dv, $vocabs);
         $this->basicViewData->basic = $this->basicViewData->basic[0];
         
         // check the dissemination services

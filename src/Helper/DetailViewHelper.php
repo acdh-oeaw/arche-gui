@@ -21,19 +21,22 @@ class DetailViewHelper extends ArcheHelper {
     private $siteLang;
     
     /**
-     * 
      * Build up the necessary data for the detail view 
-     * 
      * @param array $data
+     * @param array $vocabs
      * @return array
      */
-    public function createView(array $data = array(), string $dissemination = ''): array {
+    public function createView(array $data = array(), array $vocabs = array()): array {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
         
         $this->extendActualObj();
         $this->mergeAccessRes();
-        $this->getVocabsForDetailViewTable();
+        
+        //use the drupal vocabs cache if we dont have data in ontology cache
+        if(count($vocabs) == 0) {
+            $this->getVocabsForDetailViewTable();    
+        }
         
         if(count((array)$this->data) == 0) {
             return array();
@@ -59,6 +62,8 @@ class DetailViewHelper extends ArcheHelper {
         }
     }
   
+   
+   
     /**
      *  Update the actual resource values with the right vocabs
      */

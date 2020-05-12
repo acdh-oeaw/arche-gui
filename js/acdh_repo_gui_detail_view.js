@@ -67,6 +67,59 @@
             });
         }
    });
+   
+    $(document ).delegate( ".res-act-button-treeview", "click", function(e) {
+        if ($(this).hasClass('basic')) {
+            $('.children-overview-basic').hide();
+            $('.child-ajax-pagination').hide();
+            $('.children-overview-tree').fadeIn(200);
+            $(this).removeClass('basic');
+            $(this).addClass('tree');
+            $(this).children('span').text('Switch to List-View');
+            //get the data
+            var url = $('#insideUri').val();
+            if(url){
+
+                $('#collectionBrowser')
+                .jstree({
+                    core : {
+                        'check_callback': false,
+                        data : {
+                            "url" : '/browser/get_collection_data/'+url,
+                            "dataType" : "json"
+                        },
+                        themes : { stripes : true },
+                        error : function (jqXHR, textStatus, errorThrown) { 
+                            $('#collectionBrowser').html("<h3>Error: </h3><p>" + jqXHR.reason +"</p>");
+                        } 
+                    },
+                    search: {
+                        case_sensitive: false,
+                        show_only_matches: true
+                    },
+                    plugins : [ 'search' ]
+                });
+
+                $('#collectionBrowser')
+                //handle the node clicking to download the file
+                .bind("click.jstree", function (node, data) {
+                    if(node.originalEvent.target.id) {
+                        var node = $('#collectionBrowser').jstree(true).get_node(node.originalEvent.target.id);
+                        if(node.original.encodedUri){
+                            window.location.href = "/browser/oeaw_detail/"+node.original.encodedUri;
+                        }
+                    }
+                });
+            }
+        } else {
+            $('.children-overview-tree').hide();
+            $('.child-ajax-pagination').fadeIn(200);
+            $('.children-overview-basic').fadeIn(200);
+            $(this).removeClass('tree');
+            $(this).addClass('basic');
+            $(this).children('span').text('Switch to Tree-View');		
+        }
+    });
             
 });
 

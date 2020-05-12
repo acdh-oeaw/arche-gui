@@ -3,7 +3,36 @@
 {% elseif data.errorMSG %}  
   {{ data.errorMSG }}
 {% else %}
+    <!-- if we include a twig view, then it sometimes cant load the 3rd party js files.. so with this we need to check if it is loaded or not -->
+    <script src="/browser/modules/contrib/arche-gui/js/jstree.min.js"></script>
+    <script>!window.jQuery && document.write('<script src="/browser/modules/contrib/arche-gui/js/jstree.min.js"><\/script>')</script>
+    <script>
+        jQuery(function($) {
+            "use strict";
+                    $(document).ready(function() {
+                        let searchParams = new URLSearchParams(window.location.href);
+                        var pageValue = 0;
+                        if(searchParams.get('page')) {
+                            pageValue = searchParams.get('page');
+                            $('.actualPageSpan').html(pageValue);
+                        }else {
+                            $('.actualPageSpan').html("1");
+                        }
+                    });
+                });
+    </script>        
     
+    <style type="text/css">
+        .collectionBrowser_css {
+            width: auto;
+            max-width: 750px;
+            height: auto;
+            border: solid 1px #BBB;
+            background: #FFF;
+            overflow: hidden;
+            padding: 5px;
+        }
+    </style>
     {% if data.acdhType|lower == "concept" %}
         {% set childTitle =  "Narrower(s)" %}
     {% elseif data.acdhType|lower == "person" %}
@@ -26,83 +55,102 @@
             </span>
         </div>
     </div>
-    {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
-        
-    {% for item in data.data %}
-        
-        <div class="res-el col-block col-lg-12">
-		
-            {% if item.isTitleImage() %}<div class="res-inside-wrap col-lg-6 "> {% endif%} 
-                
-            {% if item.getTitle() %}
-                <div class="res-property">
-                    <span class="res-title">
-                        {%  if item.getAccessRestriction()  %}
-                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
-                        {% endif%}
-                            <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">{{ item.getTitle() }}</a>
-                    </span>
+    {% if data.acdhType|lower == "collection" %}
+        <div class="res-el res-info res-child-info col-block col-lg-12">
+            <div class="result-basic-info" >
+                <div class="res-act-button res-act-button-reverse res-act-button-treeview basic" style="text-align:left; margin-bottom:5px;">
+                    <i class="material-icons">&#xE335;</i>
+                    <span>{{ "Switch to Tree-View"|trans }}</span>
                 </div>
-            {% endif%}    
+            </div>
+        </div>
+    {% endif %}   
+    
+    <div class="children-overview children-overview-basic">
+        {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
 
-           
-            {% if item.getAcdhType() %}
-                <div class="res-property">
-                    <i class="material-icons">&#xE54E;</i>
-                    <span class="res-prop-label">{{ "Type"|trans }}: </span>
-                    <span class="res-rdfType"><a href="/browser/discover/&type={{ item.getAcdhType() }}/10">{{ item.getAcdhType() }}</a></span>
-                </div>
-            {% endif%}
+        {% for item in data.data %}
 
-            {% if item.getData('acdh:hasAvailableDate') %}
-                {{ item.getPropTitle('acdh:hasAvailableDate') }}
-                <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
-                </div>
-            {% endif%}
+            <div class="res-el col-block col-lg-12">
 
-            
-            {% if item.getData('acdh:hasDescription') %}
-                <div class="res-property res-property-desc">
-                    <span class="res-description">
-                         {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
-                    </span>
-                </div>
-            {% endif%}
+                {% if item.isTitleImage() %}<div class="res-inside-wrap col-lg-6 "> {% endif%} 
 
-            <div class="res-actions">
+                {% if item.getTitle() %}
+                    <div class="res-property">
+                        <span class="res-title">
+                            {%  if item.getAccessRestriction()  %}
+                                {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                            {% endif%}
+                                <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">{{ item.getTitle() }}</a>
+                        </span>
+                    </div>
+                {% endif%}    
 
-                <div class="res-act-button">
-                    <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
-                        <i class="material-icons">&#xE873;</i>
-                        <span>{{ "Detailed View"|trans }}</span>
-                    </a>	
-                </div>
-                        
-                {% if item.getData('acdh:hasDescription') %}
-                    <div class="res-act-button res-act-button-summary closed">
-                            <i class="material-icons">&#xE145;</i>
-                            <span class="show_summary">{{ "Show Summary"|trans }}</span>
-                            <span class="hide_summary">{{ "Hide Summary"|trans }}</span>
+
+                {% if item.getAcdhType() %}
+                    <div class="res-property">
+                        <i class="material-icons">&#xE54E;</i>
+                        <span class="res-prop-label">{{ "Type"|trans }}: </span>
+                        <span class="res-rdfType"><a href="/browser/discover/&type={{ item.getAcdhType() }}/10">{{ item.getAcdhType() }}</a></span>
                     </div>
                 {% endif%}
-                
-            </div>	
 
-            {% if item.isTitleImage() %}</div>{% endif%}
-
-            {% if item.isTitleImage() %}	
-                <div class="res-inside-wrap col-lg-6 ">	
-                    <div class="single-res-thumb">
-                        <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
-                            {{ item.getTitleImage()|raw }}
-                        </a>
+                {% if item.getData('acdh:hasAvailableDate') %}
+                    {{ item.getPropTitle('acdh:hasAvailableDate') }}
+                    <div class="res-property">
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
                     </div>
-                </div>
-            {% endif%}            
-  
-            	                                        
-        </div>
-    {% endfor %}
-    {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
+                {% endif%}
+
+
+                {% if item.getData('acdh:hasDescription') %}
+                    <div class="res-property res-property-desc">
+                        <span class="res-description">
+                             {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                        </span>
+                    </div>
+                {% endif%}
+
+                <div class="res-actions">
+
+                    <div class="res-act-button">
+                        <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
+                            <i class="material-icons">&#xE873;</i>
+                            <span>{{ "Detailed View"|trans }}</span>
+                        </a>	
+                    </div>
+
+                    {% if item.getData('acdh:hasDescription') %}
+                        <div class="res-act-button res-act-button-summary closed">
+                                <i class="material-icons">&#xE145;</i>
+                                <span class="show_summary">{{ "Show Summary"|trans }}</span>
+                                <span class="hide_summary">{{ "Hide Summary"|trans }}</span>
+                        </div>
+                    {% endif%}
+
+                </div>	
+
+                {% if item.isTitleImage() %}</div>{% endif%}
+
+                {% if item.isTitleImage() %}	
+                    <div class="res-inside-wrap col-lg-6 ">	
+                        <div class="single-res-thumb">
+                            <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
+                                {{ item.getTitleImage()|raw }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif%}            
+
+
+            </div>
+        {% endfor %}
+        {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
+    </div>
+    
+    <div class="children-overview children-overview-tree">
+        <div id="content_collection">
+            <div id="collectionBrowser" class="collectionBrowser_css"></div>
+        </div>            
+    </div>
 {% endif %}
