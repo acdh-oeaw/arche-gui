@@ -13,6 +13,9 @@ class CacheVocabsHelper
 {
     public $customCache = array();
     private $cacheVocabs;
+    private $vocabsFile;
+    private $ontology;
+    
     private $vocabs = array(
         "acdh:hasAccessRestriction" => "https://vocabs.acdh.oeaw.ac.at/download/archeaccessrestrictions.rdf",
         "acdh:hasLifeCycleStatus" => "https://vocabs.acdh.oeaw.ac.at/download/archelifecyclestatus.rdf",
@@ -22,12 +25,18 @@ class CacheVocabsHelper
         "acdh:hasLanguage" => "https://vocabs.acdh.oeaw.ac.at/rest/v1/iso639_3/data?format=application/rdf%2Bxml",
         "acdh:hasLicense" => "https://vocabs.acdh.oeaw.ac.at/rest/v1/arche_licenses/data?format=application/rdf%2Bxml"
     );
-    
-    
+        
     public function __construct()
     {
         $this->cacheVocabs = new \Drupal\acdh_repo_gui\Model\CacheVocabsModel();
+        $this->vocabsFile = \Drupal::service('file_system')->realpath(file_default_scheme() . "://")."/vocabsCache.json";
+        if (!file_exists($this->vocabsFile)) {
+            $file = fopen($this->vocabsFile, "w");
+            fclose($file);
+            chmod($this->vocabsFile, 0777);
+        }
     }
+    
     
     /**
      * Get the vocabs title

@@ -12,20 +12,12 @@ class DetailViewModel extends ArcheModel {
     
     private $repodb;
     private $siteLang;
-    private $ontology;
-    private $vocabsFile;
     
     public function __construct() {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        $this->vocabsFile = \Drupal::service('file_system')->realpath(file_default_scheme() . "://")."/vocabsCache.json";
-        if (!file_exists($this->vocabsFile)) {
-            $file = fopen($this->vocabsFile, "w");
-            fclose($file);
-            chmod($this->vocabsFile, 0777);
-        }
     }
     
     /**
@@ -100,46 +92,7 @@ class DetailViewModel extends ArcheModel {
         return $result;
     }
     
-    public function getVocabsCacheData(string $baseURL): array {
-        
-        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
-        
-        $conn = new \PDO($dbconnStr);
-        $cfg = (object) [
-            'skipNamespace' =>  $baseURL.'%', // don't forget the '%' at the end!
-            'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
-            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
-            'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
-            'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
-        ];
-        
-        try{
-            $this->ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
-            $this->ontology->fetchVocabularies($this->vocabsFile, 'PT0S');
-            
-            
-            //$license = $this->ontology->getProperty(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense');
-            //$this->ontology->fetchVocabularies($this->vocabsFile, 'P1000D');
-            //$property = $this->ontology->getProperty(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense');
-            //print_r($property);
-            //echo $property->vocabsValues['https://vocabs.acdh.oeaw.ac.at/archelicenses/cc-by-4-0']->getLabel('en');
-            // echo "<pre>";
-            //var_dump($property->vocabsValues['https://vocabs.acdh.oeaw.ac.at/archelicenses/cc-by-4-0']->getLabel('de'));
-            //echo "</pre>";
-            return array();
-            
-        } catch (Exception $ex) {
-            echo 'simple exception';
-            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            return array();
-        } catch (\EasyRdf\Exception $ex){
-            echo 'easyrdf exception';
-            echo "<pre>";
-            var_dump($ex->getMessage());
-            echo "</pre>";
-            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            return array();
-        }
-    }
+    
+   
         
 }
