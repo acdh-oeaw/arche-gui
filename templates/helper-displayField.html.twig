@@ -63,7 +63,7 @@
                     {% elseif value.value %}
                         {{ value.value }}
                     {% endif%}
-                    <span class="res-prop-delimiter">{{ delimiter|raw }}</span>
+                    {% if not loop.last %},{% endif %}
                 {% endfor %}
             {% else %}
                  {{ data }}
