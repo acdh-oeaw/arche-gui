@@ -33,17 +33,17 @@
             <i class="material-icons">&#xE896;</i>
             <span>{{ "Switch to Expert-View"|trans }}</span>
         </div>
-        {% if basic.getRepoUrl() %}
-        <div class="res-act-button res-act-button-copy-url" id="res-act-button-copy-url" data-copyuri="{{ basic.getRepoUrl() }}">
+        {% if basic.getRepoGuiUrl() %}
+        <div class="res-act-button res-act-button-copy-url" id="res-act-button-copy-url" data-copyuri="{{ basic.getRepoGuiUrl() }}">
             <span id="copy-url-button">
                 <i class="material-icons">&#xE157;</i>
                 {{ "Copy Resource Link"|trans }}
             </span>
             <span id="copyLinkTextfield-wrapper">
-                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getRepoUrl()}}">
+                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getRepoGuiUrl()}}">
                     <i class="material-icons">&#xE14D;</i>
                 </span>
-                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getRepoUrl() }}"/>
+                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getRepoGuiUrl() }}"/>
             </span>
         </div>
         {% endif %}

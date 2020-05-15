@@ -132,6 +132,14 @@ class ResourceObject {
         return $this->config->getBaseUrl().$this->repoid;
     }
     
+    
+    public function getRepoGuiUrl(): string {
+        if(!isset($this->repoid) && empty($this->repoid)){
+            $this->getRepoID();
+        }
+        return str_replace('/api/', '/browser/oeaw_detail/', $this->config->getBaseUrl()).$this->repoid;
+    }
+    
     /**
      * Get the repo identifier
      * @return string
