@@ -41,7 +41,7 @@ class DisseminationServicesController extends ControllerBase {
         $this->detailViewController = new DVC($this->repo);
     }
     
-    public function generateView(string $identifier, string $dissemination): array {
+    public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array {
         if(empty($identifier) || !in_array($dissemination, $this->disseminations)){
             return array();
         }
@@ -53,10 +53,15 @@ class DisseminationServicesController extends ControllerBase {
             }
         }
         
-        $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier);
+        $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
         return $this->basicViewData;
     }
     
+    /**
+     * get the collection binaries
+     * @param string $repoid
+     * @return Response
+     */
     public function repo_dl_collection_binaries(string $repoid) : Response
     {
         $GLOBALS['resTmpDir'] = "";
@@ -81,16 +86,27 @@ class DisseminationServicesController extends ControllerBase {
      *
      * This generates the jstree data for the collection download view
      *
-     * @param string $uri
+     * @param string $repoid
      * @return Response
     */
     public function repo_get_collection_data(string $repoid) : Response
     {
         $result = array();
+        $repoBaseObj = new \stdClass();
+        $rootTitle = '';
         if (empty($repoid)) {
             $errorMSG = t('Missing').': Identifier';
         } else {
-            $result = $this->generateView($repoid, 'collection');
+            //get the root collection data
+            $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
+            $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
+            if(count((array)$repoBaseObj) > 0){
+                if($repoBaseObj->getTitle() !== null) {
+                    $rootTitle = $repoBaseObj->getTitle();
+                }
+            }
+            
+            $result = $this->generateView($repoid, 'collection', array('title' => $rootTitle));
         }
         
         $response = new Response();

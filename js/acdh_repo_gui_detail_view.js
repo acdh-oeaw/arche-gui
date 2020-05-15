@@ -104,9 +104,10 @@
                 //handle the node clicking to download the file
                 .bind("click.jstree", function (node, data) {
                     if(node.originalEvent.target.id) {
+                        
                         var node = $('#collectionBrowser').jstree(true).get_node(node.originalEvent.target.id);
                         if(node.original.encodedUri){
-                            window.location.href = "/browser/oeaw_detail/"+node.original.encodedUri;
+                            window.location.href = "/browser/oeaw_detail/"+node.original.uri;
                         }
                     }
                 });

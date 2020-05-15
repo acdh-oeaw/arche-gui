@@ -24,11 +24,26 @@ class DisseminationServicesHelper extends ArcheHelper {
     private $result = array();
     private $collectionDate;
     private $collectionTmpDir;
+    private $additionalData = array();
     
-    public function createView(array $data = array(), string $dissemination = '', string $identifier = ''): array {
-        
+    /**
+     * 
+     * @param array $additionalData we pass here the additional data for the resources
+     * f.e. colelction root data for the tree view
+     */
+    private function setAdditionalData(array $additionalData = array()) {
+        $this->additionalData = $additionalData;
+    }
+    
+    private function setRepoUrlId(string $identifier = '') {
         $this->repoid = $identifier;
         $this->repoUrl = $this->repo->getBaseUrl().$this->repoid;
+    }
+    
+    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array {
+        
+        $this->setRepoUrlId($identifier);
+        $this->setAdditionalData($additionalData);
         
         switch ($dissemination) {
             case 'collection':
@@ -142,7 +157,6 @@ class DisseminationServicesHelper extends ArcheHelper {
     
     /**
      * Modify the collection data structure for the tree view
-     * 
      */
     private function modifyCollectionDataStructure() {
         foreach($this->data as $k => $v) {
@@ -176,6 +190,12 @@ class DisseminationServicesHelper extends ArcheHelper {
      */
     private function createTreeData(array $data, string $identifier): array {
         $tree = array();
+        $rootTitle = 'main';
+        //if we have a definied root title then we use that
+        if(isset($this->additionalData['title'])) {
+            $rootTitle = $this->additionalData['title'];
+        }
+                
         
         $first = array(
             "mainid" => $identifier,
@@ -183,8 +203,8 @@ class DisseminationServicesHelper extends ArcheHelper {
             "uri_dl" => $this->repo->getBaseUrl().$identifier,
             "filename" => "main",
             "resShortId" => $identifier,
-            "title" => 'main',
-            "text" => 'main',
+            "title" => $rootTitle,
+            "text" => $rootTitle,
             "parentid" => '',
             "userAllowedToDL" => true,
             "dir" => true,
