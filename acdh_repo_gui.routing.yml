@@ -198,16 +198,5 @@ repo_getOntologyJSPluginData:
         _permission: 'access content'
         _access: 'TRUE'           
 
-### DashBoard
-repo_dashboard_property:    
-    ### this will be the url on the gui
-    path: '/dashboard_property' 
-    defaults:
-        ### this is the function which will be called
-        _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_dashboard_property'
-    requirements:
-        ## some permission define
-        _permission: 'access content'
-        _access: 'TRUE'    
 
         

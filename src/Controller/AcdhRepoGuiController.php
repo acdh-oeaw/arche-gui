@@ -213,32 +213,4 @@ class AcdhRepoGuiController extends ControllerBase
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
-    
-    /**
-     * Dashboard property count view
-     * 
-     * @return array
-     */
-    public function repo_dashboard_property(): array {
-        
-        //get the dashboard controller
-        $dashboard = new \Drupal\acdh_repo_gui\Controller\DashboardController($this->repo);
-        //generate the view
-        $data = $dashboard->generateView();
-        
-        //return the theme with the 
-        return  [
-            '#theme' => 'acdh-repo-gui-dashboard-property',
-            '#basic' => $data,
-            '#cache' => ['max-age' => 0], 
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles',
-                ]
-            ]
-        ]; 
-    }
-    
-    
-    
 }

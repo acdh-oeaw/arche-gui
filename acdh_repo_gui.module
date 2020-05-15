@@ -64,12 +64,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         ],
         'helper-lng-switcher' => [
             'variables' => ['language' => NULL]
-        ],
-        //define the template name
-        'acdh-repo-gui-dashboard-property' => [
-            //define the variables
-            'variables' => ['basic' => NULL]
-        ],
+        ]
     ];
 }
 
