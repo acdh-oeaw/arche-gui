@@ -2,4 +2,3 @@ vendor/*
 config/config.yaml
 .htaccess
 config.yaml
-docs/*

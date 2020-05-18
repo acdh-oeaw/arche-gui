@@ -28,7 +28,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public static function setUpBeforeClass(): void
     {
-        $cfgFile      = dirname(__DIR__, 1) . '/config.yaml';
+        $cfgFile      = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
         self::$repo   = Repo::factory($cfgFile);
     }
