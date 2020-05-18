@@ -1,0 +1,41 @@
+# arche gui documentation
+
+name: document
+
+on: 
+  push:
+    branches:
+    - master
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: install phpdocumentator
+      run: curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar > phpdoc.phar
+    
+    - name: create docs dir
+      run: |
+        rm -fR docs
+        mkdir docs
+
+    - name: generate docs
+      run: php -f phpdoc.phar run -d src -t docs/
+      
+    - name: commit docs
+      run: |
+        cd docs
+        git config user.email "workflow@github.actions"
+        git config user.name "Github Actions Workflow"
+        git add *
+        git commit -a -m 'Documentation updated' || true
+        git push origin || true  
+        
