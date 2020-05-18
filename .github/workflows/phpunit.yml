@@ -23,7 +23,7 @@ jobs:
     - name: test
       run: |
         mkdir -p build/logs
-        ./vendor/phpunit/phpunit/phpunit
+        ./vendor/phpunit/phpunit/phpunit ./src/tests/src/Unit/Object/ResourceObjectTest.php
         
     - name: coveralls
       run: |
