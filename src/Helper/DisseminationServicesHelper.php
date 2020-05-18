@@ -16,8 +16,8 @@ use EasyRdf\Resource;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesHelper extends ArcheHelper {
-    
+class DisseminationServicesHelper extends ArcheHelper
+{
     private $data;
     private $repoid;
     private $repoUrl;
@@ -27,21 +27,23 @@ class DisseminationServicesHelper extends ArcheHelper {
     private $additionalData = array();
     
     /**
-     * 
+     *
      * @param array $additionalData we pass here the additional data for the resources
      * f.e. colelction root data for the tree view
      */
-    private function setAdditionalData(array $additionalData = array()) {
+    private function setAdditionalData(array $additionalData = array())
+    {
         $this->additionalData = $additionalData;
     }
     
-    private function setRepoUrlId(string $identifier = '') {
+    private function setRepoUrlId(string $identifier = '')
+    {
         $this->repoid = $identifier;
         $this->repoUrl = $this->repo->getBaseUrl().$this->repoid;
     }
     
-    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array {
-        
+    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array
+    {
         $this->setRepoUrlId($identifier);
         $this->setAdditionalData($additionalData);
         
@@ -64,12 +66,13 @@ class DisseminationServicesHelper extends ArcheHelper {
     
     /**
      * Get the loris url for the loris disserv viewer
-     * 
+     *
      * @return string
      */
-    private function getLorisUrl(): string {
+    private function getLorisUrl(): string
+    {
         $dissServices = $this->generalFunctions->getDissServices($this->repoid);
-        if(isset($dissServices['iiif']) && !empty($dissServices['iiif'])){
+        if (isset($dissServices['iiif']) && !empty($dissServices['iiif'])) {
             return $dissServices['iiif'];
         }
         return '';
@@ -77,10 +80,11 @@ class DisseminationServicesHelper extends ArcheHelper {
     
     /**
      * 3d dissemination service function
-     * 
+     *
      * @return type
      */
-    private function threeDDissService() {
+    private function threeDDissService()
+    {
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $this->result = array();
         try {
@@ -149,7 +153,8 @@ class DisseminationServicesHelper extends ArcheHelper {
     /**
      * function for the collection data steps
      */
-    private function createCollection() {
+    private function createCollection()
+    {
         $this->modifyCollectionDataStructure();
         $this->result = $this->createTreeData($this->data, $this->repoid);
     }
@@ -158,20 +163,21 @@ class DisseminationServicesHelper extends ArcheHelper {
     /**
      * Modify the collection data structure for the tree view
      */
-    private function modifyCollectionDataStructure() {
-        foreach($this->data as $k => $v) {
+    private function modifyCollectionDataStructure()
+    {
+        foreach ($this->data as $k => $v) {
             $v['uri'] = $v['mainid'];
             $v['uri_dl'] = $this->repo->getBaseUrl().$v['mainid'];
             $v['text'] = $v['title'];
             $v['resShortId'] = $v['mainid'];
-            if($v['accesres'] == 'public'){
+            if ($v['accesres'] == 'public') {
                 $v['userAllowedToDL'] = true;
-            }else {
+            } else {
                 $v['userAllowedToDL'] = false;
             }
-            if(empty($v['filename'])){
+            if (empty($v['filename'])) {
                 $v['dir'] = true;
-            }else {
+            } else {
                 $v['dir'] = false;
                 $v['icon'] = "jstree-file";
             }
@@ -179,7 +185,6 @@ class DisseminationServicesHelper extends ArcheHelper {
             $v['encodedUri'] = $this->repo->getBaseUrl().$v['mainid'];
             $this->data[$k] = $v;
         }
-        
     }
     
     /**
@@ -188,11 +193,12 @@ class DisseminationServicesHelper extends ArcheHelper {
      * @param string $identifier
      * @return array
      */
-    private function createTreeData(array $data, string $identifier): array {
+    private function createTreeData(array $data, string $identifier): array
+    {
         $tree = array();
         $rootTitle = 'main';
         //if we have a definied root title then we use that
-        if(isset($this->additionalData['title'])) {
+        if (isset($this->additionalData['title'])) {
             $rootTitle = $this->additionalData['title'];
         }
                 
@@ -213,7 +219,7 @@ class DisseminationServicesHelper extends ArcheHelper {
         );
         
         $new = array();
-        foreach ($data as $a){
+        foreach ($data as $a) {
             $a = (array)$a;
             $new[$a['parentid']][] = $a;
         }
@@ -232,12 +238,12 @@ class DisseminationServicesHelper extends ArcheHelper {
     public function convertToTreeById(&$list, $parent)
     {
         $tree = array();
-        foreach ($parent as $k=>$l){
-            if(isset($list[$l['mainid']])){
+        foreach ($parent as $k=>$l) {
+            if (isset($list[$l['mainid']])) {
                 $l['children'] = $this->convertToTreeById($list, $list[$l['mainid']]);
             }
             $tree[] = $l;
-        } 
+        }
         return $tree;
     }
     
@@ -253,7 +259,6 @@ class DisseminationServicesHelper extends ArcheHelper {
       */
     public function turtleDissService()
     {
-        
         $result = array();
         $client = new \GuzzleHttp\Client();
         
@@ -277,35 +282,36 @@ class DisseminationServicesHelper extends ArcheHelper {
     
     /**
      * Generate tar file from the selected files
-     * 
+     *
      * @param type $binaries
      * @param type $repoid
      * @return string
      */
-    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string {
+    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string
+    {
         $this->repoUrl = $this->repo->getBaseUrl().$repoid;
         //1. setup tmp dir
-        if($this->collectionCreateDlDirectory() === false) {
+        if ($this->collectionCreateDlDirectory() === false) {
             return '';
         }
         //2. download the selected files
         $this->collectionDownloadFiles($binaries, $username, $password);
         //3. add the turtle file into the collection
-        if($this->collectionGetTurtle() === false) {
+        if ($this->collectionGetTurtle() === false) {
             \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$url);
         }
         //4. tar the files
         //5. remove the downloaded files and leave just the tar file.
-        if($this->collectionTarFiles() === false) {
+        if ($this->collectionTarFiles() === false) {
             return false;
         }
-        $wwwurl = str_replace('/api/', '', $this->repo->getBaseUrl() );
+        $wwwurl = str_replace('/api/', '', $this->repo->getBaseUrl());
         return $wwwurl.'/browser/sites/default/files/collections/'.$this->collectionDate.'/collection.tar';
     }
     
     /**
      * Download the selected binaries
-     * 
+     *
      * @param array $binaries
      * @param string $username
      * @param string $password
@@ -368,10 +374,11 @@ class DisseminationServicesHelper extends ArcheHelper {
     
     /**
      * Get the turtle file and copy it to the collection download directory
-     * 
+     *
      * @return bool
      */
-    private function collectionGetTurtle(): bool {
+    private function collectionGetTurtle(): bool
+    {
         $ttl = '';
         $ttl = $this->turtleDissService();
         if (!empty($ttl)) {
@@ -379,7 +386,7 @@ class DisseminationServicesHelper extends ArcheHelper {
             fwrite($turtleFile, $ttl);
             fclose($turtleFile);
             chmod($this->collectionTmpDir.$this->collectionDate.'/turtle.ttl', 0777);
-        }else {
+        } else {
             return false;
         }
         return true;
@@ -389,8 +396,9 @@ class DisseminationServicesHelper extends ArcheHelper {
      * TAR the downloaded collection files
      * @return bool
      */
-    private function collectionTarFiles(): bool {
-       //if we have files in the directory
+    private function collectionTarFiles(): bool
+    {
+        //if we have files in the directory
         $dirFiles = scandir($this->collectionTmpDir.$this->collectionDate);
         if (count($dirFiles) > 0) {
             chmod($this->collectionTmpDir.$this->collectionDate, 0777);
@@ -430,7 +438,8 @@ class DisseminationServicesHelper extends ArcheHelper {
     /**
      * Remove the files from the collections directory
      */
-    private function collectionRemoveTempFiles() {
+    private function collectionRemoveTempFiles()
+    {
         if (is_dir($this->collectionTmpDir.$this->collectionDate)) {
             $objects = scandir($this->collectionTmpDir.$this->collectionDate);
             foreach ($objects as $object) {
@@ -465,7 +474,7 @@ class DisseminationServicesHelper extends ArcheHelper {
         
         //if the main directory is not exists
         if (!file_exists($this->collectionTmpDir)) {
-            if(!@mkdir($this->collectionTmpDir, 0777)){
+            if (!@mkdir($this->collectionTmpDir, 0777)) {
                 \Drupal::logger('acdh_repo_gui')->notice('cant create directory: '.$this->collectionTmpDir);
                 return false;
             }
@@ -474,7 +483,7 @@ class DisseminationServicesHelper extends ArcheHelper {
         if (file_exists($this->collectionTmpDir)) {
             //create the actual dir
             if (!file_exists($this->collectionTmpDir.$this->collectionDate)) {
-                if(!@mkdir($this->collectionTmpDir.$this->collectionDate, 0777)){
+                if (!@mkdir($this->collectionTmpDir.$this->collectionDate, 0777)) {
                     \Drupal::logger('acdh_repo_gui')->notice('cant create directory: '.$this->collectionDate);
                     return false;
                 }

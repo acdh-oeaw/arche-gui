@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 // We'll use this to perform a redirect if necessary.
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Routing\TrustedRedirectResponse;
+
 //use Drupal\oeaw\OeawFunctions;
 //use acdhOeaw\util\RepoConfig as RC;
 
@@ -44,7 +45,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
             \Drupal::service('session_manager')->delete($userid);
             $event->setResponse(new TrustedRedirectResponse($host."/Shibboleth.sso/Logout?return=".$host."/browser/"));
         }
-       
+
         if ($event->getRequest()->getPathInfo() == '/federated_login') {
             global $user;
             //the actual user id, if the user is logged in
@@ -56,7 +57,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
                     && \Drupal::currentUser()->isAnonymous()) {
                 $oF = new  \Drupal\oeaw\OeawFunctions();
                 $oF->handleShibbolethUser();
-                    
+
                 $host = \Drupal::request()->getSchemeAndHttpHost();
                 return new TrustedRedirectResponse($host."/browser/federated_login/");
             }

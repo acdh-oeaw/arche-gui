@@ -10,11 +10,12 @@ use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
  *
  * @author nczirjak
  */
-abstract class ArcheModel {
-    
+abstract class ArcheModel
+{
     private $repodb;
     
-    public function __construct() {
+    public function __construct()
+    {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
@@ -27,8 +28,8 @@ abstract class ArcheModel {
     
     /**
      * get the views data
-     * 
+     *
      * @return array
      */
-    abstract public function getViewData(): array;    
+    abstract public function getViewData(): array;
 }

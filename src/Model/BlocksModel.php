@@ -9,12 +9,13 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class BlocksModel extends ArcheModel {
-    
+class BlocksModel extends ArcheModel
+{
     private $repodb;
     
     
-    public function __construct() {
+    public function __construct()
+    {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
@@ -22,11 +23,12 @@ class BlocksModel extends ArcheModel {
     
     /**
      * Get the data for the left side boxes
-     * 
+     *
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "entity"): array {
+    public function getViewData(string $identifier = "entity"): array
+    {
         switch ($identifier) {
             case "entity":
                 return $this->getEntityData();
@@ -42,14 +44,16 @@ class BlocksModel extends ArcheModel {
     
     /**
      * Generate the entity box data
-     * 
+     *
      * @return array
      */
-    private function getEntityData(): array {
+    private function getEntityData(): array
+    {
         $result = array();
         //run the actual query
         try {
-            $query = $this->repodb->query("
+            $query = $this->repodb->query(
+                "
                 select count(value), value
                 from metadata 
                 where property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
@@ -63,7 +67,7 @@ class BlocksModel extends ArcheModel {
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-             $result = array();
+            $result = array();
         }
         
         $this->changeBackDBConnection();
@@ -72,14 +76,16 @@ class BlocksModel extends ArcheModel {
     
     /**
      * Generate the year box data
-     * 
+     *
      * @return array
      */
-    private function getYearsData(): array {
+    private function getYearsData(): array
+    {
         $result = array();
         //run the actual query
         try {
-            $query = $this->repodb->query("
+            $query = $this->repodb->query(
+                "
                 select
                     count(EXTRACT(YEAR FROM to_date(value,'YYYY'))), 
                     EXTRACT(YEAR FROM to_date(value,'YYYY')) as year
@@ -89,17 +95,15 @@ class BlocksModel extends ArcheModel {
                 order by year desc"
             );
             $result = $query->fetchAll();
-            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-             $result = array();
+            $result = array();
         }
         
         $this->changeBackDBConnection();
         return $result;
     }
-        
 }

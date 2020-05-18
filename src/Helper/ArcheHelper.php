@@ -13,14 +13,15 @@ use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
  *
  * @author nczirjak
  */
-abstract class ArcheHelper {
-    
+abstract class ArcheHelper
+{
     protected $generalFunctions;
     protected $config;
     protected $repo;
     private $siteLang;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->generalFunctions = new GeneralFunctions();
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
@@ -29,28 +30,30 @@ abstract class ArcheHelper {
     
     /**
      * Create shortcut from the property for the gui
-     * 
+     *
      * @param string $prop
      * @return string
      */
-    protected function createShortcut(string $prop): string {
+    protected function createShortcut(string $prop): string
+    {
         $prefix = array();
         $prefix = explode('#', $prop);
         $property = end($prefix);
         $prefix = $prefix[0];
         if (isset(CC::$prefixesToChange[$prefix.'#'])) {
-           return CC::$prefixesToChange[$prefix.'#'].':'.$property;
+            return CC::$prefixesToChange[$prefix.'#'].':'.$property;
         }
     }
     
     /**
      * Create gui inside uri from the identifier
-     * 
+     *
      * @param string $data
      * @return string
      */
-    protected function makeInsideUri(string $data): string {
-        if(!empty($data)) {
+    protected function makeInsideUri(string $data): string
+    {
+        if (!empty($data)) {
             return $this->generalFunctions->detailViewUrlDecodeEncode($data, 1);
         }
         return "";
@@ -58,41 +61,42 @@ abstract class ArcheHelper {
     
     /**
      * Extend the actual object with the shortcuts
-     * 
+     *
      */
-    protected function extendActualObj(bool $root = false) {
+    protected function extendActualObj(bool $root = false)
+    {
         $result = array();
       
-        foreach($this->data as $d) {
+        foreach ($this->data as $d) {
             //add the language to every resource
             $lang = 'en';
-            if(isset($d->language)) {
-                if(!empty($d->language)) {
-                   $lang = $d->language; 
-                }else{
+            if (isset($d->language)) {
+                if (!empty($d->language)) {
+                    $lang = $d->language;
+                } else {
                     $lang = $this->siteLang;
                 }
             }
             
-            if(isset($d->type) && !empty($d->type) && $d->type == "REL") {
+            if (isset($d->type) && !empty($d->type) && $d->type == "REL") {
                 $d->repoid = "";
                 $d->repoid = $d->value;
             }
             
-            if(is_null($d->property) === false) {
+            if (is_null($d->property) === false) {
                 //create the shortcur
                 $d->title = "";
                 $d->title = $d->value;
-                if(isset($d->relvalue) && !empty($d->relvalue)) {
+                if (isset($d->relvalue) && !empty($d->relvalue)) {
                     $d->title = $d->relvalue;
                 }
-                if(isset($d->acdhid) && !empty($d->acdhid)) {
+                if (isset($d->acdhid) && !empty($d->acdhid)) {
                     $d->insideUri = "";
                     $d->insideUri = $this->makeInsideUri($d->acdhid);
                 }
                 $d->shortcut = $this->createShortcut($d->property);
                 $result[$d->shortcut][$lang][] = $d;
-            }else if(isset($d->type) && !empty($d->type) && $d->type == "ID") {
+            } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
                 $d->property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
                 if (strpos($d->value, '/id.acdh.oeaw.ac.at/uuid/') !== false) {
@@ -109,7 +113,7 @@ abstract class ArcheHelper {
                 $result['acdh:hasIdentifier'][$lang][] = $d;
             }
         }
-        if($root == true) {
+        if ($root == true) {
             ksort($result);
         }
        

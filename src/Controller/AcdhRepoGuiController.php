@@ -14,14 +14,13 @@ use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
 use Drupal\acdh_repo_gui\Controller\SearchViewController as SVC;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 
-
 /**
  * Description of AcdhRepoController
  *
  * @author nczirjak
  */
-class AcdhRepoGuiController extends ControllerBase 
-{    
+class AcdhRepoGuiController extends ControllerBase
+{
     private $config;
     private $repo;
     private $rootViewController;
@@ -30,7 +29,8 @@ class AcdhRepoGuiController extends ControllerBase
     private $siteLang;
     private $langConf;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
@@ -43,9 +43,9 @@ class AcdhRepoGuiController extends ControllerBase
     }
     
     /**
-     * 
+     *
      * Root view
-     * 
+     *
      * @return array
      */
     public function repo_root(string $limit = "10", string $page = "1", string $order = "datedesc"): array
@@ -59,11 +59,11 @@ class AcdhRepoGuiController extends ControllerBase
         
         $roots = array();
         $paging = array();
-        if((int)$count > 0){
+        if ((int)$count > 0) {
             $roots = $this->rootViewController->generateRootView((int)$limit, (int)$page, $order);
         }
         
-        if(!isset($roots['data']) || count($roots['data']) <= 0) {
+        if (!isset($roots['data']) || count($roots['data']) <= 0) {
             drupal_set_message(
                 $this->langConf->get('errmsg_no_root_resources') ? $this->langConf->get('errmsg_no_root_resources') : 'You do not have Root resources',
                 'error',
@@ -72,7 +72,7 @@ class AcdhRepoGuiController extends ControllerBase
             return array();
         }
         
-        if( count($roots['pagination']) > 0 ) {
+        if (count($roots['pagination']) > 0) {
             $paging = $roots['pagination'][0];
         }
         
@@ -86,13 +86,12 @@ class AcdhRepoGuiController extends ControllerBase
                 ]
             ],
             '#cache' => ['max-age' => 0]
-        ]; 
-        
+        ];
     }
     
     /**
      * Repo search/root main view
-     * 
+     *
      * @param string $metavalue
      * @param string $limit
      * @param string $page
@@ -100,7 +99,7 @@ class AcdhRepoGuiController extends ControllerBase
      * @return array
      */
     public function repo_complexsearch(string $metavalue = "root", string $limit = "10", string $page = "1", string $order = "titleasc"): array
-    {   
+    {
         //this is the root collection view
         if (empty($metavalue) ||  $metavalue == "root") {
             //If a cookie setting exists and the query is coming without a specific parameter
@@ -115,7 +114,7 @@ class AcdhRepoGuiController extends ControllerBase
             }
             
             return $this->repo_root($limit, $page, $order);
-        } 
+        }
         
         //we have the search view
         
@@ -124,7 +123,7 @@ class AcdhRepoGuiController extends ControllerBase
         $searchResult = array();
         $searchResult = $this->searchViewController->generateView($limit, $page, $order, $metavalue);
         
-        if(count($searchResult['data']) <= 0) {
+        if (count($searchResult['data']) <= 0) {
             drupal_set_message(
                 $this->langConf->get('errmsg_no_search_res') ? $this->langConf->get('errmsg_no_search_res') : 'Your search yielded no results.',
                 'error',
@@ -133,7 +132,7 @@ class AcdhRepoGuiController extends ControllerBase
             return array();
         }
         
-        if( count($searchResult['pagination']) > 0 ) {
+        if (count($searchResult['pagination']) > 0) {
             $paging = $searchResult['pagination'][0];
         }
         
@@ -147,17 +146,17 @@ class AcdhRepoGuiController extends ControllerBase
                 ]
             ],
             '#cache' => ['max-age' => 0]
-        ]; 
+        ];
     }
     
     /**
      * the detail view
-     * 
+     *
      * @param string $identifier
      * @return type
      */
     public function repo_detail(string $identifier)
-    {   
+    {
         $ajax = false;
         
         if (strpos($identifier, '&ajax') !== false) {
@@ -169,8 +168,8 @@ class AcdhRepoGuiController extends ControllerBase
         $dv = array();
         $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
         $dv = $this->detailViewController->generateDetailView($identifier);
-        if(count((array)$dv) < 1) {
-             drupal_set_message(
+        if (count((array)$dv) < 1) {
+            drupal_set_message(
                 $this->langConf->get('errmsg_no_data') ? $this->langConf->get('errmsg_no_data') : 'You do not have data',
                 'error',
                 false
@@ -183,27 +182,25 @@ class AcdhRepoGuiController extends ControllerBase
             '#basic' => $dv->basic,
             '#extra' => $dv->extra,
             '#dissemination' => (isset($dv->dissemination)) ? $dv->dissemination : array(),
-            '#cache' => ['max-age' => 0], 
+            '#cache' => ['max-age' => 0],
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-styles',
                 ]
             ]
-        ]; 
-        if($ajax){
+        ];
+        if ($ajax) {
             return new Response(render($return));
         }
         return $return;
-        
-        
     }
     
-     /**
-     * Change language session variable API
-     * Because of the special path handling, the basic language selector is not working
-     *
-     * @param string $lng
-     * @return Response
+    /**
+    * Change language session variable API
+    * Because of the special path handling, the basic language selector is not working
+    *
+    * @param string $lng
+    * @return Response
     */
     public function oeaw_change_lng(string $lng = 'en'): Response
     {

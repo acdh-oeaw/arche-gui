@@ -13,8 +13,8 @@ use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
  *
  * @author norbertczirjak
  */
-class ArcheApiHelper extends ArcheHelper {
-   
+class ArcheApiHelper extends ArcheHelper
+{
     private $data = array();
     private $apiType = '';
     private $result = array();
@@ -22,9 +22,10 @@ class ArcheApiHelper extends ArcheHelper {
     private $siteLang;
     private $requiredClasses = array();
     
-    public function createView(array $data = array(), string $apiType = '', string $lng ='en'): array {
+    public function createView(array $data = array(), string $apiType = '', string $lng ='en'): array
+    {
         (!empty($lng)) ? $this->siteLang = strtolower($lng)  : $this->siteLang = "en";
-        if(count($data) == 0  && !empty($apiType)) {
+        if (count($data) == 0  && !empty($apiType)) {
             return array();
         }
         
@@ -65,10 +66,11 @@ class ArcheApiHelper extends ArcheHelper {
     /**
      * Create the inverse result for the datatable
      */
-    private function formatInverseData() {
+    private function formatInverseData()
+    {
         $this->result = array();
-        foreach($this->data as $id => $obj){
-            foreach($obj as $o) {
+        foreach ($this->data as $id => $obj) {
+            foreach ($obj as $o) {
                 $arr = array(
                     str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:', $o->property),
                     "<a id='archeHref' href='/browser/oeaw_detail/$id'>$o->title</a>"
@@ -82,9 +84,10 @@ class ArcheApiHelper extends ArcheHelper {
      * Create the reponse header
      * @param array $data
      */
-    private function setupMetadataType(array $data = array()) {
+    private function setupMetadataType(array $data = array())
+    {
         $this->creatMetadataObj($data);
-        if(count($data['properties']) > 0){
+        if (count($data['properties']) > 0) {
             $this->data = $data['properties'];
         }
             
@@ -98,7 +101,8 @@ class ArcheApiHelper extends ArcheHelper {
     /**
      * format the collections and binaries count response
      */
-    private function formatCollsBinsCount() {
+    private function formatCollsBinsCount()
+    {
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
        
         $collections = "0";
@@ -123,19 +127,19 @@ class ArcheApiHelper extends ArcheHelper {
     /**
      * Format the data for the metadata api request
      */
-    private function formatMetadataView() {
-        
-        foreach($this->data as $v){
+    private function formatMetadataView()
+    {
+        foreach ($this->data as $v) {
             $prop = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
             
-            if(isset($v->label)){
+            if (isset($v->label)) {
                 $this->result['properties'][$prop]['title'] = $v->label[$this->siteLang];
             }
-            if(isset($v->comment)){
+            if (isset($v->comment)) {
                 $this->result['properties'][$prop]['description'] = $v->comment[$this->siteLang];
                 $this->result['properties'][$prop]['attrs']['placeholder'] = $v->comment[$this->siteLang];
             }
-            if(isset($v->range)){
+            if (isset($v->range)) {
                 $this->result['properties'][$prop]['items']['range'] = $v->range;
                 if (strpos($v->range, 'string') !== false) {
                     $this->result['properties'][$prop]['items']['type'] = "string";
@@ -153,17 +157,15 @@ class ArcheApiHelper extends ArcheHelper {
             if (isset($v->order) && $v->order) {
                 $this->result['properties'][$prop]['order'] = (int)$v->order;
             } else {
-               $this->result['properties'][$prop]['order'] = 0;
+                $this->result['properties'][$prop]['order'] = 0;
             }
             //recommendedClass missing!
             if (isset($v->recommendedClass) && $v->recommendedClass) {
                 $this->result['properties'][$prop]['recommendedClass'] = $v->recommendedClass;
             }
-            
-            
         }
-        if(count($this->requiredClasses) > 0) {
-           $this->result['required'] = $this->requiredClasses;     
+        if (count($this->requiredClasses) > 0) {
+            $this->result['required'] = $this->requiredClasses;
         }
     }
     
@@ -198,7 +200,7 @@ class ArcheApiHelper extends ArcheHelper {
         }
 
         if (isset($obj->cardinality)) {
-           $this->result['properties'][$prop]['cardinality'] = $obj->cardinality;
+            $this->result['properties'][$prop]['cardinality'] = $obj->cardinality;
             $this->result['properties'][$prop]['minItems'] = (int)$obj->cardinality;
             $this->result['properties'][$prop]['maxItems'] = (int)$obj->cardinality;
         }
@@ -208,32 +210,34 @@ class ArcheApiHelper extends ArcheHelper {
      * Create properties obj with values from the metadata api request
      * @param array $data
      */
-    private function creatMetadataObj(array $data) {
+    private function creatMetadataObj(array $data)
+    {
         $this->properties = new \stdClass();
         
-        if(isset($data['class'])){
+        if (isset($data['class'])) {
             $this->properties->class = $data['class'];
         }
-        if(isset($data['label'])){
+        if (isset($data['label'])) {
             $this->properties->label = $data['label'];
         }
-        if(isset($data['comment'])){
+        if (isset($data['comment'])) {
             $this->properties->comment = $data['comment'];
-        }   
+        }
     }
     
     /**
      * Format the basic APi views
      */
-    private function formatView() {
+    private function formatView()
+    {
         $this->result = array();
         foreach ($this->data as $k => $val) {
-            foreach($val as $v){
+            foreach ($val as $v) {
                 $title = $v->value;
                 $lang = $v->lang;
                 $altTitle = '';
-                if($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
-                    $altTitle = $v->value;    
+                if ($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
+                    $altTitle = $v->value;
                 }
                 $this->result[$k]->title[$lang] = $title;
                 $this->result[$k]->uri = $this->repo->getBaseUrl().$k;
@@ -247,16 +251,17 @@ class ArcheApiHelper extends ArcheHelper {
     /**
      * Format the checkIdentifier api call result
      */
-    private function formatCheckIdentifierData() {
+    private function formatCheckIdentifierData()
+    {
         $this->result = array();
         foreach ($this->data as $val) {
-            if($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
+            if ($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
                 $this->result['hasAvailableDate'] = date('Y-m-d', strtotime($val->value));
             }
-            if($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
+            if ($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
                 $this->result['title'] = $val->value;
             }
-            if($val->property == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+            if ($val->property == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
                 $this->result['rdfType'] = $val->value;
             }
         }
@@ -265,7 +270,8 @@ class ArcheApiHelper extends ArcheHelper {
     /**
      * create the GNDfile for the GND API
      */
-    private function createGNDFile() {
+    private function createGNDFile()
+    {
         $host = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost().'/browser/oeaw_detail/');
         $fileLocation = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/beacon.txt';
         
@@ -286,8 +292,4 @@ class ArcheApiHelper extends ArcheHelper {
             }
         }
     }
-    
-    
-    
-    
 }

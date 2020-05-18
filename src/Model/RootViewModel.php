@@ -3,31 +3,34 @@
 namespace Drupal\acdh_repo_gui\Model;
 
 use Drupal\acdh_repo_gui\Model\ArcheModel;
+
 /**
  * Description of RootModel
  *
  * @author nczirjak
  */
-class RootViewModel extends ArcheModel {
-    
+class RootViewModel extends ArcheModel
+{
     private $repodb;
     private $sqlResult;
     private $siteLang = 'en';
-     /* ordering */
+    /* ordering */
     private $limit;
     private $offset;
     private $order;
     /* ordering */
     
     
-    public function __construct() {
+    public function __construct()
+    {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
-    private function initPaging(int $limit, int $page, string $order) {
+    private function initPaging(int $limit, int $page, string $order)
+    {
         $this->limit = $limit;
         ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page -1);
         
@@ -51,14 +54,14 @@ class RootViewModel extends ArcheModel {
         
     /**
      * get the root views data
-     * 
+     *
      * @return array
      */
-    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
+    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
+    {
         $this->initPaging($limit, $page, $order);
         
         try {
-            
             $query = $this->repodb->query("
                 SELECT 
                 *
@@ -82,15 +85,16 @@ class RootViewModel extends ArcheModel {
      * Count the actual root resources
      * @return int
      */
-    public function countRoots(): int {        
+    public function countRoots(): int
+    {
         $result = array();
         try {
             $query = $this->repodb->query("select id from gui.count_root_views_func();  ");
             $this->sqlResult = $query->fetch();
             $this->changeBackDBConnection();
-            if(isset($this->sqlResult->id)) {
+            if (isset($this->sqlResult->id)) {
                 return (int)$this->sqlResult->id;
-            }    
+            }
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;

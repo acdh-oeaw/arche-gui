@@ -7,7 +7,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\acdh_repo_gui\Model\BlocksModel;
 use Drupal\acdh_repo_gui\Helper\FormHelper;
 
-
 class ComplexSearchForm extends FormBase
 {
     private $langConf;
@@ -47,24 +46,22 @@ class ComplexSearchForm extends FormBase
         
         //the entity box section
         $this->entityData = $this->model->getViewData("entity");
-        if(count($this->entityData) > 0) {
+        if (count($this->entityData) > 0) {
             $this->entityData = $this->helper->formatEntityYears($this->entityData);
             $resData["title"] = $this->langConf->get('gui_type_of_entity') ? $this->langConf->get('gui_type_of_entity') : 'Type of Entity' ;
             $resData["type"] = "searchbox_types";
             $resData["fields"] = $this->entityData['fields'];
             $this->createBox($form, $resData);
-            
         }
         
         //the years box section
         $this->yearsData = $this->model->getViewData("years");
-        if(count($this->yearsData) > 0) {
+        if (count($this->yearsData) > 0) {
             $this->yearsData = $this->helper->formatEntityYears($this->yearsData, true);
             $dateData["title"] = $this->langConf->get('gui_entities_by_year') ? $this->langConf->get('gui_entities_by_year') :  'Entities by Year';
             $dateData["type"] = "datebox_years";
             $dateData["fields"] = $this->yearsData['fields'];
             $this->createBox($form, $dateData);
-            
         }
         
         
@@ -74,7 +71,7 @@ class ComplexSearchForm extends FormBase
         $form['datebox']['title'] = [
             '#markup' => '<h3 class="extra-filter-heading date-filter-heading">'.$entititesTitle.'</h3>'
         ];
-        
+
         $form['datebox']['date_start_date'] = [
           '#type' => 'textfield',
           '#title' => $this->t('From'),
@@ -83,7 +80,7 @@ class ComplexSearchForm extends FormBase
                 'placeholder' => t('dd/mm/yyyy'),
             )
         ];
-        
+
         $form['datebox']['date_end_date'] = [
           '#type' => 'textfield',
           '#title' => $this->t('Until'),
@@ -121,7 +118,7 @@ class ComplexSearchForm extends FormBase
                 &&  (count($formats) <= 0)  && empty($form_state->getValue('date_start_date'))
                 && empty($form_state->getValue('date_end_date'))) {
             $form_state->setErrorByName('metavalue', $this->t('Missing').': '.t('Keyword').' '.t('or').' '.t('Type'));
-        }   
+        }
     }
     
     /**
@@ -132,7 +129,6 @@ class ComplexSearchForm extends FormBase
      */
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-        
         $metavalue = $form_state->getValue('metavalue');
         
         $extras = array();
@@ -159,22 +155,23 @@ class ComplexSearchForm extends FormBase
         }
         
         $metaVal = urlencode($metavalue);
-        $form_state->setRedirect('repo_complexsearch', [
+        $form_state->setRedirect(
+            'repo_complexsearch',
+            [
             "metavalue" => $metaVal,
             "order" =>  "datedesc",
             "limit" => "10",
             "page" => "1"]
         );
-        
     }
     
     
-     /**
-     * Create the checkbox templates
-     *
-     * @param array $form
-     * @param array $data
-     */
+    /**
+    * Create the checkbox templates
+    *
+    * @param array $form
+    * @param array $data
+    */
     private function createBox(array &$form, array $data)
     {
         $form['search'][$data["type"]] = array(

@@ -9,13 +9,14 @@ use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
+
 /**
  * Description of ArcheApiController
  *
  * @author norbertczirjak
  */
-class ArcheApiController extends ControllerBase 
-{    
+class ArcheApiController extends ControllerBase
+{
     private $config;
     private $repo;
     private $repodb;
@@ -25,7 +26,8 @@ class ArcheApiController extends ControllerBase
     private $modelData = array();
     private $result = array();
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
@@ -40,7 +42,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_persons(string $searchStr): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/persons/MYVALUE?_format=json
@@ -59,7 +61,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('persons', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'persons');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -74,7 +76,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_places(string $searchStr): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/places/MYVALUE?_format=json
@@ -93,7 +95,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('places', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'places');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -108,7 +110,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_publications(string $searchStr): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/publications/MYVALUE?_format=json
@@ -127,7 +129,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('publications', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'publications');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -143,7 +145,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_concepts(string $searchStr): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/concepts/MYVALUE?_format=json
@@ -162,7 +164,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('concepts', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'concepts');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -178,7 +180,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_organisations(string $searchStr): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/organisations/MYVALUE?_format=json
@@ -197,7 +199,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('organisations', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'organisations');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -212,8 +214,8 @@ class ArcheApiController extends ControllerBase
      * @param string $searchStr
      * @return Response
      */
-    public function repo_getData(string $type ,string $searchStr): Response
-    {   
+    public function repo_getData(string $type, string $searchStr): Response
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getData/Person/MYVALUE?_format=json
@@ -232,7 +234,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('getData', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'getData');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -247,8 +249,8 @@ class ArcheApiController extends ControllerBase
      * @param string $lng
      * @return Response
      */
-    public function repo_getMetadata(string $type ,string $lng): Response
-    {   
+    public function repo_getMetadata(string $type, string $lng): Response
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getMetadata/TYPE/en?_format=json
@@ -267,7 +269,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('metadata', $obj);
         
         $this->result = $this->helper->createView($this->modelData, 'metadata', $lng);
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -282,7 +284,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_getMetadataGui(string $lng = 'en'): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getMetadataGui/en?_format=json
@@ -299,11 +301,11 @@ class ArcheApiController extends ControllerBase
         //get the data
         $this->modelData = $this->model->getViewData('metadataGui', $obj);
         
-        if(count($this->modelData) == 0 ){
+        if (count($this->modelData) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $this->result = $this->helper->createView($this->modelData, 'metadataGui', $lng);
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -317,9 +319,9 @@ class ArcheApiController extends ControllerBase
      * Where the id is available, but not identifier, pid or ispartof
      * @return Response
      */
-    public function repo_inverse_result(string $repoid): Response {
-        
-        if (empty($repoid) ) {
+    public function repo_inverse_result(string $repoid): Response
+    {
+        if (empty($repoid)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -331,7 +333,7 @@ class ArcheApiController extends ControllerBase
         
         $this->result = $this->helper->createView($this->modelData, 'inverse');
         
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -344,11 +346,11 @@ class ArcheApiController extends ControllerBase
     /**
      * Check the repoid is already available in the system or not
      * $repoid = number
-     * @param string $repoid 
+     * @param string $repoid
      * @return Response
      */
     public function repo_checkIdentifier(string $repoid): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getData/checkIdentifier/MYVALUE?_format=json
@@ -364,12 +366,12 @@ class ArcheApiController extends ControllerBase
         $obj->repoid = (int)$repoid;
         //get the data
         $this->modelData = $this->model->getViewData('checkIdentifier', $obj);
-        if(count($this->modelData) == 0 ){
+        if (count($this->modelData) == 0) {
             return new JsonResponse(array("The identifier is free"), 404, ['Content-Type'=> 'application/json']);
         }
         
         $this->result = $this->helper->createView($this->modelData, 'checkIdentifier');
-        if(count($this->result) == 0 ){
+        if (count($this->result) == 0) {
             return new JsonResponse(array("The identifier is free"), 404, ['Content-Type'=> 'application/json']);
         }
         $response->setContent(json_encode($this->result));
@@ -380,12 +382,12 @@ class ArcheApiController extends ControllerBase
     
     /**
      * Recache the controlled vocabs
-     * 
+     *
      * @param string $lng
      * @return Response
      */
-    public function repo_recacheControlledVocabs(string $lng): Response {
-        
+    public function repo_recacheControlledVocabs(string $lng): Response
+    {
         $response = new Response();
         
         ini_set('max_execution_time', 3600);
@@ -397,7 +399,7 @@ class ArcheApiController extends ControllerBase
        
         if (isset($this->result['error'])) {
             return new JsonResponse(array($this->result['error']." not cached/generated"), 404, ['Content-Type'=> 'application/json']);
-        } 
+        }
      
         $response->setContent(json_encode("Update is ready!"));
         $response->headers->set('Content-Type', 'application/json');
@@ -410,7 +412,7 @@ class ArcheApiController extends ControllerBase
      * @return Response
      */
     public function repo_gndPerson(): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getData/gnd?_format=json
@@ -421,14 +423,14 @@ class ArcheApiController extends ControllerBase
         $obj = new \stdClass();
         //get the data
         $this->modelData = $this->model->getViewData('gndPerson', $obj);
-        if(count($this->modelData) == 0 ){
+        if (count($this->modelData) == 0) {
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
         
         $this->result = $this->helper->createView($this->modelData, 'gndPerson');
         
         $response->setContent(json_encode(array("status" => "File created", "url" => $fileLocation)));
-        if(!isset($this->result["fileLocation"]) || empty($this->result["fileLocation"]) ){
+        if (!isset($this->result["fileLocation"]) || empty($this->result["fileLocation"])) {
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -440,7 +442,7 @@ class ArcheApiController extends ControllerBase
     
    
     public function repo_getOntologyJSPluginData(): Response
-    {   
+    {
         /*
         * Usage:
         *  https://domain.com/browser/api/getOntologyJSPluginData/Language?_format=json
@@ -451,7 +453,7 @@ class ArcheApiController extends ControllerBase
         $obj = new \stdClass();
         //get the data
         $this->modelData = $this->model->getViewData('countCollsBins', $obj);
-        if(count($this->modelData) == 0 ){
+        if (count($this->modelData) == 0) {
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
         
@@ -461,8 +463,4 @@ class ArcheApiController extends ControllerBase
                 
         return $response;
     }
-    
-    
-    
-    
 }

@@ -15,13 +15,14 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use GuzzleHttp\Client;
+
 /**
  * Description of ChildApiController
  *
  * @author nczirjak
  */
-class ChildApiController extends ControllerBase {
-    
+class ChildApiController extends ControllerBase
+{
     private $config;
     private $model;
     private $helper;
@@ -31,7 +32,8 @@ class ChildApiController extends ControllerBase {
     private $repo;
     private $repoid;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
@@ -50,17 +52,17 @@ class ChildApiController extends ControllerBase {
      * @param string $limit
      */
     public function repo_child_api(string $identifier, string $limit, string $page, string $order): Response
-    {   
+    {
         if (preg_match("/^\d+$/", $identifier)) {
             $this->repoid = $identifier;
             $identifier = $this->repo->getBaseUrl().$identifier;
-        } else if (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
+        } elseif (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
             $identifier = $this->repo->getSchema()->__get('drupal')->uuidNamespace.$identifier;
         }
         $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($identifier);
         
-        if($this->childNum < 1) {
+        if ($this->childNum < 1) {
             goto end;
         }
         
@@ -84,7 +86,7 @@ class ChildApiController extends ControllerBase {
         $this->data->pagination = $this->data->pagination[0];
         $data = $this->model->getViewData($identifier, (int)$limit, (int)$offset, $order);
         $this->data->data = $this->helper->createView($data);
-        if(count((array)$this->data->data) <= 0) {
+        if (count((array)$this->data->data) <= 0) {
             $this->data->errorMSG = 'There are no Child resources';
         }
        
@@ -93,7 +95,7 @@ class ChildApiController extends ControllerBase {
         $build = [
             '#theme' => 'acdh-repo-gui-child',
             '#data' => $this->data,
-            '#cache' => ['max-age' => 0], 
+            '#cache' => ['max-age' => 0],
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-root-view',

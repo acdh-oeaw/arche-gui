@@ -10,29 +10,31 @@ use acdhOeaw\acdhRepoLib\exception\Deleted;
 use acdhOeaw\acdhRepoLib\exception\NotFound;
 use Drupal\acdh_repo_gui\Object as RO;
 
-
 /**
  * @coversDefaultClass \Drupal\acdh_repo_gui\Object\ResourceObject
  * @group acdh_repo_gui
  */
 
-class ResourceObjectTest extends \PHPUnit\Framework\TestCase {
+class ResourceObjectTest extends \PHPUnit\Framework\TestCase
+{
     /**
      *
      * @var \acdhOeaw\acdhRepoLib\Repo
      */
-    static protected $repo;
-    static protected $config;
-    static private $object;
-    static private $resourceData = array();
+    protected static $repo;
+    protected static $config;
+    private static $object;
+    private static $resourceData = array();
     
-    static public function setUpBeforeClass(): void {
+    public static function setUpBeforeClass(): void
+    {
         $cfgFile      = dirname(__DIR__, 1) . '/config.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
         self::$repo   = Repo::factory($cfgFile);
     }
     
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->startTimer();
         $this->createExampleData();
         $this->noteTime('setUp');
@@ -45,11 +47,13 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase {
         return self::$object;
     }
     
-    private function createExampleData() {
+    private function createExampleData()
+    {
         $this->createExampleTitleData();
     }
     
-    private function createExampleTitleData() {
+    private function createExampleTitleData()
+    {
         self::$resourceData = array();
         $title = new \stdClass();
         $title->id = 345;
@@ -58,13 +62,14 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase {
         self::$resourceData["acdh:hasTitle"]['en'] = array($title);
     }
     
-    protected function startTimer(): void {
+    protected function startTimer(): void
+    {
         $this->time = microtime(true);
     }
 
-    protected function noteTime(string $msg = ''): void {
+    protected function noteTime(string $msg = ''): void
+    {
         $t = microtime(true) - $this->time;
         file_put_contents(dirname(__DIR__, 1) . '/time.log', (new DateTime())->format('Y-m-d H:i:s.u') . "\t$t\t$msg\n", \FILE_APPEND);
     }
-    
 }

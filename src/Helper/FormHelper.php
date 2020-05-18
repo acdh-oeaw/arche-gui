@@ -7,8 +7,8 @@ namespace Drupal\acdh_repo_gui\Helper;
  *
  * @author nczirjak
  */
-class FormHelper {
-    
+class FormHelper
+{
     private $schema = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     
     /**
@@ -16,11 +16,12 @@ class FormHelper {
      * @param array $data
      * @return array
      */
-    public function formatEntityYears(array $data, bool $years = false): array {
+    public function formatEntityYears(array $data, bool $years = false): array
+    {
         $result = array();
         $fields = array();
-        if(count($data) > 0) {
-            foreach($data as $k => $v) {
+        if (count($data) > 0) {
+            foreach ($data as $k => $v) {
                 $result['data'][$k] = new \stdClass();
                 $result['data'][$k]->count = $v->count;
                 $value = ($years) ? $v->year : $v->value ;
@@ -33,8 +34,4 @@ class FormHelper {
         $result['fields'] = $fields;
         return $result;
     }
-    
-    
-    
-    
 }

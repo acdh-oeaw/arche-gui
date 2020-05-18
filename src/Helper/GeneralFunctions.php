@@ -10,13 +10,14 @@ use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
  *
  * @author nczirjak
  */
-class GeneralFunctions {
+class GeneralFunctions
+{
     private $langConf;
     private $config;
     private $repo;
     
     public function __construct()
-    {        
+    {
         $this->langConf = \Drupal::config('oeaw.settings');
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
@@ -63,7 +64,9 @@ class GeneralFunctions {
     */
     public function detailViewUrlDecodeEncode(string $data, int $code = 0): string
     {
-        if (empty($data)) { return ""; }
+        if (empty($data)) {
+            return "";
+        }
       
         if ($code == 0) {
             //if we have the repo id then we need to add the repo baseurl
@@ -81,7 +84,6 @@ class GeneralFunctions {
 
             foreach ($data as $ra) {
                 if (strpos($ra, '&') !== false) {
-                    
                     $pos = strpos($ra, '&');
                     $ra = substr($ra, 0, $pos);
                     $identifier .= $ra."/";
@@ -125,7 +127,7 @@ class GeneralFunctions {
                     $identifier = $this->specialIdentifierToUUID($identifier);
                     break;
                 case strpos($identifier, 'pleiades.stoa.org/') !== false:
-                    $identifier = str_replace('pleiades.stoa.org/',$this->repo->getSchema()->__get('drupal')->pelagiosUrl, $identifier);
+                    $identifier = str_replace('pleiades.stoa.org/', $this->repo->getSchema()->__get('drupal')->pelagiosUrl, $identifier);
                     $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
                     $identifier = $this->specialIdentifierToUUID($identifier);
                     break;
@@ -146,7 +148,7 @@ class GeneralFunctions {
         if ($code == 1) {
             if (strpos($data, 'hdl.handle.net') !== false) {
                 $data = str_replace("http://", "", $data);
-            }elseif (strpos($data, $this->repo->getBaseUrl()) !== false) {
+            } elseif (strpos($data, $this->repo->getBaseUrl()) !== false) {
                 $data = str_replace($this->repo->getBaseUrl(), "", $data);
             } elseif (strpos($data, 'https') !== false) {
                 $data = str_replace("https://", "", $data);
@@ -275,18 +277,18 @@ class GeneralFunctions {
             $text = file_get_contents($fileName);
             
             if (strpos($text, '{ingest.location}') !== false) {
-                 $text = str_replace("{ingest.location}", $this->repo->getSchema()->ingest->location, $text);
+                $text = str_replace("{ingest.location}", $this->repo->getSchema()->ingest->location, $text);
             }
             
             if (strpos($text, '{fileName}') !== false) {
-                 $text = str_replace("{fileName}", $this->repo->getSchema()->fileName, $text);
+                $text = str_replace("{fileName}", $this->repo->getSchema()->fileName, $text);
             }
             
             if (strpos($text, '{parent}') !== false) {
-                 $text = str_replace("{parent}", $this->repo->getSchema()->parent, $text);
+                $text = str_replace("{parent}", $this->repo->getSchema()->parent, $text);
             }
             if (strpos($text, '{metadataReadMode}') !== false) {
-                 $text = str_replace("{metadataReadMode}", 'X-METADATA-READ-MODE', $text);
+                $text = str_replace("{metadataReadMode}", 'X-METADATA-READ-MODE', $text);
             }
             
             if (strpos($text, 'args = args.parse_args()') !== false) {
@@ -300,21 +302,22 @@ class GeneralFunctions {
         return $text;
     }
     
-     /**
-     * Get the dissemination services
-     * 
-     * @param string $id
-     * @return array
-     */
-    public function getDissServices(string $id): array {
+    /**
+    * Get the dissemination services
+    *
+    * @param string $id
+    * @return array
+    */
+    public function getDissServices(string $id): array
+    {
         $result = array();
-        //internal id 
+        //internal id
         $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
         $repDiss = new \acdhOeaw\arche\disserv\RepoResourceDb($this->repo->getBaseUrl().$id, $repodb);
         try {
             $dissServ = array();
             $dissServ = $repDiss->getDissServices();
-            foreach($dissServ as $k => $v) {
+            foreach ($dissServ as $k => $v) {
                 $result[$k] = (string) $v->getRequest($repDiss)->getUri();
             }
             return $result;

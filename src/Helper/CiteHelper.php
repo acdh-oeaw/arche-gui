@@ -13,13 +13,14 @@ namespace Drupal\acdh_repo_gui\Helper;
  *
  * @author nczirjak
  */
-class CiteHelper {
-    
+class CiteHelper
+{
     private $cite = array();
     private $config;
     private $repo;
     
-    public function __construct(\acdhOeaw\acdhRepoLib\Repo $repo) {
+    public function __construct(\acdhOeaw\acdhRepoLib\Repo $repo)
+    {
         $this->repo = $repo;
     }
     private function getCiteWidgetData(\Drupal\acdh_repo_gui\Object\ResourceObject $data, string $property): string
@@ -76,8 +77,8 @@ class CiteHelper {
          * Mörth, Karlheinz. Dictionary Gate. ACDH, 2013, hdl.handle.net/11022/0000-0000-001B-2. Accessed 12 Oct. 2017.
          */
         $this->cite["MLA"] = [
-            "authors" => "", "creators" => "", "hasPrincipalInvestigator" => "", 
-            "contributors" => "", "title" => "", "isPartOf" => "", "availableDate" => "", 
+            "authors" => "", "creators" => "", "hasPrincipalInvestigator" => "",
+            "contributors" => "", "title" => "", "isPartOf" => "", "availableDate" => "",
             "hasHosting" => "", "hasEditor" => "", "accesedDate" => "", "acdhURI" => ""
         ];
 
@@ -141,7 +142,7 @@ class CiteHelper {
                 $uuid = "";
 
                 foreach ($acdhURIs as $id) {
-                    if(isset($id->value)) {
+                    if (isset($id->value)) {
                         if (strpos($id->value, $this->repo->getSchema()->__get('drupal')->uuidNamespace) !== false) {
                             $uuid = $id->value;
                         //if the identifier is the normal acdh identifier then return it

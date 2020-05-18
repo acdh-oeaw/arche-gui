@@ -10,23 +10,25 @@ use acdhOeaw\acdhRepoLib\RepoDb;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
 
 use Drupal\acdh_repo_gui\Helper\ArcheHelper;
+
 /**
  * Description of DetailViewHelper
  *
  * @author nczirjak
  */
-class DetailViewHelper extends ArcheHelper {
-    
+class DetailViewHelper extends ArcheHelper
+{
     private $detailViewObjectArray;
     private $siteLang;
     
     /**
-     * Build up the necessary data for the detail view 
+     * Build up the necessary data for the detail view
      * @param array $data
      * @param array $vocabs
      * @return array
      */
-    public function createView(array $data = array(), array $vocabs = array()): array {
+    public function createView(array $data = array(), array $vocabs = array()): array
+    {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
         
@@ -34,11 +36,11 @@ class DetailViewHelper extends ArcheHelper {
         $this->mergeAccessRes();
         
         //use the drupal vocabs cache if we dont have data in ontology cache
-        if(count($vocabs) == 0) {
-            $this->getVocabsForDetailViewTable();    
+        if (count($vocabs) == 0) {
+            $this->getVocabsForDetailViewTable();
         }
         
-        if(count((array)$this->data) == 0) {
+        if (count((array)$this->data) == 0) {
             return array();
         }
         
@@ -48,11 +50,12 @@ class DetailViewHelper extends ArcheHelper {
     }
     
     //remove the duplicate value from the accessres
-    private function mergeAccessRes() {
-        foreach($this->data as $k => $v){
-            if($k == 'acdh:hasAccessRestriction') {
-                foreach($v as $lk => $lang) {
-                    foreach($lang as $key => $val) {
+    private function mergeAccessRes()
+    {
+        foreach ($this->data as $k => $v) {
+            if ($k == 'acdh:hasAccessRestriction') {
+                foreach ($v as $lk => $lang) {
+                    foreach ($lang as $key => $val) {
                         if (strpos($val->relvalue, 'https://vocabs.') === false) {
                             unset($this->data[$k][$lk][$key]);
                         }
@@ -80,7 +83,6 @@ class DetailViewHelper extends ArcheHelper {
                     foreach ($this->data[$k][$this->siteLang] as $tk => $tv) {
                         foreach ($vocabs[$this->siteLang][$k] as $vocab) {
                             if (isset($vocab->uri) && !empty($vocab->uri) && isset($tv->relvalue)) {
-                                
                                 if ($vocab->uri == $tv->relvalue) {
                                     $this->data[$k][$this->siteLang][$tk]->uri = $vocab->uri;
                                     $this->data[$k][$this->siteLang][$tk]->title = $vocab->label;
@@ -98,9 +100,10 @@ class DetailViewHelper extends ArcheHelper {
      * @param type $tooltip
      * @return array
      */
-    public function formatTooltip($tooltip): array {
+    public function formatTooltip($tooltip): array
+    {
         $result = array();
-        foreach ($tooltip as $t){
+        foreach ($tooltip as $t) {
             $result[$t->type] = $t;
         }
         return $result;

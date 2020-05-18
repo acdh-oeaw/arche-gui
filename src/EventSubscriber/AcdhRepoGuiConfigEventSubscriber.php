@@ -11,7 +11,7 @@ use acdhOeaw\acdhRepoLib\Repo;
 
 class AcdhRepoGuiConfigEventSubscriber implements EventSubscriberInterface
 {
-     public function initRepoGuiCfg(GetResponseEvent $event)
+    public function initRepoGuiCfg(GetResponseEvent $event)
     {
         //global $archeCfg;
         //$archeCfg = Repo::factory($_SERVER["DOCUMENT_ROOT"].'/modules/contrib/arche-gui/config/config.yaml');

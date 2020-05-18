@@ -10,7 +10,6 @@ use Drupal\Core\Block\BlockBase;
 use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Controller\RootViewController;
 
-
 /**
  * Provides a 'StartPageLeftBlock' block.
  *
@@ -35,7 +34,7 @@ class StartPageLeftBlock extends BlockBase
         $this->config = Repo::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml');
         
         $data = $this->RVC->generateRootView('3', '0', 'datedesc');
-        if(!isset($data['data'])) {
+        if (!isset($data['data'])) {
             $data['data'] = array();
         }
         //getRepoID

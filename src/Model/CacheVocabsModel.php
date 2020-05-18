@@ -2,7 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Model;
 
-
 class CacheVocabsModel
 {
     private $db;

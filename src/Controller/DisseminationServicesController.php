@@ -17,8 +17,8 @@ use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesController extends ControllerBase {
-    
+class DisseminationServicesController extends ControllerBase
+{
     private $config;
     private $repo;
     private $model;
@@ -32,7 +32,8 @@ class DisseminationServicesController extends ControllerBase {
         'collection', '3d', 'iiif'
     );
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         $this->model = new DisseminationServicesModel();
@@ -41,14 +42,15 @@ class DisseminationServicesController extends ControllerBase {
         $this->detailViewController = new DVC($this->repo);
     }
     
-    public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array {
-        if(empty($identifier) || !in_array($dissemination, $this->disseminations)){
+    public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array
+    {
+        if (empty($identifier) || !in_array($dissemination, $this->disseminations)) {
             return array();
         }
         $vd = array();
-        if($dissemination == 'collection') {
+        if ($dissemination == 'collection') {
             $vd = $this->model->getViewData($identifier, $dissemination);
-            if(count((array)$vd) == 0) {
+            if (count((array)$vd) == 0) {
                 return array();
             }
         }
@@ -100,8 +102,8 @@ class DisseminationServicesController extends ControllerBase {
             //get the root collection data
             $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
             $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
-            if(count((array)$repoBaseObj) > 0){
-                if($repoBaseObj->getTitle() !== null) {
+            if (count((array)$repoBaseObj) > 0) {
+                if ($repoBaseObj->getTitle() !== null) {
                     $rootTitle = $repoBaseObj->getTitle();
                 }
             }
@@ -117,11 +119,12 @@ class DisseminationServicesController extends ControllerBase {
     
     /**
      * The collection view GUI view with the metadata and the js treeview
-     * 
+     *
      * @param string $repoid
      * @return type
      */
-    public function repo_dl_collection_view(string $repoid) {
+    public function repo_dl_collection_view(string $repoid)
+    {
         $view = array();
         $repoid = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
         
@@ -132,13 +135,13 @@ class DisseminationServicesController extends ControllerBase {
             '#theme' => 'acdh-repo-ds-dl-collection',
             '#basic' => $view,
             '#extra' => $extra,
-            '#cache' => ['max-age' => 0], 
+            '#cache' => ['max-age' => 0],
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/repo-collection-dl',
                 ]
             ]
-        ]; 
+        ];
     }
     
     /**
@@ -149,9 +152,9 @@ class DisseminationServicesController extends ControllerBase {
      */
     public function repo_get_collection_dl_script(string $repoid): Response
     {
-        if(empty($repoid)) {
+        if (empty($repoid)) {
             $result = '';
-        }else {
+        } else {
             $repoid = $this->repo->getBaseUrl().$repoid;
             $result = $this->generalFunctions->changeCollDLScript($repoid);
         }
@@ -165,7 +168,7 @@ class DisseminationServicesController extends ControllerBase {
     
     /**
      * Generate loris url based on the repoid and passing it back to the iiif template
-     * 
+     *
      * @param string $repoid -> repoid
      * @return array
      */
@@ -178,9 +181,8 @@ class DisseminationServicesController extends ControllerBase {
         $repoUrl = $this->repo->getBaseUrl().$repoid;
         $result = array();
         $result = $this->generateView($repoid, 'iiif');
-        if(isset($result['lorisUrl']) && !empty($result['lorisUrl']))
-        {
-           $lorisUrl = $result['lorisUrl'];
+        if (isset($result['lorisUrl']) && !empty($result['lorisUrl'])) {
+            $lorisUrl = $result['lorisUrl'];
         }
         $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         
@@ -188,7 +190,7 @@ class DisseminationServicesController extends ControllerBase {
             array(
                 '#theme' => 'acdh-repo-ds-iiif-viewer',
                 '#basic' => $basic,
-                '#cache' => ['max-age' => 0], 
+                '#cache' => ['max-age' => 0],
                 '#lorisUrl' => $lorisUrl
             );
     }
@@ -196,12 +198,12 @@ class DisseminationServicesController extends ControllerBase {
      
     /**
      * Display the 3d object (nxs, ply) inside a js viewer
-     * 
+     *
      * @param string $repoid -> repoid only
      * @return array
      */
     public function repo_3d_viewer(string $repoid) : array
-    {   
+    {
         $basic = array();
         $result = array();
         if (!empty($repoid)) {
@@ -209,8 +211,8 @@ class DisseminationServicesController extends ControllerBase {
             $result = $this->generateView($repoid, '3d');
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         
-            if(count($result) > 0 && isset($result['result'])) {
-                $result = str_replace('/api/','/browser', $this->repo->getBaseUrl()).$result['result'];
+            if (count($result) > 0 && isset($result['result'])) {
+                $result = str_replace('/api/', '/browser', $this->repo->getBaseUrl()).$result['result'];
             }
         }
         
@@ -218,13 +220,8 @@ class DisseminationServicesController extends ControllerBase {
             array(
                 '#theme' => 'acdh-repo-ds-3d-viewer',
                 '#ObjectUrl' => $result,
-                '#cache' => ['max-age' => 0], 
+                '#cache' => ['max-age' => 0],
                 '#basic' => $basic
             );
     }
-    
-    
-    
-    
-    
 }

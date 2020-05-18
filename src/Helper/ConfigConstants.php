@@ -2,8 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-
-
 abstract class ConfigConstants
 {
     

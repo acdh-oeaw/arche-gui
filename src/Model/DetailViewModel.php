@@ -3,17 +3,19 @@
 namespace Drupal\acdh_repo_gui\Model;
 
 use Drupal\acdh_repo_gui\Model\ArcheModel;
+
 /**
  * Description of DetailViewModel
  *
  * @author nczirjak
  */
-class DetailViewModel extends ArcheModel {
-    
+class DetailViewModel extends ArcheModel
+{
     private $repodb;
     private $siteLang;
     
-    public function __construct() {
+    public function __construct()
+    {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
@@ -22,12 +24,15 @@ class DetailViewModel extends ArcheModel {
     
     /**
      * Get the detail view data from DB
-     * 
+     *
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = ""): array {
-        if(empty($identifier)) { return array();}
+    public function getViewData(string $identifier = ""): array
+    {
+        if (empty($identifier)) {
+            return array();
+        }
         $result = array();
         try {
             //run the actual query
@@ -46,13 +51,16 @@ class DetailViewModel extends ArcheModel {
     }
     
     /**
-     * Get the breadcrumb data for the detail view 
-     * 
+     * Get the breadcrumb data for the detail view
+     *
      * @param string $identifier
      * @return array
      */
-    public function getBreadCrumbData(string $identifier = ''): array {
-        if(empty($identifier)) { return array();}
+    public function getBreadCrumbData(string $identifier = ''): array
+    {
+        if (empty($identifier)) {
+            return array();
+        }
         
         $result = array();
         try {
@@ -74,7 +82,8 @@ class DetailViewModel extends ArcheModel {
      * Get the ontology for the tooltip
      * @return array
      */
-    public function getTooltipOntology(): array {
+    public function getTooltipOntology(): array
+    {
         $result = array();
         
         try {
@@ -91,8 +100,4 @@ class DetailViewModel extends ArcheModel {
         $this->changeBackDBConnection();
         return $result;
     }
-    
-    
-   
-        
 }
