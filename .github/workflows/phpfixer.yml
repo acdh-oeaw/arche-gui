@@ -22,7 +22,7 @@ jobs:
       run: curl -L https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.3/php-cs-fixer.phar > php-cs-fixer.phar
       
     - name: run phpfixer
-      run: php php-cs-fixer.phar fix /
+      run: php php-cs-fixer.phar fix /src
       
     - name: commit fix
       run: |
