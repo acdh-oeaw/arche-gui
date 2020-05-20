@@ -66,7 +66,7 @@ jobs:
     - name: install drupal with sqlite
       run: |
         ls -la
-        cd drupal && vendor/drush/drush/drush site-install standard --db-url="mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/drupal"
+        cd drupal && vendor/drush/drush/drush site-install standard --db-url="mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/drupal"
         cd -
 
 #- name: install drupal mysql db
