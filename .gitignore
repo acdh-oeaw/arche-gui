@@ -2,3 +2,4 @@ vendor/*
 config/config.yaml
 .htaccess
 config.yaml
+coveralls.yml

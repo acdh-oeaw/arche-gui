@@ -19,15 +19,15 @@ jobs:
     - name: composer update
       run: |
         composer update
-    #./vendor/phpunit/phpunit/phpunit ./src/tests/src/Unit/Object/ResourceObjectTest.php
+        
     - name: test
       run: |
         mkdir -p build/logs
-        ./vendor/phpunit/phpunit/phpunit
+        ./vendor/phpunit/phpunit/phpunit ./src/tests/src/Unit/Object/ResourceObjectTest.php
         
     - name: coveralls
       run: |
         export COVERALLS_RUN_LOCALLY=1
-        export COVERALLS_REPO_TOKEN=${{ secrets.coverallsToken }}
+        export COVERALLS_REPO_TOKEN=${{ secrets.coverallsLocalToken }}
         composer require php-coveralls/php-coveralls
         php vendor/bin/php-coveralls -v    
