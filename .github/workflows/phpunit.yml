@@ -57,9 +57,10 @@ jobs:
     - name: install drupal with sqlite
       run: |
         ls -la
-        services mysql start
+        sudo service mysql start
         mysql -uroot -proot -e "CREATE DATABASE drupal"
         cd drupal && vendor/drush/drush/drush site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
+        cd -
 
 #- name: install drupal mysql db
  #     run: |        
@@ -68,7 +69,7 @@ jobs:
 
     - name: start web server
       run: |
-        drush runserver 127.0.0.1:8080 &
+        cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:8080 &
         until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done  
         
     - name: test
