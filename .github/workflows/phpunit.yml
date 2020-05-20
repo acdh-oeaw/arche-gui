@@ -29,13 +29,13 @@ jobs:
       run: composer update
       
     - name: install drush globally    
-      run: composer global require drush/drush:~8.1   
+      run: composer global require drush/drush
         
     - name: clone drupal code
       run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
         
     - name: drupal composer update
-      run: cd drupal && composer install && cd -
+      run: cd drupal && composer install && composer global require drush/drush && cd -
 
     - name: copy plugin to drupal
       run: |
