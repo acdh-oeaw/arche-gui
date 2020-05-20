@@ -50,7 +50,7 @@ jobs:
     - name: test
       run: |
         mkdir -p build/logs
-        ./vendor/phpunit/phpunit/phpunit
+        ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit
         
     - name: coveralls
       run: |
