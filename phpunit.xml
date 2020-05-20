@@ -1,13 +1,16 @@
 <phpunit colors="true" verbose="true" bootstrap="vendor/autoload.php">
     <logging>
-            <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
     <testsuite name="tests">
-            <directory>src/tests/src/Unit/</directory>
+        <directory>src/tests/src/Unit/</directory>
     </testsuite>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-                <directory suffix=".php">src</directory>
+            <directory suffix=".php">src</directory>
+                <exclude>
+                    <directory>src/tests/*</directory>
+                </exclude>
         </whitelist>
     </filter>
 </phpunit>
