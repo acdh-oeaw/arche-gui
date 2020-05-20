@@ -18,16 +18,15 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    
-    #- name: install dependencies
-    #  run: |
-     #     apt-get update -y
-      #    apt-get install libyaml-dev -y
-       #   pecl install yaml && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini 
-          
+
     - name: composer update
       run: composer update
-      
+     # Composer.
+    - name: composer settings
+      run: |
+        sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
+        source $HOME/.bashrc  
+        
     - name: install drush globally    
       run: composer global require drush/drush
         
@@ -48,20 +47,20 @@ jobs:
         cd drupal/modules && ls -la
         cd arche-gui && ls -la
         
-    - name: Set up MySQL 5.7
-      uses: mirromutth/mysql-action@master
-      with:
-        mysql version: 5.7
-        mysql database: drupal
-        mysql root password: root
+    #- name: Set up MySQL 5.7
+     # uses: mirromutth/mysql-action@master
+     # with:
+     #   mysql version: 5.7
+     #   mysql database: drupal
+     #   mysql root password: root
     
-    - name: check drush
-      run: drush
-    
-    - name: install drupal mysql db
-      run: |        
-        cd drupal && drush --yes site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
-        ls -la
+    - name: install drupal with sqlite
+      run: drush qd
+
+#- name: install drupal mysql db
+ #     run: |        
+  #      cd drupal && drush --yes site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
+   #     ls -la
 
     - name: start web server
       run: |
