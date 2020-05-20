@@ -28,6 +28,7 @@ jobs:
     - name: composer update
       run: |
         composer update
+        composer global require drush/drush:~8.1   
         
     - name: clone drupal code
       run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
