@@ -45,7 +45,9 @@ jobs:
         ls -la  
         cd drupal/modules && ls -la
         cd arche-gui && ls -la
-    
+    - name: start mysql server
+      run: sudo service mysql start
+      
     - name: create mysql db
       run: |
         mysql -e 'create database drupal;'  
