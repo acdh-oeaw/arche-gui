@@ -10,8 +10,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    container:
-      image: juampynr/drupal8ci:latest
+    
+    #container:
+     # image: juampynr/drupal8ci:latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -20,17 +21,26 @@ jobs:
     
     - name: install dependencies
       run: |
-          docker-php-ext-install sockets
           apt-get update -y
           apt-get install libyaml-dev -y
           pecl install yaml && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini && docker-php-ext-enable yaml
-          
     - name: composer update
       run: |
         composer update
-    
+        
+    - name: install drupal
+      run: |
+        git clone http://git.drupal.org/project/drupal.git 
+        cd drupal && composer install && cd -
+        mkdir -p drupal/modules/arche-gui
+        - for d in $(pwd)/*; do ln -s "$d" "drupal/modules/arche-gui"; done
+        
     - name: check directories
-      run: ls -la  
+      run: |
+        ls -la  
+        cd drupal/modules && ls -la
+        cd arche-gui && ls -la
+       
         
     - name: test
       run: |
