@@ -24,8 +24,8 @@ jobs:
      # Composer.
     - name: composer settings
       run: |
-        sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
-        source $HOME/.bashrc  
+        export PATH="$HOME/.composer/vendor/bin:$PATH"
+        echo $PATH  
         
     - name: install drush globally    
       run: composer global require drush/drush
