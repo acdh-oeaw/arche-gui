@@ -18,17 +18,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
-    - name: clone repo config
-      run: |
-        git clone --depth 1 --branch arche https://github.com/acdh-oeaw/arche-docker-config.git arche_config
-        rm -f arche_config/run.d/gui.sh arche_config/run.d/oaipmh.sh arche_config/run.d/resolver.sh
-        cp src/tests/src/Unit/testconfig.yaml arche_config/yaml/local.yaml
-                
-    - name: run repo docker
-      run: |
-        mkdir log
-        docker run --name arche -p 80:80 -v `pwd`/log:/home/www-data/log -v `pwd`/config:/home/www-data/config -e USER_UID=`id -u` -e USER_GID=`id -g` -d acdhch/arche
-    
     - name: composer update
       run: |
         composer update
