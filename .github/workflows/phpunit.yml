@@ -26,16 +26,15 @@ jobs:
       run: |
         export PATH="$HOME/.composer/vendor/bin:$PATH"
         echo $PATH  
-        
-    - name: install drush globally    
-      run: composer global require drush/drush
-        
+            
     - name: clone drupal code
       run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
         
     - name: drupal composer update
-      run: cd drupal && composer install && composer global require drush/drush && cd -
-
+      run: cd drupal && composer install && composer require drush/drush && cd -
+    - name: check drush
+      run: cd drupal && vendor/drush/drush/drush status
+      
     - name: copy plugin to drupal
       run: |
         mkdir -p drupal/modules/arche-gui
@@ -55,7 +54,9 @@ jobs:
      #   mysql root password: root
     
     - name: install drupal with sqlite
-      run: drush qd
+      run: |
+        ls -la
+        drush qd
 
 #- name: install drupal mysql db
  #     run: |        
