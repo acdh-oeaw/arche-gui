@@ -57,6 +57,7 @@ jobs:
     - name: install drupal with sqlite
       run: |
         ls -la
+        services mysql start
         mysql -uroot -proot -e "CREATE DATABASE drupal"
         cd drupal && vendor/drush/drush/drush site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
 
