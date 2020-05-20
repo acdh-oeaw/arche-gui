@@ -28,6 +28,9 @@ jobs:
     - name: composer update
       run: |
         composer update
+    
+    - name: check directories
+      run: ls -la  
         
     - name: test
       run: |
