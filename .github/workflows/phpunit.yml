@@ -18,9 +18,9 @@ jobs:
     
     - name: clone repo config
       run: |
-        git clone --depth 1 --branch arche https://github.com/acdh-oeaw/arche-docker-config.git config
-        rm -f config/run.d/gui.sh config/run.d/oaipmh.sh config/run.d/resolver.sh
-        cp tests/config.yaml config/yaml/local.yaml
+        git clone --depth 1 --branch arche https://github.com/acdh-oeaw/arche-docker-config.git arche_config
+        rm -f arche_config/run.d/gui.sh arche_config/run.d/oaipmh.sh arche_config/run.d/resolver.sh
+        cp tests/config.yaml arche_config/yaml/local.yaml
                 
     - name: run repo docker
       run: |
