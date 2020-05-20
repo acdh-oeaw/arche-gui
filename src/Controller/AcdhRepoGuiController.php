@@ -2,13 +2,8 @@
 
 namespace Drupal\acdh_repo_gui\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
-use acdhOeaw\acdhRepoLib\SearchConfig;
-use acdhOeaw\acdhRepoLib\RepoResourceInterface;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
 use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
 use Drupal\acdh_repo_gui\Controller\SearchViewController as SVC;
@@ -19,7 +14,7 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
  *
  * @author nczirjak
  */
-class AcdhRepoGuiController extends ControllerBase
+class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
 {
     private $config;
     private $repo;

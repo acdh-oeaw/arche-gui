@@ -1,13 +1,10 @@
 <?php
 
-namespace Drupal\Tests\acdh_repo_gui\Object;
+namespace Drupal\Tests\acdh_repo_gui\Unit\Object;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use GuzzleHttp;
 use DateTime;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\exception\Deleted;
-use acdhOeaw\acdhRepoLib\exception\NotFound;
 use Drupal\acdh_repo_gui\Object as RO;
 
 /**
