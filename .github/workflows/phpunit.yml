@@ -30,12 +30,16 @@ jobs:
         composer update
         
     - name: install drupal
-      run: |
-        git clone http://git.drupal.org/project/drupal.git 
-        cd drupal && composer install && cd -
-        mkdir -p drupal/modules/arche-gui
-        - for d in $(pwd)/*; do ln -s "$d" "drupal/modules/arche-gui"; done
+      run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
         
+    - name: drupal composer update
+      run: cd drupal && composer install && cd -
+
+    - name: copy plugin to drupal
+      run: |
+        mkdir -p drupal/modules/arche-gui
+        for d in $(pwd)/*; do ln -s "$d" "drupal/modules/arche-gui"; done
+    
     - name: check directories
       run: |
         ls -la  
