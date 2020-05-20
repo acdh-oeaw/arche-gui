@@ -47,17 +47,17 @@ jobs:
         cd drupal/modules && ls -la
         cd arche-gui && ls -la
         
-    #- name: Set up MySQL 5.7
-     # uses: mirromutth/mysql-action@master
-     # with:
-     #   mysql version: 5.7
-     #   mysql database: drupal
-     #   mysql root password: root
+    - name: Set up MySQL 5.7
+      uses: mirromutth/mysql-action@master
+      with:
+        mysql version: 5.7
+        mysql database: drupal
+        mysql root password: root
     
     - name: install drupal with sqlite
       run: |
         ls -la
-        cd drupal && vendor/drush/drush/drush qd
+        cd drupal && vendor/drush/drush/drush --yes site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
 
 #- name: install drupal mysql db
  #     run: |        
