@@ -19,11 +19,11 @@ jobs:
     - name: composer update
       run: |
         composer update
-        
+    #./vendor/phpunit/phpunit/phpunit ./src/tests/src/Unit/Object/ResourceObjectTest.php
     - name: test
       run: |
         mkdir -p build/logs
-        ./vendor/phpunit/phpunit/phpunit ./src/tests/src/Unit/Object/ResourceObjectTest.php
+        ./vendor/phpunit/phpunit/phpunit
         
     - name: coveralls
       run: |
