@@ -45,7 +45,17 @@ jobs:
         ls -la  
         cd drupal/modules && ls -la
         cd arche-gui && ls -la
-       
+    
+    - name: create mysql db
+      run: |
+        mysql -e 'create database drupal;'  
+        cd drupal && drush --yes site-install standard --db-url="mysql://root@127.0.0.1/drupal"
+        ls -la
+
+    - name: start web server
+      run: |
+        drush runserver 127.0.0.1:8080 &
+        until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done  
         
     - name: test
       run: |
