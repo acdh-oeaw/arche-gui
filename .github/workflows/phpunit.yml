@@ -11,6 +11,18 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: drupal
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        
     #container:
      # image: juampynr/drupal8ci:latest
 
@@ -19,6 +31,14 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: Verify MariaDB connection
+      env:
+        PORT: ${{ job.services.mariadb.ports[3306] }}
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+          sleep 1
+        done        
+                 
     - name: composer update
       run: composer update
      # Composer.
@@ -47,18 +67,12 @@ jobs:
         cd drupal/modules && ls -la
         cd arche-gui && ls -la
         
-    - name: Set up MySQL 5.7
-      uses: mirromutth/mysql-action@master
-      with:
-        mysql version: 5.7
-        mysql database: drupal
-        mysql root password: root
-    
+    # sudo service mysql start
+    # mysql -uroot -proot -e "CREATE DATABASE drupal"
+  
     - name: install drupal with sqlite
       run: |
         ls -la
-        sudo service mysql start
-        mysql -uroot -proot -e "CREATE DATABASE drupal"
         cd drupal && vendor/drush/drush/drush site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
         cd -
 
