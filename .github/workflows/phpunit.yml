@@ -26,9 +26,10 @@ jobs:
        #   pecl install yaml && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini 
           
     - name: composer update
-      run: |
-        composer update
-        composer global require drush/drush:~8.1   
+      run: composer update
+      
+    - name: install drush globally    
+      run: composer global require drush/drush:~8.1   
         
     - name: clone drupal code
       run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
@@ -53,7 +54,10 @@ jobs:
         mysql version: 5.7
         mysql database: drupal
         mysql root password: root
-      
+    
+    - name: check drush
+      run: drush
+    
     - name: install drupal mysql db
       run: |        
         cd drupal && drush --yes site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
