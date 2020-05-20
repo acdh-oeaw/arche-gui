@@ -30,7 +30,7 @@ jobs:
         
     - name: Init Database
       run: |
-        mysql--host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e  'CREATE DATABASE IF NOT EXISTS drupal;'
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e  'CREATE DATABASE IF NOT EXISTS drupal;'
         
     - name: Verify MariaDB connection
       env:
