@@ -80,10 +80,10 @@ jobs:
         cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:8080 &
         until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done  
         
-    - name: test
-      run: |
-        mkdir -p build/logs
-        ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit --configuration ./drupal/modules/arche-gui/phpunit.xml 
+   # - name: test
+    #  run: |
+     #   mkdir -p build/logs
+      #  ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit --configuration ./drupal/modules/arche-gui/phpunit.xml 
         
     - name: coveralls
       run: |
