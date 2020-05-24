@@ -8,8 +8,10 @@ use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Object as RO;
 
 /**
- * @coversDefaultClass \Drupal\acdh_repo_gui\Object\ResourceObject
+ * Tests ResourceObject
+ * 
  * @group acdh_repo_gui
+ * @coversDefaultClass \Drupal\acdh_repo_gui\Object\ResourceObject
  */
 
 class ResourceObjectTest extends \PHPUnit\Framework\TestCase
