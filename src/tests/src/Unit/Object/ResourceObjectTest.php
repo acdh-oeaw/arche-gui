@@ -9,7 +9,7 @@ use Drupal\acdh_repo_gui\Object as RO;
 
 /**
  * Tests ResourceObject
- * 
+ *
  * @group acdh_repo_gui
  * @coversDefaultClass \Drupal\acdh_repo_gui\Object\ResourceObject
  */
