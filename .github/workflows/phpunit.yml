@@ -9,29 +9,12 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        ports:
-        - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    runs-on: ubuntu-latest    
+ 
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
-    - name: Verify MySQL connection from host
-      run: |
-        sudo apt-get install -y mysql-client
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
-        
-    - name: Init Database
-      run: |
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e  'CREATE DATABASE IF NOT EXISTS drupal;'
-                 
     - name: composer update
       run: composer update
      # Composer.
@@ -39,51 +22,51 @@ jobs:
       run: |
         export PATH="$HOME/.composer/vendor/bin:$PATH"
         echo $PATH  
-            
-    - name: clone drupal code
-      run: git clone --branch 8.8.x https://git.drupalcode.org/project/drupal.git
         
+    - name: install drupal
+      run:  composer create-project drupal/recommended-project drupal  
+  
     - name: drupal composer update
-      run: cd drupal && composer install && composer require drush/drush && cd -
+      run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit && cd -
       
     - name: check drush
-      run: cd drupal && vendor/drush/drush/drush status
+      run: |
+        cd drupal && vendor/drush/drush/drush status && cd -
+        drupal/vendor/drush/drush/drush list
+    
+    - name: copy sqlite db
+      run: |
+        mkdir -p drupal/web/sites/default/files 
+        cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
+
+    #vendor/drush/drush/drush site-install standard --db-url=sqlite://sites/default/files/.ht.sqlite 
+    #composer create-project drupal/recommended-project drupal  
+    - name: install drupal base with sqlite
+      run: |              
+        cd drupal        
+        vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
+        cd -
       
     - name: copy plugin to drupal
       run: |
-        mkdir -p drupal/modules/arche-gui
-        for d in $(pwd)/*; do ln -s "$d" "drupal/modules/arche-gui"; done
+        mkdir -p drupal/web/modules/arche-gui
+        for d in $(pwd)/*; do ln -s "$d" "drupal/web/modules/arche-gui"; done
     
     - name: check directories
       run: |
         ls -la  
-        cd drupal/modules && ls -la
+        cd drupal/web/modules && ls -la
         cd arche-gui && ls -la
-        
-    # sudo service mysql start
-    # mysql -uroot -proot -e "CREATE DATABASE drupal"
   
-    - name: install drupal with sqlite
-      run: |
-        ls -la
-        cd drupal 
-        vendor/drush/drush/drush site-install --db-url="mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/drupal"
-        cd -
-
-#- name: install drupal mysql db
- #     run: |        
-  #      cd drupal && drush --yes site-install standard --db-url="mysql://root:root@127.0.0.1/drupal"
-   #     ls -la
-
     - name: start web server
       run: |
         cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:8080 &
         until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done  
         
-    - name: test
-      run: |
-        mkdir -p build/logs
-        ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit --configuration ./drupal/modules/arche-gui/phpunit.xml 
+    #- name: test
+     # run: |
+      #  mkdir -p build/logs
+       # ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml 
         
     - name: coveralls
       run: |
