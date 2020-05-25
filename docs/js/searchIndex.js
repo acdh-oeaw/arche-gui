@@ -1918,7 +1918,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Drupal\\Tests\\acdh_repo_gui\\Unit\\Object\\ResourceObjectTest",
             "name": "ResourceObjectTest",
-            "summary": "",
+            "summary": "Tests\u0020ResourceObject",
             "url": "../classes/Drupal-Tests-acdh-repo-gui-Unit-Object-ResourceObjectTest.html"
         },                {
             "fqsen": "\\Drupal\\Tests\\acdh_repo_gui\\Unit\\Object\\ResourceObjectTest\u003A\u003AsetUpBeforeClass\u0028\u0029",
