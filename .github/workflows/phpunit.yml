@@ -75,7 +75,7 @@ jobs:
         composer require symfony/process
         composer require symfony/lock
         composer require symfony/event-dispatcher
-        composer require symfony/service-implementation
+        composer fund
         export COVERALLS_RUN_LOCALLY=1
         export COVERALLS_REPO_TOKEN=${{ secrets.coverallsLocalToken }}
         composer require php-coveralls/php-coveralls
