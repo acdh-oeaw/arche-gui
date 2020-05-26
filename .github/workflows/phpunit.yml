@@ -68,6 +68,12 @@ jobs:
         mkdir -p build/logs
         ./drupal/vendor/phpunit/phpunit/phpunit --version
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml 
+        echo "drupal dir"
+        ls ./drupal/
+        echo "drupal/web/modules/arche dir"
+        ls ./drupal/web/modules/arche-gui
+        echo "main dir"
+        ls
         
     - name: coveralls
       run: |
