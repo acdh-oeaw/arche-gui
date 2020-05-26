@@ -2,6 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Model;
 
+include 'ArcheModel.php';
 use Drupal\acdh_repo_gui\Model\ArcheModel;
 
 /**

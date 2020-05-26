@@ -27,6 +27,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public static function setUpBeforeClass(): void
     {
+        require_once dirname(__DIR__, 5).'/vendor/autoload.php';
         $cfgFile      = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
         self::$repo   = Repo::factory($cfgFile);

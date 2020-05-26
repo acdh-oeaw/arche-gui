@@ -2,6 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
+include 'ArcheHelper.php';
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
