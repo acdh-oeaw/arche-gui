@@ -71,6 +71,8 @@ jobs:
         
         echo "drupal/web/modules/arche dir build"
         ls ./drupal/web/modules/arche-gui/build/logs
+        cp ./drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
+        
         echo "main build dir"
         ls ./build/logs
         
