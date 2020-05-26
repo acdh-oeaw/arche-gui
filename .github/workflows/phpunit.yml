@@ -70,9 +70,9 @@ jobs:
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml 
         
         echo "drupal/web/modules/arche dir build"
-        ls ./drupal/web/modules/arche-gui/build
+        ls ./drupal/web/modules/arche-gui/build/logs
         echo "main build dir"
-        ls ./build
+        ls ./build/logs
         
         
     - name: coveralls
