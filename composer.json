@@ -18,7 +18,7 @@
 	"zozlak/logging" : "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8"
+        "phpunit/phpunit": "*"
     },
     "autoload": {
         "psr-4": {
