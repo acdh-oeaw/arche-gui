@@ -45,7 +45,9 @@
                 "[web-root]/sites/default/files/inline-images/dep-bg2.jpg": "inst/sites/default/files/inline-images/dep-bg2.jpg",
                 "[web-root]/sites/default/files/inline-images/dep-bg3.jpg": "inst/sites/default/files/inline-images/dep-bg3.jpg",
                 "[web-root]/sites/default/files/inline-images/tunbg.png": "inst/sites/default/files/inline-images/tunbg.png",
-                "[web-root]/sites/default/files/inline-images/wiebg.png": "inst/sites/default/files/inline-images/wiebg.png"
+                "[web-root]/sites/default/files/inline-images/wiebg.png": "inst/sites/default/files/inline-images/wiebg.png",
+                "[web-root]/sites/default/files/inline-images/CoreTrustSeal-Logo.jpg": "inst/sites/default/files/inline-images/CoreTrustSeal-Logo.jpg",
+                "[web-root]/sites/default/files/inline-images/Clarin-Logo.png": "inst/sites/default/files/inline-images/Clarin-Logo.png"
             }
         }
     }
