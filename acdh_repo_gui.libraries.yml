@@ -34,6 +34,7 @@ repo-root-view:
         base:
             css/acdh_repo_gui.css: {}
     js:
+        js/jquery-1.12.3.min.js: {}
         js/acdh_repo_gui_pager.js: {}
         js/acdh_repo_gui_root_view.js: {}
         

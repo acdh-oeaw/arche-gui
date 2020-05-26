@@ -162,55 +162,72 @@ jQuery(function($) {
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
-        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+        if(uuid) {
+            getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+                createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+                if( params.urlOrder != null && params.urlLimit != null) {
+                    updateGui( params.urlOrder, params.urlLimit)
+                }
+            });
+        }else{
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
-            if( params.urlOrder != null && params.urlLimit != null) {
-                updateGui( params.urlOrder, params.urlLimit)
-            }
-        });
+        }
     });
     
     $(document ).delegate( "#last-btn", "click", function(e) {
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
-        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+        if(uuid){
+            getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+                createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+                if( params.urlOrder != null && params.urlLimit != null) {
+                    updateGui( params.urlOrder, params.urlLimit)
+                }
+            });
+        }else{
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
-            if( params.urlOrder != null && params.urlLimit != null) {
-                updateGui( params.urlOrder, params.urlLimit)
-            }
-        });
-        //createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        }
     });
     
     $(document ).delegate( "#prev-btn", "click", function(e) {
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
-        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+        if(uuid){
+            getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+                createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+                if( params.urlOrder != null && params.urlLimit != null) {
+                    updateGui( params.urlOrder, params.urlLimit)
+                }
+            });
+        } else {
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
-            if( params.urlOrder != null && params.urlLimit != null) {
-                updateGui( params.urlOrder, params.urlLimit)
-            }
-        });
+        }
     });
     
     $(document ).delegate( "#next-btn", "click", function(e) { 
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
-        getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+        
+        if(uuid){
+            getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+                createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
+                if( params.urlOrder != null && params.urlLimit != null) {
+                    updateGui( params.urlOrder, params.urlLimit)
+                }
+            });
+        }else{
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
-            if( params.urlOrder != null && params.urlLimit != null) {
-                updateGui( params.urlOrder, params.urlLimit)
-            }
-        });
+        }
     });
     
     //Results info-bar pagination selectors on click
     $(document).delegate( '#resPerPageButton > a', "click", function(event) {
         let newLimit = $(this).html();
         let params = getUrlParams(actionPage);
+        // 1 the page because then we need to go back to the first page
         createNewUrl(1, newLimit, params.urlOrder, actionPage, params.searchStr);
     
     });
