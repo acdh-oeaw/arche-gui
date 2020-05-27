@@ -140,6 +140,7 @@ class ArcheApiModel extends ArcheModel
             'cardinality'   => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
             'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',            
             'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
+            'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
             'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
