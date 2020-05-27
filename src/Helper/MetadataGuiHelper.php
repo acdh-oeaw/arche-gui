@@ -169,7 +169,7 @@ class MetadataGuiHelper
     private function metadataGuiCardinality(object $data): string
     {
         if ($data->min == 0 || empty($data->min)) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1) {
+            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 return 'o*';
             }
             //optional
@@ -177,7 +177,7 @@ class MetadataGuiHelper
         }
           
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended !== true) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1) {
+            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 return 'm*';
             }
             //mandatory
@@ -185,7 +185,7 @@ class MetadataGuiHelper
         }
           
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended === true) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1) {
+            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 return 'r*';
             }
             //recommended
