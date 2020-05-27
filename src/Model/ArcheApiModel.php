@@ -138,7 +138,7 @@ class ArcheApiModel extends ArcheModel
             'skipNamespace' => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
             'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
             'cardinality'   => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
-            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',            
+            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
             'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
             'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
