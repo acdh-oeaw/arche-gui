@@ -358,6 +358,7 @@ class SearchViewModel extends ArcheModel
         } else {
             $queryStr .= "); ";
         }
+        error_log($queryStr);
                 
         try {
             $query = $this->repodb->query($queryStr);

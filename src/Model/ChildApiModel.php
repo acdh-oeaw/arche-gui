@@ -52,13 +52,13 @@ class ChildApiModel extends ArcheModel
         $queryStr = "select * from gui.child_views_func('".$identifier."', '".$limit."',  "
                     . " '".$page."', '".$ord."', '".$prop."', '".$this->siteLang."' ";
             
-        if (!empty($this->sqlTypes)) {
+        /*if (!empty($this->sqlTypes)) {
             $queryStr .= ", ".$this->sqlTypes." ";
         } else {
             $queryStr .= ", ARRAY[]::text[] ";
-        }
+        }*/
         $queryStr .= " );";
-            
+        
         //get the requested sorting
         try {
             $query = $this->repodb->query($queryStr);
