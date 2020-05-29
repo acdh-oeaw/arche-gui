@@ -18,24 +18,30 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+      
+    - uses: webfactory/ssh-agent@v0.2.0
+      with: 
+        ssh-private-key: ${{ secrets.docsRepoToken }}
 
     - name: install phpdocumentator
       run: curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar > phpdoc.phar
     
-    - name: create docs dir
-      run: |
-        rm -fR docs
-        mkdir docs
-
+    - name: fetch docs repo
+      run: git clone --depth 1 git@github.com:acdh-oeaw/arche-docs.git docsrepo
+    
     - name: generate docs
-      run: php -f phpdoc.phar run -d src -t docs/
+      run: |
+        rm -fR docsrepo/arche-gui/*
+        php -f phpdoc.phar run -d src -t docsrepo/arche-gui  
+   
+  
       
     - name: commit docs
       run: |
-        cd docs
+        cd docsrepo
         git config user.email "workflow@github.actions"
         git config user.name "Github Actions Workflow"
-        git add *
+        git add arche-gui/*
         git commit -a -m 'Documentation updated' || true
         git push origin || true  
         
