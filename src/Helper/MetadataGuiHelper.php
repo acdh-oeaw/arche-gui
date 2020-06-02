@@ -202,7 +202,7 @@ class MetadataGuiHelper
     - if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
     */
     private function metadataGuiCardinalityByMartina(object $data): string
-    {       
+    {
         $cardinality = '';
         //- if we have minCardinality and minCardinality >=1 => m
         //if we have cardinality and it is 1 => m

@@ -282,7 +282,7 @@ class ArcheApiController extends ControllerBase
      * The pure basic ontology for checking
      * @return Response
      */
-    public function repo_baseOntology(string $lng = 'en'): Response 
+    public function repo_baseOntology(string $lng = 'en'): Response
     {
         $response = new Response();
         
@@ -472,7 +472,7 @@ class ArcheApiController extends ControllerBase
         *  https://domain.com/browser/api/getOntologyJSPluginData/Language?_format=json
         */
         
-        $response = new Response();        
+        $response = new Response();
         $obj = new \stdClass();
         //get the data
         $this->modelData = $this->model->getViewData('countCollsBins', $obj);
