@@ -67,11 +67,6 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getTitle());
     }
     
-    public function testGetTitleFailure()
-    {
-        $this->assertEmpty(self::$object->getTitle());
-    }
-    
     protected function startTimer(): void
     {
         $this->time = microtime(true);
