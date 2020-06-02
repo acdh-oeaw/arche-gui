@@ -3,6 +3,9 @@ type: module
 description: 'ÖAW ACDH REPO Gui.'
 core: 8.x
 package: oeaw
+project: acdh_repo_gui
 configure: acdh_repo_gui.settings_form
 libraries:
     - acdh_repo_gui/repo-styles
+'interface translation project': acdh_repo_gui
+'interface translation server pattern': modules/contrib/arche-gui/translations/acdh_repo_gui-%language.po    

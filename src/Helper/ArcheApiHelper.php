@@ -105,14 +105,13 @@ class ArcheApiHelper extends ArcheHelper
     private function formatCollsBinsCount()
     {
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
-       
         $collections = "0";
         $files = "0";
         if (isset($this->data[0]->collections) && !empty($this->data[0]->collections)) {
-            $collections = $this->data[0]->collections." ".t("collections");
+            $collections = $this->data[0]->collections." ".t("Collections", array(), array('langcode' => $this->siteLang));
         }
         if (isset($this->data[0]->binaries) && !empty($this->data[0]->binaries)) {
-            $files = $this->data[0]->binaries." ".t("files");
+            $files = $this->data[0]->binaries." ".t("Files", array(), array('langcode' => $this->siteLang));
         }
 
         if (empty($files)) {
@@ -121,7 +120,7 @@ class ArcheApiHelper extends ArcheHelper
         if (empty($collections)) {
             $collections = "0";
         }
-        $this->result['text'] = $collections. " ".t("with")." ".$files;
+        $this->result['text'] = $collections. " ".t("with", array(), array('langcode' => $this->siteLang))." ".$files;
     }
     
     
@@ -234,16 +233,19 @@ class ArcheApiHelper extends ArcheHelper
         $this->result = array();
         foreach ($this->data as $k => $val) {
             foreach ($val as $v) {
-                $title = $v->value;
-                $lang = $v->lang;
-                $altTitle = '';
-                if ($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
-                    $altTitle = $v->value;
+                if(isset($v->value)){
+                    $title = $v->value;
+                    $lang = $v->lang;
+                    $altTitle = '';
+                    if ($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
+                        $altTitle = $v->value;
+                    }
+                    $this->result[$k]->title[$lang] = $title;
+                    $this->result[$k]->uri = $this->repo->getBaseUrl().$k;
+                    $this->result[$k]->identifier = $k;
+                    $this->result[$k]->altTitle = $altTitle;
                 }
-                $this->result[$k]->title[$lang] = $title;
-                $this->result[$k]->uri = $this->repo->getBaseUrl().$k;
-                $this->result[$k]->identifier = $k;
-                $this->result[$k]->altTitle = $altTitle;
+                
             }
         }
         $this->result = array_values($this->result);

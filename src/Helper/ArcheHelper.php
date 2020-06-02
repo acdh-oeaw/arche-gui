@@ -19,6 +19,10 @@ abstract class ArcheHelper
     protected $config;
     protected $repo;
     private $siteLang;
+    /*
+     * We will store the custom translations config inside this variable
+    */
+    public $langConf;
     
     public function __construct()
     {
@@ -26,6 +30,7 @@ abstract class ArcheHelper
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        //$this->langConf = $this->config('acdh_repo_gui.settings');
     }
     
     /**

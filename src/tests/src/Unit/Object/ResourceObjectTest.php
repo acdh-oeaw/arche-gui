@@ -62,6 +62,16 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         self::$resourceData["acdh:hasTitle"]['en'] = array($title);
     }
     
+    public function testGetTitle()
+    {
+        $this->assertNotEmpty(self::$object->getTitle());
+    }
+    
+    public function testGetTitleFailure()
+    {
+        $this->assertEmpty(self::$object->getTitle());
+    }
+    
     protected function startTimer(): void
     {
         $this->time = microtime(true);

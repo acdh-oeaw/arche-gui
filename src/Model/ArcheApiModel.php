@@ -120,7 +120,11 @@ class ArcheApiModel extends ArcheModel
         $cfg = (object) [
             'skipNamespace' => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
             'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
+            'cardinality'   => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
             'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
+            'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
+            'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
+            'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         return (array)$ontology->getClass($this->properties->type);

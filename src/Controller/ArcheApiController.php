@@ -279,6 +279,30 @@ class ArcheApiController extends ControllerBase
     }
     
     /**
+     * The pure basic ontology for checking
+     * @return Response
+     */
+    public function repo_baseOntology(string $lng = 'en'): Response 
+    {
+        $response = new Response();
+        
+        $obj = new \stdClass();
+        $obj->baseUrl = $this->repo->getBaseUrl();
+        $obj->language = $lng;
+        //get the data
+        $this->modelData = $this->model->getViewData('metadataGui', $obj);
+        
+        if (count($this->modelData) == 0) {
+            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $response->setContent(json_encode($this->modelData));
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    /**
      * Get the ontology metadata for the JS plugin table
      * @param string $lng
      * @return Response
@@ -441,15 +465,14 @@ class ArcheApiController extends ControllerBase
     }
     
    
-    public function repo_getOntologyJSPluginData(): Response
+    public function repo_getOntologyJSPluginData(string $lng = 'en'): Response
     {
         /*
         * Usage:
         *  https://domain.com/browser/api/getOntologyJSPluginData/Language?_format=json
         */
         
-        $response = new Response();
-        
+        $response = new Response();        
         $obj = new \stdClass();
         //get the data
         $this->modelData = $this->model->getViewData('countCollsBins', $obj);
@@ -457,7 +480,7 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
         
-        $this->result = $this->helper->createView($this->modelData, 'countCollsBins');
+        $this->result = $this->helper->createView($this->modelData, 'countCollsBins', $lng);
         $response->setContent(json_encode($this->result));
         $response->headers->set('Content-Type', 'application/json');
                 

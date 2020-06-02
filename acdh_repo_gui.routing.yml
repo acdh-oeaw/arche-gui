@@ -164,6 +164,13 @@ repo_api_getmetadatagui:
     defaults:
         _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMetadataGui'
     requirements:        
+        _access: 'TRUE'   
+        
+repo_api_getbaseontology:    
+    path: '/api/getBaseOntology/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_baseOntology'
+    requirements:        
         _access: 'TRUE'          
 
 repo_inverse_result:    
@@ -197,6 +204,3 @@ repo_getOntologyJSPluginData:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'           
-
-
-        
