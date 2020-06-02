@@ -233,7 +233,7 @@ class ArcheApiHelper extends ArcheHelper
         $this->result = array();
         foreach ($this->data as $k => $val) {
             foreach ($val as $v) {
-                if(isset($v->value)){
+                if (isset($v->value)) {
                     $title = $v->value;
                     $lang = $v->lang;
                     $altTitle = '';
@@ -245,7 +245,6 @@ class ArcheApiHelper extends ArcheHelper
                     $this->result[$k]->identifier = $k;
                     $this->result[$k]->altTitle = $altTitle;
                 }
-                
             }
         }
         $this->result = array_values($this->result);
