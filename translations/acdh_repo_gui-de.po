@@ -1,0 +1,36 @@
+# LANGUAGE translation of PROJECT
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2020-06-02 14:19+0200\n"
+"PO-Revision-Date: 2020-06-02 14:41+0200\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: \n"
+"Language: de\n"
+
+msgid "Collections"
+msgstr "Sammlungen"
+
+msgid "with"
+msgstr "mit"
+
+msgid "Refine your search using filters:"
+msgstr "Verfeinern Sie Ihre Suche mithilfe von Filtern:"
+
+msgid "Copy Resource Link"
+msgstr "Ressourcenlink kopieren"
+
+msgid "Switch to Expert-View"
+msgstr "Wechseln Sie zur Expertenansicht"
+
+msgid "Switch to Basic-View"
+msgstr "Wechseln Sie zur Basicansicht"
+
+msgid "Switch to Tree-View"
+msgstr "Wechseln Sie zur Basicansicht"
