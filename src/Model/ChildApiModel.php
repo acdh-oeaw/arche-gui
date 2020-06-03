@@ -112,15 +112,7 @@ class ChildApiModel extends ArcheModel
     public function getCount(string $identifier): int
     {
         try {
-            $queryStr = "select * from gui.child_sum_views_func('".$identifier."'";
-            
-            if (!empty($this->sqlTypes)) {
-                $queryStr .= ", ".$this->sqlTypes." ";
-            } else {
-                $queryStr .= ", ARRAY[]::text[] ";
-            }
-            $queryStr .= " );";
-        
+            $queryStr = "select * from gui.child_sum_views_func('".$identifier."' );";
             $query = $this->repodb->query($queryStr);
             $result = $query->fetch();
           

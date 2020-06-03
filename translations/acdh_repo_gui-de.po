@@ -20,17 +20,89 @@ msgstr "Sammlungen"
 msgid "with"
 msgstr "mit"
 
-msgid "Refine your search using filters:"
-msgstr "Verfeinern Sie Ihre Suche mithilfe von Filtern:"
-
 msgid "Copy Resource Link"
 msgstr "Ressourcenlink kopieren"
 
 msgid "Switch to Expert-View"
 msgstr "Wechseln Sie zur Expertenansicht"
 
+msgid "Refine your search using filters"
+msgstr "Suchergebnisse filtern"
+
 msgid "Switch to Basic-View"
-msgstr "Wechseln Sie zur Basicansicht"
+msgstr "Zur Basisansicht wechseln"
 
 msgid "Switch to Tree-View"
-msgstr "Wechseln Sie zur Basicansicht"
+msgstr "Zur Baumansicht wechseln"
+
+msgid "Apply the selected search filters"
+msgstr "Anwendung der gewählten Suchfilter"
+
+msgid "Alternative Title"
+msgstr "Alternativer Titel"
+
+msgid "Identifier(s)" 
+msgstr "Identifikator(en)"
+
+msgid "Author(s)" 
+msgstr "Autor(en)"
+
+msgid "Creator(s)" 
+msgstr "Urheber"
+
+msgid "Contributor(s)" 
+msgstr "Beitragende(r)"
+
+msgid "Contact(s)" 
+msgstr "Kontakt(e)"
+
+msgid "Curator(s)" 
+msgstr "Datenkurator(en)"
+
+msgid "Licensor" 
+msgstr "Lizenzgeber"
+
+msgid "Funder" 
+msgstr "Fördergeber"
+
+msgid "Principal Investigator(s)" 
+msgstr "Primärforscher"
+
+msgid "Number of Items" 
+msgstr "Number of Items"
+
+msgid "Publisher" 
+msgstr "Verlag"
+
+msgid "Seriers information" 
+msgstr "Reihe"
+
+msgid "Page(s)" 
+msgstr "Seite(n)"
+
+msgid "Note" 
+msgstr "Anmerkung"
+
+msgid "Part of" 
+msgstr "Teil von"
+
+msgid "Member Of" 
+msgstr "Mitglied von"
+
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgid "Related Discipline(s)" 
+msgstr "Fachdisziplin(en)"
+
+msgid "Subject(s)" 
+msgstr "Betreff"
+
+msgid "Spatial Coverage" 
+msgstr "Geografische Abdeckung"
+
+msgid "Coverage Start Date" 
+msgstr "Zeitliche Abdeckung Beginn"
+
+msgid "Coverage End Date" 
+msgstr "Zeitliche Abdeckung Ende"
