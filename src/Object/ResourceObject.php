@@ -77,10 +77,9 @@ class ResourceObject
         error_log("inside: ".$this->config->getBaseUrl());
         
         $result = array();
-        if(isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
-            foreach($this->properties["acdh:hasIdentifier"] as $k => $v) {
-               
-                if ( (strpos($v->value, $this->config->getBaseUrl()) === false) &&
+        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
+                if ((strpos($v->value, $this->config->getBaseUrl()) === false) &&
                         (strpos($v->value, 'https://id.acdh.oeaw.ac.a') === false)
                     ) {
                     $result[] = $v;
