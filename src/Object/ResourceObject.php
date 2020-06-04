@@ -31,6 +31,13 @@ class ResourceObject
             }
         }
     }
+    
+    /**
+     * get the data based on the property
+     * 
+     * @param string $property
+     * @return array
+     */
     public function getData(string $property): array
     {
         return (isset($this->properties[$property]) && !empty($this->properties[$property])) ? $this->properties[$property] : array();
@@ -53,8 +60,8 @@ class ResourceObject
     }
     
     /**
-     *
-     * Resource title
+     * Get the Resource title
+     * 
      * @return string
      */
     public function getTitle(): string
@@ -72,21 +79,24 @@ class ResourceObject
         return (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) ? $this->properties["acdh:hasIdentifier"] : array();
     }
     
+    /**
+     * Get all identifiers which are not acdh related
+     * 
+     * @return type
+     */
     public function getNonAcdhIdentifiers()
     {
-        error_log("inside: ".$this->config->getBaseUrl());
-        
         $result = array();
-        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
-            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
-                if ((strpos($v->value, $this->config->getBaseUrl()) === false) &&
-                        (strpos($v->value, 'https://id.acdh.oeaw.ac.a') === false)
+        if(isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach($this->properties["acdh:hasIdentifier"] as $k => $v) {
+               //filter out the baseurl related identifiers and which contains the id.acdh
+                if ( (strpos($v->value, $this->config->getBaseUrl()) === false) &&
+                        (strpos($v->value, 'https://id.acdh.oeaw.ac.at') === false)
                     ) {
                     $result[] = $v;
                 }
             }
         }
-        error_log(print_r($result, true));
         return $result;
     }
     
@@ -119,6 +129,10 @@ class ResourceObject
         return "";
     }
     
+    /**
+     * Get the available date in a specified format
+     * @return string
+     */
     public function getAvailableDate(): string
     {
         if (isset($this->properties["acdh:hasAvailableDate"])) {
@@ -163,7 +177,10 @@ class ResourceObject
         return $this->config->getBaseUrl().$this->repoid;
     }
     
-    
+    /**
+     * Get the Gui related url for the resource
+     * @return string
+     */
     public function getRepoGuiUrl(): string
     {
         if (!isset($this->repoid) && empty($this->repoid)) {

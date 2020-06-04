@@ -68,8 +68,11 @@ class ArcheApiModel extends ArcheModel
         //run the actual query
         try {
             $query = $this->repodb->query(
-                "SELECT * from gui.apiGetData('".$this->properties->type."', '".$this->properties->searchStr."');"
-            );
+                    "SELECT * from gui.apiGetData(:type, :searchStr)", 
+                    array(':type' => $this->properties->type, 
+                        ':searchStr' => $this->properties->searchStr)
+                    );
+            
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -167,7 +170,10 @@ class ArcheApiModel extends ArcheModel
         //run the actual query
         try {
             $query = $this->repodb->query(
-                "SELECT * from gui.inverse_data_func('".$this->properties->repoid."');"
+                "SELECT * from gui.inverse_data_func(:repoid);",
+                array(
+                    ':repoid' => $this->properties->repoid
+                )    
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
@@ -177,7 +183,6 @@ class ArcheApiModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         }
-        
         $this->changeBackDBConnection();
         return $result;
     }
@@ -196,12 +201,15 @@ class ArcheApiModel extends ArcheModel
                         DISTINCT(i.id),  mv.property, mv.value, mv.lang
                     from identifiers as i
                     left join metadata_view as mv on mv.id = i.id
-                    where i.id = ".$this->properties->repoid."
+                    where i.id = :repoid
                         and property in (
                                 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 
                                 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate', 
                                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-                        );"
+                        );",
+                array(
+                    ':repoid' => $this->properties->repoid
+                )    
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {

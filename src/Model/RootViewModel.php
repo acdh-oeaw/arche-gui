@@ -62,12 +62,17 @@ class RootViewModel extends ArcheModel
         $this->initPaging($limit, $page, $order);
         
         try {
-            $query = $this->repodb->query("
-                SELECT 
-                *
-                from gui.root_views_func('".$this->siteLang."') 
-                where title is not null 
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset.";");
+            $query = $this->repodb->query(
+                "SELECT 
+                    *
+                from gui.root_views_func( :lang ) 
+                where title is not null
+                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
+                 ; ", 
+                array(
+                    ':lang' => $this->siteLang
+                )
+            );
             
             $this->sqlResult = $query->fetchAll();
             $this->changeBackDBConnection();

@@ -46,22 +46,20 @@ class ChildApiModel extends ArcheModel
     public function getViewData(string $identifier = "", int $limit = 10, int $page = 0, string $orderby = "titleasc"): array
     {
         $order = $this->ordering($orderby);
-        $prop = $order->property;
-        $ord = $order->order;
-        
-        $queryStr = "select * from gui.child_views_func('".$identifier."', '".$limit."',  "
-                    . " '".$page."', '".$ord."', '".$prop."', '".$this->siteLang."' ";
-            
-        /*if (!empty($this->sqlTypes)) {
-            $queryStr .= ", ".$this->sqlTypes." ";
-        } else {
-            $queryStr .= ", ARRAY[]::text[] ";
-        }*/
-        $queryStr .= " );";
         
         //get the requested sorting
         try {
-            $query = $this->repodb->query($queryStr);
+            $query = $this->repodb->query(
+                "select * from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang);",
+                array(
+                    ':id' => $identifier,
+                    ':limit' => $limit,
+                    ':page' => $page,
+                    ':order' => $order->order,
+                    ':orderprop' => $order->property,
+                    ':lang' => $this->siteLang
+                )    
+            );
             
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
@@ -112,8 +110,11 @@ class ChildApiModel extends ArcheModel
     public function getCount(string $identifier): int
     {
         try {
-            $queryStr = "select * from gui.child_sum_views_func('".$identifier."' );";
-            $query = $this->repodb->query($queryStr);
+            $query = $this->repodb->query("select * from gui.child_sum_views_func(:id);",
+                    array(
+                        ':id' => $identifier
+                        )
+                    );
             $result = $query->fetch();
           
             $this->changeBackDBConnection();
