@@ -68,7 +68,7 @@ class RootViewModel extends ArcheModel
                 from gui.root_views_func( :lang ) 
                 where title is not null
                 order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
-                 ; ", 
+                 ; ",
                 array(
                     ':lang' => $this->siteLang
                 )

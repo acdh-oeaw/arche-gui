@@ -68,10 +68,10 @@ class ArcheApiModel extends ArcheModel
         //run the actual query
         try {
             $query = $this->repodb->query(
-                    "SELECT * from gui.apiGetData(:type, :searchStr)", 
-                    array(':type' => $this->properties->type, 
+                "SELECT * from gui.apiGetData(:type, :searchStr)",
+                array(':type' => $this->properties->type,
                         ':searchStr' => $this->properties->searchStr)
-                    );
+            );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
@@ -173,7 +173,7 @@ class ArcheApiModel extends ArcheModel
                 "SELECT * from gui.inverse_data_func(:repoid);",
                 array(
                     ':repoid' => $this->properties->repoid
-                )    
+                )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
@@ -209,7 +209,7 @@ class ArcheApiModel extends ArcheModel
                         );",
                 array(
                     ':repoid' => $this->properties->repoid
-                )    
+                )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {

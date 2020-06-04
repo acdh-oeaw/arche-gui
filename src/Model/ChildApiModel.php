@@ -58,7 +58,7 @@ class ChildApiModel extends ArcheModel
                     ':order' => $order->order,
                     ':orderprop' => $order->property,
                     ':lang' => $this->siteLang
-                )    
+                )
             );
             
             $this->data = $query->fetchAll();
@@ -110,11 +110,12 @@ class ChildApiModel extends ArcheModel
     public function getCount(string $identifier): int
     {
         try {
-            $query = $this->repodb->query("select * from gui.child_sum_views_func(:id);",
-                    array(
+            $query = $this->repodb->query(
+                "select * from gui.child_sum_views_func(:id);",
+                array(
                         ':id' => $identifier
                         )
-                    );
+            );
             $result = $query->fetch();
           
             $this->changeBackDBConnection();

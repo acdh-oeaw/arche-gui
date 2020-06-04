@@ -36,11 +36,12 @@ class DisseminationServicesModel extends ArcheModel
     private function getCollectionData(string $identifier)
     {
         try {
-            $query = $this->repodb->query("select * from gui.collection_views_func(:id);",
-                    array(
-                       'id' => $identifier 
+            $query = $this->repodb->query(
+                "select * from gui.collection_views_func(:id);",
+                array(
+                       'id' => $identifier
                     )
-                );
+            );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
