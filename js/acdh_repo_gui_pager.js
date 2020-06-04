@@ -162,6 +162,7 @@ jQuery(function($) {
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
+        
         if(uuid) {
             getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
                 createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
@@ -169,7 +170,9 @@ jQuery(function($) {
                     updateGui( params.urlOrder, params.urlLimit)
                 }
             });
-        }else{
+        } else if(params.searchStr){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        } else{
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
         }
     });
@@ -185,7 +188,9 @@ jQuery(function($) {
                     updateGui( params.urlOrder, params.urlLimit)
                 }
             });
-        }else{
+        } else if(params.searchStr){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        } else{
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
         }
     });
@@ -201,6 +206,8 @@ jQuery(function($) {
                     updateGui( params.urlOrder, params.urlLimit)
                 }
             });
+        } else if(params.searchStr){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
         } else {
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
         }
@@ -210,7 +217,7 @@ jQuery(function($) {
         let newPageNumber = $(this).data('pagination');
         let params = getUrlParams(actionPage);
         var uuid = getIDFromUrl(window.location.href);
-        
+        //detail view
         if(uuid){
             getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
                 createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
@@ -218,7 +225,11 @@ jQuery(function($) {
                     updateGui( params.urlOrder, params.urlLimit)
                 }
             });
-        }else{
+            //search view
+        } else if(params.searchStr){
+            createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage, params.searchStr);
+        } else{
+            //root view
             createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
         }
     });
