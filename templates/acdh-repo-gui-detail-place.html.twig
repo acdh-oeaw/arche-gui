@@ -78,7 +78,14 @@
     <div class="arche-detail-main" id="arche-dv-main">
         {% if basic.isTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
         
-           
+            {% if  basic.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title">
+                        {{  basic.getTitle() }}
+                    </span>
+                </div>
+            {% endif%} 
+            
             {% if basic.getAcdhType() %}
                 <div class="res-property">
                     <i class="material-icons">&#xE54E;</i>
@@ -88,7 +95,13 @@
                     </span>
                 </div>
             {% endif%}
-             
+                        
+            {%  if basic.getNonAcdhIdentifiers() %}
+                <div class="res-property">
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                </div>
+            {% endif%}
+                        
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
                      {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}

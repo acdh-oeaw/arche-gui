@@ -72,6 +72,27 @@ class ResourceObject
         return (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) ? $this->properties["acdh:hasIdentifier"] : array();
     }
     
+    public function getNonAcdhIdentifiers()
+    {
+        error_log("inside: ".$this->config->getBaseUrl());
+        
+        $result = array();
+        if(isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach($this->properties["acdh:hasIdentifier"] as $k => $v) {
+               
+                if ( (strpos($v->value, $this->config->getBaseUrl()) === false) &&
+                        (strpos($v->value, 'https://id.acdh.oeaw.ac.a') === false)
+                    ) {
+                    $result[] = $v;
+                }
+            }
+        }
+        error_log(print_r($result, true));
+        return $result;
+    }
+    
+    
+    
     /**
      * PID
      *
