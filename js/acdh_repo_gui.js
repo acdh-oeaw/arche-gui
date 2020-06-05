@@ -9,7 +9,7 @@
             $(this).children('span').text(Drupal.t('Switch to Basic-View'));
             //we need to destroy and reinit the expert view datatable, because it has an html data
             $('#expertTable').DataTable().destroy();
-            $('#expertTable').DataTable();
+            $('#expertTable').DataTable({paging: false});
         } else {
             $('.single-res-overview-expert').hide();
             $('.single-res-overview-basic').fadeIn(200);

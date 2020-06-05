@@ -114,14 +114,47 @@
             </div>
         {% endif %}
         
-        {% if result.table['acdh:hasNote'][0] %}
+        {% if basic.getData('acdh:hasNote')[0] %}
             <div class="res-property">
                 <i class="material-icons">info_outline</i>
                 <span class="res-prop-label">{{ "Note"|trans }}:&nbsp;&nbsp;</span>
                 <span class="res-prop-value">{{ basic.getData('acdh:hasNote')[0].value }}</span>
             </div>
         {% endif %}
+        
     {% endif%}
+    
+    {% if basic.getData('acdh:hasRelatedDiscipline')[0] and basic.getData('acdh:hasRelatedDiscipline')[0].title %}
+        <div class="res-property">
+            <i class="material-icons">info_outline</i>
+            <span class="res-prop-label">{{ "Related Discipline"|trans }}:&nbsp;&nbsp;</span>
+            <span class="res-prop-value">{{ basic.getData('acdh:hasRelatedDiscipline')[0].title }}</span>
+        </div>
+    {% endif %}
+
+    {% if basic.getData('acdh:hasSubject')[0] %}
+        <div class="res-property">
+            <i class="material-icons">info_outline</i>
+            <span class="res-prop-label">{{ "Subject"|trans }}:&nbsp;&nbsp;</span>
+            <span class="res-prop-value">{{ basic.getData('acdh:hasSubject')[0].value }}</span>
+        </div>
+    {% endif %}
+
+    {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
+        <div class="res-property">
+            <i class="material-icons">info_outline</i>
+            <span class="res-prop-label">{{ "Coverage Start Date"|trans }}:&nbsp;&nbsp;</span>
+            <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageStartDate', 'Y') }}</span>
+        </div>
+    {% endif %}
+
+    {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
+        <div class="res-property">
+            <i class="material-icons">info_outline</i>
+            <span class="res-prop-label">{{ "Coverage End Date"|trans }}:&nbsp;&nbsp;</span>
+            <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageEndDate', 'Y') }}</span>
+        </div>
+    {% endif %}
     
     {% if extra.citeWidgetData %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}

@@ -74,7 +74,7 @@ msgstr "Number of Items"
 msgid "Publisher" 
 msgstr "Verlag"
 
-msgid "Seriers information" 
+msgid "Series information" 
 msgstr "Reihe"
 
 msgid "Page(s)" 
@@ -106,3 +106,16 @@ msgstr "Zeitliche Abdeckung Beginn"
 
 msgid "Coverage End Date" 
 msgstr "Zeitliche Abdeckung Ende"
+
+msgid "Latest Additions"
+msgstr "Neueste Ergänzungen"
+
+msgid "See All Resources"
+msgstr "Siehe Alle Ressourcen"
+
+msgid "Discover resources"
+msgstr "Entdecken Sie Ressourcen"
+
+msgid "Deposition Process"
+msgstr "Einreichungsprozess"
+
