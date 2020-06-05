@@ -4,7 +4,6 @@ namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
-use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
 

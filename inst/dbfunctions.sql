@@ -120,7 +120,7 @@ BEGIN
             select DISTINCT(CAST(m.id as VARCHAR)), m.value,  i.ids as acdhId, m.lang
             from metadata as m
             left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/uuid/%' as varchar)
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%oeaw.ac.at/api/%' as varchar)
             where dm.type = 'REL' 
         ) 
         select * from dmetarel
@@ -352,6 +352,37 @@ LANGUAGE 'plpgsql';
 
 
 /**
+* Get Members API SQL
+* _repoid -> id of the root resource
+*/
+CREATE OR REPLACE FUNCTION gui.get_members_func(_repoid text, _lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text)
+AS $func$
+DECLARE 
+	_lang2 text := 'de';
+BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+RETURN QUERY
+	WITH subordinates AS (	
+		select 
+			mv.id,
+			COALESCE(
+					(select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
+					(select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+				) as title	
+		from
+		metadata_view as mv
+		where 
+		mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isMemberOf'
+		and mv.value = _repoid 
+	) select * from subordinates order by title;
+END
+$func$
+LANGUAGE 'plpgsql';	
+
+
+
+/**
 * SEARCH SQL section
 */
 
@@ -366,8 +397,7 @@ AS $func$
 DECLARE 
 	_lang2 text := 'de';
 BEGIN
-RAISE NOTICE USING MESSAGE = _acdhtype;
-	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 	
 DROP TABLE IF EXISTS  typeids;
 CREATE TEMP TABLE typeids AS (        

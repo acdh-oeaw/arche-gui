@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Model;
 
 use acdhOeaw\acdhRepoLib\Repo;
-use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
 
 /**
  * Description of ArcheModel

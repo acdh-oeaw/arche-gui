@@ -54,6 +54,10 @@ class ArcheApiHelper extends ArcheHelper
                 $this->data = $data;
                 $this->formatCollsBinsCount();
                 break;
+            case 'getMembers':
+                $this->data = $data;
+                $this->formatMembersData();
+                break;
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -78,6 +82,17 @@ class ArcheApiHelper extends ArcheHelper
                 );
                 $this->result[] = $arr;
             }
+        }
+    }
+    
+    /**
+     * Format the sql result to the getMembers api endpoint
+     */
+    private function formatMembersData()
+    {
+        $this->result = array();
+        foreach ($this->data as $obj) {
+            $this->result[] = array("<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>");
         }
     }
     

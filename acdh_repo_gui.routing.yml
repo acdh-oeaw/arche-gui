@@ -174,9 +174,9 @@ repo_api_getbaseontology:
         _access: 'TRUE'          
 
 repo_inverse_result:    
-    path: '/oeaw_inverse_result/{repoid}'
+    path: '/api/getInverseData/{repoid}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_inverse_result'
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getInverseData'
     requirements:
         _permission: 'access content'
         _access: 'TRUE'
@@ -204,3 +204,11 @@ repo_getOntologyJSPluginData:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'           
+
+repo_getIsMember:    
+    path: '/api/getMembers/{repoid}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMembers'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE' 

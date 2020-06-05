@@ -343,7 +343,7 @@ class ArcheApiController extends ControllerBase
      * Where the id is available, but not identifier, pid or ispartof
      * @return Response
      */
-    public function repo_inverse_result(string $repoid): Response
+    public function repo_getInverseData(string $repoid): Response
     {
         if (empty($repoid)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
@@ -482,6 +482,36 @@ class ArcheApiController extends ControllerBase
         
         $this->result = $this->helper->createView($this->modelData, 'countCollsBins', $lng);
         $response->setContent(json_encode($this->result));
+        $response->headers->set('Content-Type', 'application/json');
+                
+        return $response;
+    }
+    
+    /**
+     * Get the Members list for the gui Organisations Members function
+     * @param string $repoid
+     * @return Response
+     */
+    public function repo_getMembers(string $repoid): Response
+    {
+        /*
+        * Usage:
+        *  https://domain.com/browser//api/getMembers/{repoid}?_format=json
+        */
+        
+        $response = new Response();
+        $obj = new \stdClass();
+        $obj->repoid = $repoid;
+        $obj->lang = $this->siteLang;
+        //get the data
+        $this->modelData = $this->model->getViewData('getMembers', $obj);
+        
+        if (count($this->modelData) == 0) {
+            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $this->result = $this->helper->createView($this->modelData, 'getMembers', $this->siteLang);
+        $response->setContent(json_encode(array('data' => $this->result)));
         $response->headers->set('Content-Type', 'application/json');
                 
         return $response;

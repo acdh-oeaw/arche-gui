@@ -162,6 +162,7 @@ class DisseminationServicesHelper extends ArcheHelper
     
     /**
      * Modify the collection data structure for the tree view
+     * 
      */
     private function modifyCollectionDataStructure()
     {

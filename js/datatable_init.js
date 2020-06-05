@@ -120,10 +120,9 @@ jq2(function( $ ) {
             //get the uri
             var uri = jq2('#showInverse').data('tableuri');
             //genereate the data
-            console.log(uri);
             jq2('table.inverseTable').DataTable({
                 "ajax": {
-                    "url": "/browser/oeaw_inverse_result/"+uri,
+                    "url": "/browser/api/getInverseData/"+uri,
                     "data": function ( d ) {
                         d.limit = d.draw;
                     }
@@ -143,7 +142,7 @@ jq2(function( $ ) {
             //genereate the data
             jq2('table.isMemberTable').DataTable({
                 "ajax": {
-                    "url": "/browser/oeaw_ismember_result/"+url,
+                    "url": "/browser/api/getMembers/"+url,
                     "data": function ( d ) {
                         d.limit = d.draw;
                     }

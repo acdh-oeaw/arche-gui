@@ -51,6 +51,9 @@ class ArcheApiModel extends ArcheModel
             case 'countCollsBins':
                 return $this->countCollectionsBinaries();
                 break;
+            case 'getMembers':
+                return $this->getMembers();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -68,10 +71,10 @@ class ArcheApiModel extends ArcheModel
         //run the actual query
         try {
             $query = $this->repodb->query(
-                "SELECT * from gui.apiGetData(:type, :searchStr)",
-                array(':type' => $this->properties->type,
+                    "SELECT * from gui.apiGetData(:type, :searchStr)", 
+                    array(':type' => $this->properties->type, 
                         ':searchStr' => $this->properties->searchStr)
-            );
+                    );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
@@ -86,6 +89,34 @@ class ArcheApiModel extends ArcheModel
         return $result;
     }
     
+     /**
+     * Generate the Members data for the root repoid
+     *
+     * @return array
+     */
+    private function getMembers(): array
+    {
+        $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                    "SELECT * from gui.get_members_func(:repoid, :lang)", 
+                    array(':repoid' => $this->properties->repoid, 
+                        ':lang' => $this->properties->lang)
+                    );
+            
+            $result = $query->fetchAll();
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        }
+        
+        $this->changeBackDBConnection();
+        return $result;
+    }
     /**
      * Count the main collections and binary files for the ckeditor plugin api endpoint
      *
@@ -173,7 +204,7 @@ class ArcheApiModel extends ArcheModel
                 "SELECT * from gui.inverse_data_func(:repoid);",
                 array(
                     ':repoid' => $this->properties->repoid
-                )
+                )    
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
         } catch (Exception $ex) {
@@ -209,7 +240,7 @@ class ArcheApiModel extends ArcheModel
                         );",
                 array(
                     ':repoid' => $this->properties->repoid
-                )
+                )    
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {

@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Helper;
 
 use acdhOeaw\acdhRepoLib\Repo;
-use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
 
 /**
  * Description of GeneralFunctions
@@ -161,39 +160,6 @@ class GeneralFunctions
     
     
     /**
-     *
-     * create prefix from string based on the  prefixes
-     *
-     * @param string $string
-     * @return string
-     */
-    public static function createPrefixesFromString(string $string): string
-    {
-        if (empty($string)) {
-            return false;
-        }
-        $result = array();
-        $endValue = explode('/', $string);
-        $endValue = end($endValue);
-        
-        if (strpos($endValue, '#') !== false) {
-            $endValue = explode('#', $string);
-            $endValue = end($endValue);
-        }
-        
-        $newString = array();
-        $newString = explode($endValue, $string);
-        $newString = $newString[0];
-        
-        if (!empty(CC::$prefixesToChange[$newString])) {
-            $result = CC::$prefixesToChange[$newString].':'.$endValue;
-        } else {
-            $result = $string;
-        }
-        return $result;
-    }
-    
-    /**
      * NOT CHANGED YET
      *
      * This function is get the acdh identifier by the PID, because all of the functions
@@ -322,10 +288,8 @@ class GeneralFunctions
             }
             return $result;
         } catch (Exception $ex) {
-            error_log("DetailViewhelper-getDissServices: ".$ex->getMessage());
             return array();
         } catch (\GuzzleHttp\Exception\ServerException $ex) {
-            error_log("DetailViewhelper-getDissServices: ".$ex->getMessage());
             return array();
         }
     }

@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
@@ -80,15 +79,17 @@ class DetailViewHelper extends ArcheHelper
             foreach ($vocabs[$this->siteLang] as $k => $v) {
                 //if we have the property inside our table results
                 if (isset($this->data[$k]) && count($this->data[$k]) > 0) {
-                    foreach ($this->data[$k][$this->siteLang] as $tk => $tv) {
-                        foreach ($vocabs[$this->siteLang][$k] as $vocab) {
-                            if (isset($vocab->uri) && !empty($vocab->uri) && isset($tv->relvalue)) {
-                                if ($vocab->uri == $tv->relvalue) {
-                                    $this->data[$k][$this->siteLang][$tk]->uri = $vocab->uri;
-                                    $this->data[$k][$this->siteLang][$tk]->title = $vocab->label;
+                    if(isset($this->data[$k][$this->siteLang])) {
+                        foreach ($this->data[$k][$this->siteLang] as $tk => $tv) {
+                            foreach ($vocabs[$this->siteLang][$k] as $vocab) {
+                                if (isset($vocab->uri) && !empty($vocab->uri) && isset($tv->relvalue)) {
+                                    if ($vocab->uri == $tv->relvalue) {
+                                        $this->data[$k][$this->siteLang][$tk]->uri = $vocab->uri;
+                                        $this->data[$k][$this->siteLang][$tk]->title = $vocab->label;
+                                    }
                                 }
                             }
-                        }
+                        }    
                     }
                 }
             }

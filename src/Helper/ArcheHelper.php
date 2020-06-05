@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use Drupal\acdh_repo_gui\Helper\ConfigConstants as CC;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
@@ -23,6 +22,28 @@ abstract class ArcheHelper
      * We will store the custom translations config inside this variable
     */
     public $langConf;
+    
+    public static $prefixesToChange = array(
+        "http://fedora.info/definitions/v4/repository#" => "fedora",
+        "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#" => "ebucore",
+        "http://www.loc.gov/premis/rdf/v1#" => "premis",
+        "http://www.jcp.org/jcr/nt/1.0#" => "nt",
+        "http://www.w3.org/2000/01/rdf-schema#" => "rdfs",
+        "http://www.w3.org/ns/ldp#" => "ldp",
+        "http://www.iana.org/assignments/relation/" => "iana",
+        "https://vocabs.acdh.oeaw.ac.at/schema#" => "acdh",
+        "https://id.acdh.oeaw.ac.at/" => "acdhID",
+        "http://purl.org/dc/elements/1.1/" => "dc",
+        "http://purl.org/dc/terms/" => "dct",
+        "http://purl.org/dc/terms/" => "dcterms",
+        "http://purl.org/dc/terms/" => "dcterm",
+        "http://www.w3.org/2002/07/owl#" => "owl",
+        "http://xmlns.com/foaf/0.1/" => "foaf",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
+        "http://www.w3.org/2004/02/skos/core#" => "skos",
+        //"http://xmlns.com/foaf/spec/" => "foaf"
+    );
+    
     
     public function __construct()
     {
@@ -45,8 +66,8 @@ abstract class ArcheHelper
         $prefix = explode('#', $prop);
         $property = end($prefix);
         $prefix = $prefix[0];
-        if (isset(CC::$prefixesToChange[$prefix.'#'])) {
-            return CC::$prefixesToChange[$prefix.'#'].':'.$property;
+        if (isset(self::$prefixesToChange[$prefix.'#'])) {
+            return self::$prefixesToChange[$prefix.'#'].':'.$property;
         }
     }
     

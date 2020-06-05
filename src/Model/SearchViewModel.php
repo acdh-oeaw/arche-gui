@@ -169,13 +169,11 @@ class SearchViewModel extends ArcheModel
             $typeStr = "ARRAY[]::text[]";
         }
         
-        
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+            $query = $this->repodb->query("SELECT 
                 id
                 from gui.search_count_words_view_func(:wordStr, :lang, ".$typeStr.", :yearStr)",
-                array(
+                    array(
                         ':wordStr' => $wordStr,
                         ':lang' => $this->siteLang,
                        // ':typeStr' => $typeStr,
@@ -212,11 +210,10 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+            $query = $this->repodb->query("SELECT 
                 id
                 from gui.search_count_years_view_func(:yearStr, :lang, ".$typeStr.")",
-                array(
+                    array(
                         ':yearStr' => $yearsStr,
                         ':lang' => $this->siteLang
                     )
@@ -251,11 +248,10 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+            $query = $this->repodb->query("SELECT 
                 id
                 from gui.search_count_types_view_func(".$typeStr.", :lang,  :yearStr)",
-                array(
+                    array(
                         ':lang' => $this->siteLang,
                         ':yearStr' => $yearsStr
                     )
@@ -293,18 +289,17 @@ class SearchViewModel extends ArcheModel
         if (empty($typeStr)) {
             $typeStr = "ARRAY[]::text[]";
         }
-        //(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10',
-        //_page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',
+        //(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10', 
+        //_page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate', 
         //_rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
-        error_log(" ####### SQL ########");
+        
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+             $query = $this->repodb->query("SELECT 
                 *
                 from gui.search_words_view_func(
                 :wordStr, :lang, :limit, :offset, 
                 :orderby, :orderby_column, ".$typeStr.", :yearStr)",
-                array(
+                    array(
                         ':wordStr' => $wordStr,
                         ':lang' => $this->siteLang,
                         ':limit' => $this->limit,
@@ -341,13 +336,12 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+            $query = $this->repodb->query("SELECT 
                 *
                 from gui.search_types_view_func(
                 ".$typeStr.", :lang, :limit, :offset, 
                 :orderby, :orderby_column, :yearStr)",
-                array(
+                    array(
                         ':lang' => $this->siteLang,
                         ':limit' => $this->limit,
                         ':offset' => $this->offset,
@@ -371,7 +365,7 @@ class SearchViewModel extends ArcheModel
     
     /**
      * Get the years from the database
-     *
+     * 
      * @return type
      */
     private function getYearsFromDB()
@@ -383,16 +377,15 @@ class SearchViewModel extends ArcheModel
    
         if (empty($typeStr)) {
             $typeStr = "ARRAY[]::text[]";
-        }
+        } 
         
         try {
-            $query = $this->repodb->query(
-                "SELECT 
+            $query = $this->repodb->query("SELECT 
                 *
                 from gui.search_years_view_func(
                 :yearStr, :lang, :limit, :offset, 
                 :orderby, :orderby_column, ".$typeStr.")",
-                array(
+                    array(
                         ':lang' => $this->siteLang,
                         ':limit' => $this->limit,
                         ':offset' => $this->offset,
