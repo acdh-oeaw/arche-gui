@@ -111,10 +111,10 @@ msgid "Latest Additions"
 msgstr "Neueste Ergänzungen"
 
 msgid "See All Resources"
-msgstr "Siehe Alle Ressourcen"
+msgstr "Siehe alle Ressourcen"
 
 msgid "Discover resources"
-msgstr "Entdecken Sie Ressourcen"
+msgstr "Ressourcen entdecken"
 
 msgid "Deposition Process"
 msgstr "Einreichungsprozess"
