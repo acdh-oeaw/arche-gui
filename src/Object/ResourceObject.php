@@ -316,12 +316,13 @@ class ResourceObject
     
     /**
      * Format the date values for the twig template
-     * 
+     *
      * @param string $property
      * @param string $dateFormat
      * @return string
      */
-    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string {
+    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string
+    {
         if (isset($this->properties[$property])) {
             if (isset($this->properties[$property][0]->value)) {
                 $val = strtotime($this->properties[$property][0]->value);
