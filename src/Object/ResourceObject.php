@@ -34,7 +34,7 @@ class ResourceObject
     
     /**
      * get the data based on the property
-     *
+     * 
      * @param string $property
      * @return array
      */
@@ -61,7 +61,7 @@ class ResourceObject
     
     /**
      * Get the Resource title
-     *
+     * 
      * @return string
      */
     public function getTitle(): string
@@ -81,16 +81,16 @@ class ResourceObject
     
     /**
      * Get all identifiers which are not acdh related
-     *
+     * 
      * @return type
      */
     public function getNonAcdhIdentifiers()
     {
         $result = array();
-        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
-            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
-                //filter out the baseurl related identifiers and which contains the id.acdh
-                if ((strpos($v->value, $this->config->getBaseUrl()) === false) &&
+        if(isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach($this->properties["acdh:hasIdentifier"] as $k => $v) {
+               //filter out the baseurl related identifiers and which contains the id.acdh
+                if ( (strpos($v->value, $this->config->getBaseUrl()) === false) &&
                         (strpos($v->value, 'https://id.acdh.oeaw.ac.at') === false)
                     ) {
                     $result[] = $v;
@@ -236,31 +236,10 @@ class ResourceObject
      */
     public function getTitleImage(): string
     {
+        $img = '';
         if (isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
             if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
-                $img = '';
-                try {
-                    $client = new \GuzzleHttp\Client();
-                    //$response = $client->get($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'');
-                    $response = $client->get('https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value);
-                    
-                    if ($response->getStatusCode() == 200) {
-                        if ((isset($response->getHeader('Content-Length')[0]) && $response->getHeader('Content-Length')[0] > 0)) {
-                            if (isset($response->getHeader('Content-Type')[0]) &&
-                                    ($response->getHeader('Content-Type')[0] == 'image/png' || $response->getHeader('Content-Type')[0] == 'image/jpg'
-                                    || $response->getHeader('Content-Type')[0] == 'image/jpeg')
-                            ) {
-                                $img = '<img src="https://arche-thumbnails2.apollo.arz.oeaw.ac.at/'.$this->properties["acdh:hasTitleImage"][0]->value.'?width=200&height=150" />';
-                            }
-                        }
-                    }
-                } catch (\Exception $ex) {
-                    $img = '';
-                } catch (\GuzzleHttp\Exception\RequestException $ex) {
-                    $img = '';
-                }
-                
-                if (empty($img)) {
+                if (!empty($this->properties["acdh:hasTitleImage"][0]->value)) {
                     if ($img = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
                         if (!empty($img)) {
                             $img = '<img src="data:image/png;base64,'.base64_encode($img).'" /> ';
@@ -316,13 +295,12 @@ class ResourceObject
     
     /**
      * Format the date values for the twig template
-     *
+     * 
      * @param string $property
      * @param string $dateFormat
      * @return string
      */
-    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string
-    {
+    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string {
         if (isset($this->properties[$property])) {
             if (isset($this->properties[$property][0]->value)) {
                 $val = strtotime($this->properties[$property][0]->value);
