@@ -24,7 +24,7 @@ msgid "Copy Resource Link"
 msgstr "Ressourcenlink kopieren"
 
 msgid "Switch to Expert-View"
-msgstr "Wechseln Sie zur Expertenansicht"
+msgstr "Zur Expertenansicht wechseln"
 
 msgid "Refine your search using filters"
 msgstr "Suchergebnisse filtern"
@@ -37,6 +37,21 @@ msgstr "Zur Baumansicht wechseln"
 
 msgid "Apply the selected search filters"
 msgstr "Anwendung der gewählten Suchfilter"
+
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgid "Latest Additions"
+msgstr "Neueste Ergänzungen"
+
+msgid "See All Resources"
+msgstr "Siehe alle Ressourcen"
+
+msgid "Discover resources"
+msgstr "Ressourcen entdecken"
+
+msgid "Deposition Process"
+msgstr "Einreichungsprozess"
 
 msgid "Alternative Title"
 msgstr "Alternativer Titel"
@@ -68,8 +83,11 @@ msgstr "Fördergeber"
 msgid "Principal Investigator(s)" 
 msgstr "Primärforscher"
 
+msgid "Principal Investigator" 
+msgstr "Primärforscher"
+
 msgid "Number of Items" 
-msgstr "Number of Items"
+msgstr "Anzahl der Elemente"
 
 msgid "Publisher" 
 msgstr "Verlag"
@@ -89,9 +107,6 @@ msgstr "Teil von"
 msgid "Member Of" 
 msgstr "Mitglied von"
 
-msgid "Summary"
-msgstr "Zusammenfassung"
-
 msgid "Related Discipline(s)" 
 msgstr "Fachdisziplin(en)"
 
@@ -107,15 +122,26 @@ msgstr "Zeitliche Abdeckung Beginn"
 msgid "Coverage End Date" 
 msgstr "Zeitliche Abdeckung Ende"
 
-msgid "Latest Additions"
-msgstr "Neueste Ergänzungen"
+msgid "Contact Details" 
+msgstr "Kontakt Details"
 
-msgid "See All Resources"
-msgstr "Siehe alle Ressourcen"
+msgid "Publisher(s)" 
+msgstr "Verlage"
 
-msgid "Discover resources"
-msgstr "Ressourcen entdecken"
+msgid "Spatial information" 
+msgstr "Geografische Informationen"
 
-msgid "Deposition Process"
-msgstr "Einreichungsprozess"
+msgid "Temporal Coverage" 
+msgstr "Zeitliche Abdeckung"
 
+msgid "Created Start Date" 
+msgstr "Erstellungsdatum Beginn"
+
+msgid "Created End Date"" 
+msgstr "Erstellungsdatum Ende"
+
+msgid "Cite Resource" 
+msgstr "Ressource zitieren"
+
+msgid "Result(s)" 
+msgstr "Ergebnis(se)"
