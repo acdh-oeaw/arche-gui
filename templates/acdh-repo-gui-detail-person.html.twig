@@ -73,8 +73,8 @@
                 {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
             {% endif%}
             
-            {%  if basic.getData('acdh:hasIdentifier') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasIdentifier'), 'icon': "label", 'label': "Identifier"} ) }}
+            {%  if basic.getNonAcdhIdentifiers() %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}

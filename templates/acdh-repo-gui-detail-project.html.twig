@@ -51,6 +51,67 @@ set properties = {
 %}
 
 
+{% 
+set furtherProperties = {
+    'acdh:hasRelatedDiscipline': {
+	'icon': 'info',
+        'label': 'Related Discipline',
+        'url_only': false, 
+        'repoid': true
+    },
+    'acdh:hasSubject': {
+        'icon': 'info',
+        'label': 'Subject'
+    },
+    'acdh:hasActor': {
+        'icon': 'info',
+        'label': 'Actor',
+        'url_only': false, 
+        'repoid': true
+    },
+    'acdh:hasSpatialCoverage': {
+        'icon': 'info',
+        'label': 'Spatial Coverage',
+        'url_only': false, 
+        'repoid': true
+    },
+    'acdh:hasTemporalCoverage': {
+        'icon': 'info',
+        'label': 'Temporal Coverage'
+    },    
+    'acdh:hasCoverageStartDate': {
+        'icon': 'info',
+        'label': 'Coverage Start Date',
+        'dateformat': 'Y'
+    },
+    'acdh:hasCoverageEndDate': {
+        'icon': 'info',
+        'label': 'Coverage End Date',
+        'dateformat': 'Y'
+    },
+    'acdh:hasAppliedMethod': {
+        'icon': 'info',
+        'label': 'Applied Method'
+    },
+    'acdh:hasAppliedMethodDescription': {
+        'icon': 'info',
+        'label': 'Applied Method Description'
+    },
+    'acdh:hasTechnicalInfo': {
+        'icon': 'info',
+        'label': 'Technical Info'
+    },
+    'acdh:hasEditorialPractice': {
+        'icon': 'info',
+        'label': 'Editorial Practice'
+    },
+    'acdh:hasNote': {
+        'icon': 'info',
+        'label': 'Note'
+    }
+}
+%}
+
 <div class="arche-detail-view" >
     
     <div class="arche-detail-main" id="arche-dv-main">
@@ -80,9 +141,9 @@ set properties = {
                 </div>
             {% endif%}
             
-            {%  if basic.getData('acdh:hasIdentifier') %}
+            {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasIdentifier'), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
                 </div>
             {% endif%}
              
@@ -92,6 +153,12 @@ set properties = {
                 {% endif%}
             {% endfor %}
             
+            <h3 class="single-res-heading">{{"Further Information"|trans }}</h3>
+            {% for key, value in furtherProperties %}
+                {% if basic.getData(key) %}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                {% endif%}
+            {% endfor %}
             
         {% if basic.isTitleImage() %}</div>{% endif%}
         

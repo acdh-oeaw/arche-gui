@@ -29,16 +29,16 @@
         'label': 'Country',
         'url_only': false
     },
-    'acdh:hasEmail': {
-        'icon': 'subtitles',
-        'label': 'Email',
-        'url_only': false
-    },
     'acdh:hasUrl': {
         'icon': 'subtitles',
         'label': 'Url',
         'url_only': false
-    }
+    },
+    'acdh:hasEmail': {
+        'icon': 'subtitles',
+        'label': 'Email',
+        'url_only': false
+    }    
 }
 %}
 
@@ -69,8 +69,8 @@
                 </div>
             {% endif%}
             
-            {%  if basic.getData('acdh:hasIdentifier') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasIdentifier'), 'icon': "label", 'label': "Identifier"} ) }}
+            {%  if basic.getNonAcdhIdentifiers() %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier"} ) }}
             {% endif%}
              
             {% for key, value in properties %}
@@ -78,7 +78,25 @@
                      {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only } ) }}
                 {% endif%}
             {% endfor %}
-            
+            <br/>
+            <div>
+                <h3 class="single-res-heading">{{ "Member(s)"|trans }}</h3>
+                <div class="res-act-button">
+                    <a href="#" id="showIsMember" data-tableurl="{{ basic.getRepoId() }}">{{ "Get Member(s)"|trans }} </a>
+                </div>
+                <div id="isMemberTableDiv" style="display: none;">
+                    <table class="isMemberTable table table-striped" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>{{ "Member Name"|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>    
+            </div>
+            <br/>    
             
         {% if basic.isTitleImage() %}</div>{% endif%}
         

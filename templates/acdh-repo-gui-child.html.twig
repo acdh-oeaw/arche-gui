@@ -1,5 +1,7 @@
-{% if data|length < 1 %}
-  There are no child elements.
+{% if data|length < 1   %}
+    <div class='messages messages--error'>
+        <b>There are no child elements.</b>
+    </div>
 {% elseif data.errorMSG %}  
   {{ data.errorMSG }}
 {% else %}
@@ -33,6 +35,7 @@
             padding: 5px;
         }
     </style>
+    
     {% if data.acdhType|lower == "concept" %}
         {% set childTitle =  "Narrower(s)" %}
     {% elseif data.acdhType|lower == "person" %}
