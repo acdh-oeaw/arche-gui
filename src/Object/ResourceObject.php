@@ -34,7 +34,7 @@ class ResourceObject
     
     /**
      * get the data based on the property
-     * 
+     *
      * @param string $property
      * @return array
      */
@@ -61,7 +61,7 @@ class ResourceObject
     
     /**
      * Get the Resource title
-     * 
+     *
      * @return string
      */
     public function getTitle(): string
@@ -81,16 +81,16 @@ class ResourceObject
     
     /**
      * Get all identifiers which are not acdh related
-     * 
+     *
      * @return type
      */
     public function getNonAcdhIdentifiers()
     {
         $result = array();
-        if(isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
-            foreach($this->properties["acdh:hasIdentifier"] as $k => $v) {
-               //filter out the baseurl related identifiers and which contains the id.acdh
-                if ( (strpos($v->value, $this->config->getBaseUrl()) === false) &&
+        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
+                //filter out the baseurl related identifiers and which contains the id.acdh
+                if ((strpos($v->value, $this->config->getBaseUrl()) === false) &&
                         (strpos($v->value, 'https://id.acdh.oeaw.ac.at') === false)
                     ) {
                     $result[] = $v;
@@ -295,12 +295,13 @@ class ResourceObject
     
     /**
      * Format the date values for the twig template
-     * 
+     *
      * @param string $property
      * @param string $dateFormat
      * @return string
      */
-    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string {
+    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string
+    {
         if (isset($this->properties[$property])) {
             if (isset($this->properties[$property][0]->value)) {
                 $val = strtotime($this->properties[$property][0]->value);
