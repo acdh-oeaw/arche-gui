@@ -50,8 +50,15 @@
                                     {% set separator = '' %}
                                 {% endif %}
 
-                                {% if ( (key == "acdh:hasPid") or (key == "acdh:hasCategory")  )  %}
-                                    <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
+                                {% if ( 
+                                    (key == "acdh:hasPid") or (key == "acdh:hasCategory") or (key == "acdh:hasLifeCycleStatus") or
+                                    (key == "acdh:hasLanguage") or (key == "acdh:hasRelatedDiscipline")
+                                 )  %}
+                                    {%  if ( val.uri ) %}                                        
+                                        <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
+                                    {% else %}
+                                        <a href="{{ val.repoid }}">{{ val.title }}</a> {{ separator|raw }}
+                                    {% endif %}     
                                 {% elseif ( key == "acdh:hasAccessRestriction") %}
                                     <a href="{{ val.accessrestriction }}">{{ val.title }}</a> {{ separator|raw }}
                                 {% elseif (val.title is defined and val.insideUri is defined) %}

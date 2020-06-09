@@ -70,7 +70,7 @@
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
             {% endif%}
              
             {% for key, value in properties %}

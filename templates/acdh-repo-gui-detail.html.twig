@@ -124,19 +124,15 @@
         
     {% endif%}
     
-    {% if basic.getData('acdh:hasRelatedDiscipline')[0] and basic.getData('acdh:hasRelatedDiscipline')[0].title %}
+    {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}
         <div class="res-property">
-            <i class="material-icons">info_outline</i>
-            <span class="res-prop-label">{{ "Related Discipline"|trans }}:&nbsp;&nbsp;</span>
-            <span class="res-prop-value">{{ basic.getData('acdh:hasRelatedDiscipline')[0].title }}</span>
+            {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasRelatedDiscipline'), 'icon': 'info_outline', 'label':  'Related Discipline(s)', 'url_only': true, 'repoid': true } ) }}
         </div>
     {% endif %}
 
     {% if basic.getData('acdh:hasSubject')[0] %}
         <div class="res-property">
-            <i class="material-icons">info_outline</i>
-            <span class="res-prop-label">{{ "Subject"|trans }}:&nbsp;&nbsp;</span>
-            <span class="res-prop-value">{{ basic.getData('acdh:hasSubject')[0].value }}</span>
+            {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasSubject'), 'icon': 'info_outline', 'label':  'Subject(s)', 'url_only': false, 'repoid': true } ) }}
         </div>
     {% endif %}
 

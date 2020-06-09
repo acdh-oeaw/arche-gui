@@ -24,6 +24,12 @@
                          {% else  %}
                              <a id='archeHref' href="{{ value.title }}">{{ value.title }}</a>
                          {% endif  %}     
+                    {% elseif (external_url_title)  %} 
+                        {% if (value.title  and value.uri )  %}
+                            <a id='archeHref' href="{{ value.uri }}">{{ value.title }}</a>
+                        {% else %}
+                            <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                        {% endif %}
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>

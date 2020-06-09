@@ -55,8 +55,8 @@ set properties = {
 set furtherProperties = {
     'acdh:hasRelatedDiscipline': {
 	'icon': 'info',
-        'label': 'Related Discipline',
-        'url_only': false, 
+        'label': 'Related Discipline(s)',
+        'url_only': true, 
         'repoid': true
     },
     'acdh:hasSubject': {
@@ -156,7 +156,7 @@ set furtherProperties = {
             <h3 class="single-res-heading">{{"Further Information"|trans }}</h3>
             {% for key, value in furtherProperties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
                 {% endif%}
             {% endfor %}
             

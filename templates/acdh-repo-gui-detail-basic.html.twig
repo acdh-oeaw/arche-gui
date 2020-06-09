@@ -91,12 +91,12 @@
     'acdh:hasLicense': {
         'icon': 'copyright',
         'label': 'License',
-        'url_only': false
+        'external_url_title': true
     },
     'acdh:hasAccessRestriction': {
         'icon': 'copyright',
         'label': 'Access Restriction',
-        'url_only': false
+        'external_url_title': true
     },
     'acdh:hasSchema': {
         'icon': 'format_list_bulleted',
@@ -189,7 +189,7 @@
        
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'onlyurl': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'onlyurl': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid, 'external_url_title': value.external_url_title } ) }}
                 {% endif%}
             {% endfor %}
             

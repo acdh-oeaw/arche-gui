@@ -74,11 +74,11 @@
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "is Member Of" ,'repoid': true} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'repoid': true} ) }}
             {% endif%}
     
             {%  if (properties) %}

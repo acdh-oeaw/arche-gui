@@ -126,7 +126,7 @@ msgid "Contact Details"
 msgstr "Kontakt Details"
 
 msgid "Publisher(s)" 
-msgstr "Verlage"
+msgstr "Verlag(e)"
 
 msgid "Spatial information" 
 msgstr "Geografische Informationen"
@@ -145,3 +145,36 @@ msgstr "Ressource zitieren"
 
 msgid "Result(s)" 
 msgstr "Ergebnis(se)"
+
+msgid "Life Cycle Status" 
+msgstr "Lebenszyklusstatus"
+
+msgid "End Date" 
+msgstr "Enddatum"
+
+msgid "Member(s)" 
+msgstr "Mitglied(er)"
+
+msgid "Further Information" 
+msgstr "Weitere Informationen"
+
+msgid "Inverse Data" 
+msgstr "Inverse Daten"
+
+msgid "Get Member(s)" 
+msgstr "Mitglied(er) anzeigen"
+
+msgid "Show More" 
+msgstr "Mehr anzeigen"
+
+msgid "Show Inverse Table" 
+msgstr "Inverse Tabelle anzeigen"
+
+msgid "Download Collection" 
+msgstr "Sammlung herunterladen"
+
+msgid "Download Collection Script" 
+msgstr "Skript Sammlung herunterladen"
+
+msgid "View Larger Map" 
+msgstr "Größere Karte zeigen"

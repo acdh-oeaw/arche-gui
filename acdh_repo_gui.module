@@ -97,13 +97,13 @@ function acdh_repo_gui_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
  
     //form and user permission settings for the collection download views
     $form['#attached']['library'][] = 'acdh_repo_gui/mylibrary';
-    $form['#attached']['drupalSettings']['oeaw']['users']['id'] = \Drupal::currentUser()->id();
+    $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['id'] = \Drupal::currentUser()->id();
     $account = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-    $form['#attached']['drupalSettings']['oeaw']['users']['name'] = $account->getUsername();
+    $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['name'] = $account->getUsername();
     $roles = array();
     $roles = \Drupal::currentUser()->getRoles();
     if(count($roles) > 0){ $roles = implode(",", $roles); }
-    $form['#attached']['drupalSettings']['oeaw']['users']['roles'] = $roles;
+    $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['roles'] = $roles;
     
     $current_path = \Drupal::service('path.current')->getPath();
     
