@@ -224,7 +224,7 @@ LANGUAGE 'plpgsql';
 * _orderby = the ordering property -> https://vocabs.acdh.oeaw.ac.at/schema#hasTitle
 * _lang = 'en' or 'de'
 */
-CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en')
+CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$    
     DECLARE _lang2 text := 'de';
@@ -257,7 +257,7 @@ DROP TABLE IF EXISTS child_ids;
         from relations as r
         left join identifiers as i on i.id = r.target_id 
         left join metadata_view as mv on mv.id = r.id
-        where r.property =  'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+        where r.property = ANY (_rdftype)
             and mv.property = _orderprop
             and i.ids = _parentid
         order by  
@@ -279,7 +279,7 @@ LANGUAGE 'plpgsql';
 * get the sum of the child gui view resources for the pager
 * _parentid = full url -> https://repo.hephaistos.arz.oeaw.ac.at/api/207984
 */
-CREATE OR REPLACE FUNCTION gui.child_sum_views_func(_parentid text)
+CREATE OR REPLACE FUNCTION gui.child_sum_views_func(_parentid text,  _rdftype text[] DEFAULT '{}')
     RETURNS table (countid bigint)
 AS $func$
 
@@ -291,7 +291,7 @@ BEGIN
                     r.id			
             from relations as r
             left join identifiers as i on i.id = r.target_id
-            where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+            where r.property = ANY (_rdftype)
             and i.ids = _parentid
     ) select * from ids		
 );

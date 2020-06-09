@@ -46,11 +46,13 @@ class ChildApiModel extends ArcheModel
     public function getViewData(string $identifier = "", int $limit = 10, int $page = 0, string $orderby = "titleasc"): array
     {
         $order = $this->ordering($orderby);
-        
+        if (empty($this->sqlTypes)) {
+            $this->sqlTypes = "ARRAY[]::text[]";
+        }
         //get the requested sorting
         try {
             $query = $this->repodb->query(
-                "select * from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang);",
+                "select * from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
                     ':id' => $identifier,
                     ':limit' => $limit,
@@ -109,15 +111,19 @@ class ChildApiModel extends ArcheModel
      */
     public function getCount(string $identifier): int
     {
+        if (empty($this->sqlTypes)) {
+            $this->sqlTypes = "ARRAY['https://vocabs.acdh.oeaw.ac.at/schema#isPartOf']";
+        }
+        
         try {
             $query = $this->repodb->query(
-                "select * from gui.child_sum_views_func(:id);",
+                "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
                 array(
-                        ':id' => $identifier
-                        )
+                    ':id' => $identifier
+                )
             );
             $result = $query->fetch();
-          
+            
             $this->changeBackDBConnection();
             if (isset($result->countid)) {
                 return (int)$result->countid;

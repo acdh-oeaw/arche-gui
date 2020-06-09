@@ -26,9 +26,9 @@
                          {% endif  %}     
                     {% elseif (external_url_title)  %} 
                         {% if (value.title  and value.uri )  %}
-                            <a id='archeHref' href="{{ value.uri }}">{{ value.title }}</a>
+                            <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% else %}
-                            <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                            <a href="{{ value.uri }}" target="_blank">{{ value.uri }}</a>
                         {% endif %}
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
@@ -61,9 +61,9 @@
                     {% elseif (value.insideUri) and (value.title)  %}
                         <a id='archeHref' href="/browser/oeaw_detail/{{ value.insideUri }}">{{ value.title|nl2br }}</a>
                     {% elseif value.title and value.uri %}
-                        <a id='archeHref' href="{{ value.uri }}">{{ value.title|nl2br }}</a>
+                        <a href="{{ value.uri }}" target="_blank">{{ value.title|nl2br }}</a>
                     {% elseif value.uri %}
-                        <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                        <a href="{{ value.uri }}" target="_blank">{{ value.uri }}</a>
                     {% elseif value.title %}
                         {{ value.title }}
                     {% elseif value.value %}
