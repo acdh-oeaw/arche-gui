@@ -34,18 +34,18 @@ jobs:
         cd drupal && vendor/drush/drush/drush status && cd -
         drupal/vendor/drush/drush/drush list
     
-    - name: copy sqlite db
-      run: |
-        mkdir -p drupal/web/sites/default/files 
-        cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
+   # - name: copy sqlite db
+    #  run: |
+     #   mkdir -p drupal/web/sites/default/files 
+      #  cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
 
     #vendor/drush/drush/drush site-install standard --db-url=sqlite://sites/default/files/.ht.sqlite 
     #composer create-project drupal/recommended-project drupal  
-    - name: install drupal base with sqlite
-      run: |              
-        cd drupal        
-        vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
-        cd -
+   # - name: install drupal base with sqlite
+   #   run: |              
+   #     cd drupal        
+   #     vendor/drush/drush/drush site:install --db-url='sqlite://sites/default/files/.ht.sqlite'
+   #     cd -
       
     - name: copy plugin to drupal
       run: |
