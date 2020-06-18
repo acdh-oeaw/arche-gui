@@ -240,9 +240,7 @@ class ResourceObject
         if (isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
             if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
                 if (!empty($this->properties["acdh:hasTitleImage"][0]->value)) {
-                    
                     if ($file = @fopen($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value, "r")) {
-                        
                         $type = fgets($file, 40);
                         if (strpos(strtolower($type), 'svg') === false) {
                             $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: 200px;" /> ';
@@ -254,7 +252,7 @@ class ResourceObject
                                 }
                             }
                         }
-                       fclose($file);
+                        fclose($file);
                     }
                 }
                 return $img;
