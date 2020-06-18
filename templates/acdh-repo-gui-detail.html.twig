@@ -4,6 +4,11 @@
     <input type="hidden" id="insideUri" name="insideUri" value="{{ basic.getRepoId() }}">
     <input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
     
+    <!--  set up the numberofitems value for the resource, we will use it to handle the child tree view display -->
+    {% if basic.getData('acdh:hasNumberOfItems')[0].value %}
+        <input type="hidden" id="numberOfItems" name="numberOfItems" value="{{ basic.getData('acdh:hasNumberOfItems')[0].value }}">
+    {% endif %}
+    
     <div class="loader-div">
         <div class="loader-bg">
             <div class="loader"></div>

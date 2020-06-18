@@ -5,7 +5,6 @@
     /** Handle the child button click  END **/
     
     $(document ).delegate( ".hideRepoChildView", "click", function(e) {
-        console.log('hideRepoChildView');
         e.preventDefault();
         $('.res-act-button.hideChildView').hide();
         $('#getRepoChildView').show();
@@ -76,6 +75,13 @@
             $(this).removeClass('basic');
             $(this).addClass('tree');
             $(this).children('span').text('Switch to List-View');
+            
+            let numberOfChildElements = $('#numberOfItems').val();
+            
+            if(numberOfChildElements > 10000) {
+                $('#collectionBrowser').html("<h3>Error: </h3><p>"+  Drupal.t("This Resource has more than 10.000 child elements! Please use the download collection script!")+"</p>");
+                return false;
+            }
             //get the data
             var url = $('#insideUri').val();
             if(url){
