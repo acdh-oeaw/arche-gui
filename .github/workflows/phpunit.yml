@@ -15,16 +15,25 @@ jobs:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
+    - name: update ubuntu
+      run: sudo apt-get update
+      
+    - name: update sqlite3
+      run: sudo apt-get install sqlite3 libsqlite3-dev
+      
+    - name: checksqlite version
+      run: sqlite3 --version
+      
     - name: composer update
       run: composer update
-     # Composer.
+     
     - name: composer settings
       run: |
         export PATH="$HOME/.composer/vendor/bin:$PATH"
         echo $PATH  
         
     - name: install drupal
-      run:  composer create-project drupal/recommended-project drupal  
+      run:  composer create-project drupal/recommended-project:8.8.0 drupal  
   
     - name: drupal composer update
       run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit && cd -
@@ -34,18 +43,16 @@ jobs:
         cd drupal && vendor/drush/drush/drush status && cd -
         drupal/vendor/drush/drush/drush list
     
-   # - name: copy sqlite db
-    #  run: |
-     #   mkdir -p drupal/web/sites/default/files 
-      #  cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
+    - name: copy sqlite db
+      run: |
+        mkdir -p drupal/web/sites/default/files 
+        cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
 
-    #vendor/drush/drush/drush site-install standard --db-url=sqlite://sites/default/files/.ht.sqlite 
-    #composer create-project drupal/recommended-project drupal  
-   # - name: install drupal base with sqlite
-   #   run: |              
-   #     cd drupal        
-   #     vendor/drush/drush/drush site:install --db-url='sqlite://sites/default/files/.ht.sqlite'
-   #     cd -
+    - name: install drupal base with sqlite
+      run: |              
+        cd drupal        
+        vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
+        cd -
       
     - name: copy plugin to drupal
       run: |
@@ -74,8 +81,7 @@ jobs:
         cp ./drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
         
         echo "main build dir"
-        ls ./build/logs
-        
+        ls ./build/logs        
         
     - name: coveralls
       run: |
