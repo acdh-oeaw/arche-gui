@@ -162,7 +162,6 @@ class MetadataGuiHelper
         $this->result['properties']['curation'] = $this->reorderPropertiesByOrderValue($this->result['properties']['curation']);
         $this->result['properties']['dates'] = $this->reorderPropertiesByOrderValue($this->result['properties']['dates']);
         $this->result['properties']['right_access'] = $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']);
-        
     }
     
     /**
@@ -173,8 +172,8 @@ class MetadataGuiHelper
     private function reorderPropertiesByOrderValue(array $data): array
     {
         $result = array();
-        foreach($data as $k => $v) {
-            $result[$v['basic_info']['ordering']][$k] = $v; 
+        foreach ($data as $k => $v) {
+            $result[$v['basic_info']['ordering']][$k] = $v;
         }
         return $result;
     }
@@ -182,8 +181,8 @@ class MetadataGuiHelper
     /**
      * "optional" means "$min empty or equal to 0"
      * "mandatory" is "$min greater than 0 and $recommended not equal true"
-     * "recommended" is "$min greater than 0 and $recommended equal to true"    
-     * 
+     * "recommended" is "$min greater than 0 and $recommended equal to true"
+     *
      * @param object $data
      * @return string
      */
