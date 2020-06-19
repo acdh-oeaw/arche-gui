@@ -192,7 +192,7 @@ class MetadataGuiHelper
         if ($data->min == 0 || empty($data->min)) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 $val = 'o*';
-            }else {
+            } else {
                 //optional
                 $val = 'o';
             }
@@ -201,7 +201,7 @@ class MetadataGuiHelper
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended !== true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 $val =  'm*';
-            }else {
+            } else {
                 //mandatory
                 $val =  'm';
             }
@@ -211,11 +211,10 @@ class MetadataGuiHelper
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) || $data->recommended === true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 $val =  'r*';
-            }else {
+            } else {
                 //recommended
                 $val =  'r';
             }
-            
         }
         
         return $val;
