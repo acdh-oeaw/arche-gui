@@ -464,7 +464,11 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
-   
+    /**
+     * Generate the counted Collections and binaries text for the gui
+     * @param string $lng
+     * @return Response
+     */
     public function repo_getOntologyJSPluginData(string $lng = 'en'): Response
     {
         /*

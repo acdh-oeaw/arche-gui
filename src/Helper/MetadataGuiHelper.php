@@ -93,6 +93,11 @@ class MetadataGuiHelper
         $this->siteLang = $lang;
         $this->data = $data;
         $this->setupMetadataGuiType();
+        
+        //echo "<pre>";
+        //var_dump($this->result);
+        //echo "</pre>";
+        
         return $this->result;
     }
     /**
@@ -118,6 +123,7 @@ class MetadataGuiHelper
                 if (!isset($v->label)) {
                     break;
                 } else {
+                    //check the properties for the custom gui table section
                     $tableClass = $this->isCustomClass(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property));
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
                     //setup the default values
@@ -126,9 +132,7 @@ class MetadataGuiHelper
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '-';
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = '-';
                 }
-                //property => skos:altLabel
-                //machine_name => acdh:hasTitle
-              
+                
                 if (isset($v->property)) {
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['property'] = $v->label[$this->siteLang];
                 }
@@ -151,20 +155,37 @@ class MetadataGuiHelper
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
         }
-        asort($this->result['properties']['basic']);
-        asort($this->result['properties']['relations_other_projects']);
-        asort($this->result['properties']['coverage']);
-        asort($this->result['properties']['actors_involved']);
-        asort($this->result['properties']['curation']);
-        asort($this->result['properties']['dates']);
-        asort($this->result['properties']['right_access']);
+        $this->result['properties']['basic'] = $this->reorderPropertiesByOrderValue($this->result['properties']['basic']);
+        $this->result['properties']['relations_other_projects'] = $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']);
+        $this->result['properties']['coverage'] = $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']);
+        $this->result['properties']['actors_involved'] = $this->reorderPropertiesByOrderValue($this->result['properties']['actors_involved']);
+        $this->result['properties']['curation'] = $this->reorderPropertiesByOrderValue($this->result['properties']['curation']);
+        $this->result['properties']['dates'] = $this->reorderPropertiesByOrderValue($this->result['properties']['dates']);
+        $this->result['properties']['right_access'] = $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']);
+        
     }
     
     /**
-     *
+     * Reorder the elements based on the ordering value
+     * @param array $data
+     * @return array
+     */
+    private function reorderPropertiesByOrderValue(array $data): array
+    {
+        $result = array();
+        foreach($data as $k => $v) {
+            $result[$v['basic_info']['ordering']][$k] = $v; 
+        }
+        return $result;
+    }
+    
+    /**
      * "optional" means "$min empty or equal to 0"
      * "mandatory" is "$min greater than 0 and $recommended not equal true"
-     * "recommended" is "$min greater than 0 and $recommended equal to true"
+     * "recommended" is "$min greater than 0 and $recommended equal to true"    
+     * 
+     * @param object $data
+     * @return string
      */
     private function metadataGuiCardinality(object $data): string
     {
