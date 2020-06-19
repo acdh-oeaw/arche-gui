@@ -178,3 +178,19 @@ msgstr "Skript Sammlung herunterladen"
 
 msgid "View Larger Map" 
 msgstr "Größere Karte zeigen"
+
+msgid "XML Insights" 
+msgstr "XML Einblick"
+
+msgid "Related collection(s)" 
+msgstr "Verwandte Sammlung(en)"
+
+msgid "Hide View" 
+msgstr "Ansicht ausblenden"
+
+msgid "Hide Summary" 
+msgstr "Zusammenfassung ausblenden"
+
+msgid "Related Publications and Resources" 
+msgstr "Related Publications and Resources"
+

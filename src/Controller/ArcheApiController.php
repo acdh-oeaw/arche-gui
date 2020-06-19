@@ -520,4 +520,34 @@ class ArcheApiController extends ControllerBase
                 
         return $response;
     }
+    
+    /**
+     * Get the RelatedPublicationsResources list for the gui basic view
+     * @param string $repoid
+     * @return Response
+     */
+    public function repo_getRelatedPublicationsResources(string $repoid, string $lng = 'en'): Response
+    {
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/getRPR/{repoid}?_format=json
+        */
+        
+        $response = new Response();
+        $obj = new \stdClass();
+        $obj->repoid = $repoid;
+        $obj->lang = $lng;
+        //get the data
+        $this->modelData = $this->model->getViewData('getRPR', $obj);
+        
+        if (count($this->modelData) == 0) {
+            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+        }
+        
+        $this->result = $this->helper->createView($this->modelData, 'getMembers', $this->siteLang);
+        $response->setContent(json_encode(array('data' => $this->result)));
+        $response->headers->set('Content-Type', 'application/json');
+                
+        return $response;
+    }
 }

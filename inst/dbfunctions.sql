@@ -922,3 +922,53 @@ FROM count_main_collections as c;
 END
 $func$
 LANGUAGE 'plpgsql';
+
+
+/**
+* Gui Detail view https://redmine.acdh.oeaw.ac.at/issues/9184 -> Related Publications and Resources SQL
+*
+* _identifier = acdh id -> 3425
+* _lang = 'en' / 'de'
+**/
+CREATE OR REPLACE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text)
+AS $func$
+DECLARE 
+    /* declare a second language variable, because if we dont have a value on the 
+     * queried language then we are getting the results on the other language */
+    _lang2 text := 'de';
+BEGIN
+    /* check the languages and set up the language codes */
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+	
+RETURN QUERY
+WITH query_data as (
+	select 
+	mv.id,
+	(CASE 
+            WHEN 
+                (select mv2.value from metadata_view as mv2 where mv2.id = mv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1) IS NULL
+            THEN
+                (select mv2.value from metadata_view as mv2 where mv2.id = mv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 LIMIT 1)
+            ELSE
+                (select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
+            END) 
+        as title
+	from metadata_view as mv
+	where 
+	mv.property in (
+		'https://vocabs.acdh.oeaw.ac.at/schema#relation',
+		'https://vocabs.acdh.oeaw.ac.at/schema#continues',
+		'https://vocabs.acdh.oeaw.ac.at/schema#documents',
+		'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication',
+		'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
+		'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
+		'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
+		'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
+	) 
+	and mv.value = _identifier
+	order by title
+) select * from query_data;
+END
+$func$
+LANGUAGE 'plpgsql';

@@ -189,31 +189,37 @@ class MetadataGuiHelper
      */
     private function metadataGuiCardinality(object $data): string
     {
+        $val = '-';
         if ($data->min == 0 || empty($data->min)) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
-                return 'o*';
+                $val = 'o*';
+            }else {
+                //optional
+                $val = 'o';
             }
-            //optional
-            return 'o';
         }
           
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended !== true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
-                return 'm*';
+                $val =  'm*';
+            }else {
+                //mandatory
+                $val =  'm';
             }
-            //mandatory
-            return 'm';
+            return $val;
         }
           
-        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended === true) {
+        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) || $data->recommended === true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
-                return 'r*';
+                $val =  'r*';
+            }else {
+                //recommended
+                $val =  'r';
             }
-            //recommended
-            return 'r';
+            
         }
         
-        return '-';
+        return $val;
     }
     /*
     - if we have minCardinality and minCardinality >=1 => m

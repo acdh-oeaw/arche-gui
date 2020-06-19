@@ -212,3 +212,11 @@ repo_getIsMember:
     requirements:
         _permission: 'access content'
         _access: 'TRUE' 
+
+repo_getRPR:    
+    path: '/api/getRPR/{repoid}/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRelatedPublicationsResources'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'         

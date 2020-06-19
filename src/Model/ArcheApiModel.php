@@ -54,6 +54,9 @@ class ArcheApiModel extends ArcheModel
             case 'getMembers':
                 return $this->getMembers();
                 break;
+            case 'getRPR':
+                return $this->getRPR();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -273,6 +276,34 @@ class ArcheApiModel extends ArcheModel
                     where
                         mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Person'
                         and i.ids like '%gnd%';"
+            );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS);
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        }
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    /**
+     * Check the repoid in the DB
+     * @return array
+     */
+    private function getRPR(): array
+    {
+        $result = array();
+        //run the actual query
+        try {
+            $query = $this->repodb->query(
+                "select * from gui.related_publications_resources_views_func(:repoid, :lang)",
+                array(
+                    ':repoid' => $this->properties->repoid,
+                    ':lang' => $this->properties->lang
+                )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {

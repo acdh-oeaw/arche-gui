@@ -67,6 +67,31 @@
         }
    });
    
+   
+   /**
+     * Get the uuid from the url
+     * 
+     * @param {type} str
+     * @returns {String}
+     */
+    function getIDFromUrl(str) {
+        var reg = /^\d+$/;
+	var res = "";
+        if(str.indexOf('/oeaw_detail/') >= 0) {
+            var n = str.indexOf("/oeaw_detail/");
+            res = str.substring(n+13, str.length);
+            
+            if(res.indexOf('&') >= 0) {
+                res = res.substring(0, res.indexOf('&'));
+            }
+            if(res.indexOf('?') >= 0) {
+                res = res.substring(0, res.indexOf('?'));
+            }
+        }
+        res = res.replace('id.acdh.oeaw.ac.at/uuid/', '');
+        return res;
+    }
+    
     $(document ).delegate( ".res-act-button-treeview", "click", function(e) {
         if ($(this).hasClass('basic')) {
             $('.children-overview-basic').hide();

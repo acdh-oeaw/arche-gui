@@ -83,6 +83,18 @@
     {% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
         <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
         
+        {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasRelatedDiscipline'), 'icon': 'info_outline', 'label':  'Related Discipline(s)', 'url_only': true, 'repoid': true } ) }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasSubject')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasSubject'), 'icon': 'info_outline', 'label':  'Subject(s)', 'url_only': false, 'repoid': true } ) }}
+            </div>
+        {% endif %}
+        
         {% if basic.getData('acdh:hasSpatialCoverage') %}
             <div class="res-property">
                 <i class="material-icons">info_outline</i>
@@ -111,6 +123,22 @@
             </div>
         {% endif %}
         
+        {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
+            <div class="res-property">
+                <i class="material-icons">info_outline</i>
+                <span class="res-prop-label">{{ "Coverage Start Date"|trans }}:&nbsp;&nbsp;</span>
+                <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageStartDate', 'Y') }}</span>
+            </div>
+        {% endif %}
+
+        {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
+            <div class="res-property">
+                <i class="material-icons">info_outline</i>
+                <span class="res-prop-label">{{ "Coverage End Date"|trans }}:&nbsp;&nbsp;</span>
+                <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageEndDate', 'Y') }}</span>
+            </div>
+        {% endif %}
+        
         {% if basic.getData('acdh:hasDescription')[0] %}
             <div class="res-property">
                 <i class="material-icons">info_outline</i>
@@ -129,33 +157,9 @@
         
     {% endif%}
     
-    {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}
-        <div class="res-property">
-            {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasRelatedDiscipline'), 'icon': 'info_outline', 'label':  'Related Discipline(s)', 'url_only': true, 'repoid': true } ) }}
-        </div>
-    {% endif %}
-
-    {% if basic.getData('acdh:hasSubject')[0] %}
-        <div class="res-property">
-            {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasSubject'), 'icon': 'info_outline', 'label':  'Subject(s)', 'url_only': false, 'repoid': true } ) }}
-        </div>
-    {% endif %}
-
-    {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
-        <div class="res-property">
-            <i class="material-icons">info_outline</i>
-            <span class="res-prop-label">{{ "Coverage Start Date"|trans }}:&nbsp;&nbsp;</span>
-            <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageStartDate', 'Y') }}</span>
-        </div>
-    {% endif %}
-
-    {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
-        <div class="res-property">
-            <i class="material-icons">info_outline</i>
-            <span class="res-prop-label">{{ "Coverage End Date"|trans }}:&nbsp;&nbsp;</span>
-            <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageEndDate', 'Y') }}</span>
-        </div>
-    {% endif %}
+    
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
+    
     
     {% if extra.citeWidgetData %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
