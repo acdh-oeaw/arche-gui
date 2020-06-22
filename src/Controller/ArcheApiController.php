@@ -511,10 +511,12 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('getMembers', $obj);
         
         if (count($this->modelData) == 0) {
-            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+            $this->result = array(array("There is no data"));
+            goto end;
         }
         
         $this->result = $this->helper->createView($this->modelData, 'getMembers', $this->siteLang);
+        end:
         $response->setContent(json_encode(array('data' => $this->result)));
         $response->headers->set('Content-Type', 'application/json');
                 
@@ -541,10 +543,12 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('getRPR', $obj);
         
         if (count($this->modelData) == 0) {
-            return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
+            $this->result = array(array("There is no data"));
+            goto end;
         }
         
         $this->result = $this->helper->createView($this->modelData, 'getMembers', $this->siteLang);
+        end:
         $response->setContent(json_encode(array('data' => $this->result)));
         $response->headers->set('Content-Type', 'application/json');
                 

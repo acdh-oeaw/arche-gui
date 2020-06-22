@@ -39,14 +39,7 @@
             {% endif%}
             
              <div class="res-actions">
-
-                <div class="res-act-button">
-                    <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
-                        <i class="material-icons">&#xE873;</i>
-                        <span>{{ "Detailed View"|trans }}</span>
-                    </a>	
-                </div>
-                        
+        
                 {% if item.getData('acdh:hasDescription') %}
                     <div class="res-act-button res-act-button-summary closed">
                             <i class="material-icons">&#xE145;</i>
@@ -54,6 +47,13 @@
                             <span class="hide_summary">{{ "Hide Summary"|trans }}</span>
                     </div>
                 {% endif%}
+                
+                <div class="res-act-button">
+                    <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                        <i class="material-icons">&#xE873;</i>
+                        <span>{{ "Detailed View"|trans }}</span>
+                    </a>	
+                </div>
                 
             </div>	
 

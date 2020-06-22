@@ -171,7 +171,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
             );
             return array();
         }
-       
+        
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,

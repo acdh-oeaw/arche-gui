@@ -116,14 +116,17 @@ class ChildApiHelper extends ArcheHelper
                             )
                             );
                     }
-                    $this->data[$k]['rdf:type'][$lang] = array(
+                    
+                    if(isset($v->acdhtype)) {
+                        $this->data[$k]['rdf:type'][$lang] = array(
                             $this->createObj(
                                 $v->id,
                                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
+                                $v->acdhtype,
+                                $v->acdhtype
                             )
-                            );
+                        );
+                    }
                 }
             }
         }

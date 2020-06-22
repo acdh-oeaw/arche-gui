@@ -155,14 +155,22 @@ jq2(function( $ ) {
     
     //if we are on the detail view
     if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-        jq2('table.rprTable').DataTable({
-            "ajax": {
-                "url": "/browser/api/getRPR/1938/en",
-                "data": function ( d ) {
-                    d.limit = d.draw;
-                }
-            },
-            "deferRender": true
-        });
+        
+        let id = jq2('#insideUri').val();
+        
+        if(id !== undefined){
+            jq2('table.rprTable').DataTable({
+                "ajax": {
+                    "url": "/browser/api/getRPR/"+id+"/en",
+                    "data": function ( d ) {
+                        d.limit = d.draw;
+                    }
+                },
+                "deferRender": true,
+                "errMode": 'throw'
+            });
+        }
+        
+        
     }
 });

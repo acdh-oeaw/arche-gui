@@ -25,10 +25,11 @@
                              <a id='archeHref' href="{{ value.title }}">{{ value.title }}</a>
                          {% endif  %}     
                     {% elseif (external_url_title)  %} 
+                        <!-- for the vocabs -->
                         {% if (value.title  and value.uri )  %}
                             <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% else %}
-                            <a href="{{ value.uri }}" target="_blank">{{ value.uri }}</a>
+                            <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% endif %}
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
@@ -67,6 +68,8 @@
                     {% elseif value.title %}
                         {{ value.title }}
                     {% elseif value.value %}
+                        {{ value.value }}
+                    {% elseif value.value == 0 %}
                         {{ value.value }}
                     {% endif%}
                     {% if not loop.last %},{% endif %}

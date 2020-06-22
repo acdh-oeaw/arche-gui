@@ -99,7 +99,7 @@
             $('.children-overview-tree').fadeIn(200);
             $(this).removeClass('basic');
             $(this).addClass('tree');
-            $(this).children('span').text('Switch to List-View');
+            $(this).children('span').text(Drupal.t('Switch to List-View'));
             
             let numberOfChildElements = $('#numberOfItems').val();
             
@@ -149,7 +149,7 @@
             $('.children-overview-basic').fadeIn(200);
             $(this).removeClass('tree');
             $(this).addClass('basic');
-            $(this).children('span').text('Switch to Tree-View');		
+            $(this).children('span').text(Drupal.t('Switch to Tree-View'));
         }
     });
             

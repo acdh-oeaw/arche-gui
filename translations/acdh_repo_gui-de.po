@@ -50,9 +50,6 @@ msgstr "Siehe alle Ressourcen"
 msgid "Discover resources"
 msgstr "Ressourcen entdecken"
 
-msgid "Deposition Process"
-msgstr "Einreichungsprozess"
-
 msgid "Alternative Title"
 msgstr "Alternativer Titel"
 
@@ -183,7 +180,7 @@ msgid "XML Insights"
 msgstr "XML Einblick"
 
 msgid "Related collection(s)" 
-msgstr "Verwandte Sammlung(en)"
+msgstr "Zugehörige Sammlung(en)"
 
 msgid "Hide View" 
 msgstr "Ansicht ausblenden"
@@ -192,5 +189,43 @@ msgid "Hide Summary"
 msgstr "Zusammenfassung ausblenden"
 
 msgid "Related Publications and Resources" 
-msgstr "Related Publications and Resources"
+msgstr "Zugehörige Publikationen und Ressourcen"
 
+msgid "Switch to List-View" 
+msgstr "Zur Listenansicht wechseln"
+
+msgid "Child Resource(s)" 
+msgstr "Untegeordnete Sammlung(en)"
+
+msgid "Related Collection(s)" 
+msgstr "Zugehörige Sammlung(en)"
+
+msgid "Related Publication(s) and Resource(s)" 
+msgstr "Zugehörige Publikation(en) und Ressourc(en)"
+
+msgid "Spatial Information" 
+msgstr "Geografische Informationen"
+
+msgid "Created End Date" 
+msgstr "Erstellungsdatum Ende"
+
+msgid "Member of" 
+msgstr "Mitglied von"
+
+msgid "Start Date" 
+msgstr "Startdatum"
+
+msgid "Related Collection(s)" 
+msgstr "Zugehörige Sammlung(en)"
+
+msgid "Discover Resources"
+msgstr "Ressourcen Entdecken"
+
+msgid "Deposit Resources"
+msgstr "Ressourcen Enreichen"
+
+msgid "Deposition Process"
+msgstr "Einreichungsprozess"
+
+msgid "Personal Title"
+msgstr "Beruflicher Titel"

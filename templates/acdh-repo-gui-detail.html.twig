@@ -78,8 +78,7 @@
     {% if dissemination %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
     {% endif %}
-    
-    
+        
     {% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
         <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
         
@@ -157,7 +156,7 @@
         
     {% endif%}
     
-    
+    <!-- Related Publication(s) and Resource(s) VIEW -->
     {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
     
     

@@ -85,7 +85,9 @@ class ChildApiController extends ControllerBase
         );
         $this->data->pagination = $this->data->pagination[0];
         $data = $this->model->getViewData($identifier, (int)$limit, (int)$offset, $order);
+        
         $this->data->data = $this->helper->createView($data);
+        
         if (count((array)$this->data->data) <= 0) {
             $this->data->errorMSG = 'There are no Child resources';
         }

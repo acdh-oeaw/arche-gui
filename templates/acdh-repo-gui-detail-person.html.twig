@@ -41,7 +41,7 @@
     'acdh:hasUrl': {
         'icon': 'subtitles',
         'label': 'Url',
-        'url_only': false
+        'url_only': true
     }
 }
 %}
@@ -59,6 +59,10 @@
                 </div>
             {% endif%} 
 
+            {%  if basic.getData('acdh:hasPersonalTitle') %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasPersonalTitle'), 'icon': "title", 'label': "Personal Title"} ) }}
+            {% endif%}
+            
             {% if basic.getAcdhType() %}
                 <div class="res-property">
                     <i class="material-icons">&#xE54E;</i>
