@@ -242,15 +242,17 @@ class ResourceObject
                 if (!empty($this->properties["acdh:hasTitleImage"][0]->value)) {
                     if ($file = @fopen($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value, "r")) {
                         $type = fgets($file, 40);
-                        if (strpos(strtolower($type), 'svg') === false) {
-                            $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: 200px;" /> ';
-                        } else {
-                            $imgBinary = '';
-                            if ($imgBinary = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
-                                if (!empty($imgBinary)) {
-                                    $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: 200px;" /> ';
+                        if(!empty($type)) {
+                            if (strpos(strtolower($type), 'svg') === false) {
+                                $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: 200px;" /> ';
+                            } else {
+                                $imgBinary = '';
+                                if ($imgBinary = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
+                                    if (!empty($imgBinary)) {
+                                        $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: 200px;" /> ';
+                                    }
                                 }
-                            }
+                            }    
                         }
                         fclose($file);
                     }
