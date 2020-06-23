@@ -153,24 +153,26 @@ jq2(function( $ ) {
     });
     
     
-    //if we are on the detail view
-    if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-        
-        let id = jq2('#insideUri').val();
-        
-        if(id !== undefined){
-            jq2('table.rprTable').DataTable({
-                "ajax": {
-                    "url": "/browser/api/getRPR/"+id+"/en",
-                    "data": function ( d ) {
-                        d.limit = d.draw;
-                    }
-                },
-                "deferRender": true,
-                "errMode": 'throw'
-            });
+    //the JS for the isMember table
+    jq2( "#showRPR" ).click(function(e) {
+        e.preventDefault();
+        //if we are on the detail view
+        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
+            jq2('#rprTableDiv').show("slow");
+            let id = jq2('#insideUri').val();
+
+            if(id !== undefined){
+                jq2('table.rprTable').DataTable({
+                    "ajax": {
+                        "url": "/browser/api/getRPR/"+id+"/en",
+                        "data": function ( d ) {
+                            d.limit = d.draw;
+                        }
+                    },
+                    "deferRender": true,
+                    "errMode": 'throw'
+                });
+            }
         }
-        
-        
-    }
+    });
 });
