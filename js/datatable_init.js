@@ -153,12 +153,13 @@ jq2(function( $ ) {
     });
     
     
-    //the JS for the isMember table
+    //the JS for the Related Publication(s) and Resource(s) table
     jq2( "#showRPR" ).click(function(e) {
         e.preventDefault();
         //if we are on the detail view
         if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
             jq2('#rprTableDiv').show("slow");
+            jq2('#showRPR').parent().hide("slow");
             let id = jq2('#insideUri').val();
 
             if(id !== undefined){
