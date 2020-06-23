@@ -117,7 +117,7 @@ class ChildApiHelper extends ArcheHelper
                             );
                     }
                     
-                    if(isset($v->acdhtype)) {
+                    if (isset($v->acdhtype)) {
                         $this->data[$k]['rdf:type'][$lang] = array(
                             $this->createObj(
                                 $v->id,
