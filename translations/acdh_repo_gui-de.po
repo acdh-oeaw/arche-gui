@@ -1,7 +1,4 @@
 # LANGUAGE translation of PROJECT
-#
-msgid ""
-msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2020-06-02 14:19+0200\n"
 "PO-Revision-Date: 2020-06-02 14:41+0200\n"
@@ -195,13 +192,13 @@ msgid "Switch to List-View"
 msgstr "Zur Listenansicht wechseln"
 
 msgid "Child Resource(s)" 
-msgstr "Untegeordnete Sammlung(en)"
+msgstr "Untergeordnete Sammlung(en)"
 
 msgid "Related Collection(s)" 
 msgstr "Zugehörige Sammlung(en)"
 
 msgid "Related Publication(s) and Resource(s)" 
-msgstr "Zugehörige Publikation(en) und Ressourc(en)"
+msgstr "Zugehörige Publikation(en) und Ressource(n)"
 
 msgid "Spatial Information" 
 msgstr "Geografische Informationen"
@@ -215,17 +212,33 @@ msgstr "Mitglied von"
 msgid "Start Date" 
 msgstr "Startdatum"
 
-msgid "Related Collection(s)" 
-msgstr "Zugehörige Sammlung(en)"
-
 msgid "Discover Resources"
-msgstr "Ressourcen Entdecken"
+msgstr "Ressourcen entdecken"
 
 msgid "Deposit Resources"
-msgstr "Ressourcen Enreichen"
+msgstr "Ressourcen enreichen"
 
 msgid "Deposition Process"
 msgstr "Einreichungsprozess"
 
 msgid "Personal Title"
 msgstr "Beruflicher Titel"
+
+msgid "Spatial Coverage in"
+msgstr "Geografische Abdeckung in"
+
+msgid "Related Resource(s)"
+msgstr "Zugehörige Ressoure(n)"
+
+msgid "Show Data"
+msgstr "Daten anzeigen"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Previous"
+msgstr "Vorherige"
+
+msgid "Next"
+msgstr "Nächste"
+

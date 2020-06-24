@@ -69,6 +69,7 @@ abstract class ArcheHelper
         if (isset(self::$prefixesToChange[$prefix.'#'])) {
             return self::$prefixesToChange[$prefix.'#'].':'.$property;
         }
+        return '';
     }
     
     /**

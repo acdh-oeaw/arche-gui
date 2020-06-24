@@ -156,9 +156,10 @@
         
     {% endif%}
     
-    <!-- Related Publication(s) and Resource(s) VIEW -->
-    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
-    
+    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' %}
+        <!-- Related Publication(s) and Resource(s) VIEW -->
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
+    {% endif%}
     
     {% if extra.citeWidgetData %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
@@ -168,6 +169,7 @@
             basic.getAcdhType()|lower == 'organisation'  or  
             basic.getAcdhType()|lower == 'project'  or 
             basic.getAcdhType()|lower == 'publication' or 
+            basic.getAcdhType()|lower == 'place' or 
             basic.getAcdhType()|lower == 'person' or 
             basic.getAcdhType()|lower == 'concept'
     %}

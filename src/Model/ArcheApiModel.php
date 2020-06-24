@@ -306,6 +306,7 @@ class ArcheApiModel extends ArcheModel
                 )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
+            error_log(print_r($result, true));
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();

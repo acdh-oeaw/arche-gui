@@ -371,7 +371,7 @@ jQuery(function($) {
                 return true;
             },
             error: function(error){
-                $('#child-div-content').html('<div>There is no data...</div>');
+                $('#child-div-content').html('<div>'+Drupal.t('There is no data')+'...</div>');
                 $(".loader-div").hide();
                 return false;
             }

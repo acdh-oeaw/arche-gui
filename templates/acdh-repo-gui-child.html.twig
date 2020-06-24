@@ -41,13 +41,13 @@
     {% elseif data.acdhType|lower == "person" %}
         {% set childTitle = "Contributed to" %}
     {% elseif data.acdhType|lower == "project" %}
-        {% set childTitle =  "Related collection(s)" %}
+        {% set childTitle =  "Related Collection(s)" %}
     {% elseif data.acdhType|lower == "organisation" %}
         {% set childTitle =  "Involved in" %}
     {% elseif data.acdhType|lower == "place" %}
-        {% set childTitle =  "Spatial coverage in" %}
+        {% set childTitle =  "Spatial Coverage in" %}
     {% elseif data.acdhType|lower == "publication" %}
-        {% set childTitle =  "Related resource(s)" %}
+        {% set childTitle =  "Related Resource(s)" %}
     {% else %}
         {% set childTitle =  "Child Resource(s)" %}
     {% endif %}
@@ -98,7 +98,7 @@
                     </div>
                     
                     <!-- if the type is not an organisation/person/place then we will display the availabledate -->
-                    {% if item.getAcdhType() != 'Organisation' and item.getAcdhType() != 'Person' and item.getAcdhType() != 'Place'  %}
+                    {% if data.acdhType|lower != 'organisation' and data.acdhType|lower != 'person' and data.acdhType|lower != 'place' and data.acdhType|lower != 'publication' %}
                         {% if item.getData('acdh:hasAvailableDate') %}
                             {{ item.getPropTitle('acdh:hasAvailableDate') }}
                             <div class="res-property">

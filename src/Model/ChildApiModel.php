@@ -62,7 +62,7 @@ class ChildApiModel extends ArcheModel
                     ':lang' => $this->siteLang
                 )
             );
-            
+            error_log(print_r($this->sqlTypes, true));
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -192,17 +192,24 @@ class ChildApiModel extends ArcheModel
             case 'publication':
                 $this->childProperties = array(
                     'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication', 'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
-                    'https://vocabs.acdh.oeaw.ac.at/schema#hasReferencedBy'
+                    'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy'
                 );
                 break;
             case 'person':
                 $this->childProperties = array(
-                    'http://www.w3.org/2004/02/skos/core#narrower'
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasContributor', 'https://vocabs.acdh.oeaw.ac.at/schema#hasCreator',
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasAuthor', 'https://vocabs.acdh.oeaw.ac.at/schema#hasEditor',
+                    'https://vocabs.acdh.oeaw.ac.at/schema#hasPrincipalInvestigator'
                 );
                 break;
             case 'project':
                 $this->childProperties = array(
                     'https://vocabs.acdh.oeaw.ac.at/schema#hasRelatedProject'
+                );
+                break;
+            case 'concept':
+                $this->childProperties = array(
+                    'http://www.w3.org/2004/02/skos/core#narrower'
                 );
                 break;
             case 'institute':
@@ -250,5 +257,6 @@ class ChildApiModel extends ArcheModel
                 $this->sqlTypes = "";
             }
         }
+        error_log(print_r($this->sqlTypes, true));
     }
 }
