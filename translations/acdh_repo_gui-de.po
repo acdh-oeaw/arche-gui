@@ -228,7 +228,7 @@ msgid "Spatial Coverage in"
 msgstr "Geografische Abdeckung in"
 
 msgid "Related Resource(s)"
-msgstr "Zugehörige Ressoure(n)"
+msgstr "Zugehörige Ressource(n)"
 
 msgid "Show Data"
 msgstr "Daten anzeigen"
@@ -242,3 +242,5 @@ msgstr "Vorherige"
 msgid "Next"
 msgstr "Nächste"
 
+msgid "Contributed to"
+msgstr "Beigetragen zu"

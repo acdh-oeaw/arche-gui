@@ -944,7 +944,7 @@ BEGIN
 RETURN QUERY
 WITH query_data as (
 	select 
-	mv.id,
+	DISTINCT(mv.id),
 	(CASE 
             WHEN 
                 (select mv2.value from metadata_view as mv2 where mv2.id = mv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1) IS NULL
@@ -961,6 +961,7 @@ WITH query_data as (
 		'https://vocabs.acdh.oeaw.ac.at/schema#continues',
 		'https://vocabs.acdh.oeaw.ac.at/schema#documents',
 		'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication',
+                'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',
 		'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
