@@ -98,7 +98,7 @@
                     </div>
                     
                     <!-- if the type is not an organisation/person/place then we will display the availabledate -->
-                    {% if data.acdhType|lower != 'organisation' and data.acdhType|lower != 'person' and data.acdhType|lower != 'place' and data.acdhType|lower != 'publication' %}
+                    {% if item.getAcdhType()|lower == 'collection' or item.getAcdhType()|lower == 'resource' %}
                         {% if item.getData('acdh:hasAvailableDate') %}
                             {{ item.getPropTitle('acdh:hasAvailableDate') }}
                             <div class="res-property">
