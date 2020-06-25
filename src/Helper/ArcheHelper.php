@@ -95,6 +95,8 @@ abstract class ArcheHelper
         $result = array();
       
         foreach ($this->data as $d) {
+            
+            
             //add the language to every resource
             $lang = 'en';
             if (isset($d->language)) {
@@ -122,6 +124,12 @@ abstract class ArcheHelper
                     $d->insideUri = $this->makeInsideUri($d->acdhid);
                 }
                 $d->shortcut = $this->createShortcut($d->property);
+                
+                //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
+                if (isset($d->vocabsid) && !empty($d->vocabsid) ) {
+                    $d->uri = $d->vocabsid;
+                    unset($d->insideUri);
+                }
                 $result[$d->shortcut][$lang][] = $d;
             } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
@@ -143,7 +151,6 @@ abstract class ArcheHelper
         if ($root == true) {
             ksort($result);
         }
-       
         $this->data = $result;
     }
     

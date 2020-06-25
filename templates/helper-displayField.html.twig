@@ -31,6 +31,8 @@
                         {% else %}
                             <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% endif %}
+                    {% elseif (value.vocabsid)  %}
+                        <a  href="{{ value.uri }}">{{ value.title|nl2br }}</a>
                     {% elseif (repoid)  %}
                         {% if (value.repoid) and (value.title)  %}
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>

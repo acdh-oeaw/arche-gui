@@ -90,7 +90,7 @@ LANGUAGE 'plpgsql';
 * execution time between: 140-171ms
 */
 CREATE OR REPLACE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
-    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, accessRestriction text, language text )
+    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
     
 AS $func$
 DECLARE
@@ -117,10 +117,11 @@ BEGIN
     DROP TABLE IF EXISTS detail_meta_rel;
     CREATE TEMPORARY TABLE detail_meta_rel AS (
         WITH dmetarel as (
-            select DISTINCT(CAST(m.id as VARCHAR)), m.value,  i.ids as acdhId, m.lang
+            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
             from metadata as m
             left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
             left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
             where dm.type = 'REL' 
         ) 
         select * from dmetarel
@@ -131,6 +132,7 @@ BEGIN
 	dm.value, 
 	dmr.value as relvalue, 
 	dmr.acdhid,
+	dmr.vocabsid,
 	CASE WHEN dm.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' THEN dmr.value
 	ELSE ''
 	END,
