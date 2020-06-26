@@ -58,6 +58,10 @@ class ArcheApiHelper extends ArcheHelper
                 $this->data = $data;
                 $this->formatMembersData();
                 break;
+            case 'getRPR':
+                $this->data = $data;
+                $this->formatRPRData();
+                break;
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -93,6 +97,20 @@ class ArcheApiHelper extends ArcheHelper
         $this->result = array();
         foreach ($this->data as $obj) {
             $this->result[] = array("<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>");
+        }
+    }
+    
+    /**
+     * Format the sql result to the Related Publications and Resources api endpoint
+     */
+    private function formatRPRData()
+    {
+        $this->result = array();
+        foreach ($this->data as $obj) {
+            $this->result[] = array(
+                0 => "<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>",
+                1 => $obj->acdhtype
+            );
         }
     }
     

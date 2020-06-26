@@ -27,7 +27,7 @@
             
             $(document ).delegate( "a#archeHref", "click", function(e) {
                 var reloadTable = false;
-                $("#loader-div").show();
+                $(".loader-div").show();
                 var url = $(this).attr('href');
                 //if the url is arche url
                 if(url && url.indexOf("/browser/oeaw_detail/") >= 0 || url && url.indexOf("/browser//oeaw_detail/") >= 0 ) {
@@ -46,23 +46,18 @@
                             createNewUrlForInsideClick(id);
                             $('#block-mainpagecontent').html(data);
                             reloadTable = true;
+                            $(".loader-div").hide();
                         },
                         error: function(message) {
-                            $('#block-mainpagecontent').html("Resource does not exists!.");
+                            $('#block-mainpagecontent').html("Resource does not exists!");
+                            $(".loader-div").hide();
                         }
                     });
-                    //
-                    $("#loader-div").hide();
                     e.preventDefault();
-                }
-                else {
+                } else {
                    window.open(url, '_blank'); 
+                   $(".loader-div").hide();
                 }
-                $("#loader-div").hide();
-                if(reloadTable) {
-                    
-                }
-                
             });
         }
    });

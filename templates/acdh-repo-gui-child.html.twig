@@ -96,16 +96,6 @@
                         <span class="res-prop-label">{{ "Type"|trans }}: </span>
                         <span class="res-rdfType"><a href="/browser/discover/&type={{ item.getAcdhType() }}/10">{{ item.getAcdhType() }}</a></span>
                     </div>
-                    
-                    <!-- if the type is not an organisation/person/place then we will display the availabledate -->
-                    {% if item.getAcdhType()|lower == 'collection' or item.getAcdhType()|lower == 'resource' %}
-                        {% if item.getData('acdh:hasAvailableDate') %}
-                            {{ item.getPropTitle('acdh:hasAvailableDate') }}
-                            <div class="res-property">
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
-                            </div>
-                        {% endif%}
-                    {% endif%}
                 {% endif%}
 
                 {% if item.getData('acdh:hasDescription') %}

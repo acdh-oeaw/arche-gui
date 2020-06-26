@@ -520,7 +520,7 @@ class ArcheApiController extends ControllerBase
             goto end;
         }
         
-        $this->result = $this->helper->createView($this->modelData, 'getMembers', $this->siteLang);
+        $this->result = $this->helper->createView($this->modelData, 'getRPR', $this->siteLang);
         end:
         $response->setContent(json_encode(array('data' => $this->result)));
         $response->headers->set('Content-Type', 'application/json');

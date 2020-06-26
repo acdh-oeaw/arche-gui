@@ -34,7 +34,7 @@
 */
 
     function getActualuserRestriction() {
-        var roles = drupalSettings.oeaw.users.roles;
+        var roles = drupalSettings.acdh_repo_gui.users.roles;
         var actualUserRestriction = 'public';
         
         if (roles !== ''){
@@ -51,7 +51,7 @@
                 actualUserRestriction = 'public';
             }
         }        
-        if(drupalSettings.oeaw.users.name == "shibboleth") {
+        if(drupalSettings.acdh_repo_gui.users.name == "shibboleth") {
             actualUserRestriction = 'academic';
         }
         return actualUserRestriction;
@@ -92,9 +92,11 @@
             $.each( d.instance._model.data, function( key, value ) {
                 $.each( value.original, function( k, v ) { 
                     if(k == 'userAllowedToDL') {
-                        if ( v == true ) { userAllowedToDL = true; } 
+                        if(v) {
+                            if ( v == true ) { userAllowedToDL = true; } 
+                        }
                     }
-                    if(k == 'accessRestriction') {
+                    if(k == 'accessRestriction' && v != null) {
                         var result = v.split('/');
                         var resRestriction = result.slice(-1)[0];
                         if(!resRestriction) { resRestriction = "public"; }
@@ -171,7 +173,7 @@
         $('#dl_time').html(formattedDlTime);
         
         //var uid = Drupal.settings.currentUser;
-        var roles = drupalSettings.oeaw.users.roles;
+        var roles = drupalSettings.acdh_repo_gui.users.roles;
         var actualUserRestriction = 'public';
         actualUserRestriction = getActualuserRestriction();
         
@@ -307,10 +309,10 @@
                                     selectedItems.push({id: id, size: size, uri: uri, uri_dl: uri_dl, filename: filename, path: path});
                                     sumSize += Number(size);
                                     if(sumSize > 6299999999){
-                                        $("#selected_files_size").html("<p class='size_text_red'>" + bytesToSize(sumSize) + " ("+Drupal.t('Max tar download limit is') + " 6GB) ("+ actualResource.length + " " + Drupal.t('Files') + ")</p> ");
+                                        $("#selected_files_size").html("<p class='size_text_red'>" + bytesToSize(sumSize) + " ("+Drupal.t('Max tar download limit is') + " 6 GB) ("+ actualResource.length + " " + Drupal.t('Files') + ")</p> ");
                                         $("#getCollectionDiv").hide();                                    
                                     }else {
-                                        $("#selected_files_size").html("<p class='size_text'>" + bytesToSize(sumSize)+" ("+Drupal.t('Max tar download limit is') + " 6GB) ("+ actualResource.length + " " + Drupal.t('Files') + ")</p> ");   
+                                        $("#selected_files_size").html("<p class='size_text'>" + bytesToSize(sumSize)+" ("+Drupal.t('Max tar download limit is') + " 6 GB) ("+ actualResource.length + " " + Drupal.t('Files') + ")</p> ");   
                                         $("#getCollectionDiv").show();
                                     }
                                 }

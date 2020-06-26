@@ -161,9 +161,12 @@
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
     {% endif%}
     
-    {% if extra.citeWidgetData %}
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
-    {% endif%}
+    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
+            or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
+        {% if extra.citeWidgetData %}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
+        {% endif%}
+    {% endif%}    
     
     {% if  basic.getAcdhType()|lower == 'collection' or  
             basic.getAcdhType()|lower == 'organisation'  or  

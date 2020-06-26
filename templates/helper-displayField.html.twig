@@ -19,31 +19,39 @@
             {% if data is iterable %}
                 {% for value in data %}
                     {% if (onlyurl)  %}
+                        <!-- only url and we have url value-->
                         {% if (value.uri)  %}
                             <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
                          {% else  %}
-                             <a id='archeHref' href="{{ value.title }}">{{ value.title }}</a>
+                             <!-- only url but just the title contains it-->
+                             <a href="{{ value.title }}" target="_blank">{{ value.title }}</a>
                          {% endif  %}     
                     {% elseif (external_url_title)  %} 
-                        <!-- for the vocabs -->
+                        <!-- for the extrenal urls -->
                         {% if (value.title  and value.uri )  %}
                             <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% else %}
                             <a href="{{ value.uri }}" target="_blank">{{ value.title }}</a>
                         {% endif %}
                     {% elseif (value.vocabsid)  %}
-                        <a  href="{{ value.uri }}">{{ value.title|nl2br }}</a>
+                        <!-- for the vocabs -->
+                        <a  href="{{ value.uri }}" target="_blank">{{ value.title|nl2br }}</a>
                     {% elseif (repoid)  %}
+                        <!-- so it is not an external url so we use the repoid and thre title -->
                         {% if (value.repoid) and (value.title)  %}
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.title|nl2br }}</a>
                         {% elseif (value.repoid)  %}
+                            <!-- we have just repoid -->
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}">{{ value.repoid }}</a>
                         {% else  %}
+                            <!-- a simple text value -->
                             {{ value.title|nl2br }}
                         {% endif  %}   
                     {% elseif (dateformat)  %}
+                        <!-- if we have special dateformat -->
                         {{ value.value|date(dateformat) }}
                     {% elseif (isbinary)  %}
+                        <!-- if it is a binary -->
                         {% if(value.value == 0) %}
                             {{ value.value }} KB
                         {% else %}
@@ -62,8 +70,10 @@
                         {% endif%}    
                         
                     {% elseif (value.insideUri) and (value.title)  %}
+                        <!-- we have special inside uri -->
                         <a id='archeHref' href="/browser/oeaw_detail/{{ value.insideUri }}">{{ value.title|nl2br }}</a>
                     {% elseif value.title and value.uri %}
+                        <!-- we have title and uri - basic case -->
                         <a href="{{ value.uri }}" target="_blank">{{ value.title|nl2br }}</a>
                     {% elseif value.uri %}
                         <a href="{{ value.uri }}" target="_blank">{{ value.uri }}</a>

@@ -54,10 +54,13 @@
                                     (key == "acdh:hasPid") or (key == "acdh:hasCategory") or (key == "acdh:hasLifeCycleStatus") or
                                     (key == "acdh:hasLanguage") or (key == "acdh:hasRelatedDiscipline") or (key == "acdh:hasCategory")
                                  )  %}
-                                    {%  if ( val.uri ) %}                                        
+                                 
+                                    {%  if ( val.uri ) %}     
                                         <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
                                     {% elseif (val.vocabsid) %}
                                         <a href="{{ val.vocabsid }}">{{ val.vocabsid }}</a> {{ separator|raw }}
+                                    {%  elseif ('http://' in val.title) or ('https://' in val.title) %}    
+                                        <a href="{{ val.title }}">{{ val.title }}</a> {{ separator|raw }}
                                     {% else %}
                                         <a href="{{ val.repoid }}">{{ val.title }}</a> {{ separator|raw }}
                                     {% endif %}     
@@ -72,7 +75,11 @@
                                 {% elseif val.uri is defined %}
                                     <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
                                 {% elseif val.title is defined %}
-                                    {{ val.title }} {{ separator|raw }}
+                                    {%  if ('http://' in val.title) or ('https://' in val.title) %}
+                                        <a href="{{ val.title }}">{{ val.title }}</a> {{ separator|raw }}
+                                    {% else %}
+                                        {{ val.title }} {{ separator|raw }}
+                                     {% endif %}   
                                 {% else %}
                                     <!--  not an object -->
                                     {% if ( val is not defined ) %}

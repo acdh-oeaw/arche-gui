@@ -933,7 +933,7 @@ LANGUAGE 'plpgsql';
 * _lang = 'en' / 'de'
 **/
 CREATE OR REPLACE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text)
+  RETURNS table (id bigint, title text, acdhtype text)
 AS $func$
 DECLARE 
     /* declare a second language variable, because if we dont have a value on the 
@@ -955,7 +955,8 @@ WITH query_data as (
             ELSE
                 (select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
             END) 
-        as title
+        as title,
+        mv.property
 	from metadata_view as mv
 	where 
 	mv.property in (
