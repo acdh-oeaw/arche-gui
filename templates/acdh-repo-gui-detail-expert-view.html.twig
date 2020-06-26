@@ -63,7 +63,10 @@
                                         <a href="{{ val.title }}">{{ val.title }}</a> {{ separator|raw }}
                                     {% else %}
                                         <a href="{{ val.repoid }}">{{ val.title }}</a> {{ separator|raw }}
-                                    {% endif %}     
+                                    {% endif %} 
+                                    
+                                {% elseif (key == "acdh:hasDescription") %}
+                                     {{ val.title }} {{ separator|raw }}
                                 {% elseif ( key == "acdh:hasAccessRestriction") %}
                                     <a href="{{ val.accessrestriction }}">{{ val.title }}</a> {{ separator|raw }}
                                 {% elseif (val.vocabsid) %}
