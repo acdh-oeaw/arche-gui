@@ -106,7 +106,7 @@
                             {% else %}    
                                 {% set separator = ',' %}
                             {% endif %}
-                                <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.id }}">{{ spatial.title }}</a></span> {{ separator|raw }}
+                            <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.repoid }}">{{ spatial.title }}</a></span> {{ separator|raw }}
                         {% endif %}
                     {% endfor %}
                 {% else %}
