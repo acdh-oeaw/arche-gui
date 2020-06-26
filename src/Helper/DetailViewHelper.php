@@ -30,7 +30,8 @@ class DetailViewHelper extends ArcheHelper
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
         
-        $this->extendActualObj();;
+        $this->extendActualObj();
+        ;
        
         if (count((array)$this->data) == 0) {
             return array();
