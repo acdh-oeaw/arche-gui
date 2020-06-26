@@ -61,6 +61,7 @@ WITH root_data as (
 	ELSE
 	 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang LIMIT 1)
 	 END) as description,
+	
 	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
 	from metadata as m
 	left join relations as r on r.id = m.id
@@ -74,7 +75,13 @@ WITH root_data as (
 		)
 ) select 
 rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
-(select mv.value from metadata_view as mv where mv.id = r.target_id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.value like 'http%')
+(CASE WHEN 
+		(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
+	THEN
+		(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
+	ELSE
+	 	(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
+	 END) as accessres
 from root_data as rd
 left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
 where rd.title is not null;
