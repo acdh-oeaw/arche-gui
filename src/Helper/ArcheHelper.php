@@ -126,7 +126,7 @@ abstract class ArcheHelper
                 $d->shortcut = $this->createShortcut($d->property);
                 
                 //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
-                if (isset($d->vocabsid) && !empty($d->vocabsid) ) {
+                if (isset($d->vocabsid) && !empty($d->vocabsid)) {
                     $d->uri = $d->vocabsid;
                     unset($d->insideUri);
                 }
