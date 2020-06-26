@@ -62,7 +62,6 @@ class ChildApiModel extends ArcheModel
                     ':lang' => $this->siteLang
                 )
             );
-            error_log(print_r($this->sqlTypes, true));
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

@@ -169,7 +169,7 @@ CREATE TEMP TABLE accessres AS (
 		from relations as r
 		left join metadata_view as mv on mv.id = r.target_id
 		where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-		and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.value like 'http%'
+		and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
 	) select * from acs
 );
 /* get only the collection resource and the parent id  and also the depth to we can build up the tree view */
@@ -232,6 +232,7 @@ LANGUAGE 'plpgsql';
 * _page = for paging, first page is 0
 * _orderby = the ordering property -> https://vocabs.acdh.oeaw.ac.at/schema#hasTitle
 * _lang = 'en' or 'de'
+* select * from gui.child_views_func('https://repo.hephaistos.arz.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
 CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
@@ -260,7 +261,7 @@ DROP TABLE IF EXISTS child_ids;
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
             ) description,
             (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
             (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
             (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
         from relations as r
