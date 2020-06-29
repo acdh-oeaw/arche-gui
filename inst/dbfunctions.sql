@@ -2,7 +2,8 @@
 * COUNT THE ROOTS
 * we need to count the root ids before we run the bigger sql
 **/
-CREATE OR REPLACE FUNCTION gui.count_root_views_func()
+DROP FUNCTION gui.count_root_views_func();
+CREATE FUNCTION gui.count_root_views_func()
   RETURNS table (id bigint)
 AS $func$
 DECLARE 
@@ -30,7 +31,8 @@ LANGUAGE 'plpgsql';
 * ROOT VIEW FUNCTION 
 * generate the arche gui root view list
 */
-CREATE OR REPLACE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
+DROP FUNCTION  gui.root_views_func(_lang text);
+CREATE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, titleimage text, description text, avDate timestamp, accesres text )
 AS $func$
 DECLARE 
@@ -96,7 +98,8 @@ LANGUAGE 'plpgsql';
 * Because we supporting the 3rd party identifiers too, like vicav, etc
 * execution time between: 140-171ms
 */
-CREATE OR REPLACE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
+DROP FUNCTION gui.detail_view_func(text, text);
+CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
     RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
     
 AS $func$
@@ -155,7 +158,8 @@ LANGUAGE 'plpgsql';
 * Generate the collection and child tree view data tree
 * _pid -> root resource ID
 */
-CREATE OR REPLACE FUNCTION gui.collection_views_func(_pid text, _lang text DEFAULT 'en' )
+DROP FUNCTION gui.collection_views_func(text, text);
+CREATE FUNCTION gui.collection_views_func(_pid text, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, depth integer)
 AS $func$
 BEGIN
@@ -234,7 +238,8 @@ LANGUAGE 'plpgsql';
 * _lang = 'en' or 'de'
 * select * from gui.child_views_func('https://repo.hephaistos.arz.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
-CREATE OR REPLACE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
+DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
+CREATE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$    
     DECLARE _lang2 text := 'de';
@@ -289,7 +294,8 @@ LANGUAGE 'plpgsql';
 * get the sum of the child gui view resources for the pager
 * _parentid = full url -> https://repo.hephaistos.arz.oeaw.ac.at/api/207984
 */
-CREATE OR REPLACE FUNCTION gui.child_sum_views_func(_parentid text,  _rdftype text[] DEFAULT '{}')
+DROP FUNCTION gui.child_sum_views_func(text, text[] );
+CREATE FUNCTION gui.child_sum_views_func(_parentid text,  _rdftype text[] DEFAULT '{}')
     RETURNS table (countid bigint)
 AS $func$
 
@@ -317,7 +323,8 @@ LANGUAGE 'plpgsql';
 * generate the data for the gui BREADCRUMB
 * mainid -> simple int as text -> '207984'
 */
-CREATE OR REPLACE FUNCTION gui.breadcrumb_view_func(_pid text, _lang text DEFAULT 'en' )
+DROP FUNCTION gui.breadcrumb_view_func(text, text );
+CREATE FUNCTION gui.breadcrumb_view_func(_pid text, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer)
 AS $func$
 BEGIN
@@ -365,7 +372,8 @@ LANGUAGE 'plpgsql';
 * Get Members API SQL
 * _repoid -> id of the root resource
 */
-CREATE OR REPLACE FUNCTION gui.get_members_func(_repoid text, _lang text DEFAULT 'en')
+DROP FUNCTION gui.get_members_func(text, text);
+CREATE FUNCTION gui.get_members_func(_repoid text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, title text)
 AS $func$
 DECLARE 
@@ -401,7 +409,8 @@ LANGUAGE 'plpgsql';
 * _acdhType = the array of the properties what we want to use during the search -> ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', 'https://vocabs.acdh.oeaw.ac.at/schema#Resource']
 * _acdhyears -> the selected years as a string for example => '2020 or 2019'
 */
-CREATE OR REPLACE FUNCTION gui.search_count_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _acdhyears text DEFAULT '')
+DROP FUNCTION gui.search_count_types_view_func(text[], text, text);
+CREATE FUNCTION gui.search_count_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _acdhyears text DEFAULT '')
   RETURNS table (id bigint)
 AS $func$
 DECLARE 
@@ -462,7 +471,8 @@ LANGUAGE 'plpgsql';
 * _acdhyears -> the selected years as a string for example => '2020 or 2019'
 * _limit _page _orderby _orderby_prop is for the paging
 */
-CREATE OR REPLACE FUNCTION gui.search_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhyears text DEFAULT '')
+DROP FUNCTION gui.search_types_view_func(text[], text, text, text, text, text, text);
+CREATE FUNCTION gui.search_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhyears text DEFAULT '')
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
 DECLARE 
@@ -547,7 +557,8 @@ LANGUAGE 'plpgsql';
 /**
 * Search years and types
 */
-CREATE OR REPLACE FUNCTION gui.search_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhtype text[] DEFAULT '{}')
+DROP FUNCTION gui.search_years_view_func(text, text, text, text, text, text, text[]);
+CREATE FUNCTION gui.search_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhtype text[] DEFAULT '{}')
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
 DECLARE 
@@ -626,7 +637,8 @@ LANGUAGE 'plpgsql';
 /**
 * Search words types and years
 */
-CREATE OR REPLACE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
+DROP FUNCTION gui.search_words_view_func(text, text, text, text, text, text, text[], text);
+CREATE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
 AS $func$
 
@@ -726,7 +738,8 @@ LANGUAGE 'plpgsql';
 /**
 ** WORD TYPE SEARCH COUNT
 **/
-CREATE OR REPLACE FUNCTION gui.search_count_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
+DROP FUNCTION gui.search_count_words_view_func(text, text, text[], text);
+CREATE FUNCTION gui.search_count_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
   RETURNS table (id bigint)
 AS $func$
 
@@ -798,8 +811,8 @@ LANGUAGE 'plpgsql';
 /**
 * API getDATA
 **/
-
-CREATE OR REPLACE FUNCTION gui.apiGetData(_class text, _searchStr text)
+DROP FUNCTION gui.apiGetData(text, text);
+CREATE FUNCTION gui.apiGetData(_class text, _searchStr text)
     RETURNS table (id bigint, property text, value text, lang text)
 AS $func$
 
@@ -827,7 +840,8 @@ LANGUAGE 'plpgsql';
 /**
 *  INVERSE TABLE SQL
 **/
-CREATE OR REPLACE FUNCTION gui.inverse_data_func(_identifier text, _lang text DEFAULT 'en')
+DROP FUNCTION gui.inverse_data_func(text, text);
+CREATE FUNCTION gui.inverse_data_func(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, property text, title text)
 AS $func$
 DECLARE 
@@ -860,8 +874,8 @@ LANGUAGE 'plpgsql';
 /**
 * TOOLTIP ONTOLOGY SQL
 **/
-
-CREATE OR REPLACE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
+DROP FUNCTION gui.ontology_func(text);
+CREATE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, description text, type text)
 AS $func$
 DECLARE 
@@ -892,7 +906,8 @@ LANGUAGE 'plpgsql';
 /**
 * COUNT THE binaries and main collections for the Ckeditor plugin
 **/
-CREATE OR REPLACE FUNCTION gui.count_binaries_collection_func()
+DROP FUNCTION gui.count_binaries_collection_func();
+CREATE FUNCTION gui.count_binaries_collection_func()
 RETURNS table (collections bigint, binaries bigint)
 AS $func$
 DECLARE 
@@ -940,7 +955,8 @@ LANGUAGE 'plpgsql';
 * _identifier = acdh id -> 3425
 * _lang = 'en' / 'de'
 **/
-CREATE OR REPLACE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
+DROP FUNCTION gui.related_publications_resources_views_func(text, text);
+CREATE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, acdhtype text)
 AS $func$
 DECLARE 
