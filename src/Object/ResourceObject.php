@@ -234,7 +234,7 @@ class ResourceObject
      *
      * @return string
      */
-    public function getTitleImage(): string
+    public function getTitleImage(string $width = '200px'): string
     {
         $img = '';
         if (isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
@@ -244,12 +244,12 @@ class ResourceObject
                         $type = fgets($file, 40);
                         if (!empty($type)) {
                             if (strpos(strtolower($type), 'svg') === false) {
-                                $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: 200px;" /> ';
+                                $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: '.$width.';" /> ';
                             } else {
                                 $imgBinary = '';
                                 if ($imgBinary = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
                                     if (!empty($imgBinary)) {
-                                        $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: 200px;" /> ';
+                                        $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: '.$width.';" /> ';
                                     }
                                 }
                             }

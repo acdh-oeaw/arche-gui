@@ -61,9 +61,9 @@
 
             {% if item.isTitleImage() %}	
                 <div class="res-inside-wrap col-lg-4 ">	
-                    <div class="single-res-thumb">
+                    <div class="single-res-thumb main-left-section">
                         <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
-                            {{ item.getTitleImage()|raw }}
+                            {{ item.getTitleImage('150px')|raw }}
                         </a>
                     </div>
                 </div>
