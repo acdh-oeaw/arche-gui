@@ -45,10 +45,10 @@
                 {{ "Copy Resource Link"|trans }}
             </span>
             <span id="copyLinkTextfield-wrapper">
-                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getRepoGuiUrl()}}">
+                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getCopyResourceLink()}}">
                     <i class="material-icons">&#xE14D;</i>
                 </span>
-                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getRepoGuiUrl() }}"/>
+                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getCopyResourceLink() }}"/>
             </span>
         </div>
         {% endif %}
