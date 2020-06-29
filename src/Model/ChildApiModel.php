@@ -52,7 +52,7 @@ class ChildApiModel extends ArcheModel
         //get the requested sorting
         try {
             $query = $this->repodb->query(
-                "select * from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
+                "select DISTINCT(id), title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
                     ':id' => $identifier,
                     ':limit' => $limit,

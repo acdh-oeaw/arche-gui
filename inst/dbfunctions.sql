@@ -130,7 +130,7 @@ BEGIN
             select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
             from metadata as m
             left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
             left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
             where dm.type = 'REL' 
         ) 
@@ -734,6 +734,59 @@ from wordsFinal as wf;
 END
 $func$
 LANGUAGE 'plpgsql';
+
+
+
+/**
+** YEARS SEARCH COUNT
+**/
+DROP FUNCTION gui.search_count_years_view_func(text, text, text[]);
+CREATE FUNCTION gui.search_count_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _acdhtype text[] DEFAULT '{}')
+RETURNS table (id bigint)
+AS $func$
+DECLARE	
+	_lang2 text := 'de';
+	_lang text := 'en';
+	
+	BEGIN
+
+DROP TABLE IF EXISTS  yearsids;
+CREATE TEMP TABLE yearsids AS (        
+WITH ids AS (
+	SELECT DISTINCT fts.id
+	FROM full_text_search as fts
+	WHERE 
+	(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' 
+	and
+	websearch_to_tsquery('simple', _acdhyears) @@ segments )
+	) select * from ids
+	);
+	
+DROP TABLE IF EXISTS  yearsidsFiltered;
+CREATE TEMP TABLE yearsidsFiltered AS (   
+WITH ids2 AS (    
+	select DISTINCT(i.id) from yearsids as i
+	left join full_text_search as fts on fts.id = i.id
+	WHERE
+		CASE WHEN 
+			_acdhtype  = '{}' THEN
+			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+			fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
+		WHEN _acdhtype  != '{}' THEN
+			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
+			fts.raw = ANY (_acdhtype) )
+		END
+	) select * from ids2
+);
+	
+RETURN QUERY
+select 
+Count(yf.id)
+from yearsidsFiltered as yf;
+END
+$func$
+LANGUAGE 'plpgsql';
+
 
 /**
 ** WORD TYPE SEARCH COUNT
