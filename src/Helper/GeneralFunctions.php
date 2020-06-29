@@ -234,7 +234,6 @@ class GeneralFunctions
     {
         $text = "";
         try {
-            
             $fileName = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/coll_dl_script/collection_download_repo.py';
             $text = @file_get_contents($fileName);
             if (empty($text)) {
