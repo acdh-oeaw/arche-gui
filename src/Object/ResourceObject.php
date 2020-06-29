@@ -326,10 +326,10 @@ class ResourceObject
      * Select the identifier for the Copy resource link
      * @return string
      */
-    public function getCopyResourceLink() : string 
+    public function getCopyResourceLink() : string
     {
         //check the pid
-        if(!empty($this->getPid())){
+        if (!empty($this->getPid())) {
             return $this->getPid();
         }
         $id = '';
@@ -340,16 +340,16 @@ class ResourceObject
                 //if we have acdh id then we pass that
                 if ((strpos($v->value, "/id.acdh.oeaw.ac.at/") !== false)) {
                     $id = $v->value;
-                } else if((strpos($v->value, $this->config->getBaseUrl()) === false)) {
+                } elseif ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
                     //if we dont have then we pass everything except the repourl based id
                     $otherid =  $v->value;
                 }
             }
         }
         
-        if(!empty($id)) {
+        if (!empty($id)) {
             return $id;
-        } elseif(!empty($otherid)) {
+        } elseif (!empty($otherid)) {
             return $otherid;
         }
        
