@@ -162,8 +162,11 @@ DROP FUNCTION gui.collection_views_func(text, text);
 CREATE FUNCTION gui.collection_views_func(_pid text, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, depth integer)
 AS $func$
+DECLARE
+    _lang2 text := 'de';
 BEGIN
 /* generate the accessrestriction values*/
+IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 DROP TABLE IF EXISTS accessres;
 CREATE TEMP TABLE accessres AS (
 	WITH acs as (
@@ -174,6 +177,7 @@ CREATE TEMP TABLE accessres AS (
 		left join metadata_view as mv on mv.id = r.target_id
 		where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
 		and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+                and mv.lang = _lang
 	) select * from acs
 );
 /* get only the collection resource and the parent id  and also the depth to we can build up the tree view */

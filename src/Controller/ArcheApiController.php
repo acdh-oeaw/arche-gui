@@ -348,7 +348,7 @@ class ArcheApiController extends ControllerBase
         if (empty($repoid)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
-        
+        $response = new Response();
         $obj = new \stdClass();
         $obj->repoid = $repoid;
         $obj->baseUrl = $this->repo->getBaseUrl();
@@ -358,10 +358,9 @@ class ArcheApiController extends ControllerBase
         $this->result = $this->helper->createView($this->modelData, 'inverse');
         
         if (count($this->result) == 0) {
-            return new JsonResponse(array("There is no resource"), 404, ['Content-Type'=> 'application/json']);
+            $this->result = array(array("There is no data", ""));
         }
         
-        $response = new Response();
         $response->setContent(json_encode(array('data' => $this->result)));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
@@ -516,7 +515,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('getRPR', $obj);
         
         if (count($this->modelData) == 0) {
-            $this->result = array(array("There is no data"));
+            $this->result = array(array("There is no data", ""));
             goto end;
         }
         

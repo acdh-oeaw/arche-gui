@@ -234,13 +234,12 @@ class GeneralFunctions
     {
         $text = "";
         try {
-            $fileName = $_SERVER["DOCUMENT_ROOT"].'/sites/default/files/coll_dl_script/collection_download_repo.py';
             
-            if (!file_exists($fileName)) {
+            $fileName = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/coll_dl_script/collection_download_repo.py';
+            $text = @file_get_contents($fileName);
+            if (empty($text)) {
                 return $text;
             }
-         
-            $text = file_get_contents($fileName);
             
             if (strpos($text, '{ingest.location}') !== false) {
                 $text = str_replace("{ingest.location}", $this->repo->getSchema()->ingest->location, $text);
