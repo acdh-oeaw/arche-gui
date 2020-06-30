@@ -256,7 +256,7 @@ class ResourceObject
     {
         $img = '';
         //check the thumbnail service first
-        if($acdhid = $this->getAcdhID()){
+        if ($acdhid = $this->getAcdhID()) {
             $acdhid = str_replace('http://', '', $acdhid);
             $acdhid = str_replace('https://', '', $acdhid);
             if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
