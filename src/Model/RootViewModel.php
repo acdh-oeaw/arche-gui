@@ -64,10 +64,10 @@ class RootViewModel extends ArcheModel
         try {
             $query = $this->repodb->query(
                 "SELECT 
-                    id, title, avdate, string_agg(DISTINCT description, '.') as description, accesres, titleimage
+                    id, title, avdate, string_agg(DISTINCT description, '.') as description, accesres, titleimage, acdhid
                 from gui.root_views_func( :lang ) 
                 where title is not null
-                group by id, title, avdate, accesres, titleimage
+                group by id, title, avdate, accesres, titleimage, acdhid
                 order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
                  ; ",
                 array(

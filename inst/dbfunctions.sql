@@ -33,7 +33,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION  gui.root_views_func(_lang text);
 CREATE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, titleimage text, description text, avDate timestamp, accesres text )
+  RETURNS table (id bigint, title text, titleimage text, description text, avDate timestamp, accesres text, acdhid text )
 AS $func$
 DECLARE 
     /* declare a second language variable, because if we dont have a value on the 
@@ -78,14 +78,16 @@ WITH root_data as (
 ) select 
 rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
 (CASE WHEN 
-		(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
-	THEN
-		(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
-	ELSE
-	 	(select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
-	 END) as accessres
+        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
+    THEN
+        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
+    ELSE
+        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
+END) as accessres,
+i.ids as acdhid
 from root_data as rd
 left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+left join identifiers as i on i.id = rd.id and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar)
 where rd.title is not null;
 END
 $func$

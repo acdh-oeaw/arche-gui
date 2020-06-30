@@ -399,6 +399,7 @@ class DisseminationServicesHelper extends ArcheHelper
      */
     private function collectionTarFiles(): bool
     {
+        ini_set('xdebug.max_nesting_level', 2000);
         //if we have files in the directory
         $dirFiles = scandir($this->collectionTmpDir.$this->collectionDate);
         if (count($dirFiles) > 0) {
@@ -426,11 +427,11 @@ class DisseminationServicesHelper extends ArcheHelper
                         $tar->add($d);
                     }
                 }
+                $this->collectionRemoveTempFiles();
             } catch (Exception $e) {
                 \Drupal::logger('acdh_repo_gui')->notice('collection tar files error:'.$e->getMessage());
                 return false;
             }
-            $this->collectionRemoveTempFiles();
             return true;
         }
         return false;
@@ -441,23 +442,21 @@ class DisseminationServicesHelper extends ArcheHelper
      */
     private function collectionRemoveTempFiles()
     {
-        if (is_dir($this->collectionTmpDir.$this->collectionDate)) {
-            $objects = scandir($this->collectionTmpDir.$this->collectionDate);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($this->collectionTmpDir.$this->collectionDate."/".$object) == "dir") {
-                        $this->collectionRemoveTempFiles($this->collectionTmpDir.$this->collectionDate."/".$object);
-                    } elseif (strpos($object, 'collection.tar') !== false) {
-                        continue;
-                    } else {
-                        if (file_exists($this->collectionTmpDir.$this->collectionDate."/".$object) && is_writable($this->collectionTmpDir.$this->collectionDate."/".$object)) {
-                            @unlink($this->collectionTmpDir.$this->collectionDate."/".$object);
-                        }
-                    }
+        //get the collection directory
+        $dir = $this->collectionTmpDir.$this->collectionDate;
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+        
+        foreach($files as $file) {
+            //remove the directory
+            if ($file->isDir()){
+                rmdir($file->getRealPath());
+            } else {
+                //if the file is the extracted collection then we will keep it
+                if (strpos($file->getRealPath(), '/collection.tar') === false) {
+                    unlink($file->getRealPath());
                 }
             }
-            reset($objects);
-            rmdir($this->collectionTmpDir.$this->collectionDate);
         }
     }
     

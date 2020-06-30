@@ -58,7 +58,18 @@ class RootViewHelper extends ArcheHelper
                             $v->id,
                             $v->id
                         )
+                    );
+                    
+                    if (isset($v->acdhid)) {
+                        $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
+                            $this->createObj(
+                                $v->id,
+                                $this->repo->getSchema()->__get('id'),
+                                $v->acdhid,
+                                $v->acdhid
+                            )
                         );
+                    }
                     
                     if (isset($v->title)) {
                         $this->data[$k]['acdh:hasTitle'][$lang] = array(
