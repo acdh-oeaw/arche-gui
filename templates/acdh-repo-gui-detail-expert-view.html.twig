@@ -68,7 +68,7 @@
                                 {% elseif (key == "acdh:hasDescription") %}
                                      {{ val.title }} {{ separator|raw }}
                                 {% elseif ( key == "acdh:hasAccessRestriction") %}
-                                    <a href="{{ val.accessrestriction }}">{{ val.title }}</a> {{ separator|raw }}
+                                    <a href="{{ val.vocabsid }}">{{ val.title }}</a> {{ separator|raw }}
                                 {% elseif (val.vocabsid) %}
                                     <a href="{{ val.vocabsid }}">{{ val.vocabsid }}</a> {{ separator|raw }}
                                 {% elseif (val.title is defined and val.insideUri is defined) %}

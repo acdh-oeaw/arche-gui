@@ -110,8 +110,8 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    {% if basic.getData('acdh:hasSpatialCoverage')[0].id %}
-                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].id }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
+                    {% if basic.getData('acdh:hasSpatialCoverage')[0].repoid %}
+                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].repoid }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
                     {% elseif basic.getData('acdh:hasSpatialCoverage')[0].title %}
                         <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</span>
                     {% else %}
@@ -156,7 +156,7 @@
         
     {% endif%}
     
-    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' %}
+    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project'  %}
         <!-- Related Publication(s) and Resource(s) VIEW -->
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
     {% endif%}

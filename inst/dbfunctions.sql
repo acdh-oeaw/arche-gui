@@ -1038,20 +1038,37 @@ WITH query_data as (
             END) 
         as title,
         mv.property
-	from metadata_view as mv
+	from metadata_view as mv	
 	where 
 	mv.property in (
 		'https://vocabs.acdh.oeaw.ac.at/schema#relation',
 		'https://vocabs.acdh.oeaw.ac.at/schema#continues',
 		'https://vocabs.acdh.oeaw.ac.at/schema#documents',
-		'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication',
-                'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',
+		'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',
 		'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
 	) 
 	and mv.value = _identifier
+	UNION
+	select 
+	DISTINCT(mv.id),
+	(CASE 
+            WHEN 
+                (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1) IS NULL
+            THEN
+                (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 LIMIT 1)
+            ELSE
+                (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
+            END) 
+        as title,
+        mv.property
+	from metadata_view as mv	
+	where 
+	mv.property  = 
+                'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication'
+	and mv.id = CAST(_identifier as bigint)
 	order by title
 ) select * from query_data;
 END

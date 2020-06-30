@@ -100,7 +100,6 @@
                         var result = v.split('/');
                         var resRestriction = result.slice(-1)[0];
                         if(!resRestriction) { resRestriction = "public"; }
-                        
                         if(  ((resRestriction != 'public') &&  resRestriction != actualUserRestriction) && actualUserRestriction != 'admin'){
                             userAllowedToDL === false;
                             disableChkArray.push(key+'_anchor');
@@ -111,7 +110,6 @@
                             if(!resourceGroupsData.hasOwnProperty(resRestriction)) {
                                 resourceGroupsData[resRestriction] = value.original.uri_dl;
                             }
-                            
                             disableChkIDArray.push(obj);
                             $("#"+value.id).css('color','red');
                             $("#collectionBrowser").jstree("uncheck_node", value.id);

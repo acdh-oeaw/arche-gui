@@ -12,6 +12,7 @@ class ResourceObject
     private $repoid;
     private $repoUrl;
     private $language;
+    private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
    
     public function __construct(array $data, $config, string $language = 'en')
     {
@@ -165,6 +166,23 @@ class ResourceObject
     }
     
     /**
+     * Get the resource acdh id
+     *
+     * @return string
+     */
+    public function getAcdhID(): string
+    {
+        if (isset($this->properties["acdh:hasIdentifier"])) {
+            foreach ($this->properties["acdh:hasIdentifier"] as $v) {
+                if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false) {
+                    return $v->value;
+                }
+            }
+        }
+        return "";
+    }
+    
+    /**
      * Get the full repo url with the identifier for the actual resource
      *
      * @return string
@@ -237,6 +255,21 @@ class ResourceObject
     public function getTitleImage(string $width = '200px'): string
     {
         $img = '';
+        //check the thumbnail service first
+        if($acdhid = $this->getAcdhID()){
+            $acdhid = str_replace('http://', '', $acdhid);
+            $acdhid = str_replace('https://', '', $acdhid);
+            if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
+                $type = fgets($file, 40);
+                if (!empty($type)) {
+                    $width = str_replace('px', '', $width);
+                    $img = $this->thumbUrl.$acdhid.'?width='.$width;
+                    return '<img src="'.$img.'" class="img-responsive">';
+                }
+            }
+        }
+        
+        //if there is no thumbnail servicees then we will download the image
         if (isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
             if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
                 if (!empty($this->properties["acdh:hasTitleImage"][0]->value)) {
