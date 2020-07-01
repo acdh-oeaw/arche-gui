@@ -282,7 +282,7 @@ msgid "which includes compliance with the licenses accompanying every Resource a
 msgstr "die die Einhaltung der Lizenzen, die jeder Ressource beiliegen, und die"
 
 msgid "European Code of Conduct for Research Integrity"
-msgstr "Einhaltung des Europäischen Verhaltenskodex für die Integrität der Forschung einschließen"
+msgstr "Einhaltung des Europäischen Verhaltenskodex für die Integrität der Forschung"
 
 msgid "How to Download"
 msgstr "Download-Vorgang"
@@ -320,5 +320,32 @@ msgstr "Die ausgewählten Dateien stehen für den Download bereit"
 msgid "You can select max. 4000 files!"
 msgstr "Sie können max. 4000 Dateien auswählen!"
 
-msgid "Max tar download limit is"
+msgid "Max. tar download limit is"
 msgstr "Max. tar Download-Limit ist"
+
+msgid "File(s)"
+msgstr "Datei(en)"
+
+msgid "Login error!"
+msgstr "Anmeldefehler!"
+
+msgid "Please re-enter your login credentials"
+msgstr "Bitte geben Sie Ihre Anmeldedaten erneut ein"
+
+msgid "Searched for type"
+msgstr "Gesucht nach Typ"
+
+msgid "type"
+msgstr "Typ"
+
+msgid "Searched for"
+msgstr "Gesucht nach"
+
+msgid "containing"
+msgstr "enthält"
+
+msgid "ACDH-CH runs a helpdesk offering advice for questions related to various digital humanities topics."
+msgstr "Das ACDH-CH bietet über das Helpdesk-Service Beratung bei Fragen zu Digital Humanities-bezogenen Themen an."
+
+msgid "ASK US!"
+msgstr "KONTAKT"
