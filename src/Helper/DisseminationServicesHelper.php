@@ -447,9 +447,9 @@ class DisseminationServicesHelper extends ArcheHelper
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
         
-        foreach($files as $file) {
+        foreach ($files as $file) {
             //remove the directory
-            if ($file->isDir()){
+            if ($file->isDir()) {
                 rmdir($file->getRealPath());
             } else {
                 //if the file is the extracted collection then we will keep it
