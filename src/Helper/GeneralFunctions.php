@@ -24,37 +24,6 @@ class GeneralFunctions
     
     /**
      *
-     * Check the data array for the PID, identifier or uuid identifier
-     *
-     * @param array $data
-     * @return string
-     */
-    public function createDetailViewUrl(array $data): string
-    {
-        //check the PID
-        if (isset($data['pid']) && !empty($data['pid'])) {
-            if (strpos($data['pid'], RC::get('epicResolver')) !== false) {
-                return $data['pid'];
-            }
-        }
-        
-        if (isset($data['identifier'])) {
-            //if we dont have pid then check the identifiers
-            $idArr = explode(",", $data['identifier']);
-            $uuid = "";
-            foreach ($idArr as $id) {
-                //the id contains the acdh uuid
-                if (strpos($id, RC::get('fedoraUuidNamespace')) !== false) {
-                    return $id;
-                }
-            }
-        }
-        
-        return "";
-    }
-    
-    /**
-     *
      * Encode or decode the detail view url
      *
      * @param string $uri
@@ -68,6 +37,7 @@ class GeneralFunctions
         }
       
         if ($code == 0) {
+            error_log(print_r($data, true));
             //if we have the repo id then we need to add the repo baseurl
             if (strpos($data, ':') === false) {
                 if (strpos($data, '&') !== false) {
@@ -160,8 +130,6 @@ class GeneralFunctions
     
     
     /**
-     * NOT CHANGED YET
-     *
      * This function is get the acdh identifier by the PID, because all of the functions
      * are using the identifier and not the pid :)
      *
@@ -169,16 +137,12 @@ class GeneralFunctions
      * @return string
      */
     private function specialIdentifierToUUID(string $identifier, bool $pid = false): string
-    {
+    {   
         $return = "";
-        $oeawStorage = new OeawStorage();
+        $model = new \Drupal\acdh_repo_gui\Model\GeneralFunctionsModel();
         
         try {
-            if ($pid === true) {
-                $idsByPid = $oeawStorage->getACDHIdByPid($identifier);
-            } else {
-                $idsByPid = $oeawStorage->getUUIDBySpecialIdentifier($identifier);
-            }
+            $idsByPid = $model->getViewData($identifier);
         } catch (Exception $ex) {
             drupal_set_message($ex->getMessage(), 'error');
             return "";
@@ -189,10 +153,7 @@ class GeneralFunctions
         
         if (count($idsByPid) > 0) {
             foreach ($idsByPid as $d) {
-                if (strpos((string)$d['id'], RC::get('fedoraIdNamespace')) !== false) {
-                    $return = $d['id'];
-                    break;
-                }
+                $return = $this->repo->getBaseUrl().$d->id;
             }
         }
         return $return;

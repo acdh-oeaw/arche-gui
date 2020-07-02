@@ -276,13 +276,13 @@ msgid "By downloading you agree to the"
 msgstr "Mit dem Download erklären Sie sich mit den"
 
 msgid "Terms of Use"
-msgstr "Nutzungsbedingungen einverstanden"
+msgstr "Nutzungsbedingungen"
 
 msgid "which includes compliance with the licenses accompanying every Resource and adhering to the"
-msgstr "die die Einhaltung der Lizenzen, die jeder Ressource beiliegen, und die"
+msgstr "einverstanden, einschließlich der Einhaltung der Lizenzen, die jeder Ressource beiliegen, und der Einhaltung des"
 
 msgid "European Code of Conduct for Research Integrity"
-msgstr "Einhaltung des Europäischen Verhaltenskodex für die Integrität der Forschung einschließen"
+msgstr "Europäischen Verhaltenskodex für die Integrität der Forschung"
 
 msgid "How to Download"
 msgstr "Download-Vorgang"
@@ -328,6 +328,9 @@ msgstr "Datei(en)"
 
 msgid "Login error!"
 msgstr "Anmeldefehler!"
+
+msgid "Login error"
+msgstr "Anmeldefehler"
 
 msgid "Please re-enter your login credentials"
 msgstr "Bitte geben Sie Ihre Anmeldedaten erneut ein"

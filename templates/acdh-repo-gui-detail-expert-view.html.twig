@@ -59,8 +59,6 @@
                                         <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
                                     {% elseif (val.vocabsid) %}
                                         <a href="{{ val.vocabsid }}">{{ val.vocabsid }}</a> {{ separator|raw }}
-                                    {%  elseif ('http://' in val.title) or ('https://' in val.title) %}    
-                                        <a href="{{ val.title }}">{{ val.title }}</a> {{ separator|raw }}
                                     {% else %}
                                         <a href="{{ val.repoid }}">{{ val.title }}</a> {{ separator|raw }}
                                     {% endif %} 
@@ -78,11 +76,7 @@
                                 {% elseif val.uri is defined %}
                                     <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
                                 {% elseif val.title is defined %}
-                                    {%  if ('http://' in val.title) or ('https://' in val.title) %}
-                                        <a href="{{ val.title }}">{{ val.title }}</a> {{ separator|raw }}
-                                    {% else %}
-                                        {{ val.title }} {{ separator|raw }}
-                                     {% endif %}   
+                                    {{ val.title }} {{ separator|raw }}
                                 {% else %}
                                     <!--  not an object -->
                                     {% if ( val is not defined ) %}
