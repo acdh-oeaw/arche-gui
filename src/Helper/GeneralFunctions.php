@@ -137,7 +137,7 @@ class GeneralFunctions
      * @return string
      */
     private function specialIdentifierToUUID(string $identifier, bool $pid = false): string
-    {   
+    {
         $return = "";
         $model = new \Drupal\acdh_repo_gui\Model\GeneralFunctionsModel();
         

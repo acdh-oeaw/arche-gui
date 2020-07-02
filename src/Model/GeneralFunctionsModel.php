@@ -31,7 +31,7 @@ class GeneralFunctionsModel extends ArcheModel
      */
     public function getViewData(string $identifier = ''): array
     {
-        if(empty($identifier)) {
+        if (empty($identifier)) {
             return array();
         }
         $this->identifier = $identifier;
@@ -44,7 +44,7 @@ class GeneralFunctionsModel extends ArcheModel
      * @return array
      */
     private function getRepoIdBySpecialID(): array
-    {   
+    {
         try {
             $query = $this->repodb->query(
                 "select id from identifiers where ids LIKE :id limit 1;",
