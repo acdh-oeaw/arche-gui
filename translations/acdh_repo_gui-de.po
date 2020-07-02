@@ -282,7 +282,7 @@ msgid "which includes compliance with the licenses accompanying every Resource a
 msgstr "die die Einhaltung der Lizenzen, die jeder Ressource beiliegen, und die"
 
 msgid "European Code of Conduct for Research Integrity"
-msgstr "Einhaltung des Europäischen Verhaltenskodex für die Integrität der Forschung"
+msgstr "Einhaltung des Europäischen Verhaltenskodex für die Integrität der Forschung einschließen"
 
 msgid "How to Download"
 msgstr "Download-Vorgang"

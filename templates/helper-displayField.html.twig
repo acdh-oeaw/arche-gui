@@ -18,10 +18,10 @@
          <span class="res-prop-value">
             {% if data is iterable %}
                 {% for value in data %}
-                    {% if (onlyurl)  %}
+                    {% if (url_only)  %}
                         <!-- only url and we have url value-->
                         {% if (value.uri)  %}
-                            <a id='archeHref' href="{{ value.uri }}">{{ value.uri }}</a>
+                            <a href="{{ value.uri }}" target="_blank">{{ value.uri }}</a>
                          {% else  %}
                              <!-- only url but just the title contains it-->
                              <a href="{{ value.title }}" target="_blank">{{ value.title }}</a>
