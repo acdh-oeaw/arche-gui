@@ -109,7 +109,8 @@ class ArcheApiHelper extends ArcheHelper
         foreach ($this->data as $obj) {
             $this->result[] = array(
                 0 => "<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>",
-                1 => $obj->acdhtype
+                1 => $obj->relatedtype,
+                2 => $obj->acdhtype
             );
         }
     }

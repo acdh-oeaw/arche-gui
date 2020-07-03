@@ -515,7 +515,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('getRPR', $obj);
         
         if (count($this->modelData) == 0) {
-            $this->result = array(array("There is no data", ""));
+            $this->result = array(array("There is no data", "", ""));
             goto end;
         }
         

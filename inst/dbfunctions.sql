@@ -1072,7 +1072,7 @@ LANGUAGE 'plpgsql';
 **/
 DROP FUNCTION gui.related_publications_resources_views_func(text, text);
 CREATE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, acdhtype text)
+  RETURNS table (id bigint, title text, relatedtype text, acdhtype text )
 AS $func$
 DECLARE 
     /* declare a second language variable, because if we dont have a value on the 
@@ -1095,7 +1095,8 @@ WITH query_data as (
                 (select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
             END) 
         as title,
-        mv.property
+		mv.property,
+		(select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
 	from metadata_view as mv	
 	where 
 	mv.property in (
@@ -1118,10 +1119,11 @@ WITH query_data as (
             THEN
                 (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 LIMIT 1)
             ELSE
-                (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
+                (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1)
             END) 
         as title,
-        mv.property
+		mv.property,
+		(select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
 	from metadata_view as mv	
 	where 
 	mv.property  = 

@@ -1,12 +1,29 @@
 
+{% set break = false %}
 {%  if data  is iterable %}
-    {% for key,value in data %}
-        {%  if key == 'title' and value == 'public' %}
-            <span class="green-dot" title="public"></span>
-        {%  elseif key == 'title' and value == 'academic' %}
-            <span class="orange-dot" title="academic"></span>
-        {%  elseif key == 'title' and value == 'restricted' %}
-            <span class="red-dot" title="restricted"></span>
+    {% for key,value in data if not break %}
+        {%  if key == 'vocabsid' %}
+            {%  if 'public' in value  %}
+                <span class="green-dot" title="public"></span>
+                {% set break = true %}
+            {%  elseif 'academic' in value %}
+                <span class="orange-dot" title="academic"></span>
+                {% set break = true %}
+            {%  elseif 'restricted' in value %}
+                <span class="red-dot" title="restricted"></span>
+                {% set break = true %}
+            {% endif%} 
+        {%  elseif key == 'title' %}
+            {%  if value == 'public' %}
+                <span class="green-dot" title="public"></span>
+                {% set break = true %}
+            {%  elseif value == 'academic' %}
+                <span class="orange-dot" title="academic"></span>
+                {% set break = true %}
+            {%  elseif value == 'restricted' %}
+                <span class="red-dot" title="restricted"></span>
+                {% set break = true %}
+            {% endif%} 
         {% endif%} 
     {% endfor%}
 {% endif%}

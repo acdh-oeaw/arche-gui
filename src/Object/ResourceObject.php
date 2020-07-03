@@ -235,12 +235,16 @@ class ResourceObject
         $result = array();
         if (isset($this->properties["acdh:hasAccessRestriction"])) {
             foreach ($this->properties["acdh:hasAccessRestriction"] as $v) {
+               
                 if (isset($v->title) && !empty($v->title)) {
                     $result['title'] = $v->title;
                 }
                 
                 if (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
                     $result['uri'] = $v->accessrestriction;
+                }
+                if (isset($v->vocabsid) && !empty($v->vocabsid)) {
+                    $result['vocabsid'] = $v->vocabsid;
                 }
             }
         }
