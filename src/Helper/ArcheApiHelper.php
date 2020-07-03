@@ -107,7 +107,6 @@ class ArcheApiHelper extends ArcheHelper
     {
         $this->result = array();
         foreach ($this->data as $obj) {
-            
             $this->result[] = array(
                 0 => "<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>",
                 1 => str_replace($this->repo->getSchema()->__get('namespaces')->ontology, '', $obj->relatedtype),
