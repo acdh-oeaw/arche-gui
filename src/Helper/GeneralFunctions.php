@@ -37,7 +37,6 @@ class GeneralFunctions
         }
       
         if ($code == 0) {
-            error_log(print_r($data, true));
             //if we have the repo id then we need to add the repo baseurl
             if (strpos($data, ':') === false) {
                 if (strpos($data, '&') !== false) {
@@ -252,6 +251,8 @@ class GeneralFunctions
         } catch (Exception $ex) {
             return array();
         } catch (\GuzzleHttp\Exception\ServerException $ex) {
+            return array();
+        } catch (\acdhOeaw\acdhRepoLib\exception\RepoLibException $ex) {
             return array();
         }
     }

@@ -256,6 +256,5 @@ class ChildApiModel extends ArcheModel
                 $this->sqlTypes = "";
             }
         }
-        error_log(print_r($this->sqlTypes, true));
     }
 }
