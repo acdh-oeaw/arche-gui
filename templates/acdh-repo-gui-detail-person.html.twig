@@ -79,7 +79,7 @@
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)", 'type': 'external_url', 'where_to_open': 'new_tab'} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
