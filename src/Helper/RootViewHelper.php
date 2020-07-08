@@ -42,10 +42,10 @@ class RootViewHelper extends ArcheHelper
         if (count((array)$data) > 0) {
             foreach ($data as $k => $v) {
                 //set up a basic language
-                $lang = 'en';                
+                $lang = 'en';
                 if (isset($v->language) && !empty($v->language)) {
                     $lang = $v->language;
-                }else {
+                } else {
                     $lang = $this->siteLang;
                 }
                 
@@ -158,7 +158,7 @@ class RootViewHelper extends ArcheHelper
     {
         $obj = new \stdClass();
         $obj->id = $id;
-        $obj->property = $property; 
+        $obj->property = $property;
         $obj->title = $title;
         $obj->value = $value;
         return $obj;
