@@ -27,7 +27,7 @@
                         {% if item.getData('acdh:hasAvailableDate') %}
                             {{ item.getPropTitle('acdh:hasAvailableDate') }}
                             <div class="res-property">
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date"  } ) }}
+                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date", 'type': 'date'  } ) }}
                             </div>
                         {% endif%}
                     {% endif%}
@@ -36,7 +36,7 @@
                 {% if item.getData('acdh:hasDescription') %}
                     <div class="res-property res-property-desc">
                         <span class="res-description">
-                             {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
                         </span>
                     </div>
                 {% endif%}

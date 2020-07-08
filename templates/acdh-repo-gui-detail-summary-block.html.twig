@@ -1,0 +1,54 @@
+{% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
+        <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
+        
+        {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasRelatedDiscipline'), 'icon': 'info_outline', 'label':  'Related Discipline(s)', 'type': 'vocabs' } ) 
+                }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasSubject')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasSubject'), 'icon': 'info_outline', 'label':  'Subject(s)', 'type': 'internal_url' } ) }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasSpatialCoverage') %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasSpatialCoverage'), 'icon': 'info_outline', 'label':  'Spatial Coverage', 'type': 'internal_url' } ) }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasCoverageStartDate'), 'icon': 'info_outline', 'label':  'Coverage Start Date', 'type': 'date', 'dateformat': 'Y' } ) }}
+            </div>
+        {% endif %}
+
+        {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasCoverageEndDate'), 'icon': 'info_outline', 'label':  'Coverage End Date', 'type': 'date', 'dateformat': 'Y' } ) }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasDescription')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasDescription'), 'icon': 'info_outline', 'label':  'Description', 'type': 'text' } ) }}
+            </div>
+        {% endif %}
+        
+        {% if basic.getData('acdh:hasNote')[0] %}
+            <div class="res-property">
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasNote'), 'icon': 'info_outline', 'label':  'Note', 'type': 'text' } ) }}
+            </div>
+        {% endif %}
+        
+    {% endif%}

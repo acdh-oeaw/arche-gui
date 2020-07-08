@@ -1,55 +1,50 @@
-
 {% 
 set properties = {
     'acdh:hasUrl': {
 	'icon': 'web',
         'label': 'Url',
-        'url_only': false, 
-        'repoid': true
+        'type': 'external_url',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasContact': {
         'icon': 'person_add',
         'label': 'Contact(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasFunder': {
         'icon': 'attach_money',
         'label': 'Funder',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasPrincipalInvestigator': {
         'icon': 'perm_identity',
         'label': 'Principal Investigator(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasStartDate': {
         'icon': 'today',
         'label': 'Start Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasEndDate': {
         'icon': 'today',
         'label': 'End Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasLanguage': {
         'icon': 'flag',
         'label': 'Language',
-        'url_only': false
+        'type': 'vocabs'
     },
     'acdh:hasLifeCycleStatus': {
         'icon': 'history',
         'label': 'Life Cycle Status',
-        'url_only': false
+        'type': 'vocabs'
     }
 }
 %}
-
 
 {% 
 set furtherProperties = {
@@ -137,22 +132,22 @@ set furtherProperties = {
             
             {%  if basic.getData('acdh:hasAlternativeTitle') %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title" } ) }}
                 </div>
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
                 </div>
             {% endif%}
-             
+           
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid, 'dateformat': value.dateformat } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                 {% endif%}
             {% endfor %}
-            
+
         {% if basic.isTitleImage() %}</div>{% endif%}
         
         {% if basic.isTitleImage() %}	

@@ -31,6 +31,8 @@ class ResourceObject
                 }
             }
         }
+        
+        //set acdhid /repoid / repourl
     }
     
     /**

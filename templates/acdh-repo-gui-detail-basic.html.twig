@@ -3,151 +3,143 @@
     'acdh:hasPrincipalInvestigator': {
         'icon': 'device_hub',
         'label': 'Principal Investigator(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasContact': {
 	'icon': 'person_add',
         'label': 'Contact(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasEditor': {
         'icon': 'people',
         'label': 'Editor(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasAuthor': {
         'icon': 'people',
         'label': 'Author(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasCreator': {
         'icon': 'people',
         'label': 'Creator(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasContributor': {
         'icon': 'person',
         'label': 'Contributor(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasCreatedDate': {
         'icon': 'today',
         'label': 'Created Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasCreatedStartDate': {
         'icon': 'today',
         'label': 'Created Start Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasCreatedEndDate': {
         'icon': 'today',
         'label': 'Created End Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasAvailableDate': {
         'icon': 'today',
         'label': 'Available Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasExtent': {
         'icon': 'dehaze',
         'label': 'Extent',
-        'url_only': false
+        'type': 'text'
     },
 
     'acdh:hasNumberOfItems': {
         'icon': 'attachment',
         'label': 'Number of Items',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasBinarySize': {
         'icon': 'attachment',
         'label': 'Binary Size',
-        'url_only': false,
-        'isbinary': 'binary'
+        'type': 'binary'
     },
     'acdh:hasCategory': {
         'icon': 'sort',
         'label': 'Category',
-        'url_only': false
+        'type': 'internal_url'
     },
     'acdh:hasLicensor': {
         'icon': 'copyright',
         'label': 'Licensor',
-        'url_only': false, 
-        'repoid': true      
+        'type': 'internal_url'
     },
     'acdh:hasLicense': {
         'icon': 'copyright',
         'label': 'License',
-        'external_url_title': true
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasAccessRestriction': {
         'icon': 'copyright',
         'label': 'Access Restriction',
-        'external_url_title': true
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasSchema': {
         'icon': 'format_list_bulleted',
         'label': 'Schema',
-        'url_only': false
+        'type': 'internal_url'
     },
     'acdh:hasMetadata': {
         'icon': 'assignment',
         'label': 'Metadata',
-        'url_only': false
+        'type': 'internal_url'
     },
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url',
-        'url_only': true
+        'type': 'external_url'
     },
     'acdh:hasPid': {
         'icon': 'fingerprint',
         'label': 'PID',
-        'url_only': true
+        'type': 'external_url'
     },
     'acdh:hasRelatedProject': {
         'icon': 'track_changes',
         'label': 'Related Project(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:isPartOf': {
         'icon': 'device_hub',
         'label': 'Part of',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:isDerivedFrom': {
         'icon': 'device_hub',
         'label': 'Derived from',
-        'url_only': false
+        'type': 'internal_url'
     },
     'rdfs:seeAlso': {
         'icon': 'library_books',
         'label': 'See Also',
-        'url_only': false
+        'type': 'internal_url'
     },
     'acdh:hasCurator': {
         'icon': 'people',
         'label': 'Curator(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     }
 }
 %}
+
 
 <div class="arche-detail-view" >
     
@@ -177,22 +169,23 @@
             
             {%  if basic.getData('acdh:hasAlternativeTitle') %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                        {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title" } ) }}
                 </div>
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                        {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
                 </div>
             {% endif%}
        
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'dateformat': value.dateformat, 'isbinary': value.isbinary, 'repoid': value.repoid, 'external_url_title': value.external_url_title } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                 {% endif%}
             {% endfor %}
-            
             
         {% if basic.isTitleImage() %}</div>{% endif%}
         

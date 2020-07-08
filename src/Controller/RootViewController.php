@@ -49,7 +49,7 @@ class RootViewController extends ControllerBase
         if (count((array)$data) == 0) {
             return array();
         }
-    
+       
         $numPage = ceil((int)$this->numberOfRoots / (int)$limit);
         
         $pagination = '';

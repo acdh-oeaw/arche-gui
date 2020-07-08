@@ -41,15 +41,15 @@ class RootViewHelper extends ArcheHelper
     {
         if (count((array)$data) > 0) {
             foreach ($data as $k => $v) {
-                $lang = 'en';
-                if (isset($d->language)) {
-                    if (!empty($d->language)) {
-                        $lang = $d->language;
-                    } else {
-                        $lang = $this->siteLang;
-                    }
+                //set up a basic language
+                $lang = 'en';                
+                if (isset($v->language) && !empty($v->language)) {
+                    $lang = $v->language;
+                }else {
+                    $lang = $this->siteLang;
                 }
                 
+                //create the acdh:hasIdentifier value from the id
                 if (isset($v->id)) {
                     $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
                         $this->createObj(
@@ -60,6 +60,7 @@ class RootViewHelper extends ArcheHelper
                         )
                     );
                     
+                    // Add the acdhid to the acdh:hasIdentifier array too
                     if (isset($v->acdhid)) {
                         $this->data[$k]['acdh:hasIdentifier'][$lang] = array(
                             $this->createObj(
@@ -71,16 +72,19 @@ class RootViewHelper extends ArcheHelper
                         );
                     }
                     
+                    // create the acdh:hasTitle
                     if (isset($v->title)) {
                         $this->data[$k]['acdh:hasTitle'][$lang] = array(
-                        $this->createObj(
-                            $v->id,
-                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle",
-                            $v->title,
-                            $v->title
-                        )
+                            $this->createObj(
+                                $v->id,
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle",
+                                $v->title,
+                                $v->title
+                            )
                         );
                     }
+                    
+                    // create the acdh:hasAvailableDate
                     if (isset($v->avdate)) {
                         $this->data[$k]['acdh:hasAvailableDate'][$lang] = array(
                             $this->createObj(
@@ -89,8 +93,10 @@ class RootViewHelper extends ArcheHelper
                                 $v->avdate,
                                 $v->avdate
                             )
-                            );
+                        );
                     }
+                    
+                    // create the acdh:hasDescription
                     if (isset($v->description)) {
                         $this->data[$k]['acdh:hasDescription'][$lang] = array(
                             $this->createObj(
@@ -99,8 +105,10 @@ class RootViewHelper extends ArcheHelper
                                 $v->description,
                                 $v->description
                             )
-                            );
+                        );
                     }
+                    
+                    // create the acdh:hasAccessRestriction
                     if (isset($v->accesres)) {
                         $this->data[$k]['acdh:hasAccessRestriction'][$lang] = array(
                             $this->createObj(
@@ -109,8 +117,10 @@ class RootViewHelper extends ArcheHelper
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres),
                                 $v->accesres
                             )
-                            );
+                        );
                     }
+                    
+                    // create the acdh:hasTitleImage
                     if (isset($v->titleimage)) {
                         $this->data[$k]['acdh:hasTitleImage'][$lang] = array(
                             $this->createObj(
@@ -119,16 +129,18 @@ class RootViewHelper extends ArcheHelper
                                 $v->titleimage,
                                 $v->titleimage
                             )
-                            );
+                        );
                     }
+                    
+                    // create the rdf:type because all of them will be a collection / or later we can extend the sql result with this
                     $this->data[$k]['rdf:type'][$lang] = array(
-                            $this->createObj(
-                                $v->id,
-                                'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
-                            )
-                            );
+                        $this->createObj(
+                            $v->id,
+                            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
+                        )
+                    );
                 }
             }
         }
@@ -146,7 +158,7 @@ class RootViewHelper extends ArcheHelper
     {
         $obj = new \stdClass();
         $obj->id = $id;
-        $obj->property = $property; //;
+        $obj->property = $property; 
         $obj->title = $title;
         $obj->value = $value;
         return $obj;

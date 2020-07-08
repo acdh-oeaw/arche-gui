@@ -78,89 +78,17 @@
     {% if dissemination %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
     {% endif %}
-        
-    {% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
-        <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
-        
-        {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}
-            <div class="res-property">
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasRelatedDiscipline'), 'icon': 'info_outline', 'label':  'Related Discipline(s)', 'url_only': true, 'repoid': true } ) }}
-            </div>
-        {% endif %}
-        
-        {% if basic.getData('acdh:hasSubject')[0] %}
-            <div class="res-property">
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasSubject'), 'icon': 'info_outline', 'label':  'Subject(s)', 'url_only': false, 'repoid': true } ) }}
-            </div>
-        {% endif %}
-        
-        {% if basic.getData('acdh:hasSpatialCoverage') %}
-            <div class="res-property">
-                <i class="material-icons">info_outline</i>
-                <span class="res-prop-label">{{ "Spatial Coverage"|trans }}:&nbsp;&nbsp;</span>
-                {% if basic.getData('acdh:hasSpatialCoverage') is iterable and basic.getData('acdh:hasSpatialCoverage')|length > 1 %}
-                    {% for spatial in basic.getData('acdh:hasSpatialCoverage') %}
-                        {% if spatial.id and spatial.title %}
-                            {% if (loop.length <= loop.index)  %}
-                                {% set separator = '' %}
-                            {% else %}    
-                                {% set separator = ',' %}
-                            {% endif %}
-                            <span class="res-prop-value"><a href="/browser/oeaw_detail/{{spatial.repoid }}">{{ spatial.title }}</a></span> {{ separator|raw }}
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% if basic.getData('acdh:hasSpatialCoverage')[0].repoid %}
-                        <span class="res-prop-value"><a id='archeHref' href="/browser/oeaw_detail/{{ basic.getData('acdh:hasSpatialCoverage')[0].repoid }}">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</a></span>
-                    {% elseif basic.getData('acdh:hasSpatialCoverage')[0].title %}
-                        <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].title }}</span>
-                    {% else %}
-                            <span class="res-prop-value">{{ basic.getData('acdh:hasSpatialCoverage')[0].value }}</span>
-                    {% endif %}
-                    
-                {% endif %}
-            </div>
-        {% endif %}
-        
-        {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
-            <div class="res-property">
-                <i class="material-icons">info_outline</i>
-                <span class="res-prop-label">{{ "Coverage Start Date"|trans }}:&nbsp;&nbsp;</span>
-                <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageStartDate', 'Y') }}</span>
-            </div>
-        {% endif %}
-
-        {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
-            <div class="res-property">
-                <i class="material-icons">info_outline</i>
-                <span class="res-prop-label">{{ "Coverage End Date"|trans }}:&nbsp;&nbsp;</span>
-                <span class="res-prop-value">{{ basic.getFormattedDateByProperty('acdh:hasCoverageEndDate', 'Y') }}</span>
-            </div>
-        {% endif %}
-        
-        {% if basic.getData('acdh:hasDescription')[0] %}
-            <div class="res-property">
-                <i class="material-icons">info_outline</i>
-                <span class="res-prop-label">{{ "Description"|trans }}:&nbsp;&nbsp;</span>
-                <span class="res-prop-value">{{ basic.getData('acdh:hasDescription')[0].title|nl2br }}</span>
-            </div>
-        {% endif %}
-        
-        {% if basic.getData('acdh:hasNote')[0] %}
-            <div class="res-property">
-                <i class="material-icons">info_outline</i>
-                <span class="res-prop-label">{{ "Note"|trans }}:&nbsp;&nbsp;</span>
-                <span class="res-prop-value">{{ basic.getData('acdh:hasNote')[0].value }}</span>
-            </div>
-        {% endif %}
-        
-    {% endif%}
     
+    <!-- SUMMARY BLOCK -->
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-summary-block.html.twig', {'basic': basic } ) }}
+    
+    <!-- RELATED PUBLICATIONS AND RESOURCES BLOCK -->
     {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project'  %}
         <!-- Related Publication(s) and Resource(s) VIEW -->
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
     {% endif%}
     
+    <!-- CITE BLOCK -->
     {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
             or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
         {% if extra.citeWidgetData %}

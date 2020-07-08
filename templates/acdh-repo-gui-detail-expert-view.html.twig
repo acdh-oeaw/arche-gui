@@ -1,3 +1,101 @@
+{% set properties = {
+    'acdh:hasAccessRestriction': {
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
+    },
+    'acdh:hasActor': {
+        'type': 'internal_url'
+    },
+    'acdh:hasAuthor': {
+        'type': 'internal_url'
+    },
+    'acdh:hasBinarySize': {
+        'type': 'binary'
+    },
+    'acdh:hasCurator': {
+        'type': 'internal_url'
+    },
+    'acdh:hasCreator': {
+        'type': 'internal_url'
+    },
+    'acdh:hasContact': {
+        'type': 'internal_url'
+    },
+    'acdh:hasDepositor': {
+        'type': 'internal_url'
+    },
+    'acdh:hasDerivedPublication': {
+        'type': 'text'
+    },
+    'acdh:hasEditor': {
+        'type': 'internal_url'
+    },
+    'acdh:hasFunder': {
+        'type': 'internal_url'
+    },
+    'acdh:hasHosting': {
+        'type': 'internal_url'
+    },
+    'acdh:hasIdentifier': {
+        'type': 'external_url'
+    },
+    'acdh:hasLanguage': {
+        'type': 'vocabs'
+    },
+    'acdh:hasLicense': {
+        'type': 'vocabs'
+    },
+    'acdh:hasLicensor': {
+        'type': 'internal_url'
+    },
+    'acdh:hasLifeCycleStatus': {
+        'type': 'vocabs'
+    },
+    'acdh:hasMetadataCreator': {
+        'type': 'internal_url'
+    },
+    'acdh:hasNumberOfItems': {
+        'type': 'text'
+    },
+    'acdh:hasOwner': {
+        'type': 'internal_url'
+    },
+    'acdh:hasPrincipalInvestigator': {
+        'type': 'internal_url'
+    },
+    'acdh:hasRelatedDiscipline': {
+        'type': 'vocabs'
+    },
+    'acdh:hasRightsHolder': {
+        'type': 'internal_url'
+    },
+    'acdh:hasSpatialCoverage': {
+        'type': 'internal_url'
+    },
+    'acdh:hasTitleImage': {
+        'type': 'internal_url'
+    },
+    'acdh:hasUrl': {
+        'type': 'external_url'
+    },
+    'acdh:hasPid': {
+        'type': 'external_url'
+    },
+    'acdh:hasRelatedProject': {
+        'type': 'internal_url'
+    },
+    'acdh:isPartOf': {
+        'type': 'internal_url'
+    },
+    'acdh:isDerivedFrom': {
+        'type': 'internal_url'
+    },
+    'rdfs:seeAlso': {
+        'type': 'internal_url'
+    }   
+}
+%}
+
 <!-- expert view -->
 <div class="single-res-overview single-res-overview-expert">
     
@@ -38,54 +136,10 @@
                         {% endif %}
                     </td>
                     <td width='60%'>
-                        
-                            {% if ( (key == "acdh:hasDescription") or (key == "acdh:hasAppliedMethodDescription") or (key == "acdh:hasTechnicalInfo") )  %}
-                                {% set separator = '<br/>' %}
-                            {% else  %}
-                                {% set separator = ', ' %}
-                            {% endif %}
-                            
-                            {% for val in value %}
-                                {% if (loop.length <= loop.index)  %}
-                                    {% set separator = '' %}
-                                {% endif %}
-
-                                {% if ( 
-                                    (key == "acdh:hasPid") or (key == "acdh:hasCategory") or (key == "acdh:hasLifeCycleStatus") or
-                                    (key == "acdh:hasLanguage") or (key == "acdh:hasRelatedDiscipline") or (key == "acdh:hasCategory")
-                                 )  %}
-                                 
-                                    {%  if ( val.uri ) %}     
-                                        <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
-                                    {% elseif (val.vocabsid) %}
-                                        <a href="{{ val.vocabsid }}">{{ val.vocabsid }}</a> {{ separator|raw }}
-                                    {% else %}
-                                        <a href="{{ val.repoid }}">{{ val.title }}</a> {{ separator|raw }}
-                                    {% endif %} 
-                                    
-                                {% elseif (key == "acdh:hasDescription") %}
-                                     {{ val.title }} {{ separator|raw }}
-                                {% elseif ( key == "acdh:hasAccessRestriction") %}
-                                    <a href="{{ val.vocabsid }}">{{ val.title }}</a> {{ separator|raw }}
-                                {% elseif (val.vocabsid) %}
-                                    <a href="{{ val.vocabsid }}">{{ val.vocabsid }}</a> {{ separator|raw }}
-                                {% elseif (val.title is defined and val.insideUri is defined) %}
-                                    <a href="/browser/oeaw_detail/{{ val.insideUri }}">{{ val.title }} </a>  {{ separator|raw }}
-                                {% elseif (val.title is defined and val.uri is defined) %}
-                                    <a href="{{ val.uri }}">{{ val.title }}</a> {{ separator|raw }}
-                                {% elseif val.uri is defined %}
-                                    <a href="{{ val.uri }}">{{ val.uri }}</a> {{ separator|raw }}
-                                {% elseif val.title is defined %}
-                                    {{ val.title }} {{ separator|raw }}
-                                {% else %}
-                                    <!--  not an object -->
-                                    {% if ( val is not defined ) %}
-                                        {{ val }}
-                                    {% endif %}
-                                        
-                                {% endif %}
-                           {% endfor %} 
-                        
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                            {'data': value, 'type':properties[key].type, 'dateformat': properties[key].dateformat, 'delimiter': properties[key].delimiter, 'where_to_open': properties[key].where_to_open } 
+                            ) 
+                        }}  
                     </td>
                 </tr>
             {% endfor %}

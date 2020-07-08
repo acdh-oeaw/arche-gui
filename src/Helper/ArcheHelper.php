@@ -96,17 +96,15 @@ abstract class ArcheHelper
       
         foreach ($this->data as $d) {
             
-            
             //add the language to every resource
             $lang = 'en';
-            if (isset($d->language)) {
-                if (!empty($d->language)) {
-                    $lang = $d->language;
-                } else {
-                    $lang = $this->siteLang;
-                }
+            if (isset($d->language) && (!empty($d->language))) {
+                $lang = $d->language;
+            } else {
+                $lang = $this->siteLang;
             }
-            
+            // if we have an external type then the repoid will be the value
+            //because we will use their own id for the  linking
             if (isset($d->type) && !empty($d->type) && $d->type == "REL") {
                 $d->repoid = "";
                 $d->repoid = $d->value;

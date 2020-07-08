@@ -1,45 +1,43 @@
-
 {% set properties = {
     'acdh:hasAddressLine1': {
         'icon': 'subtitles',
         'label': 'Address',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasAddressLine2': {
         'icon': 'subtitles',
         'label': 'Address',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:Postcode': {
         'icon': 'subtitles',
         'label': 'Postcode',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasCity': {
         'icon': 'subtitles',
         'label': 'City',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasRegion': {
         'icon': 'subtitles',
         'label': 'Region',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasCountry': {
 	'icon': 'subtitles',
         'label': 'Country',
-        'url_only': false
+        'type': 'text'
     },   
     'acdh:hasPart': {
         'icon': 'subtitles',
         'label': 'Part',
-        'url_only': false
+        'type': 'internal_url'
     },
     'acdh:isPartOf': {
         'icon': 'device_hub',
         'label': 'Part of',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     }
 }
 %}
@@ -48,17 +46,17 @@
     'acdh:hasLatitude': {
 	'icon': '',
         'label': 'Latitude',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasLongitude': {
         'icon': '',
         'label': 'Longitude',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasWKT': {
         'icon': '',
         'label': 'WKT',
-        'url_only': false
+        'type': 'text'
     }
 }
 %}
@@ -88,22 +86,21 @@
                         
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
                 </div>
             {% endif%}
-                        
+            
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                 {% endif%}
             {% endfor %}
             
-            
             <h3 class="single-res-heading">{{ "Spatial Information"|trans }}</h3>
-            
+
             {% for key, value in extProperties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                 {% endif%}
             {% endfor %}
             

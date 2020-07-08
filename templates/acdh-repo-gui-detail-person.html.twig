@@ -3,45 +3,45 @@
     'acdh:hasAddressLine1': {
         'icon': 'subtitles',
         'label': 'Address',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasAddressLine2': {
         'icon': 'subtitles',
         'label': 'Address',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:Postcode': {
         'icon': 'subtitles',
         'label': 'Postcode',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasCity': {
         'icon': 'subtitles',
         'label': 'City',
         'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasRegion': {
         'icon': 'subtitles',
         'label': 'Region',
         'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasCountry': {
 	'icon': 'subtitles',
         'label': 'Country',
         'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasEmail': {
         'icon': 'subtitles',
         'label': 'Email',
-        'url_only': false
+        'type': 'text'
     },
     'acdh:hasUrl': {
         'icon': 'subtitles',
         'label': 'Url',
-        'url_only': true
+        'type': 'external_url'
     }
 }
 %}
@@ -60,7 +60,8 @@
             {% endif%} 
 
             {%  if basic.getData('acdh:hasPersonalTitle') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasPersonalTitle'), 'icon': "title", 'label': "Personal Title"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasPersonalTitle'), 'icon': "title", 'label': "Personal Title"} ) }}
             {% endif%}
             
             {% if basic.getAcdhType() %}
@@ -74,15 +75,15 @@
             {% endif%}
             
             {%  if basic.getData('acdh:hasAlternativeTitle') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'repoid': true} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'type': 'inside_url' } ) }}
             {% endif%}
     
             {%  if (properties) %}
@@ -90,9 +91,10 @@
 
                 {% for key, value in properties %}
                     {% if basic.getData(key) %}
-                         {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid } ) }}
+                         {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                     {% endif%}
                 {% endfor %}
+                
             {% endif%}
             
         {% if basic.isTitleImage() %}</div>{% endif%}

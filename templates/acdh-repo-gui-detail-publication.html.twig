@@ -3,79 +3,68 @@
     'acdh:hasAuthor': {
         'icon': 'people',
         'label': 'Author(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasEditor': {
         'icon': 'people',
         'label': 'Editor(s)',
-        'url_only': false, 
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasSeriesInformation': {
         'icon': 'info',
         'label': 'Series Information',
-        'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasPages': {
         'icon': 'wallpaper',
         'label': 'Pages',
-        'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasAvailableDate': {
         'icon': 'today',
         'label': 'Available Date',
-        'url_only': false,
+        'type': 'date',
         'dateformat': 'd M Y'
     },
     'acdh:hasCity': {
         'icon': 'subtitles',
         'label': 'City',
-        'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasRegion': {
         'icon': 'subtitles',
         'label': 'Region',
-        'url_only': false, 
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasPublisher': {
 	'icon': 'person_add',
         'label': 'Publisher(s)',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasNonLinkedIdentifier': {
 	'icon': 'label',
         'label': 'NonLinked Identifier',
-        'url_only': false,
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url',
-        'url_only': false,
-        'repoid': true
+        'type': 'external_url'
     },
     'acdh:hasEditorialPractice': {
         'icon': 'person_add',
         'label': 'Editorial Practice',
-        'url_only': false,
-        'repoid': true
+        'type': 'internal_url'
     },
     'acdh:hasNote': {
         'icon': 'info_outline',
         'label': 'Note',
-        'url_only': false,
-        'repoid': true
+        'type': 'text'
     },
     'acdh:hasLanguage': {
         'icon': 'flag',
         'label': 'Language',
-        'url_only': false
+        'type': 'vocabs'
     }
 }
 %}
@@ -104,21 +93,21 @@
             {% endif%}
             
             {%  if basic.getData('acdh:hasAlternativeTitle') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
                 </div>
             {% endif%}
-            
+                       
             {% for key, value in properties %}
                 {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'url_only': value.url_only, 'repoid': value.repoid, 'dateformat': value.dateformat } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
                 {% endif%}
             {% endfor %}
-            
+           
             
         {% if basic.isTitleImage() %}</div>{% endif%}
         

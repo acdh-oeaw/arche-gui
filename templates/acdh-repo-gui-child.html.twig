@@ -101,7 +101,7 @@
                 {% if item.getData('acdh:hasDescription') %}
                     <div class="res-property res-property-desc">
                         <span class="res-description">
-                             {{ include('/modules/contrib/arche-gui/templates/helper-displayField.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
                         </span>
                     </div>
                 {% endif%}
