@@ -212,7 +212,7 @@ class ArcheApiModel extends ArcheModel
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         
         $project = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
-        $collection = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;        
+        $collection = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;
         $resource = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
         $metadata = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Metadata')->properties;
         $image = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Image')->properties;
@@ -222,7 +222,7 @@ class ArcheApiModel extends ArcheModel
         $person = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Person')->properties;
         
         return array(
-            'project' => $project, 'collection' => $collection, 
+            'project' => $project, 'collection' => $collection,
             'resource' => $resource, 'metadata' => $metadata,
             'image' => $image, 'publication' => $publication,
             'place' => $place, 'organisation' => $organisation,

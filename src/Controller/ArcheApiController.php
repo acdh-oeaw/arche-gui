@@ -543,13 +543,13 @@ class ArcheApiController extends ControllerBase
         $obj->language = $lng;
         //get the data
         $this->modelData = $this->model->getViewData('rootTable', $obj);
-        if(count($this->modelData) == 0) {
+        if (count($this->modelData) == 0) {
             $response->setContent('No data!');
             $response->setStatusCode(200);
         }
         
         $this->result = $this->helper->createView($this->modelData, 'rootTable', $lng);
-        if(isset($this->result[0]) && !empty($this->result[0])) {
+        if (isset($this->result[0]) && !empty($this->result[0])) {
             $response->setContent($this->result[0]);
             $response->setStatusCode(200);
         } else {
@@ -563,5 +563,4 @@ class ArcheApiController extends ControllerBase
         $response->send();
         return $response;
     }
-    
 }

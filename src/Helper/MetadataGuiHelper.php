@@ -249,7 +249,7 @@ class MetadataGuiHelper
     
     /**
      * Get the root table data
-     * 
+     *
      * @param array $data
      * @param string $lang
      * @return string
@@ -261,121 +261,122 @@ class MetadataGuiHelper
         return $this->createRootTableHtml();
     }
     
-    private function createRootTableHtml(): string {
+    private function createRootTableHtml(): string
+    {
         $html = '';
         if (count($this->data)) {
             // Open the table
             $html .= "<table border='1'>";
-                $html .= '<tr>';
-                    $html .= '<td>Property</td>';
-                    $html .= '<td>Project</td>';
-                    $html .= '<td>Collection</td>';
-                    $html .= '<td>Resource</td>';
-                    $html .= '<td>Metadata</td>';
-                    $html .= '<td>Image</td>';
-                    $html .= '<td>Publication</td>';
-                    $html .= '<td>Place</td>';
-                    $html .= '<td>Organisation</td>';
-                    $html .= '<td>Person</td>';
-                    $html .= '<td>Order</td>';
-                    $html .= '<td>domain</td>';
-                    $html .= '<td>Range</td>';
-                    $html .= '<td>Vocabulary</td>';
-                    $html .= '<td>Recommended Class</td>';
-                    $html .= '<td>LangTag</td>';
-                $html .= '</tr>';
+            $html .= '<tr>';
+            $html .= '<td>Property</td>';
+            $html .= '<td>Project</td>';
+            $html .= '<td>Collection</td>';
+            $html .= '<td>Resource</td>';
+            $html .= '<td>Metadata</td>';
+            $html .= '<td>Image</td>';
+            $html .= '<td>Publication</td>';
+            $html .= '<td>Place</td>';
+            $html .= '<td>Organisation</td>';
+            $html .= '<td>Person</td>';
+            $html .= '<td>Order</td>';
+            $html .= '<td>domain</td>';
+            $html .= '<td>Range</td>';
+            $html .= '<td>Vocabulary</td>';
+            $html .= '<td>Recommended Class</td>';
+            $html .= '<td>LangTag</td>';
+            $html .= '</tr>';
             // Cycle through the array
             foreach ($this->data as $type) {
                 $html .= '<tr>';
-                     if(isset($type['main']['title'])) {
-                        $html .= '<td>'.$type['main']['title'].'</td>';
-                    }else{
-                        $html .= '<td>TITLE MISSING</td>';
-                    }
+                if (isset($type['main']['title'])) {
+                    $html .= '<td>'.$type['main']['title'].'</td>';
+                } else {
+                    $html .= '<td>TITLE MISSING</td>';
+                }
                     
-                    if(isset($type['project']['value'])) {
-                        $html .= '<td>'.$type['project']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['project']['value'])) {
+                    $html .= '<td>'.$type['project']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['collection']['value'])) {
-                        $html .= '<td>'.$type['collection']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['collection']['value'])) {
+                    $html .= '<td>'.$type['collection']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['resource']['value'])) {
-                        $html .= '<td>'.$type['resource']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['resource']['value'])) {
+                    $html .= '<td>'.$type['resource']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['metadata']['value'])) {
-                        $html .= '<td>'.$type['metadata']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['metadata']['value'])) {
+                    $html .= '<td>'.$type['metadata']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['image']['value'])) {
-                        $html .= '<td>'.$type['image']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['image']['value'])) {
+                    $html .= '<td>'.$type['image']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['publication']['value'])) {
-                        $html .= '<td>'.$type['publication']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['publication']['value'])) {
+                    $html .= '<td>'.$type['publication']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['place']['value'])) {
-                        $html .= '<td>'.$type['place']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['place']['value'])) {
+                    $html .= '<td>'.$type['place']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['organisation']['value'])) {
-                        $html .= '<td>'.$type['organisation']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
+                if (isset($type['organisation']['value'])) {
+                    $html .= '<td>'.$type['organisation']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
                     
-                    if(isset($type['person']['value'])) {
-                        $html .= '<td>'.$type['person']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    if(isset($type['main']['order'])) {
-                        $html .= '<td>'.$type['main']['order'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['domain'])) {
-                        $html .= '<td>'.$type['main']['domain'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['range'])) {
-                        $html .= '<td>'.$type['main']['range'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['vocabs'])) {
-                        $html .= '<td>'.$type['main']['vocabs'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['recommended'])) {
-                        $html .= '<td>'.$type['main']['recommended'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['langTag'])) {
-                        $html .= '<td>'.$type['main']['langTag'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
+                if (isset($type['person']['value'])) {
+                    $html .= '<td>'.$type['person']['value'].'</td>';
+                } else {
+                    $html .= '<td>x</td>';
+                }
+                if (isset($type['main']['order'])) {
+                    $html .= '<td>'.$type['main']['order'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                if (isset($type['main']['domain'])) {
+                    $html .= '<td>'.$type['main']['domain'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                if (isset($type['main']['range'])) {
+                    $html .= '<td>'.$type['main']['range'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                if (isset($type['main']['vocabs'])) {
+                    $html .= '<td>'.$type['main']['vocabs'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                if (isset($type['main']['recommended'])) {
+                    $html .= '<td>'.$type['main']['recommended'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                if (isset($type['main']['langTag'])) {
+                    $html .= '<td>'.$type['main']['langTag'].'</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
                 $html .= '</tr>';
             }
             $html .= "</table>";
@@ -386,64 +387,65 @@ class MetadataGuiHelper
     
     /**
      * Create the cardinality for the roottable
-     * 
+     *
      * @param string $min
      * @param string $max
      * @return string
      */
-    private function rtCardinality(string $min = null, string $max = null): string {
-        if(is_null($min) && is_null($max)) {
+    private function rtCardinality(string $min = null, string $max = null): string
+    {
+        if (is_null($min) && is_null($max)) {
             return '0-n';
         }
         
-        if( ((int)$min >= 1) && ((!(int)$max) || (int)$max > 1 )) {
+        if (((int)$min >= 1) && ((!(int)$max) || (int)$max > 1)) {
             return '1-n';
         }
         
-        if( (is_null($min)) && ((int)$max >= 1 )) {
+        if ((is_null($min)) && ((int)$max >= 1)) {
             return '0-1';
         }
         return '_';
     }
     
     /**
-     * Reorder the root table result 
-     * 
+     * Reorder the root table result
+     *
      * @param array $data
      */
-    private function reorderRt(array $data) {
+    private function reorderRt(array $data)
+    {
         foreach ($data as $kt => $kv) {
-            
             foreach ($kv as $v) {
-                if(isset($v->order)) {
-                    if(isset($v->label['en'])) {
+                if (isset($v->order)) {
+                    if (isset($v->label['en'])) {
                         $this->data[$v->order]['main']['title'] = $v->label['en'];
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
                     }
-                    if(isset($v->min) || isset($v->max)) {
+                    if (isset($v->min) || isset($v->max)) {
                         $this->data[$v->order][$kt]['value'] = $this->rtCardinality($v->min, $v->max);
-                    } elseif ((is_null($v->min) && is_null($v->max)) ) {
+                    } elseif ((is_null($v->min) && is_null($v->max))) {
                         $this->data[$v->order][$kt]['value'] = '0-n';
                     }
-                    if(isset($v->label['en'])) {
+                    if (isset($v->label['en'])) {
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
                     }
                     $this->data[$v->order]['main']['domain'] = $v->domain;
                     $this->data[$v->order]['main']['min'] = $v->min;
                     $this->data[$v->order]['main']['max'] = $v->max;
-                    if(isset($v->range)) {
+                    if (isset($v->range)) {
                         $this->data[$v->order]['main']['range'] = $v->range;
                     }
 
-                    if(isset($v->vocabs)) {
+                    if (isset($v->vocabs)) {
                         $this->data[$v->order]['main']['vocabs'] = $v->vocabs;
                     }
 
-                    if(isset($v->recommended)) {
+                    if (isset($v->recommended)) {
                         $this->data[$v->order]['main']['recommended'] = $v->recommended;
-                    }                
+                    }
                     $this->data[$v->order]['main']['order'] = $v->order;
-                    if(isset($v->langTag)) {
+                    if (isset($v->langTag)) {
                         $this->data[$v->order]['main']['langTag'] = $v->langTag;
                     }
                 }
