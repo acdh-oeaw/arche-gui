@@ -57,6 +57,9 @@ class ArcheApiModel extends ArcheModel
             case 'getRPR':
                 return $this->getRPR();
                 break;
+            case 'rootTable':
+                return $this->getRootTableOntology();
+                break;
             default:
                 return $this->getData();
                 break;
@@ -191,6 +194,40 @@ class ArcheApiModel extends ArcheModel
         $resourceProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
         
         return array('collection' => $collectionProp, 'project' => $projectProp, 'resource' => $resourceProp);
+    }
+    
+    private function getRootTableOntology(): array
+    {
+        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $conn = new \PDO($dbconnStr);
+        $cfg = (object) [
+            'skipNamespace' => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
+            'order'         => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
+            'cardinality'   => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
+            'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
+            'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
+            'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
+            'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'
+        ];
+        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        
+        $project = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
+        $collection = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;        
+        $resource = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
+        $metadata = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Metadata')->properties;
+        $image = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Image')->properties;
+        $publication = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Publication')->properties;
+        $place = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Place')->properties;
+        $organisation = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Organisation')->properties;
+        $person = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Person')->properties;
+        
+        return array(
+            'project' => $project, 'collection' => $collection, 
+            'resource' => $resource, 'metadata' => $metadata,
+            'image' => $image, 'publication' => $publication,
+            'place' => $place, 'organisation' => $organisation,
+            'person' => $person
+        );
     }
     
     /**

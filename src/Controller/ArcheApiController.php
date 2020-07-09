@@ -4,6 +4,7 @@ namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\HtmlResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
@@ -526,4 +527,41 @@ class ArcheApiController extends ControllerBase
                 
         return $response;
     }
+    
+    
+    public function repo_getRootTable(string $lng = 'en')
+    {
+        /*
+        * Usage:
+        *  https://domain.com/browser/api/getRootTable/en?_format=json
+        */
+        
+        
+        $response = new Response();
+        $obj = new \stdClass();
+        $obj->baseUrl = $this->repo->getBaseUrl();
+        $obj->language = $lng;
+        //get the data
+        $this->modelData = $this->model->getViewData('rootTable', $obj);
+        if(count($this->modelData) == 0) {
+            $response->setContent('No data!');
+            $response->setStatusCode(200);
+        }
+        
+        $this->result = $this->helper->createView($this->modelData, 'rootTable', $lng);
+        if(isset($this->result[0]) && !empty($this->result[0])) {
+            $response->setContent($this->result[0]);
+            $response->setStatusCode(200);
+        } else {
+            $response->setContent('No data!');
+            $response->setStatusCode(200);
+        }
+        
+        $response->headers->set('Content-Type', 'text/html');
+
+        // Outputs the HTTP headers and the content of our document
+        $response->send();
+        return $response;
+    }
+    
 }

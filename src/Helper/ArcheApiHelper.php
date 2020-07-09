@@ -62,6 +62,10 @@ class ArcheApiHelper extends ArcheHelper
                 $this->data = $data;
                 $this->formatRPRData();
                 break;
+            case 'rootTable':
+                $mdgh = new \Drupal\acdh_repo_gui\Helper\MetadataGuiHelper();
+                $this->result = array($mdgh->getRootTable($data));
+                break;
             default:
                 $this->data = $data;
                 $this->apiType = $apiType;
@@ -107,6 +111,7 @@ class ArcheApiHelper extends ArcheHelper
     {
         $this->result = array();
         foreach ($this->data as $obj) {
+            
             $this->result[] = array(
                 0 => "<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>",
                 1 => str_replace($this->repo->getSchema()->__get('namespaces')->ontology, '', $obj->relatedtype),

@@ -212,3 +212,12 @@ repo_getRPR:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'         
+        
+repo_getRootTable:    
+    path: '/api/getRootTable/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRootTable'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'                 
+        
