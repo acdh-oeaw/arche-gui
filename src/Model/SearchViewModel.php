@@ -170,6 +170,7 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "SELECT 
                 id
@@ -211,6 +212,7 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "SELECT 
                 id
@@ -250,8 +252,10 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
-                "SELECT 
+                "
+                SELECT 
                 id
                 from gui.search_count_types_view_func(".$typeStr.", :lang,  :yearStr)",
                 array(
@@ -297,6 +301,7 @@ class SearchViewModel extends ArcheModel
         //_rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "SELECT 
                 *
@@ -340,6 +345,7 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "SELECT 
                 *
@@ -385,6 +391,7 @@ class SearchViewModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "SELECT 
                 *

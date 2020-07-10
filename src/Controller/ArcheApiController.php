@@ -549,6 +549,7 @@ class ArcheApiController extends ControllerBase
         }
         
         $this->result = $this->helper->createView($this->modelData, 'rootTable', $lng);
+        
         if(isset($this->result[0]) && !empty($this->result[0])) {
             $response->setContent($this->result[0]);
             $response->setStatusCode(200);
@@ -559,8 +560,6 @@ class ArcheApiController extends ControllerBase
         
         $response->headers->set('Content-Type', 'text/html');
 
-        // Outputs the HTTP headers and the content of our document
-        $response->send();
         return $response;
     }
     

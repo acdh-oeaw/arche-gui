@@ -76,6 +76,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "SELECT * from gui.apiGetData(:type, :searchStr)",
                 array(':type' => $this->properties->type,
@@ -105,6 +106,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "SELECT * from gui.get_members_func(:repoid, :lang)",
                 array(':repoid' => $this->properties->repoid,
@@ -133,6 +135,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "SELECT * from gui.count_binaries_collection_func();"
             );
@@ -207,7 +210,7 @@ class ArcheApiModel extends ArcheModel
             'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
             'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
             'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
-            'altLabel'      => 'http://www.w3.org/2004/02/skos/core#altLabel'
+            'label'         => 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         
@@ -240,6 +243,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "SELECT * from gui.inverse_data_func(:repoid);",
                 array(
@@ -267,6 +271,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select 
                         DISTINCT(i.id),  mv.property, mv.value, mv.lang
@@ -305,6 +310,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select 
 			DISTINCT(mv.id) as repoid, i.ids as gnd 
@@ -335,6 +341,7 @@ class ArcheApiModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select * from gui.related_publications_resources_views_func(:repoid, :lang)",
                 array(

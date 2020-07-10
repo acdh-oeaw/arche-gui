@@ -35,6 +35,7 @@ class DetailViewModel extends ArcheModel
         }
         $result = array();
         try {
+            $this->setSqlTimeout();
             //run the actual query
             $query = $this->repodb->query(" select * from gui.detail_view_func(:id) ", array(':id' => $identifier));
             $result = $query->fetchAll();
@@ -64,6 +65,7 @@ class DetailViewModel extends ArcheModel
         
         $result = array();
         try {
+            $this->setSqlTimeout();
             //run the actual query
             $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id) order by depth desc ", array(':id' => $identifier));
             $result = $query->fetchAll();
@@ -87,6 +89,7 @@ class DetailViewModel extends ArcheModel
         $result = array();
         
         try {
+            $this->setSqlTimeout();
             //run the actual query
             $query = $this->repodb->query(" select * from gui.ontology_func(:lang) ", array(':lang' => $this->siteLang));
             $result = $query->fetchAll(\PDO::FETCH_CLASS);

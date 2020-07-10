@@ -51,6 +51,7 @@ class ChildApiModel extends ArcheModel
         }
         //get the requested sorting
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "select DISTINCT(id), title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
@@ -115,6 +116,7 @@ class ChildApiModel extends ArcheModel
         }
         
         try {
+            $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
                 array(
@@ -147,6 +149,7 @@ class ChildApiModel extends ArcheModel
     private function getProperties(string $repoid): string
     {
         try {
+            $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "select value from metadata_view where id = :id and property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
                 array(':id' => $repoid)

@@ -52,6 +52,7 @@ class BlocksModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "
                 select count(value), value
@@ -84,6 +85,7 @@ class BlocksModel extends ArcheModel
         $result = array();
         //run the actual query
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "
                 select

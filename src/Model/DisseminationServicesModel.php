@@ -36,6 +36,7 @@ class DisseminationServicesModel extends ArcheModel
     private function getCollectionData(string $identifier)
     {
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select * from gui.collection_views_func(:id);",
                 array(

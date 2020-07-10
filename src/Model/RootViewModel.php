@@ -62,6 +62,7 @@ class RootViewModel extends ArcheModel
         $this->initPaging($limit, $page, $order);
         
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "SELECT 
                     id, title, avdate, string_agg(DISTINCT description, '.') as description, accesres, titleimage, acdhid
@@ -76,6 +77,7 @@ class RootViewModel extends ArcheModel
             );
             
             $this->sqlResult = $query->fetchAll();
+           
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -95,6 +97,7 @@ class RootViewModel extends ArcheModel
     {
         $result = array();
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query("select id from gui.count_root_views_func();  ");
             $this->sqlResult = $query->fetch();
             $this->changeBackDBConnection();

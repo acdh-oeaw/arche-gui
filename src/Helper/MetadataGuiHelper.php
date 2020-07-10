@@ -263,114 +263,75 @@ class MetadataGuiHelper
     
     private function createRootTableHtml(): string {
         $html = '';
+        
         if (count($this->data)) {
             // Open the table
-            $html .= "<table border='1'>";
+            $html .= "<style>
+                table, tr, th, td {
+                    border: 1px solid black;
+                }
+                tr, th, td {
+                    padding: 15px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                }
+                tr:hover {background-color: #f5f5f5;}
+                tr:nth-child(even) {background-color: #f2f2f2;}
+                </style>";
+            $html .= "<table >";
                 $html .= '<tr>';
-                    $html .= '<td>Property</td>';
-                    $html .= '<td>Project</td>';
-                    $html .= '<td>Collection</td>';
-                    $html .= '<td>Resource</td>';
-                    $html .= '<td>Metadata</td>';
-                    $html .= '<td>Image</td>';
-                    $html .= '<td>Publication</td>';
-                    $html .= '<td>Place</td>';
-                    $html .= '<td>Organisation</td>';
-                    $html .= '<td>Person</td>';
-                    $html .= '<td>Order</td>';
-                    $html .= '<td>domain</td>';
-                    $html .= '<td>Range</td>';
-                    $html .= '<td>Vocabulary</td>';
-                    $html .= '<td>Recommended Class</td>';
-                    $html .= '<td>LangTag</td>';
+                    $html .= '<th><b>Property</b></th>';
+                    $html .= '<th><b>Project</b></th>';
+                    $html .= '<th><b>Collection</b></th>';
+                    $html .= '<th><b>Resource</b></th>';
+                    $html .= '<th><b>Metadata</b></th>';
+                    $html .= '<th><b>Image</b></th>';
+                    $html .= '<th><b>Publication</b></th>';
+                    $html .= '<th><b>Place</b></th>';
+                    $html .= '<th><b>Organisation</b></th>';
+                    $html .= '<th><b>Person</b></th>';
+                    $html .= '<th><b>Order</b></th>';
+                    $html .= '<th><b>domain</b></th>';
+                    $html .= '<th><b>Range</b></th>';
+                    $html .= '<th><b>Vocabulary</b></th>';
+                    $html .= '<th><b>Recommended Class</b></th>';
+                    $html .= '<th><b>LangTag</b></th>';
                 $html .= '</tr>';
             // Cycle through the array
+                
             foreach ($this->data as $type) {
+                
                 $html .= '<tr>';
                      if(isset($type['main']['title'])) {
-                        $html .= '<td>'.$type['main']['title'].'</td>';
+                        $html .= '<td><b>'.$type['main']['title'].'</b></td>';
                     }else{
                         $html .= '<td>TITLE MISSING</td>';
                     }
+                    //create the type values
+                    $html .= $this->getRtTypeValues($type);                    
                     
-                    if(isset($type['project']['value'])) {
-                        $html .= '<td>'.$type['project']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['collection']['value'])) {
-                        $html .= '<td>'.$type['collection']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['resource']['value'])) {
-                        $html .= '<td>'.$type['resource']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['metadata']['value'])) {
-                        $html .= '<td>'.$type['metadata']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['image']['value'])) {
-                        $html .= '<td>'.$type['image']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['publication']['value'])) {
-                        $html .= '<td>'.$type['publication']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['place']['value'])) {
-                        $html .= '<td>'.$type['place']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['organisation']['value'])) {
-                        $html .= '<td>'.$type['organisation']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
-                    
-                    if(isset($type['person']['value'])) {
-                        $html .= '<td>'.$type['person']['value'].'</td>';
-                    }else{
-                        $html .= '<td>x</td>';
-                    }
                     if(isset($type['main']['order'])) {
                         $html .= '<td>'.$type['main']['order'].'</td>';
                     }else{
                         $html .= '<td></td>';
                     }
-                    if(isset($type['main']['domain'])) {
-                        $html .= '<td>'.$type['main']['domain'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    if(isset($type['main']['range'])) {
-                        $html .= '<td>'.$type['main']['range'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
+                    
+                    $html .= '<td>'.$this->getRtTypeDomain($type).'</td>';
+                  
+                    $html .= '<td>'.$this->getRtTypeRange($type).'</td>';
+                    
                     if(isset($type['main']['vocabs'])) {
                         $html .= '<td>'.$type['main']['vocabs'].'</td>';
                     }else{
                         $html .= '<td></td>';
                     }
-                    if(isset($type['main']['recommended'])) {
-                        $html .= '<td>'.$type['main']['recommended'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
+                    
+                    $html .= '<td>'.$this->getRtTypeRecommended($type).'</td>';
+                                        
                     if(isset($type['main']['langTag'])) {
                         $html .= '<td>'.$type['main']['langTag'].'</td>';
                     }else{
@@ -381,6 +342,61 @@ class MetadataGuiHelper
             $html .= "</table>";
         }
         
+        return $html;
+    }
+    
+    /**
+     * Create the HTML table acdh class values
+     * @param array $type
+     * @return string
+     */
+    private function getRtTypeValues(array $type): string {
+        $types = array('project', 'collection', 'resource', 'metadata', 'image', 'publication', 'place', 'organisation', 'person');
+        $html = '';
+        foreach($types as $t) {
+            if(isset($type[$t]['value'])) {
+                $html .= '<td>'.$type[$t]['value'].'</td>';
+            }else{
+                $html .= '<td>x</td>';
+            }
+        }
+        return $html;
+    }
+    
+     private function getRtTypeDomain(array $type): string {
+        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $html = '';
+        foreach($types as $t => $v) {
+            if(isset($type[$t]['domain'])) {
+                $html .= ''.$v.',';
+            }
+        }
+        return $html;
+    }
+    
+    private function getRtTypeRecommended(array $type): string {
+        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $html = '';
+        foreach($types as $t => $v) {
+            if(isset($type[$t]['recommended']) && $type[$t]['recommended'] == true) {
+                $html .= ''.$v.',';
+            }
+        }
+        return $html;
+    }
+    
+    private function getRtTypeRange(array $type): string {
+        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $html = '';
+        foreach($types as $t => $v) {
+            if(isset($type[$t]['range']) && $type[$t]['range'] == true) {
+                if (strpos($type[$t]['range'], 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
+                    $html .= ''.$v.',';
+                }else {
+                    $html = $type[$t]['range'];
+                }
+            }
+        }
         return $html;
     }
     
@@ -403,7 +419,7 @@ class MetadataGuiHelper
         if( (is_null($min)) && ((int)$max >= 1 )) {
             return '0-1';
         }
-        return '_';
+        return 'x';
     }
     
     /**
@@ -412,10 +428,13 @@ class MetadataGuiHelper
      * @param array $data
      */
     private function reorderRt(array $data) {
+        
         foreach ($data as $kt => $kv) {
-            
+            $domain .= $kt.' ';
+           
             foreach ($kv as $v) {
                 if(isset($v->order)) {
+                    
                     if(isset($v->label['en'])) {
                         $this->data[$v->order]['main']['title'] = $v->label['en'];
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
@@ -428,24 +447,36 @@ class MetadataGuiHelper
                     if(isset($v->label['en'])) {
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
                     }
-                    $this->data[$v->order]['main']['domain'] = $v->domain;
+                    if(isset($v->domain)) {
+                        $this->data[$v->order][$kt]['domain'] = $v->domain;
+                    }
+                    
                     $this->data[$v->order]['main']['min'] = $v->min;
                     $this->data[$v->order]['main']['max'] = $v->max;
+                    $this->data[$v->order][$kt]['min'] = $v->min;
+                    $this->data[$v->order][$kt]['max'] = $v->max;
                     if(isset($v->range)) {
                         $this->data[$v->order]['main']['range'] = $v->range;
+                        $this->data[$v->order][$kt]['range'] = $v->range;
                     }
 
                     if(isset($v->vocabs)) {
                         $this->data[$v->order]['main']['vocabs'] = $v->vocabs;
+                        $this->data[$v->order][$kt]['vocabs'] = $v->vocabs;
                     }
 
                     if(isset($v->recommended)) {
                         $this->data[$v->order]['main']['recommended'] = $v->recommended;
+                        $this->data[$v->order][$kt]['recommended'] = $v->recommended;
                     }                
                     $this->data[$v->order]['main']['order'] = $v->order;
+                    
                     if(isset($v->langTag)) {
                         $this->data[$v->order]['main']['langTag'] = $v->langTag;
+                        $this->data[$v->order][$kt]['langTag'] = $v->langTag;
                     }
+                    
+                    $this->data[$v->order]['main']['domain'] = $domain;
                 }
             }
             ksort($this->data);

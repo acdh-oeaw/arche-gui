@@ -46,6 +46,7 @@ class GeneralFunctionsModel extends ArcheModel
     private function getRepoIdBySpecialID(): array
     {
         try {
+            $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select id from identifiers where ids LIKE :id limit 1;",
                 array(
