@@ -22,7 +22,7 @@ abstract class ArcheModel
     /**
      * Allow the DB connection
      */
-    private function setActiveConnection() 
+    private function setActiveConnection()
     {
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
@@ -37,13 +37,14 @@ abstract class ArcheModel
      * Set the sql execution max time
      * @param string $timeout
      */
-    public function setSqlTimeout(string $timeout = '7000') 
+    public function setSqlTimeout(string $timeout = '7000')
     {
         $this->setActiveConnection();
         
         try {
             $this->repodb->query(
-                "SET statement_timeout TO :timeout;", array(':timeout' => $timeout)
+                "SET statement_timeout TO :timeout;",
+                array(':timeout' => $timeout)
             )->fetch();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
