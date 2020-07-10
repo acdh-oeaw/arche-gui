@@ -249,7 +249,7 @@ class MetadataGuiHelper
     
     /**
      * Get the root table data
-     * 
+     *
      * @param array $data
      * @param string $lang
      * @return string
@@ -261,11 +261,13 @@ class MetadataGuiHelper
         return $this->createRootTableHtml();
     }
     
-    private function createRootTableHtml(): string {
+    private function createRootTableHtml(): string
+    {
         $html = '';
         
         if (count($this->data)) {
             // Open the table
+
             $html .= "<style>
                 table, tr, th, td {
                     border: 1px solid black;
@@ -301,42 +303,45 @@ class MetadataGuiHelper
                     $html .= '<th><b>Recommended Class</b></th>';
                     $html .= '<th><b>LangTag</b></th>';
                 $html .= '</tr>';
+
             // Cycle through the array
                 
             foreach ($this->data as $type) {
                 
                 $html .= '<tr>';
-                     if(isset($type['main']['title'])) {
-                        $html .= '<td><b>'.$type['main']['title'].'</b></td>';
-                    }else{
-                        $html .= '<td>TITLE MISSING</td>';
-                    }
-                    //create the type values
-                    $html .= $this->getRtTypeValues($type);                    
-                    
-                    if(isset($type['main']['order'])) {
-                        $html .= '<td>'.$type['main']['order'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    
-                    $html .= '<td>'.$this->getRtTypeDomain($type).'</td>';
-                  
-                    $html .= '<td>'.$this->getRtTypeRange($type).'</td>';
-                    
-                    if(isset($type['main']['vocabs'])) {
-                        $html .= '<td>'.$type['main']['vocabs'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
-                    
-                    $html .= '<td>'.$this->getRtTypeRecommended($type).'</td>';
-                                        
-                    if(isset($type['main']['langTag'])) {
-                        $html .= '<td>'.$type['main']['langTag'].'</td>';
-                    }else{
-                        $html .= '<td></td>';
-                    }
+
+                if(isset($type['main']['title'])) {
+                   $html .= '<td><b>'.$type['main']['title'].'</b></td>';
+               }else{
+                   $html .= '<td>TITLE MISSING</td>';
+               }
+               //create the type values
+               $html .= $this->getRtTypeValues($type);                    
+
+               if(isset($type['main']['order'])) {
+                   $html .= '<td>'.$type['main']['order'].'</td>';
+               }else{
+                   $html .= '<td></td>';
+               }
+
+               $html .= '<td>'.$this->getRtTypeDomain($type).'</td>';
+
+               $html .= '<td>'.$this->getRtTypeRange($type).'</td>';
+
+               if(isset($type['main']['vocabs'])) {
+                   $html .= '<td>'.$type['main']['vocabs'].'</td>';
+               }else{
+                   $html .= '<td></td>';
+               }
+
+               $html .= '<td>'.$this->getRtTypeRecommended($type).'</td>';
+
+               if(isset($type['main']['langTag'])) {
+                   $html .= '<td>'.$type['main']['langTag'].'</td>';
+               }else{
+                   $html .= '<td></td>';
+               }
+
                 $html .= '</tr>';
             }
             $html .= "</table>";
@@ -402,31 +407,33 @@ class MetadataGuiHelper
     
     /**
      * Create the cardinality for the roottable
-     * 
+     *
      * @param string $min
      * @param string $max
      * @return string
      */
-    private function rtCardinality(string $min = null, string $max = null): string {
-        if(is_null($min) && is_null($max)) {
+    private function rtCardinality(string $min = null, string $max = null): string
+    {
+        if (is_null($min) && is_null($max)) {
             return '0-n';
         }
         
-        if( ((int)$min >= 1) && ((!(int)$max) || (int)$max > 1 )) {
+        if (((int)$min >= 1) && ((!(int)$max) || (int)$max > 1)) {
             return '1-n';
         }
         
-        if( (is_null($min)) && ((int)$max >= 1 )) {
+        if ((is_null($min)) && ((int)$max >= 1)) {
             return '0-1';
         }
         return 'x';
     }
     
     /**
-     * Reorder the root table result 
-     * 
+     * Reorder the root table result
+     *
      * @param array $data
      */
+
     private function reorderRt(array $data) {
         
         foreach ($data as $kt => $kv) {
@@ -436,15 +443,16 @@ class MetadataGuiHelper
                 if(isset($v->order)) {
                     
                     if(isset($v->label['en'])) {
+
                         $this->data[$v->order]['main']['title'] = $v->label['en'];
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
                     }
-                    if(isset($v->min) || isset($v->max)) {
+                    if (isset($v->min) || isset($v->max)) {
                         $this->data[$v->order][$kt]['value'] = $this->rtCardinality($v->min, $v->max);
-                    } elseif ((is_null($v->min) && is_null($v->max)) ) {
+                    } elseif ((is_null($v->min) && is_null($v->max))) {
                         $this->data[$v->order][$kt]['value'] = '0-n';
                     }
-                    if(isset($v->label['en'])) {
+                    if (isset($v->label['en'])) {
                         $this->data[$v->order][$kt]['title'] = $v->label['en'];
                     }
                     if(isset($v->domain)) {
@@ -453,25 +461,28 @@ class MetadataGuiHelper
                     
                     $this->data[$v->order]['main']['min'] = $v->min;
                     $this->data[$v->order]['main']['max'] = $v->max;
+
                     $this->data[$v->order][$kt]['min'] = $v->min;
                     $this->data[$v->order][$kt]['max'] = $v->max;
                     if(isset($v->range)) {
+
                         $this->data[$v->order]['main']['range'] = $v->range;
                         $this->data[$v->order][$kt]['range'] = $v->range;
                     }
 
-                    if(isset($v->vocabs)) {
+                    if (isset($v->vocabs)) {
                         $this->data[$v->order]['main']['vocabs'] = $v->vocabs;
                         $this->data[$v->order][$kt]['vocabs'] = $v->vocabs;
                     }
 
-                    if(isset($v->recommended)) {
+                    if (isset($v->recommended)) {
                         $this->data[$v->order]['main']['recommended'] = $v->recommended;
                         $this->data[$v->order][$kt]['recommended'] = $v->recommended;
                     }                
                     $this->data[$v->order]['main']['order'] = $v->order;
                     
                     if(isset($v->langTag)) {
+
                         $this->data[$v->order]['main']['langTag'] = $v->langTag;
                         $this->data[$v->order][$kt]['langTag'] = $v->langTag;
                     }
