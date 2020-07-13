@@ -2,7 +2,7 @@
 
 The template is processing the following fields:
 - data: the property data
-- type: text / internal_url / external_url / external_url_with_title / binary / date / vocabs
+- type: text / internal_url / external_url / external_url_with_title / binary / date / vocabs / vocabs_expert_view
 - delimiter (optional): basic is ",", you can use also "<br>"
 - icon: the fontawesome icon name, what will be displayed before the label
 - label: the label what should be displayed before the value
@@ -76,6 +76,15 @@ The template is processing the following fields:
                     {% if (type == 'vocabs') %}
                         {% if (value.relvalue and value.vocabsid)  %}                            
                             <a href="{{ value.vocabsid }}" {{ open }}>{{ value.relvalue|nl2br }}</a>
+                        {% else %}    
+                            <!-- if we dont have a valid vocabs value in the DB -->
+                            {{ value.value }}
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if (type == 'vocabs_expert_view') %}
+                        {% if (value.vocabsid)  %}                            
+                            <a href="{{ value.vocabsid }}" {{ open }}>{{ value.vocabsid|nl2br }}</a>
                         {% else %}    
                             <!-- if we dont have a valid vocabs value in the DB -->
                             {{ value.value }}

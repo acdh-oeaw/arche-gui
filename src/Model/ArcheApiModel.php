@@ -210,7 +210,7 @@ class ArcheApiModel extends ArcheModel
             'recommended'   => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
             'langTag'       => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
             'vocabs'        => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
-            'label'         => 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            'label'         => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         

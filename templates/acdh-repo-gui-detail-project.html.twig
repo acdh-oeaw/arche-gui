@@ -36,12 +36,14 @@ set properties = {
     'acdh:hasLanguage': {
         'icon': 'flag',
         'label': 'Language',
-        'type': 'vocabs'
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasLifeCycleStatus': {
         'icon': 'history',
         'label': 'Life Cycle Status',
-        'type': 'vocabs'
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     }
 }
 %}
@@ -77,12 +79,12 @@ set furtherProperties = {
     'acdh:hasCoverageStartDate': {
         'icon': 'info',
         'label': 'Coverage Start Date',
-        'dateformat': 'Y'
+        'dateformat': 'd M Y'
     },
     'acdh:hasCoverageEndDate': {
         'icon': 'info',
         'label': 'Coverage End Date',
-        'dateformat': 'Y'
+        'dateformat': 'd M Y'
     },
     'acdh:hasAppliedMethod': {
         'icon': 'info',
@@ -138,7 +140,7 @@ set furtherProperties = {
             
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)", 'type': 'external_url' } ) }}
                 </div>
             {% endif%}
            

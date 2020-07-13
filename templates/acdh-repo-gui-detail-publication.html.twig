@@ -49,7 +49,8 @@
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url',
-        'type': 'external_url'
+        'type': 'external_url',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasEditorialPractice': {
         'icon': 'person_add',
@@ -64,7 +65,8 @@
     'acdh:hasLanguage': {
         'icon': 'flag',
         'label': 'Language',
-        'type': 'vocabs'
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     }
 }
 %}
@@ -98,7 +100,7 @@
             
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)", 'type': 'external_url' } ) }}
                 </div>
             {% endif%}
                        

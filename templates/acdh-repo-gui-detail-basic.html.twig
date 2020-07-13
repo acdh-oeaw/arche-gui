@@ -73,7 +73,8 @@
     'acdh:hasCategory': {
         'icon': 'sort',
         'label': 'Category',
-        'type': 'internal_url'
+        'type': 'vocabs',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasLicensor': {
         'icon': 'copyright',
@@ -105,12 +106,14 @@
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url',
-        'type': 'external_url'
+        'type': 'external_url',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasPid': {
         'icon': 'fingerprint',
         'label': 'PID',
-        'type': 'external_url'
+        'type': 'external_url',
+        'where_to_open': 'new_tab'
     },
     'acdh:hasRelatedProject': {
         'icon': 'track_changes',
@@ -177,7 +180,7 @@
             {%  if basic.getNonAcdhIdentifiers() %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                        {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)", 'type': 'external_url', 'where_to_open': 'new_tab' } ) }}
                 </div>
             {% endif%}
        
