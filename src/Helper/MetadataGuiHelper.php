@@ -435,8 +435,7 @@ class MetadataGuiHelper
      * Reorder the root table result
      *
      * @param array $data
-     */
-
+    */
     private function reorderRt(array $data)
     {
         foreach ($data as $kt => $kv) {
@@ -445,8 +444,8 @@ class MetadataGuiHelper
             foreach ($kv as $v) {
                 if (isset($v->order)) {
                     if (isset($v->label['en'])) {
-                        $this->data[$v->order]['main']['title'] = $v->label['en'];
-                        $this->data[$v->order][$kt]['title'] = $v->label['en'];
+                        $this->data[$v->order]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->property);
+                        $this->data[$v->order][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->property);
                     }
                     if (isset($v->min) || isset($v->max)) {
                         $this->data[$v->order][$kt]['value'] = $this->rtCardinality($v->min, $v->max);

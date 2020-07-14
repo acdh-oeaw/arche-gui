@@ -199,6 +199,10 @@ class ArcheApiModel extends ArcheModel
         return array('collection' => $collectionProp, 'project' => $projectProp, 'resource' => $resourceProp);
     }
     
+    /**
+     * Get ontology for the roottable
+     * @return array
+     */
     private function getRootTableOntology(): array
     {
         $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];

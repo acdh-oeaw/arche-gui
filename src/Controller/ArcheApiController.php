@@ -528,7 +528,11 @@ class ArcheApiController extends ControllerBase
         return $response;
     }
     
-    
+    /**
+     * Create root table clone based on the actual ontology
+     * @param string $lng
+     * @return Response
+     */
     public function repo_getRootTable(string $lng = 'en')
     {
         /*
