@@ -31,7 +31,6 @@ class RootViewModel extends ArcheModel
     
     private function initPaging(int $limit, int $page, string $order)
     {
-        
         $this->limit = $limit;
         ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page -1);
         
@@ -60,7 +59,6 @@ class RootViewModel extends ArcheModel
      */
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
     {
-        
         $this->initPaging($limit, $page, $order);
         
         try {
