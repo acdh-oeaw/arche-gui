@@ -547,6 +547,7 @@ class ArcheApiController extends ControllerBase
         $obj->language = $lng;
         //get the data
         $this->modelData = $this->model->getViewData('rootTable', $obj);
+        
         if (count($this->modelData) == 0) {
             $response->setContent('No data!');
             $response->setStatusCode(200);

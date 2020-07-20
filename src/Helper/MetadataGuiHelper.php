@@ -257,7 +257,7 @@ class MetadataGuiHelper
     public function getRootTable(array $data, string $lang = 'en'): string
     {
         $this->siteLang = $lang;
-        $this->reorderRt($data);
+        $this->reorderRootTable($data);
         return $this->createRootTableHtml();
     }
     
@@ -436,9 +436,10 @@ class MetadataGuiHelper
      *
      * @param array $data
     */
-    private function reorderRt(array $data)
+    private function reorderRootTable(array $data)
     {
         foreach ($data as $kt => $kv) {
+            $domain = '';
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {

@@ -1096,7 +1096,7 @@ WITH query_data as (
             END) 
         as title,
 		mv.property,
-		(select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
+		(select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
 	from metadata_view as mv	
 	where 
 	mv.property in (
@@ -1123,7 +1123,7 @@ WITH query_data as (
             END) 
         as title,
 		mv.property,
-		(select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
+		(select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
 	from metadata_view as mv	
 	where 
 	mv.property  = 
