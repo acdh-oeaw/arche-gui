@@ -105,9 +105,11 @@ abstract class ArcheHelper
             }
             // if we have an external type then the repoid will be the value
             //because we will use their own id for the  linking
+            //and the value will be the relvalue because of the relational data
             if (isset($d->type) && !empty($d->type) && $d->type == "REL") {
                 $d->repoid = "";
                 $d->repoid = $d->value;
+                $d->value = $d->relvalue;
             }
             
             if (is_null($d->property) === false) {
@@ -144,7 +146,7 @@ abstract class ArcheHelper
                 }
                 //add the identifier into the final data
                 $result['acdh:hasIdentifier'][$lang][] = $d;
-            }
+            } 
         }
         if ($root == true) {
             ksort($result);

@@ -41,7 +41,8 @@
     'acdh:hasUrl': {
         'icon': 'subtitles',
         'label': 'Url',
-        'type': 'external_url'
+        'type': 'external_url',
+        'where_to_open': 'new_tab'
     }
 }
 %}
@@ -83,7 +84,7 @@
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'type': 'inside_url' } ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'type': 'internal_url' } ) }}
             {% endif%}
     
             {%  if (properties) %}

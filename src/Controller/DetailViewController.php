@@ -40,8 +40,10 @@ class DetailViewController extends ControllerBase
     public function generateDetailView(string $identifier): object
     {
         $this->repoUrl = $identifier;
+        //remove the url from the identifier just to have the repoid
         $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
         $dv = array();
+        //get the detail view raw data from the database
         $dv = $this->model->getViewData($this->repoUrl);
         
         $breadcrumb = array();
