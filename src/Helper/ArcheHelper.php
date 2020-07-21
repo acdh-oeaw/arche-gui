@@ -151,6 +151,7 @@ abstract class ArcheHelper
         if ($root == true) {
             ksort($result);
         }
+        
         $this->data = $result;
     }
     

@@ -244,7 +244,11 @@ class GeneralFunctions
             foreach ($dissServ as $k => $v) {
                 //we need to remove the gui from the diss serv list because we are on the gui
                 if (strtolower($k) != 'gui') {
-                    $result[$k] = (string) $v->getRequest($repDiss)->getUri();
+                    try {
+                        $result[$k] = (string) $v->getRequest($repDiss)->getUri();
+                    } catch (\Exception $ex) {
+                        error_log(print_r($ex->getMessage(), true));
+                    }
                 }
             }
             return $result;

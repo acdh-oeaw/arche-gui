@@ -117,11 +117,7 @@ BEGIN
         WITH dmeta as (
             select mv.id, mv.property, mv.type, mv.value, mv.lang
             from metadata_view as mv 
-            where mv.id = _main_id				
-            union
-            select m.id, m.property, m.type, m.value, m.lang
-            from metadata as m 
-            where m.id = _main_id
+            where mv.id = _main_id
         )
         select * from dmeta
     );
