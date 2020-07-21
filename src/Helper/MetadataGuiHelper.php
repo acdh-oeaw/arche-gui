@@ -416,7 +416,7 @@ class MetadataGuiHelper
      * @return string
      */
     private function rtCardinality(string $min = null, string $max = null): string
-    {        
+    {
         if (is_null($min) && is_null($max)) {
             return '0-n';
         }
@@ -429,7 +429,7 @@ class MetadataGuiHelper
             return '0-1';
         }
         
-        if((int)$min ==  1 && (int)$max == 1) {
+        if ((int)$min ==  1 && (int)$max == 1) {
             return '1';
         }
         return 'x';
@@ -447,7 +447,6 @@ class MetadataGuiHelper
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {
-                
                 if (isset($v->order)) {
                     if (isset($v->property)) {
                         $this->data[$v->order]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->property);
@@ -455,7 +454,6 @@ class MetadataGuiHelper
                     }
                     if (isset($v->min) || isset($v->max)) {
                         $this->data[$v->order][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
-                        
                     } elseif ((is_null($v->min) && is_null($v->max))) {
                         $this->data[$v->order][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
                     }

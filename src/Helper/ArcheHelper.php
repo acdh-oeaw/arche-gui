@@ -146,7 +146,7 @@ abstract class ArcheHelper
                 }
                 //add the identifier into the final data
                 $result['acdh:hasIdentifier'][$lang][] = $d;
-            } 
+            }
         }
         if ($root == true) {
             ksort($result);
