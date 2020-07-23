@@ -1,15 +1,27 @@
 <!--
 
 The template is processing the following fields:
-- data: the property data
-- type: text / internal_url / external_url / external_url_with_title / binary / date / vocabs / vocabs_expert_view
+Data: 
+- the property data
+
+Data Type :
+- REL
+- ID
+- http://www.w3.org/2001/XMLSchema#date 
+- http://www.w3.org/2001/XMLSchema#decimal
+- URI
+- http://www.w3.org/2001/XMLSchema#string
+
+Field extra type:
+- binary / date
 - delimiter (optional): basic is ",", you can use also "<br>"
 - icon: the fontawesome icon name, what will be displayed before the label
 - label: the label what should be displayed before the value
 - dateformat (required just for the date type):  f.e: 'd M Y'
-- where_to_open : same_page / new_tab
 
 -->
+
+
 
 {%  if (delimiter) %}
     {% set limiter = delimiter|raw %}
@@ -36,85 +48,53 @@ The template is processing the following fields:
             {% if data is iterable %}
                 
                 {% for value in data %}
-                    
-                    <!--  internal means that we will open the value inside the arche page -->
-                    {% if (type == 'internal_url') %}
-                        <!-- -->
+                    <!-- The identifiers will open in the same window -->
+                    {% if (value.type == 'ID') %}
                         {% if (value.title and value.repoid )  %}
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" {{ open }}>{{ value.title|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.title|nl2br }}</a>
                         {% elseif (value.value and value.repoid )  %}                            
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" {{ open }}>{{ value.value|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.value|nl2br }}</a>
                         {% elseif (value.relvalue and value.repoid )  %}                            
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" {{ open }}>{{ value.relvalue|nl2br }}</a>    
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.relvalue|nl2br }}</a>    
                         {% elseif (value.value) %}
                             <!-- if we dont have a repoid then some ingestion problem, so we will just display simple value -->
-                            {{ value.value }}
+                            <a href="{{ value.value }}" target="_blank">{{ value.value|nl2br }}</a>
                         {% endif %}
-                    {% endif %}
-                    
-                    <!-- the property value is a simple text, no url, no vocabs, no special handling requires -->
-                    {% if (type == 'text') %}
+                    {% elseif(value.type == 'REL') %}
+                        <!-- The ARCHE RELATIONS will open in the same window -->
+                        {% if (value.title and value.repoid )  %}
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.title|nl2br }}</a>
+                        {% elseif (value.value and value.repoid )  %}                            
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.value|nl2br }}</a>
+                        {% elseif (value.relvalue and value.repoid )  %}                            
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.relvalue|nl2br }}</a>    
+                        {% elseif (value.value) %}
+                            <!-- if we dont have a repoid then some ingestion problem, so we will just display simple value -->
+                            <a id='archeHref' href="{{ value.value }}" >{{ value.value|nl2br }}</a>
+                        {% endif %}
+                    {% elseif(value.type == 'URI') %}
+                        <!-- The URI will open in a new window -->
+                        {% if (value.value)  %}
+                            <a href="{{ value.value }}" target="_blank">{{ value.value|nl2br }}</a>
+                        {% elseif (value.title) %}   
+                            <a href="{{ value.title }}" target="_blank">{{ value.title|nl2br }}</a>
+                        {% elseif (value.relvalue)  %}
+                            <a href="{{ value.relvalue }}" target="_blank">{{ value.relvalue|nl2br }}</a>
+                        {% endif %}
+                    {% elseif(value.type == 'http://www.w3.org/2001/XMLSchema#string') %}
+                        <!-- simple string -->
                         {% if (value.title) %} 
                             {{ value.title|nl2br }}
                         {% elseif (value.value) %} 
-                            {{ value.value|nl2br }}    
-                        {% endif %}
-                    {% endif %}
-                    
-                    <!-- if there is no type defined then simply display the title -->
-                    {% if (type is null) %}
-                        {% if (value.value) %} 
                             {{ value.value|nl2br }}
-                        {% elseif (value.title) %} 
-                            {{ value.title|nl2br }}    
-                        {% elseif (value.relvalue) %} 
-                            {{ value.relvalue|nl2br }}    
+                        {% elseif (value.relvalue) %}     
+                            {{ value.relvalue|nl2br }}
                         {% endif %}
-                    {% endif %}
-                    
-                    <!-- vocabs ids handling -->
-                    {% if (type == 'vocabs') %}
-                        {% if (value.relvalue and value.vocabsid)  %}                            
-                            <a href="{{ value.vocabsid }}" {{ open }}>{{ value.relvalue|nl2br }}</a>
-                        {% else %}    
-                            <!-- if we dont have a valid vocabs value in the DB -->
-                            {{ value.value }}
-                        {% endif %}
-                    {% endif %}
-                    
-                    {% if (type == 'vocabs_expert_view') %}
-                        {% if (value.vocabsid)  %}                            
-                            <a href="{{ value.vocabsid }}" {{ open }}>{{ value.vocabsid|nl2br }}</a>
-                        {% else %}    
-                            <!-- if we dont have a valid vocabs value in the DB -->
-                            {{ value.value }}
-                        {% endif %}
-                    {% endif %}
-                    
-                    <!-- Simply external url -->
-                    {% if (type == 'external_url') %}
-                        {% if (value.value)  %}                            
-                            <a href="{{ value.value }}" {{ open }}>{{ value.value|nl2br }}</a>
-                        {% endif %}
-                    {% endif %}
-                                        
-                    <!-- External url with title -->
-                    {% if (type == 'external_url_with_title') %}
-                        {% if (value.title)  %}
-                            <a href="{{ value.relvalue }}" {{ open }}>{{ value.title|nl2br }}</a>
-                        {% else  %}
-                            <a href="{{ value.relvalue }}" {{ open }}>{{ value.relvalue|nl2br }}</a>
-                        {% endif %}
-                    {% endif %}
-                    
-                    <!-- DATE format handling -->
-                    {% if (type == 'date' and dateformat) %}
+                    {% elseif(type == 'date' and dateformat) %}
+                        <!-- The dateformat -->
                         {{ value.value|date(dateformat) }}
-                    {% endif %}
-                    
-                    <!-- Binary formatting -->
-                    {% if (type == 'binary') %}
-                        <!-- if it is a binary -->
+                    {% elseif(type == 'binary') %}
+                        <!-- the binary -->
                         {% if(value.value == 0) %}
                             {{ value.value }} KB
                         {% else %}
@@ -130,9 +110,17 @@ The template is processing the following fields:
                             {% elseif (kiloBytes) > 0  %}                            
                                 {{ kiloBytes }} KB
                             {% endif%}    
-                        {% endif%}   
-                            
-                    {% endif %}
+                        {% endif%}
+                    {% else %}
+                        <!-- if there is no type defined then simply display the title -->
+                        {% if (value.value) %} 
+                            {{ value.value|nl2br }}
+                        {% elseif (value.title) %} 
+                            {{ value.title|nl2br }}    
+                        {% elseif (value.relvalue) %} 
+                            {{ value.relvalue|nl2br }}    
+                        {% endif %}
+                    {% endif %}   
                     
                     <!-- if there are more than 1 value then we will display the delimiter -->
                     {% if not loop.last %} {{ limiter|raw }} {% endif %}
