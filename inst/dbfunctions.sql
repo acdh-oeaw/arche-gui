@@ -596,8 +596,13 @@ WITH ids3 AS (
 			(select mv.value from metadata_view as mv where mv.id = tf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
 		) description,
 	(select mv.value from metadata_view as mv where tf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(select mv.value from relations as r left join metadata_view as mv on r.target_id = mv.id where tf.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+	(CASE WHEN 
+        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+    THEN
+        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+    ELSE
+        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+	END) as accessres,
 	(select mv.value from metadata_view as mv where tf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
 	from typeidsFiltered as tf
 	) select * from ids3
@@ -676,8 +681,13 @@ WITH ids3 AS (
 		(select mv.value from metadata_view as mv where mv.id = yf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
 	) description,
 	(select mv.value from metadata_view as mv where yf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(select mv.value from relations as r left join metadata_view as mv on r.target_id = mv.id where yf.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-	mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+	(CASE WHEN 
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+        THEN
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+        ELSE
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+	END) as accessres,
 	(select mv.value from metadata_view as mv where yf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
 	from yearsidsFiltered as yf
 	) select * from ids3
@@ -778,8 +788,13 @@ WITH ids3 AS (
 			(select mv.value from metadata_view as mv where mv.id = wf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
 		) description,
 	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(select mv.value from relations as r left join metadata_view as mv on r.target_id = mv.id where wf.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and value like 'http%') as accessres,
+	(CASE WHEN 
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+        THEN
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+        ELSE
+            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+	END) as accessres,
 	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
 	from wordsidsFiltered as wf
 	) select * from ids3
