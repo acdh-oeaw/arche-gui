@@ -68,11 +68,11 @@
             {% endif%}
             
             {%  if basic.getNonAcdhIdentifiers() %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)", 'type': 'external_url', 'where_to_open': 'new_tab'} ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
             {% endif%}
             
             {%  if basic.getData('acdh:isMemberOf') %}
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of" ,'type': 'internal_url' } ) }}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of"  } ) }}
             {% endif%}
     
             {%  if (properties) %}
@@ -80,7 +80,7 @@
 
                 {% for key, value in properties %}
                     {% if basic.getData(key) %}
-                         {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
+                         {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
                     {% endif%}
                 {% endfor %}
                 

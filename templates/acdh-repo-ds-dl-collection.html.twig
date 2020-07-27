@@ -2,19 +2,15 @@
 {% set properties = {
     'acdh:isPartOf': {
         'icon': 'device_hub',
-        'label': 'Part Of',
-        'type': 'internal_url'
+        'label': 'Part Of'
     },
     'acdh:hasLicense': {
 	'icon': 'copyright',
-        'label': 'License',
-        'type': 'vocabs',
-        'where_to_open': 'new_tab'
+        'label': 'License'
     },
     'acdh:hasNumberOfItems': {
         'icon': 'attachment',
-        'label': 'Number of files',
-        'type': 'text'
+        'label': 'Number of files'
     },
     'acdh:hasBinarySize': {
         'icon': 'attachment',
@@ -110,7 +106,7 @@
            
             {% for key, value in properties %}
                 {% if extra.metadata.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': extra.metadata.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter, 'where_to_open': value.where_to_open } ) }}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': extra.metadata.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
                 {% endif%}
             {% endfor %}
             

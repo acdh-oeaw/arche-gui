@@ -22,17 +22,12 @@ Field extra type:
 
 -->
 
-
-
 {%  if (delimiter) %}
     {% set limiter = delimiter|raw %}
 {% else %}
     {% set limiter = ',' %}
 {% endif%}
 <!--  -->
-{% if (where_to_open == 'new_tab') %}
-    {% set open = 'target="_blank"' %}
-{% endif %} 
 
 {%  if data %}
     <div class="res-property">
@@ -52,11 +47,11 @@ Field extra type:
                     <!-- The identifiers will open in the same window -->
                     {% if (value.type == 'ID') %}
                         {% if (value.title and value.repoid )  %}
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.title|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" target="_blank">{{ value.title|nl2br }}</a>
                         {% elseif (value.value and value.repoid )  %}                            
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.value|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" target="_blank">{{ value.value|nl2br }}</a>
                         {% elseif (value.relvalue and value.repoid )  %}                            
-                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.relvalue|nl2br }}</a>    
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" target="_blank">{{ value.relvalue|nl2br }}</a>    
                         {% elseif (value.value) %}
                             <!-- if we dont have a repoid then some ingestion problem, so we will just display simple value -->
                             <a href="{{ value.value }}" target="_blank">{{ value.value|nl2br }}</a>
