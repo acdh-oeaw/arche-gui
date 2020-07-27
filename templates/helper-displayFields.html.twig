@@ -11,6 +11,7 @@ Data Type :
 - http://www.w3.org/2001/XMLSchema#decimal
 - URI
 - http://www.w3.org/2001/XMLSchema#string
+- http://www.w3.org/2001/XMLSchema#anyURI
 
 Field extra type:
 - binary / date
@@ -72,7 +73,7 @@ Field extra type:
                             <!-- if we dont have a repoid then some ingestion problem, so we will just display simple value -->
                             <a id='archeHref' href="{{ value.value }}" >{{ value.value|nl2br }}</a>
                         {% endif %}
-                    {% elseif(value.type == 'URI') %}
+                    {% elseif( (value.type == 'URI') or (value.type == 'http://www.w3.org/2001/XMLSchema#anyURI') ) %}
                         <!-- The URI will open in a new window -->
                         {% if (value.value)  %}
                             <a href="{{ value.value }}" target="_blank">{{ value.value|nl2br }}</a>
