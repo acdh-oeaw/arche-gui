@@ -49,8 +49,7 @@ class SearchViewModel extends ArcheModel
     * @return array
     */
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
-    {
-       
+    {  
         //helper function to create object from the metavalue string
         $this->metaObj = $metavalue;
         //init the values for the paging
