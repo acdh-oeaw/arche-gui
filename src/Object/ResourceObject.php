@@ -260,6 +260,8 @@ class ResourceObject
     public function getTitleImage(string $width = '200px'): string
     {
         $img = '';
+        $imgBinary = '';
+        $width = str_replace('px', '', $width);
         //check the thumbnail service first
         if ($acdhid = $this->getAcdhID()) {
             $acdhid = str_replace('http://', '', $acdhid);
@@ -267,7 +269,6 @@ class ResourceObject
             if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
                 $type = fgets($file, 40);
                 if (!empty($type)) {
-                    $width = str_replace('px', '', $width);
                     $img = $this->thumbUrl.$acdhid.'?width='.$width;
                     return '<img src="'.$img.'" class="img-responsive">';
                 }
@@ -276,25 +277,26 @@ class ResourceObject
         
         //if there is no thumbnail servicees then we will download the image
         if (isset($this->properties["acdh:hasTitleImage"]) && count($this->properties["acdh:hasTitleImage"]) > 0) {
-            if (isset($this->properties["acdh:hasTitleImage"][0]->value)) {
-                if (!empty($this->properties["acdh:hasTitleImage"][0]->value)) {
-                    if ($file = @fopen($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value, "r")) {
-                        $type = fgets($file, 40);
-                        if (!empty($type)) {
-                            if (strpos(strtolower($type), 'svg') === false) {
-                                $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: '.$width.';" /> ';
-                            } else {
-                                $imgBinary = '';
-                                if ($imgBinary = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
-                                    if (!empty($imgBinary)) {
-                                        $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: '.$width.';" /> ';
-                                    }
+            if (isset($this->properties["acdh:hasTitleImage"][0]->value) && !empty($this->properties["acdh:hasTitleImage"][0]->value)) {
+                if ($file = @fopen($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value, "r")) {
+                    $type = fgets($file, 40);
+                    if (!empty($type)) {
+                        //if it is an svg
+                        if (strpos(strtolower($type), 'svg') !== false) {
+                            $img = '<img src="'.$this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value.'" class="img-responsive" style="max-width: '.$width.';" /> ';
+                        } else {
+                            //if not an svg
+                            if ($imgBinary = @file_get_contents($this->config->getBaseUrl().$this->properties["acdh:hasTitleImage"][0]->value)) {
+                                //if the binary string contains any image related string then it will be a string
+                                if (!empty($imgBinary) && preg_match('/(\.jpg|\.png|\.bmp)$/', $imgBinary)) {
+                                    $img = '<img src="data:image/png;base64,'.base64_encode($imgBinary).'" class="img-responsive" style="max-width: '.$width.';" /> ';
                                 }
                             }
                         }
-                        fclose($file);
                     }
+                    fclose($file);
                 }
+                
                 return $img;
             }
         }

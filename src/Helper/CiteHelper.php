@@ -42,7 +42,7 @@ class CiteHelper
                                 $result .= ", ";
                             }
                         } else {
-                            if (!is_array($val)) {
+                            if (!is_array((array)$val)) {
                                 $result .= ", " . $val;
                             }
                         }
