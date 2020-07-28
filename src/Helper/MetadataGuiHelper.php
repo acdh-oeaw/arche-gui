@@ -261,6 +261,10 @@ class MetadataGuiHelper
         return $this->createRootTableHtml();
     }
     
+    /**
+     * Create the response html string
+     * @return string
+     */
     private function createRootTableHtml(): string
     {
         $html = '';
@@ -447,21 +451,22 @@ class MetadataGuiHelper
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {
-                if (isset($v->order)) {
-                    if (isset($v->property)) {
-                        $this->data[$v->order]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->property);
-                        $this->data[$v->order][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->property);
+               
+                if (isset($v->ordering)) {
+                    if (isset($v->uri)) {
+                        $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
+                        $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
                     }
                     if (isset($v->min) || isset($v->max)) {
-                        $this->data[$v->order][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
+                        $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
                     } elseif ((is_null($v->min) && is_null($v->max))) {
-                        $this->data[$v->order][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
+                        $this->data[$v->ordering][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
                     }
                     if (isset($v->label['en'])) {
-                        $this->data[$v->order][$kt]['title'] = $v->label['en'];
+                        $this->data[$v->ordering][$kt]['title'] = $v->label['en'];
                     }
                     if (isset($v->domain)) {
-                        $this->data[$v->order][$kt]['domain'] = $v->domain;
+                        $this->data[$v->ordering][$kt]['domain'] = $v->domain;
                     }
                     
                     $this->data[$v->order]['main']['min'] = $v->min;
@@ -480,10 +485,10 @@ class MetadataGuiHelper
                     }
 
                     if (isset($v->recommended)) {
-                        $this->data[$v->order]['main']['recommended'] = $v->recommended;
-                        $this->data[$v->order][$kt]['recommended'] = $v->recommended;
+                        $this->data[$v->order]['main']['recommendedClass'] = $v->recommended;
+                        $this->data[$v->order][$kt]['recommendedClass'] = $v->recommended;
                     }
-                    $this->data[$v->order]['main']['order'] = $v->order;
+                    $this->data[$v->order]['main']['ordering'] = $v->order;
                     
                     if (isset($v->langTag)) {
                         $this->data[$v->order]['main']['langTag'] = $v->langTag;
@@ -493,6 +498,7 @@ class MetadataGuiHelper
                     $this->data[$v->order]['main']['domain'] = $domain;
                 }
             }
+            
             ksort($this->data);
         }
     }

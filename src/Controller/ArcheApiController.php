@@ -549,7 +549,7 @@ class ArcheApiController extends ControllerBase
         $this->modelData = $this->model->getViewData('rootTable', $obj);
         
         if (count($this->modelData) == 0) {
-            $response->setContent('No data!');
+            $response->setContent('No data!1');
             $response->setStatusCode(200);
         }
         
