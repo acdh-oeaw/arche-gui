@@ -451,7 +451,6 @@ class MetadataGuiHelper
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {
-               
                 if (isset($v->ordering)) {
                     if (isset($v->uri)) {
                         $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
