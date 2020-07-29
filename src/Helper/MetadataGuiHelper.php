@@ -470,7 +470,6 @@ class MetadataGuiHelper
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {
-               
                 if (isset($v->ordering)) {
                     
                     if (isset($v->uri)) {
