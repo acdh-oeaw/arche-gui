@@ -5,8 +5,8 @@
             <i class="material-icons">&#xE89F;</i>
             {% for key, value in result %}
                 <div class="res-act-button">
-                    <a href="{{ value }}" title="{{ key }}" class="dissServAhref" >
-                        <span>{{ key|trans }}</span>
+                    <a href="{{ value.uri }}" title="{{ value.description }}" class="dissServAhref" >
+                        <span>{{ value.title|trans }}</span>
                     </a>
                 </div>
             {% endfor %} 
