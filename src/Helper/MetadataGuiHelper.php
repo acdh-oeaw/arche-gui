@@ -418,13 +418,11 @@ class MetadataGuiHelper
         $html = '';
        
         foreach ($types as $t => $v) {
-            
             if (isset($type[$t]['range']) && count($type[$t]['range']) > 0) {
-                foreach($type[$t]['range'] as $r) {
-                   
+                foreach ($type[$t]['range'] as $r) {
                     if (strpos($r, '/api/') === false) {
                         $html .= ''.$r.',';
-                    } 
+                    }
                 }
             }
         }
@@ -471,7 +469,6 @@ class MetadataGuiHelper
            
             foreach ($kv as $v) {
                 if (isset($v->ordering)) {
-                    
                     if (isset($v->uri)) {
                         $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
                         $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
