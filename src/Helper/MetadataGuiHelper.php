@@ -258,6 +258,7 @@ class MetadataGuiHelper
     {
         $this->siteLang = $lang;
         $this->reorderRootTable($data);
+       
         return $this->createRootTableHtml();
     }
     
@@ -269,7 +270,7 @@ class MetadataGuiHelper
     {
         $html = '';
         
-        if (count($this->data)) {
+        if (count($this->data) > 0) {
             // Open the table
 
             $html .= "<style>
@@ -312,7 +313,7 @@ class MetadataGuiHelper
                 
             foreach ($this->data as $type) {
                 $html .= '<tr>';
-
+                
                 if (isset($type['main']['title'])) {
                     $html .= '<td><b>'.$type['main']['title'].'</b></td>';
                 } else {
@@ -328,7 +329,7 @@ class MetadataGuiHelper
                 }
 
                 $html .= '<td>'.$this->getRtTypeDomain($type).'</td>';
-
+                
                 $html .= '<td>'.$this->getRtTypeRange($type).'</td>';
 
                 if (isset($type['main']['vocabs'])) {
@@ -372,6 +373,11 @@ class MetadataGuiHelper
         return $html;
     }
     
+    /**
+     * Get and display the domain values from the ontology
+     * @param array $type
+     * @return string
+     */
     private function getRtTypeDomain(array $type): string
     {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
@@ -384,6 +390,11 @@ class MetadataGuiHelper
         return $html;
     }
     
+    /**
+     * Get and display the recommended values from the ontology
+     * @param array $type
+     * @return string
+     */
     private function getRtTypeRecommended(array $type): string
     {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
@@ -396,16 +407,24 @@ class MetadataGuiHelper
         return $html;
     }
     
+    /**
+     * Get and display the range values from the ontology
+     * @param array $type
+     * @return string
+     */
     private function getRtTypeRange(array $type): string
     {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
+       
         foreach ($types as $t => $v) {
-            if (isset($type[$t]['range']) && $type[$t]['range'] == true) {
-                if (strpos($type[$t]['range'], 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
-                    $html .= ''.$v.',';
-                } else {
-                    $html = $type[$t]['range'];
+            
+            if (isset($type[$t]['range']) && count($type[$t]['range']) > 0) {
+                foreach($type[$t]['range'] as $r) {
+                   
+                    if (strpos($r, '/api/') === false) {
+                        $html .= ''.$r.',';
+                    } 
                 }
             }
         }
@@ -453,6 +472,7 @@ class MetadataGuiHelper
             foreach ($kv as $v) {
                
                 if (isset($v->ordering)) {
+                    
                     if (isset($v->uri)) {
                         $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
                         $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
@@ -469,33 +489,33 @@ class MetadataGuiHelper
                         $this->data[$v->ordering][$kt]['domain'] = $v->domain;
                     }
                     
-                    $this->data[$v->order]['main']['min'] = $v->min;
-                    $this->data[$v->order]['main']['max'] = $v->max;
+                    $this->data[$v->ordering]['main']['min'] = $v->min;
+                    $this->data[$v->ordering]['main']['max'] = $v->max;
 
-                    $this->data[$v->order][$kt]['min'] = $v->min;
-                    $this->data[$v->order][$kt]['max'] = $v->max;
+                    $this->data[$v->ordering][$kt]['min'] = $v->min;
+                    $this->data[$v->ordering][$kt]['max'] = $v->max;
                     if (isset($v->range)) {
-                        $this->data[$v->order]['main']['range'] = $v->range;
-                        $this->data[$v->order][$kt]['range'] = $v->range;
+                        $this->data[$v->ordering]['main']['range'] = $v->range;
+                        $this->data[$v->ordering][$kt]['range'] = $v->range;
                     }
 
                     if (isset($v->vocabs)) {
-                        $this->data[$v->order]['main']['vocabs'] = $v->vocabs;
-                        $this->data[$v->order][$kt]['vocabs'] = $v->vocabs;
+                        $this->data[$v->ordering]['main']['vocabs'] = $v->vocabs;
+                        $this->data[$v->ordering][$kt]['vocabs'] = $v->vocabs;
                     }
 
-                    if (isset($v->recommended)) {
-                        $this->data[$v->order]['main']['recommendedClass'] = $v->recommended;
-                        $this->data[$v->order][$kt]['recommendedClass'] = $v->recommended;
+                    if (isset($v->recommendedClass)) {
+                        $this->data[$v->ordering]['main']['recommended'] = $v->recommendedClass;
+                        $this->data[$v->ordering][$kt]['recommended'] = $v->recommendedClass;
                     }
-                    $this->data[$v->order]['main']['ordering'] = $v->order;
+                    $this->data[$v->ordering]['main']['order'] = $v->ordering;
                     
                     if (isset($v->langTag)) {
-                        $this->data[$v->order]['main']['langTag'] = $v->langTag;
-                        $this->data[$v->order][$kt]['langTag'] = $v->langTag;
+                        $this->data[$v->ordering]['main']['langTag'] = $v->langTag;
+                        $this->data[$v->ordering][$kt]['langTag'] = $v->langTag;
                     }
                     
-                    $this->data[$v->order]['main']['domain'] = $domain;
+                    $this->data[$v->ordering]['main']['domain'] = $domain;
                 }
             }
             
