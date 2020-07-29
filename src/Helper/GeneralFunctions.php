@@ -247,13 +247,13 @@ class GeneralFunctions
                 if (strtolower($k) != 'gui') {
                     try {
                         //if the dissemination services has a title then i will use it, if not then the hasReturnType as a label
-                        if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString()) {
+                        if ($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString()) {
                             $k = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString();
                         }
                         $result[$k]['uri'] = (string) $v->getRequest($repDiss)->getUri();
                         $result[$k]['title'] = (string) $k;
                         //if we have a description then we will use it
-                        if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString()) {
+                        if ($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString()) {
                             $result[$k]['description'] = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString();
                         }
                     } catch (\Exception $ex) {
