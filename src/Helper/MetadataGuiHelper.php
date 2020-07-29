@@ -400,7 +400,7 @@ class MetadataGuiHelper
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
-            if (isset($type[$t]['recommended']) && $type[$t]['recommended'] == true) {
+            if (isset($t) && isset($type[$t]['recommended']) && $type[$t]['recommended'] == true) {
                 $html .= ''.$v.',';
             }
         }
@@ -470,6 +470,7 @@ class MetadataGuiHelper
             $domain .= $kt.' ';
            
             foreach ($kv as $v) {
+               
                 if (isset($v->ordering)) {
                     
                     if (isset($v->uri)) {

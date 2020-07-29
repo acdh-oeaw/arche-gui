@@ -66,9 +66,9 @@ Field extra type:
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.relvalue|nl2br }}</a>    
                         {% elseif (value.value) %}
                             <!-- if we dont have a repoid then some ingestion problem, so we will just display simple value -->
-                            <a id='archeHref' href="{{ value.value }}" >{{ value.value|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.value }}" >{{ value.value|nl2br }}</a>
                         {% elseif (value.repoid) %}
-                            <a id='archeHref' href="{{ value.repoid }}" >{{ value.repoid|nl2br }}</a>
+                            <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" >{{ value.repoid|nl2br }}</a>
                         {% endif %}
                     {% elseif( (value.type == 'URI') or (value.type == 'http://www.w3.org/2001/XMLSchema#anyURI') ) %}
                         <!-- The URI will open in a new window -->
