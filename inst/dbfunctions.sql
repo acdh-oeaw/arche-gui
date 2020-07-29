@@ -122,73 +122,75 @@ BEGIN
         select * from dmeta
     );
     --get the english values
-	DROP TABLE IF EXISTS detail_meta_main_lng_en;
-	CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
-		WITH dmeta as (
-			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-			from metadata as m
-			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-			where dm.type = 'REL' and m.lang='en'
-		)
-		select * from dmeta
-	);
-	--get the german values
-	DROP TABLE IF EXISTS detail_meta_main_lng_de;
-	CREATE TEMPORARY TABLE detail_meta_main_lng_de AS (
-		WITH dmeta as (
-			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-			from metadata as m
-			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-			where dm.type = 'REL' and m.lang='de'
-		)
-		select * from dmeta
-	);
-	-- compare the missing values and extend the missing labels
-	IF _lang = 'en'
-	THEN
-		DROP TABLE IF EXISTS reldata;
-		CREATE TEMPORARY TABLE reldata AS (
-			WITH dmeta as (
-				select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  from detail_meta_main_lng_en as t3
-				UNION
-				select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
-				from detail_meta_main_lng_de as t1 
-				where 
-				NOT EXISTS( 
-					select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
-					from detail_meta_main_lng_en as t2 
-					where t1.id = t2.id
-				)
-				order by id
-			)
-			select * from dmeta
-		);
-	END IF;
+    DROP TABLE IF EXISTS detail_meta_main_lng_en;
+    CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
+            WITH dmeta as (
+                    select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+                    from metadata as m
+                    left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+                    left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+                    left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+                    where dm.type = 'REL' and m.lang='en'
+            )
+            select * from dmeta
+    );
+    --get the german values
+    DROP TABLE IF EXISTS detail_meta_main_lng_de;
+    CREATE TEMPORARY TABLE detail_meta_main_lng_de AS (
+            WITH dmeta as (
+                    select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+                    from metadata as m
+                    left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+                    left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+                    left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+                    where dm.type = 'REL' and m.lang='de'
+            )
+            select * from dmeta
+    );
+    -- compare the missing values and extend the missing labels
+    IF _lang = 'en'
+    THEN
+        DROP TABLE IF EXISTS reldata;
+        CREATE TEMPORARY TABLE reldata AS (
+            WITH dmeta as (
+                select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  
+                from detail_meta_main_lng_en as t3
+                UNION
+                select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
+                from detail_meta_main_lng_de as t1 
+                where 
+                NOT EXISTS( 
+                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
+                    from detail_meta_main_lng_en as t2 
+                    where t1.id = t2.id
+                )
+                order by id
+            )
+            select * from dmeta
+        );
+    END IF;
 
-	IF _lang = 'de'
-	THEN
-		DROP TABLE IF EXISTS reldata;
-		CREATE TEMPORARY TABLE reldata AS (
-			WITH dmeta as (
-				select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  from detail_meta_main_lng_de as t3
-				UNION
-				select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
-				from detail_meta_main_lng_en as t1 
-				where 
-				NOT EXISTS( 
-					select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
-					from detail_meta_main_lng_de as t2 
-					where t1.id = t2.id
-				)
-				order by id
-			)
-			select * from dmeta
-		);
-	END IF;
+    IF _lang = 'de'
+    THEN
+        DROP TABLE IF EXISTS reldata;
+        CREATE TEMPORARY TABLE reldata AS (
+            WITH dmeta as (
+                select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  
+                from detail_meta_main_lng_de as t3
+                UNION
+                select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
+                from detail_meta_main_lng_en as t1 
+                where 
+                NOT EXISTS( 
+                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
+                    from detail_meta_main_lng_de as t2 
+                    where t1.id = t2.id
+                )
+                order by id
+            )
+            select * from dmeta
+        );
+    END IF;
 	
     RETURN QUERY
     select dm.id, dm.property, dm.type, 
@@ -1145,3 +1147,29 @@ WITH query_data as (
 END
 $func$
 LANGUAGE 'plpgsql';
+
+/**
+* Get the repoid REL values HasTitle based on the defined language
+**/
+DROP FUNCTION gui.get_rel_values_func(text, text);
+CREATE FUNCTION gui.get_rel_values_func(_identifier text, _lang text DEFAULT 'en')
+  RETURNS table (id bigint, property text, title text, lang text )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+	select 
+            CAST(mv.value as bigint) as propid, mv.property, mv2.value, mv2.lang
+	from
+	metadata_view as mv 
+	left join metadata_view as mv2 on mv2.id = CAST(mv.value as bigint)
+	where mv.id = CAST(_identifier as bigint) and mv.type = 'REL'
+	and mv2.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang
+	) select * from query_data order by property;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+
