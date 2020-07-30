@@ -75,7 +75,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->accessrestriction = '';
         $id->language = null;
         $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
-        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+        self::$object->setData("acdh:hasIdentifier", (array)$id);
     }
     
     private function createExampleAcdhIdentifierData()
@@ -91,7 +91,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->accessrestriction = '';
         $id->language = null;
         $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
-        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+        self::$object->setData("acdh:hasIdentifier", (array)$id);
     }
     
     private function createExampleAvailabelDateData()
@@ -107,10 +107,9 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->accessrestriction = '';
         $id->language = null;
         $id->title = '2017-10-03';
-        $id->shortcut = 'acdh:hasAvailableDate';        
-        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+        $id->shortcut = 'acdh:hasAvailableDate';     
+        self::$object->setData("acdh:hasAvailableDate", (array)$id);
     }
-    
     
     public function testGetTitle()
     {
@@ -121,9 +120,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNotEmpty(self::$object->getData('acdh:hasTitle'));
         $this->assertEmpty(self::$object->getData('acdh:hasTitle1'));
-    }
-    
-    
+    }    
     
     public function testGetIdentifiers()
     {
