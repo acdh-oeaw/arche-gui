@@ -17,7 +17,6 @@ class SearchViewController extends ControllerBase
     private $repo;
     private $model;
     private $helper;
-    private $numberOfResults;
     
     public function __construct($repo)
     {

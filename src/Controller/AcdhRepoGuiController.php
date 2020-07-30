@@ -70,7 +70,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         if (count($roots['pagination']) > 0) {
             $paging = $roots['pagination'][0];
         }
-      
+        
         return [
             '#theme' => 'acdh-repo-gui-main',
             '#data' => $roots['data'],

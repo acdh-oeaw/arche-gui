@@ -26,14 +26,14 @@
         {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
             <div class="res-property">
                 {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                    {'data': basic.getData('acdh:hasCoverageStartDate'), 'icon': 'info_outline', 'label':  'Coverage Start Date', 'type': 'date', 'dateformat': 'd M Y' } ) }}
+                    {'data': basic.getData('acdh:hasCoverageStartDate'), 'icon': 'info_outline', 'label':  'Coverage Start Date', 'type': 'date', 'dateformat': 'Y' } ) }}
             </div>
         {% endif %}
 
         {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
             <div class="res-property">
                 {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                    {'data': basic.getData('acdh:hasCoverageEndDate'), 'icon': 'info_outline', 'label':  'Coverage End Date', 'type': 'date', 'dateformat': 'd M Y' } ) }}
+                    {'data': basic.getData('acdh:hasCoverageEndDate'), 'icon': 'info_outline', 'label':  'Coverage End Date', 'type': 'date', 'dateformat': 'Y' } ) }}
             </div>
         {% endif %}
         
@@ -56,35 +56,35 @@
             {% if basic.getData('acdh:hasTemporalCoverage')[0] %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasTemporalCoverage'), 'icon': 'info', 'label': 'Temporal Coverage' } ) }}
+                        {'data': basic.getData('acdh:hasTemporalCoverage'), 'icon': 'info_outline', 'label': 'Temporal Coverage' } ) }}
                 </div>
             {% endif %}    
             
             {% if basic.getData('acdh:hasAppliedMethod')[0] %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasAppliedMethod'), 'icon': 'info', 'label': 'Applied Method' } ) }}
+                        {'data': basic.getData('acdh:hasAppliedMethod'), 'icon': 'info_outline', 'label': 'Applied Method' } ) }}
                 </div>
             {% endif %}    
             
             {% if basic.getData('acdh:hasAppliedMethodDescription')[0] %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasAppliedMethodDescription'), 'icon': 'info', 'label': 'Applied Method Description' } ) }}
+                        {'data': basic.getData('acdh:hasAppliedMethodDescription'), 'icon': 'info_outline', 'label': 'Applied Method Description' } ) }}
                 </div>
             {% endif %}    
             
             {% if basic.getData('acdh:hasTechnicalInfo')[0] %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasTechnicalInfo'), 'icon': 'info', 'label': 'Technical Info' } ) }}
+                        {'data': basic.getData('acdh:hasTechnicalInfo'), 'icon': 'info_outline', 'label': 'Technical Info' } ) }}
                 </div>
             {% endif %}    
             
             {% if basic.getData('acdh:hasEditorialPractice')[0] %}
                 <div class="res-property">
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasEditorialPractice'), 'icon': 'info', 'label': 'Editorial Practice' } ) }}
+                        {'data': basic.getData('acdh:hasEditorialPractice'), 'icon': 'info_outline', 'label': 'Editorial Practice' } ) }}
                 </div>
             {% endif %}
         {% endif %}

@@ -104,6 +104,7 @@
             basic.getAcdhType()|lower == 'person' or 
             basic.getAcdhType()|lower == 'concept'
     %}
+        <!--
         <div class="res-actions" style="padding: 20px;">
             <div class="res-act-button" style="display: table; margin: 0 auto;">
                 <a href="#" id="getRepoChildView" class="getRepoChildView"><i class="fa fa-angle-down" aria-hidden="true"></i> &nbsp;<b>{{ "Show More"|trans }}</b>&nbsp; <i class="fa fa-angle-down" aria-hidden="true"></i></a>
@@ -112,8 +113,13 @@
                 <a href="#" id="hideRepoChildView" class="hideRepoChildView"><i class="fa fa-angle-up" aria-hidden="true"></i> &nbsp;<b>{{ "Hide View"|trans }}</b>&nbsp; <i class="fa fa-angle-up" aria-hidden="true"></i></a>
             </div>
         </div>
-
-       <div id="child-div-content" style="display: none"></div>
+            
+        <div id="child-div-content" style="display: none"></div>
+        -->
+        <div id="child-div-content">
+            {{ extra.childData.getContent()|raw }}
+        </div>
+        
    {% endif%}
 <br>
 

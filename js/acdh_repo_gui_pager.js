@@ -138,9 +138,15 @@ jQuery(function($) {
             dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
         };
         
+        //if the urlLimit is null then init a default value
+        if(urlLimit == null ) {
+            urlLimit = 10;
+        }
+        
         //change the gui values
         $('.sortByButton').html(orderTexts[urlOrder]);
         $('.resPerPageButton').html(urlLimit);
+        
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
     }
@@ -160,11 +166,18 @@ jQuery(function($) {
     //the pager buttons
     $(document ).delegate( "#first-btn", "click", function(e) {
         let newPageNumber = $(this).data('pagination');
+        //get the url params
         let params = getUrlParams(actionPage);
+        //get the repoid
         var uuid = getIDFromUrl(window.location.href);
         
         if(uuid) {
+            //update the child view
             getChildData(uuid, params.urlLimit, newPageNumber, params.urlOrder, function(result){
+                //if the order param is null then we define a basic value
+                if(params.urlOrder == null) {
+                    params.urlOrder = 'titleasc';
+                }
                 createNewUrl(newPageNumber, params.urlLimit, params.urlOrder, actionPage); 
                 if( params.urlOrder != null && params.urlLimit != null) {
                     updateGui( params.urlOrder, params.urlLimit)

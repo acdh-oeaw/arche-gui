@@ -53,7 +53,7 @@ class ResourceObject
      * @param string $prop
      * @param array $v
      */
-    private function setData(string $prop = null, array $v = null)
+    private function setData(string $prop = null, array $v = array())
     {
         if (
             isset($prop) && count((array)$v) > 0

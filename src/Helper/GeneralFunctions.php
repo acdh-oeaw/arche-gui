@@ -241,23 +241,27 @@ class GeneralFunctions
         try {
             $dissServ = array();
             $dissServ = $repDiss->getDissServices();
-            
+            $shown = [];
             foreach ($dissServ as $k => $v) {
                 //we need to remove the gui from the diss serv list because we are on the gui
                 if (strtolower($k) != 'gui') {
-                    try {
-                        //if the dissemination services has a title then i will use it, if not then the hasReturnType as a label
-                        if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString()) {
-                            $k = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString();
+                    $hash = spl_object_hash($v);
+                    if (!isset($shown[$hash])) {
+                        try {
+                            //if the dissemination services has a title then i will use it, if not then the hasReturnType as a label
+                            if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString()) {
+                                $k = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString();
+                            }
+                            $result[$k]['uri'] = (string) $v->getRequest($repDiss)->getUri();
+                            $result[$k]['title'] = (string) $k;
+                            //if we have a description then we will use it
+                            if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString()) {
+                                $result[$k]['description'] = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString();
+                            }
+                            $shown[$hash] = true;
+                        } catch (\Exception $ex) {
+                            error_log(print_r($ex->getMessage(), true));
                         }
-                        $result[$k]['uri'] = (string) $v->getRequest($repDiss)->getUri();
-                        $result[$k]['title'] = (string) $k;
-                        //if we have a description then we will use it
-                        if($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString()) {
-                            $result[$k]['description'] = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString();
-                        }
-                    } catch (\Exception $ex) {
-                        error_log(print_r($ex->getMessage(), true));
                     }
                 }
             }

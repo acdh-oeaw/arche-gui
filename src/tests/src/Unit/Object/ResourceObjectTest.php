@@ -62,6 +62,56 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         self::$resourceData["acdh:hasTitle"]['en'] = array($title);
     }
     
+    private function createExampleIdentifierData()
+    {        
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
+        $id->type = 'ID';
+        $id->value = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->relvalue = null;
+        $id->acdhid = null;
+        $id->vocabsid = null;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
+        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+    }
+    
+    private function createExampleAcdhIdentifierData()
+    {        
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
+        $id->type = 'ID';
+        $id->value = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->relvalue = null;
+        $id->acdhid = null;
+        $id->vocabsid = null;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
+        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+    }
+    
+    private function createExampleAvailabelDateData()
+    {        
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate';
+        $id->type = 'http://www.w3.org/2001/XMLSchema#date';
+        $id->value = '2020-07-28 09:39:29';
+        $id->relvalue = null;
+        $id->acdhid = null;
+        $id->vocabsid = null;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->title = '2017-10-03';
+        $id->shortcut = 'acdh:hasAvailableDate';        
+        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+    }
+    
+    
     public function testGetTitle()
     {
         $this->assertNotEmpty(self::$object->getTitle());
@@ -71,6 +121,47 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNotEmpty(self::$object->getData('acdh:hasTitle'));
         $this->assertEmpty(self::$object->getData('acdh:hasTitle1'));
+    }
+    
+    
+    
+    public function testGetIdentifiers()
+    {
+        $this->assertEmpty(self::$object->getIdentifiers());
+        //add idenitifier
+        $this->createExampleIdentifierData();
+        $this->assertNotEmpty(self::$object->getIdentifiers());
+    }
+    
+    public function testGetNonAcdhIdentifiers()
+    {
+        $this->assertEmpty(self::$object->getNonAcdhIdentifiers());
+        //add idenitifier
+        $this->createExampleAcdhIdentifierData();
+        $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
+    }
+    
+    public function testGetUUID()
+    {
+        $this->assertNotEmpty(self::$object->getUUID());
+    }
+    
+    public function testGetAcdhID()
+    {
+        $this->assertNotEmpty(self::$object->getAcdhID());
+    }
+    
+    public function testGetInsideUrl()
+    {
+        $this->assertNotEmpty(self::$object->getInsideUrl());
+    }
+    
+    public function testGetAvailableDate()
+    {
+        $this->assertEmpty(self::$object->getAvailableDate());
+        //add idenitifier
+        $this->createExampleAvailabelDateData();
+        $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
     
     protected function startTimer(): void

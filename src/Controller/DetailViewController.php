@@ -78,6 +78,8 @@ class DetailViewController extends ControllerBase
             $this->basicViewData->extra->tooltip = $tooltip;
         }
         
+        //get the child view data
+        $this->basicViewData->extra->childData = $this->getChildData();
         return $this->basicViewData;
     }
     
@@ -103,5 +105,11 @@ class DetailViewController extends ControllerBase
             return $obj[0];
         }
         return new \stdClass();
+    }
+    
+    private function getChildData(): \Symfony\Component\HttpFoundation\Response
+    {
+        $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
+        return $child->repo_child_api($this->repoid, '10', '0', 'titleasc');
     }
 }
