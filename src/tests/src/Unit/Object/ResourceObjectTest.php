@@ -63,7 +63,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     }
     
     private function createExampleIdentifierData()
-    {        
+    {
         $id = new \stdClass();
         $id->id = 345;
         $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
@@ -79,7 +79,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     }
     
     private function createExampleAcdhIdentifierData()
-    {        
+    {
         $id = new \stdClass();
         $id->id = 345;
         $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
@@ -95,7 +95,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     }
     
     private function createExampleAvailabelDateData()
-    {        
+    {
         $id = new \stdClass();
         $id->id = 345;
         $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate';
