@@ -120,7 +120,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNotEmpty(self::$object->getData('acdh:hasTitle'));
         $this->assertEmpty(self::$object->getData('acdh:hasTitle1'));
-    }    
+    }
     
     public function testGetIdentifiers()
     {
