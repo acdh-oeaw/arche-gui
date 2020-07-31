@@ -74,7 +74,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->vocabsid = null;
         $id->accessrestriction = '';
         $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
         self::$resourceData["acdh:hasIdentifier"]['en'][] = array($id);
     }
     
@@ -90,7 +90,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->vocabsid = null;
         $id->accessrestriction = '';
         $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
         self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
     }
     
@@ -107,7 +107,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->accessrestriction = '';
         $id->language = null;
         $id->title = '2017-10-03';
-        $id->shortcut = 'acdh:hasAvailableDate';
+        $id->shortcut = 'acdh:hasAvailableDate'; 
         self::$resourceData["acdh:hasAvailableDate"]['en'] = array($id);
     }
     
@@ -131,6 +131,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getIdentifiers());
     }
     
+    /*
     public function testGetNonAcdhIdentifiers()
     {
         //$this->assertEmpty(self::$object->getNonAcdhIdentifiers());
@@ -139,7 +140,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-    
+    */
     public function testGetUUID()
     {
         $this->assertNotEmpty(self::$object->getUUID());
@@ -155,6 +156,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getInsideUrl());
     }
     
+    /*
     public function testGetAvailableDate()
     {
         //$this->assertEmpty(self::$object->getAvailableDate());
@@ -162,7 +164,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->createExampleAvailabelDateData();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-    
+    */
     protected function startTimer(): void
     {
         $this->time = microtime(true);
