@@ -1172,4 +1172,213 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+/**
+*  Arche Dashboard SQL
+**/
+
+/* PROPERTIES */
+DROP FUNCTION gui.dash_properties_func();
+CREATE FUNCTION gui.dash_properties_func()
+  RETURNS table (property text, cnt bigint )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+	SELECT
+	mv.property, count(mv.*) as cnt
+	from public.metadata_view as mv
+	where mv.property is not null
+	GROUP BY mv.property
+	UNION
+	SELECT
+	CASE WHEN mv.type = 'ID' THEN 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier' ELSE mv.property END as property, count(mv.*) as cnt	
+	from public.metadata_view as mv
+	where mv.property is null
+	GROUP BY mv.property, mv.type
+	) select * from query_data order by property;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/* CLASSES */
+DROP FUNCTION gui.dash_classes_func();
+CREATE FUNCTION gui.dash_classes_func()
+  RETURNS table (property text, cnt bigint )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+	select 
+	mv.value as class, count(mv.*) as cnt
+        from public.metadata_view as mv
+        where mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        group by mv.value
+	) select * from query_data order by class;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/* CLASSES PROPERTIES */
+DROP FUNCTION gui.dash_classes_properties_func();
+CREATE FUNCTION gui.dash_classes_properties_func()
+  RETURNS table (class text, property text, cnt_distinct_value bigint, cnt bigint )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+	select 
+	t_class.value as class, tp.property, count(distinct tp.value) as cnt_distinct_value, count(*) as cnt
+        from 
+	(select mv.id, mv.value
+            from public.metadata_view as mv
+            where mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+	) t_class 
+	inner join public.metadata_view tp on t_class.id =tp.id
+        group by t_class.value, tp.property
+	) select * from query_data order by class;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/* TOPCOLLECTIONS */
+DROP FUNCTION gui.dash_topcollections_func();
+CREATE FUNCTION gui.dash_topcollections_func()
+    RETURNS table (id bigint, title text, count_items bigint, max integer, sum_size_items numeric, bsize text )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+    SELECT 
+	rootids.rootid id, 
+	(select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.id = rootids.rootid limit 1) title,
+	count(rel.id) count_items, 
+	max(rel.n), 
+	sum(CAST(m_rawsize.value as bigint) ) sum_size_items,
+	(select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and mv.id = rootids.rootid) bsize
+	from 
+	( select 
+            DISTINCT(r.id) as rootid
+            from metadata_view as m
+            left join relations as r on r.id = m.id
+            where
+                m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+                and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                and r.id NOT IN ( 
+                    SELECT DISTINCT(r.id) from metadata_view as m left join relations as r on r.id = m.id
+                        where
+                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+                            and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                    )
+	) as rootids, 
+	public.get_relatives(rootid,'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf') rel
+	left join metadata_view m_rawsize on m_rawsize.id = rel.id
+	and m_rawsize.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
+	group by rootids.rootid, title
+	) select * from query_data order by title;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/* FORMATS */
+DROP FUNCTION gui.dash_formats_func();
+CREATE FUNCTION gui.dash_formats_func()
+  RETURNS table (format text, cnt_format bigint, cnt_size bigint, sum numeric )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+	select 
+            mf.value as format, count(distinct mf.id) as cnt_format, count(ms.id) as cnt_size, sum(CAST(ms.value as bigint) )  
+        from metadata_view mf
+        join metadata_view ms on mf.id=ms.id
+        where mf.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFormat'
+        and ms.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
+        group by mf.value
+	) select * from query_data order by format;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/* Formats per Collection */
+DROP FUNCTION gui.dash_formatspercollection_func();
+CREATE FUNCTION gui.dash_formatspercollection_func()
+  RETURNS table (id bigint, title text, type text, format text, count bigint, sum_size numeric )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+    SELECT 
+    rootids.rootid id, 
+    (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.id = rootids.rootid limit 1) title,
+    m_type.value as type, m_format.value as format, count(rel.id) as count, sum(CAST(m_size.value as bigint) ) as sum_size			
+    from (
+        select DISTINCT(r.id) as rootid
+        from metadata_view as m
+        left join relations as r on r.id = m.id
+        where
+            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+            and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+            and r.id NOT IN ( 
+                SELECT 
+                    DISTINCT(r.id) 
+                from metadata_view as m 
+                left join relations as r on r.id = m.id
+                where
+                    m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                    and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
+                    and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+            )
+        ) as rootids, public.get_relatives(rootid,'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf') rel
+        left join metadata_view as m_format on m_format.id = rel.id
+        and m_format.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFormat'
+        left join metadata_view as m_type on m_type.id = rel.id
+        and m_type.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        left join metadata_view as m_size on m_size.id = rel.id
+        and m_size.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
+	group by rootids.rootid, title, m_format.value, m_type.value
+    ) select * from query_data order by title;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+/** GET Facet **/
+DROP FUNCTION gui.dash_get_facet_func(text);
+CREATE FUNCTION gui.dash_get_facet_func(_property text)
+  RETURNS table (title text, type text, key text, cnt bigint )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+    SELECT 
+        CASE 
+	WHEN mv.type = 'REL' 
+	THEN (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'en' limit 1)
+	ELSE '' 
+        END as title, 
+        mv.type, mv.value as key, count(mv.*) as cnt
+    FROM public.metadata_view as mv
+    WHERE mv.property = _property 
+    GROUP BY mv.value, mv.type, title
+    ) select * from query_data order by key;
+END
+$func$
+LANGUAGE 'plpgsql';
+
 
