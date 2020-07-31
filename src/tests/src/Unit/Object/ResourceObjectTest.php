@@ -74,7 +74,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->vocabsid = null;
         $id->accessrestriction = '';
         $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
         self::$resourceData["acdh:hasIdentifier"]['en'][] = array($id);
     }
     
@@ -90,7 +90,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->vocabsid = null;
         $id->accessrestriction = '';
         $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
+        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';        
         self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
     }
     
@@ -107,7 +107,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $id->accessrestriction = '';
         $id->language = null;
         $id->title = '2017-10-03';
-        $id->shortcut = 'acdh:hasAvailableDate';
+        $id->shortcut = 'acdh:hasAvailableDate'; 
         self::$resourceData["acdh:hasAvailableDate"]['en'] = array($id);
     }
     
@@ -121,7 +121,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getData('acdh:hasTitle'));
         $this->assertEmpty(self::$object->getData('acdh:hasTitle1'));
     }
-    
+    /*
     public function testGetIdentifiers()
     {
         //$this->assertEmpty(self::$object->getIdentifiers());
@@ -130,7 +130,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getIdentifiers());
     }
-    
+    */
     /*
     public function testGetNonAcdhIdentifiers()
     {
@@ -140,7 +140,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-    */
+    
     public function testGetUUID()
     {
         $this->assertNotEmpty(self::$object->getUUID());
@@ -155,7 +155,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNotEmpty(self::$object->getInsideUrl());
     }
-    
+    */
     /*
     public function testGetAvailableDate()
     {
