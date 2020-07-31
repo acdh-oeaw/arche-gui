@@ -283,7 +283,7 @@ class ResourceObject
      */
     public function isTitleImage(): bool
     {
-        if(!empty($this->getAcdhID()))  {
+        if (!empty($this->getAcdhID())) {
             return true;
         }
         return false;
