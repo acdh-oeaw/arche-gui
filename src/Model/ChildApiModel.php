@@ -49,11 +49,13 @@ class ChildApiModel extends ArcheModel
         if (empty($this->sqlTypes)) {
             $this->sqlTypes = "ARRAY[]::text[]";
         }
+        
         //get the requested sorting
         try {
             $this->setSqlTimeout('30000');
+            // distinct is removing the ordering
             $query = $this->repodb->query(
-                "select DISTINCT(id), title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
+                "select id, title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
                     ':id' => $identifier,
                     ':limit' => $limit,

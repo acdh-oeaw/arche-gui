@@ -22,7 +22,6 @@ jQuery(function($) {
     $(document).ready(function() { 
         addExtraSortingForViews();
         var params = getUrlParams(actionPage);
-        
         //we already have an url
         if(window.location.href.indexOf("/oeaw_detail/") > -1) {
             if(window.location.href.indexOf("&page=") > -1) {
@@ -141,6 +140,14 @@ jQuery(function($) {
         //if the urlLimit is null then init a default value
         if(urlLimit == null ) {
             urlLimit = 10;
+        }
+        
+        if(urlOrder == null ) {
+            urlOrder = 'titleasc';
+        }
+        
+        if(urlPage == null ) {
+            urlPage = '0';
         }
         
         //change the gui values
@@ -362,7 +369,9 @@ jQuery(function($) {
     * @returns {undefined}
     */
     function getChildData(insideUri, limit, page, orderby, callbackFunction) {
-        $(".loader-div").show();
+        $(".loader-div").show();    
+        console.log('itt');
+        
         $.ajax({
             url: '/browser/repo_child_api/'+insideUri+'/'+limit+'/'+page+'/'+orderby,
             data: {'ajaxCall':true},
