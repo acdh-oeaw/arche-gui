@@ -78,9 +78,9 @@ class DetailViewController extends ControllerBase
             $this->basicViewData->extra->tooltip = $tooltip;
         }
         
-        //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views        
+        //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
         $path = \Drupal::request()->getpathInfo();
-        if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false 
+        if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false
                 && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
             $this->basicViewData->extra->childData = $this->getChildData();
         }
