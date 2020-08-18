@@ -71,7 +71,7 @@
     {% endif %}   
     
     <div class="children-overview children-overview-basic">
-        {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/helper-paging-child.html.twig', {'data': data.pagination } ) }}
 
         {% for item in data.data %}
 
@@ -141,7 +141,7 @@
 
             </div>
         {% endfor %}
-        {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': data.pagination } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/helper-paging-child.html.twig', {'data': data.pagination } ) }}
     </div>
     
     <div class="children-overview children-overview-tree">

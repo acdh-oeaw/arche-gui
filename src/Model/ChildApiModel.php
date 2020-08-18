@@ -102,6 +102,12 @@ class ChildApiModel extends ArcheModel
         } elseif ($orderby == "datedesc") {
             $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
             $result->order = 'desc';
+        } elseif ($orderby == "typeasc") {
+            $result->property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $result->order = 'asc';
+        } elseif ($orderby == "typedesc") {
+            $result->property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $result->order = 'desc';
         }
         return $result;
     }

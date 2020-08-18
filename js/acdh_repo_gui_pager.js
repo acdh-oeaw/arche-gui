@@ -20,7 +20,9 @@ jQuery(function($) {
     //var params = getUrlParams(actionPage);
     
     $(document).ready(function() { 
+        //add the extra fields for the paging section
         addExtraSortingForViews();
+                
         var params = getUrlParams(actionPage);
         //we already have an url
         if(window.location.href.indexOf("/oeaw_detail/") > -1) {
@@ -44,14 +46,14 @@ jQuery(function($) {
     //add some extra sorting fields
     function addExtraSortingForViews() {
         var currentURL = window.location.toString();
-        //extend the search dropdown for the persons
+        /** add First/LastName sorting to Person type in the search **/
         if (currentURL.indexOf("type=Person/") >= 0 || currentURL.indexOf("type=Person&") >= 0) {
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="lastnameasc" href="#">Last Name (ASC)</a>');
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="lastnamedesc" href="#">Last Name (DESC)</a>');            
             $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="lastnameasc" href="#">Last Name (ASC)</a>');
             $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="lastnamedesc" href="#">Last Name (DESC)</a>');
         }
-        //extend the collection with 
+        /** add Date sorting to collection type in the search **/
         if (currentURL.indexOf("type=Collection/") >= 0 || currentURL.indexOf("type=Collection&") >= 0) {
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
@@ -59,6 +61,7 @@ jQuery(function($) {
             $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
         }
 
+        /** add date to root list view **/    
         if (currentURL.indexOf("discover/root") >= 0) {
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
             $('#sortByDropdown').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
@@ -162,7 +165,9 @@ jQuery(function($) {
     function updateGui(order, limit) {
         let orderTexts = {
             titleasc: 'Title (ASC)', titledesc: 'Title (DESC)', 
-            dateasc:  'Date (ASC)', datedesc: 'Date (DESC)'
+            dateasc:  'Date (ASC)', datedesc: 'Date (DESC)',
+            typeasc:  'Type (ASC)', typedesc: 'Type (DESC)',
+            lastnameasc:  'Last Name (ASC)', lastnamedesc: 'Last Name (DESC)'
         };
         
         //change the gui values
@@ -369,8 +374,7 @@ jQuery(function($) {
     * @returns {undefined}
     */
     function getChildData(insideUri, limit, page, orderby, callbackFunction) {
-        $(".loader-div").show();    
-        console.log('itt');
+        $(".loader-div").show();
         
         $.ajax({
             url: '/browser/repo_child_api/'+insideUri+'/'+limit+'/'+page+'/'+orderby,
@@ -399,8 +403,5 @@ jQuery(function($) {
             }
         });
     }
-   
-   
-    
 });
 
