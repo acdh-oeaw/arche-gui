@@ -37,7 +37,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.detail_view_func(:id) ", array(':id' => $identifier));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -67,7 +67,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id) order by depth desc ", array(':id' => $identifier));
+            $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id, :lang) order by depth desc ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
