@@ -96,14 +96,13 @@ Field extra type:
                             <!-- if we still have content -->
                             {% if nd[1] is not empty %}
                                 <!-- do the date formatting -->
-                                {% set ndf = nd[1]|date(dateformat) %}
+                                {% set ndf = nd[1]|archeTranslateDateFilter(dateformat) %}
                                 {% if ndf is not empty %}
                                     -{{ ndf }}
                                 {% endif %}
                             {% endif %}
                         {% else %}
-                            <!-- simply do the dateformat -->
-                            {{ value.value|date(dateformat) }}
+                            {{ value.value|archeTranslateDateFilter(dateformat) }}
                         {% endif %}
                         
                     {% elseif(type == 'binary') %}

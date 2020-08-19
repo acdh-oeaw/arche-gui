@@ -7,4 +7,7 @@ services:
         class: 'Drupal\acdh_repo_gui\PathProcessor\AcdhRepoGuiPathProcessor'
         tags:
             - { name: path_processor_inbound, priority: 350 }
-
+    acdh_repo_gui.twig_extension:
+        class: Drupal\acdh_repo_gui\TwigExtension\ArcheTwigDateExtension
+        tags:
+            - { name: twig.extension }
