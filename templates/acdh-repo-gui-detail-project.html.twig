@@ -97,7 +97,8 @@ set furtherProperties = {
 <div class="arche-detail-view" >
     
     <div class="arche-detail-main" id="arche-dv-main">
-        {% if basic.isTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+        {% set titleimage = basic.getTitleImage() %}        
+        {% if titleimage %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
         
             {% if  basic.getTitle() %}
                 <div class="res-property">
@@ -138,13 +139,13 @@ set furtherProperties = {
                 {% endif%}
             {% endfor %}
 
-        {% if basic.isTitleImage() %}</div>{% endif%}
+        {% if titleimage %}</div>{% endif%}
         
-        {% if basic.isTitleImage() %}	
+        {% if titleimage %}	
             <div class="res-inside-wrap col-lg-4 ">	
                 <div class="single-res-thumb">
                     <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
-                        {{ basic.getTitleImage()|raw }}
+                        {{ titleimage|raw }}
                     </a>
                 </div>
             </div>

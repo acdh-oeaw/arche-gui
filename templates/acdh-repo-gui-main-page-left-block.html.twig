@@ -2,8 +2,8 @@
     {% for item in result %}
         
         <div class="res-el col-block col-lg-12">
-		
-        {% if item.isTitleImage() %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+            {% set titleimage = item.getTitleImage('150px') %}        
+            {% if titleimage %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
    
             {% if item.getTitle() %}
                 <div class="res-property">
@@ -57,13 +57,13 @@
                 
             </div>	
 
-            {% if item.isTitleImage() %}</div>{% endif%}
+            {% if titleimage %}</div>{% endif%}
 
-            {% if item.isTitleImage() %}	
+            {% if titleimage %}	
                 <div class="res-inside-wrap col-lg-4 ">	
                     <div class="single-res-thumb main-left-section">
                         <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
-                            {{ item.getTitleImage('150px')|raw }}
+                            {{ titleimage|raw }}
                         </a>
                     </div>
                 </div>
