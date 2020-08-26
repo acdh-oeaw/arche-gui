@@ -344,7 +344,7 @@ DROP TABLE IF EXISTS child_ids;
 );
 	
 RETURN QUERY
-    select ci.id, ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
+    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
     from child_ids as ci;
 END
 $func$
@@ -364,7 +364,7 @@ BEGIN
     CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
             select 
-                    r.id			
+                DISTINCT(r.id)
             from relations as r
             left join identifiers as i on i.id = r.target_id
             where r.property = ANY (_rdftype)
