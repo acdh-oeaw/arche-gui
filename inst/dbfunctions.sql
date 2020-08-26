@@ -345,7 +345,7 @@ DROP TABLE IF EXISTS child_ids;
 alter table child_ids add orderid serial;
 	
 RETURN QUERY
-    select ci.id, ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
+    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
     from child_ids as ci order by ci.orderid;
 END
 $func$
