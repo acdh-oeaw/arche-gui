@@ -300,7 +300,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
 CREATE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
-    RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
+    RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, orderid integer)
 AS $func$    
     DECLARE _lang2 text := 'de';
     /* we can just send string from the php so we need to cast the paging values to bigint */
@@ -345,7 +345,7 @@ DROP TABLE IF EXISTS child_ids;
 alter table child_ids add orderid serial;
 	
 RETURN QUERY
-    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
+    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype, ci.orderid
     from child_ids as ci order by ci.orderid;
 END
 $func$
