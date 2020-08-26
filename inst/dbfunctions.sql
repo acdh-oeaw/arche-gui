@@ -313,7 +313,7 @@ DROP TABLE IF EXISTS child_ids;
     CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
         select 
-            DISTINCT(r.id),
+            r.id,
             /* handle the language for title */
             COALESCE(
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
@@ -328,8 +328,7 @@ DROP TABLE IF EXISTS child_ids;
             (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
             mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
             (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-        mv.value
+            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
         from relations as r
         left join identifiers as i on i.id = r.target_id 
         left join metadata_view as mv on mv.id = r.id
@@ -343,10 +342,11 @@ DROP TABLE IF EXISTS child_ids;
             offset pageint
     ) select * from ids		
 );
+alter table child_ids add orderid serial;
 	
 RETURN QUERY
     select ci.id, ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
-    from child_ids as ci;
+    from child_ids as ci order by ci.orderid;
 END
 $func$
 LANGUAGE 'plpgsql';
