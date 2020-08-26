@@ -296,7 +296,7 @@ LANGUAGE 'plpgsql';
 * _page = for paging, first page is 0
 * _orderby = the ordering property -> https://vocabs.acdh.oeaw.ac.at/schema#hasTitle
 * _lang = 'en' or 'de'
-* select * from gui.child_views_func('https://repo.hephaistos.arz.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
+* select * from gui.child_views_func('https://arche-dev.acdh-dev.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
 DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
 CREATE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
@@ -313,7 +313,7 @@ DROP TABLE IF EXISTS child_ids;
     CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
         select 
-            r.id,
+            DISTINCT(r.id),
             /* handle the language for title */
             COALESCE(
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
@@ -328,7 +328,8 @@ DROP TABLE IF EXISTS child_ids;
             (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
             mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
             (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
+            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
+        mv.value
         from relations as r
         left join identifiers as i on i.id = r.target_id 
         left join metadata_view as mv on mv.id = r.id
@@ -344,7 +345,7 @@ DROP TABLE IF EXISTS child_ids;
 );
 	
 RETURN QUERY
-    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
+    select ci.id, ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype
     from child_ids as ci;
 END
 $func$
