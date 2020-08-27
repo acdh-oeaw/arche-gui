@@ -328,16 +328,19 @@ DROP TABLE IF EXISTS child_ids;
             (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
             mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
             (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
+            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
+            COALESCE(
+                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang limit 1),	
+                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang2 limit 1),
+                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop limit 1)
+            ) ordervalue
         from relations as r
         left join identifiers as i on i.id = r.target_id 
-        left join metadata_view as mv on mv.id = r.id
         where r.property = ANY (_rdftype)
-            and mv.property = _orderprop
             and i.ids = _parentid
         order by  
-            (CASE WHEN _orderby = 'asc' THEN mv.value END) ASC,
-            mv.value DESC
+            (CASE WHEN _orderby = 'asc' THEN ordervalue END) ASC,
+            ordervalue DESC
             limit limitint
             offset pageint
     ) select * from ids		
