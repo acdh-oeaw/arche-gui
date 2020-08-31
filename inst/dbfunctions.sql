@@ -315,8 +315,8 @@ CASE WHEN _orderby = 'asc' then
 	CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
         select 
-			r.id,
-			COALESCE(
+            DISTINCT(r.id),
+            COALESCE(
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang limit 1),	
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang2 limit 1),
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop limit 1)
@@ -351,8 +351,8 @@ ELSE
     CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
         select 
-			r.id,
-			COALESCE(
+            DISTINCT(r.id),
+            COALESCE(
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang limit 1),	
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang2 limit 1),
                 (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop limit 1)
