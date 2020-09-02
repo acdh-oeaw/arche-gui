@@ -49,7 +49,7 @@ class ChildApiModel extends ArcheModel
         if (empty($this->sqlTypes)) {
             $this->sqlTypes = "ARRAY[]::text[]";
         }
-        
+        error_log($this->sqlTypes);
         //get the requested sorting
         try {
             $this->setSqlTimeout('30000');
@@ -202,7 +202,7 @@ class ChildApiModel extends ArcheModel
             case 'publication':
                 $this->childProperties = array(
                     'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication', 'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
-                    'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy'
+                    'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy', 'https://vocabs.acdh.oeaw.ac.at/schema#documents'
                 );
                 break;
             case 'person':
