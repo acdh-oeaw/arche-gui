@@ -1027,6 +1027,7 @@ CREATE TEMP TABLE inverseIds AS (
 	where 
 	mv.value = _identifier
 	and mv.property NOT IN ('https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' , 'https://vocabs.acdh.oeaw.ac.at/schema#hasPid')
+        and mv.type not in ('http://www.w3.org/2001/XMLSchema#integer', 'http://www.w3.org/2001/XMLSchema#long', 'http://www.w3.org/2001/XMLSchema#number')
 );
 RETURN QUERY
 	select 
