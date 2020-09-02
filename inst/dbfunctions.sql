@@ -1155,11 +1155,7 @@ WITH query_data as (
 	from metadata_view as mv	
 	where 
 	mv.property in (
-		'https://vocabs.acdh.oeaw.ac.at/schema#relation',
-		'https://vocabs.acdh.oeaw.ac.at/schema#continues',
-		'https://vocabs.acdh.oeaw.ac.at/schema#documents',
-		'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',
-		'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
+		'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
 		'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
 		'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
@@ -1181,8 +1177,13 @@ WITH query_data as (
 		(select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
 	from metadata_view as mv	
 	where 
-	mv.property  = 
-                'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication'
+	mv.property IN ( 
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication',
+            'https://vocabs.acdh.oeaw.ac.at/schema#relation',
+            'https://vocabs.acdh.oeaw.ac.at/schema#continues',
+            'https://vocabs.acdh.oeaw.ac.at/schema#documents',
+            'https://vocabs.acdh.oeaw.ac.at/schema#hasSource'
+            )
 	and mv.id = CAST(_identifier as bigint)
 	order by title
 ) select * from query_data;
