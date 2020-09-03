@@ -60,7 +60,7 @@
     function generateCollection(url, disabledUrls = [], username = "", password= "") {
                 
         var actualUserRestriction = getActualuserRestriction();
-        
+        console.log(url);
         var loadedData = [];
         $('#collectionBrowser')
         .jstree({
@@ -354,7 +354,7 @@
                 type: "POST",
                 //async: false,
                 data: {jsonData : JSON.stringify(myObj), repoid: repoid, username: username, password: password },
-                timeout: 3600,
+                timeout: 56000,
                 success: function(data, status) {
                     $('#dl_link_a').html('<a href="'+data+'" target="_blank">'+Drupal.t("Download Collection")+'</a>');
                     $('#dl_link').show();
