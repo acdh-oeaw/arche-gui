@@ -8,7 +8,6 @@ repo-styles:
             css/jqtree/themes/default/style.min.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
-        js/jquery.multi-select.min.js: {}
         js/acdh_repo_gui.js: {}
         js/acdh_repo_gui_detail_view.js: {}
         js/jquery.dataTables.min.js: {}
