@@ -1,5 +1,6 @@
  jQuery(function($) {
     "use strict";
+    
     var selectedItems = [];
     var disableChkUrlArray = [];
     var checked_ids = []; 
@@ -327,6 +328,7 @@
         $('#getCollectionData').on('click', function(e){
             
             $("#loader-div").show();
+            
             //disable the button after the click
             $(this).prop('disabled', true);
             var repoid = $('#repoid').val();
@@ -334,7 +336,7 @@
             var uriStr = "";
             //object for the file list
             var myObj = {};
-
+            
             $.each(selectedItems, function(index, value) {
                 
                 uriStr += value.uri_dl+"__";
@@ -348,12 +350,17 @@
             var username = $("input#username").val();
             var password = $("input#password").val();
             
+            // Chrome 1 - 79
+            //var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+            //chrome has a problem with async false, this is why we need to
+            //add the timeout, otherwise chrome will not display the loader.
+            setTimeout(function () {
             $.ajax({
                 url: '/browser/repo_dl_collection_binaries/'+repoid,
                 type: "POST",
                 async: false,
                 data: {jsonData : JSON.stringify(myObj), repoid: repoid, username: username, password: password },
-                timeout: 3600,
+                timeout: 3600,                
                 success: function(data, status) {
                     $('#dl_link_a').html('<a href="'+data+'" target="_blank">'+Drupal.t("Download Collection")+'</a>');
                     $('#dl_link').show();
@@ -367,6 +374,7 @@
                     $("#selected_files_size").html("<p class='size_text_red'>" + Drupal.t('A server error has occurred... '+status) + " </p> ");
                 }
             });
+            },10);
 
         });
         
