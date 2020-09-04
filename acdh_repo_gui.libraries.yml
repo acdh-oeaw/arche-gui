@@ -7,7 +7,7 @@ repo-styles:
             css/font-awesome/css/font-awesome.min.css: {}
             css/jqtree/themes/default/style.min.css: {}
     js:
-        js/jquery-1.12.4.min.js: {}
+        js/jquery-1.12.3.min.js: {}
         js/jquery.multi-select.min.js: {}
         js/acdh_repo_gui.js: {}
         js/acdh_repo_gui_detail_view.js: {}
@@ -26,7 +26,7 @@ acdh-repo-gui-css-and-js:
       css/acdh_repo_gui.css: {}
   js:
     js/acdh_repo_gui.js: {}
-    js/jquery-1.12.4.min.js: {}
+    js/jquery-1.12.3.min.js: {}
   
 repo-root-view:
     version: 1.0.0
@@ -34,7 +34,7 @@ repo-root-view:
         base:
             css/acdh_repo_gui.css: {}
     js:
-        js/jquery-1.12.4.min.js: {}
+        js/jquery-1.12.3.min.js: {}
         js/acdh_repo_gui_pager.js: {}
         js/acdh_repo_gui_root_view.js: {}
         
@@ -46,7 +46,7 @@ repo-3d-page:
             css/3d/3dhop.css: {}
     js:
         js/3d/init.js: {}
-        js/jquery-1.12.4.min.js: {}
+        js/jquery-1.12.3.min.js: {}
         js/3d/meshcoder_worker.js: {}
         js/3d/nexus.js: {}
         js/3d/ply.js: {}
@@ -69,7 +69,7 @@ repo-collection-dl:
             css/arche.css: {}
             css/jqtree/themes/default/style.min.css: {}
     js:
-        js/jquery-1.12.4.min.js: {}        
+        js/jquery-1.12.3.min.js: {}        
         js/jstree.min.js: {}
         js/dl_collection.js: {}
     dependencies:
