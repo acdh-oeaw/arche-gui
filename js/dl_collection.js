@@ -60,7 +60,6 @@
     function generateCollection(url, disabledUrls = [], username = "", password= "") {
                 
         var actualUserRestriction = getActualuserRestriction();
-        console.log(url);
         var loadedData = [];
         $('#collectionBrowser')
         .jstree({
@@ -278,7 +277,7 @@
                                 resourceRestriction = res.original.accessRestriction;
                             }
                             var enabled = false;
-                            console.log(resourceRestriction);
+                            
                             //check the rights
                             if( ((resourceRestriction != 'public') &&  resourceRestriction != actualUserRestriction) && actualUserRestriction != 'admin' ){
                                 
@@ -352,9 +351,9 @@
             $.ajax({
                 url: '/browser/repo_dl_collection_binaries/'+repoid,
                 type: "POST",
-                //async: false,
+                async: false,
                 data: {jsonData : JSON.stringify(myObj), repoid: repoid, username: username, password: password },
-                timeout: 56000,
+                timeout: 3600,
                 success: function(data, status) {
                     $('#dl_link_a').html('<a href="'+data+'" target="_blank">'+Drupal.t("Download Collection")+'</a>');
                     $('#dl_link').show();
