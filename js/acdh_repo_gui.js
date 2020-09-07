@@ -18,5 +18,9 @@
             $(this).children('span').text(Drupal.t('Switch to Expert-View'));
         }
     });
+    
+    $( document ).ready(function() {
+        
+    });
 });
 

@@ -35,12 +35,7 @@ class LangSwitcherBlock extends BlockBase
         
         $return = array(
             '#theme' => 'helper-lng-switcher',
-            '#language' => $lang,
-            '#attached' => [
-                'library' => [
-                'acdh_repo_gui/repo-styles', //include our custom library for this response
-                ]
-            ]
+            '#language' => $lang            
         );
         return $return;
     }

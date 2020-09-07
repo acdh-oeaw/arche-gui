@@ -5,25 +5,7 @@
 {% elseif data.errorMSG %}  
   {{ data.errorMSG }}
 {% else %}
-    <!-- if we include a twig view, then it sometimes cant load the 3rd party js files.. so with this we need to check if it is loaded or not -->
-    <script src="/browser/modules/contrib/arche-gui/js/jquery-1.12.3.min.js"></script>
-    <script src="/browser/modules/contrib/arche-gui/js/jstree.min.js"></script>
-    <script>!window.jQuery && document.write('<script src="/browser/modules/contrib/arche-gui/js/jstree.min.js"><\/script>')</script>
-    <script>
-        jQuery(function($) {
-            "use strict";
-                    $(document).ready(function() {
-                        let searchParams = new URLSearchParams(window.location.href);
-                        var pageValue = 0;
-                        if(searchParams.get('page')) {
-                            pageValue = searchParams.get('page');
-                            $('.actualPageSpan').html(pageValue);
-                        }else {
-                            $('.actualPageSpan').html("1");
-                        }
-                    });
-                });
-    </script>        
+    
     
     <style type="text/css">
         .collectionBrowser_css {
