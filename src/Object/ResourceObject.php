@@ -112,13 +112,13 @@ class ResourceObject
     public function getPid(): string
     {
         return (
-                isset($this->properties["acdh:hasPid"][0]->value) 
-                && !empty($this->properties["acdh:hasPid"][0]->value) 
-                && ( 
-                (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false )
-                || 
+                isset($this->properties["acdh:hasPid"][0]->value)
+                && !empty($this->properties["acdh:hasPid"][0]->value)
+                && (
+                    (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false)
+                ||
                 (strpos($this->properties["acdh:hasPid"][0]->value, 'https://') !== false)
-                ) 
+                )
                 )  ? $this->properties["acdh:hasPid"][0]->value : "";
     }
     

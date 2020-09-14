@@ -212,6 +212,4 @@ class SearchViewHelper extends ArcheHelper
             }
         }
     }
-    
-    
 }
