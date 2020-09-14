@@ -35,7 +35,7 @@ class LangSwitcherBlock extends BlockBase
         
         $return = array(
             '#theme' => 'helper-lng-switcher',
-            '#language' => $lang            
+            '#language' => $lang
         );
         return $return;
     }
