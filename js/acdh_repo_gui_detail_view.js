@@ -20,6 +20,12 @@
     
    
     $(document).ready(function() {
+        /** add hasTitle value for the document title in every detail view **/
+        var title = $('#arche-dv-main .res-property span.res-title').text();
+        if(title) {
+            document.title = 'ARCHE - ' + title.trim();
+        }
+                
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */

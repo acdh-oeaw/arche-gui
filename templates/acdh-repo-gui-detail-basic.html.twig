@@ -127,7 +127,7 @@
         
             {% if  basic.getTitle() %}
                 <div class="res-property">
-                    <span class="res-title">
+                    <span class="res-title detail-title-span">
                         {%  if basic.getAccessRestriction() %}
                             {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': basic.getAccessRestriction() } ) }}
                         {% endif%}
