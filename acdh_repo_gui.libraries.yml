@@ -1,5 +1,5 @@
 repo-styles:  
-    version: 1.0.0
+    version: 1.0.1
     css:
         base:
             css/acdh_repo_gui.css: {}
@@ -18,28 +18,21 @@ repo-styles:
     dependencies:
         - core/drupal
         - core/drupal.form   
-        
-acdh-repo-gui-css-and-js:
-  css:
-    theme:
-      css/acdh_repo_gui.css: {}
-  js:
-    js/acdh_repo_gui.js: {}
-    js/jquery-1.12.3.min.js: {}
-  
+
 repo-root-view:
-    version: 1.0.0
+    version: 1.0.1
     css:
         base:
             css/acdh_repo_gui.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
         js/acdh_repo_gui_pager.js: {}
-        js/acdh_repo_gui_root_view.js: {}
-        
+    dependencies:
+        - core/drupal
+        - core/drupal.form           
         
 repo-3d-page:
-    version: 1.0.0
+    version: 1.0.1
     css:
         base:
             css/3d/3dhop.css: {}
@@ -59,10 +52,9 @@ repo-3d-page:
     dependencies:
         - core/drupal
         - core/drupal.form   
-        
 
 repo-collection-dl:
-    version: 1.0.0
+    version: 1.0.1
     css:
         base:
             css/arche.css: {}

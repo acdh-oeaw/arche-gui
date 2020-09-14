@@ -12,6 +12,11 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
     return [
         'acdh-repo-gui-main' => [
             'variables' => ['data' => NULL, 'paging' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-root-view', //include our custom library for this response
+                ]
+            ]
         ],
         'acdh-repo-gui-detail' => [
             'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
@@ -64,7 +69,11 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         ],
         'helper-lng-switcher' => [
             'variables' => ['language' => NULL]
+        ],
+        'acdh-repo-gui-search-full' => [
+            'variables' => ['data' => NULL, 'paging' => NULL],
         ]
+        
     ];
 }
 

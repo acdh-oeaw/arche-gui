@@ -2,6 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Controller;
 
+use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
 use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
@@ -204,5 +205,5 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         $response->setContent(json_encode("language changed to: ".$lng));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
-    }
+    }   
 }

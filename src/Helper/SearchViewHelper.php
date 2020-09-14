@@ -60,16 +60,16 @@ class SearchViewHelper extends ArcheHelper
                             $v->id,
                             $v->id
                         )
-                        );
+                    );
                     
                     if (isset($v->title)) {
                         $this->data[$k]['acdh:hasTitle'][$lang] = array(
-                        $this->createObj(
-                            $v->id,
-                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle",
-                            $v->title,
-                            $v->title
-                        )
+                            $this->createObj(
+                                $v->id,
+                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace."hasTitle",
+                                $v->title,
+                                $v->title
+                            )
                         );
                     }
                     if (isset($v->avdate)) {
@@ -80,7 +80,7 @@ class SearchViewHelper extends ArcheHelper
                                 $v->avdate,
                                 $v->avdate
                             )
-                            );
+                        );
                     }
                     if (isset($v->description)) {
                         $this->data[$k]['acdh:hasDescription'][$lang] = array(
@@ -90,7 +90,7 @@ class SearchViewHelper extends ArcheHelper
                                 $v->description,
                                 $v->description
                             )
-                            );
+                        );
                     }
                     if (isset($v->accesres)) {
                         $this->data[$k]['acdh:hasAccessRestriction'][$lang] = array(
@@ -100,7 +100,7 @@ class SearchViewHelper extends ArcheHelper
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres),
                                 $v->accesres
                             )
-                            );
+                        );
                     }
                     if (isset($v->titleimage)) {
                         $this->data[$k]['acdh:hasTitleImage'][$lang] = array(
@@ -110,7 +110,7 @@ class SearchViewHelper extends ArcheHelper
                                 $v->titleimage,
                                 $v->titleimage
                             )
-                            );
+                        );
                     }
                     //get the acdh type
                     if (isset($v->acdhtype)) {
@@ -121,7 +121,18 @@ class SearchViewHelper extends ArcheHelper
                                 $v->acdhtype,
                                 $v->acdhtype
                             )
-                            );
+                        );
+                    }
+                    
+                    if (isset($v->headline)) {
+                        $this->data[$k]['headline'][$lang] = array(
+                            $this->createObj(
+                                $v->id,
+                                'search_headline',
+                                $v->headline,
+                                $v->headline
+                            )
+                        );
                     }
                 }
             }
@@ -201,4 +212,6 @@ class SearchViewHelper extends ArcheHelper
             }
         }
     }
+    
+    
 }

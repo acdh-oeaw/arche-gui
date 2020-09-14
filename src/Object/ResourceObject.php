@@ -10,7 +10,6 @@ class ResourceObject
     private $properties;
     private $acdhid;
     private $repoid;
-    private $repoUrl;
     private $language;
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
    
@@ -112,7 +111,15 @@ class ResourceObject
      */
     public function getPid(): string
     {
-        return (isset($this->properties["acdh:hasPid"][0]->title) && !empty($this->properties["acdh:hasPid"][0]->title)) ? $this->properties["acdh:hasPid"][0]->title : "";
+        return (
+                isset($this->properties["acdh:hasPid"][0]->value) 
+                && !empty($this->properties["acdh:hasPid"][0]->value) 
+                && ( 
+                (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false )
+                || 
+                (strpos($this->properties["acdh:hasPid"][0]->value, 'https://') !== false)
+                ) 
+                )  ? $this->properties["acdh:hasPid"][0]->value : "";
     }
     
     /**
@@ -351,18 +358,12 @@ class ResourceObject
             foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
                 //if we have acdh id then we pass that
                 if ((strpos($v->value, "/id.acdh.oeaw.ac.at/") !== false)) {
-                    $id = $v->value;
+                    return $id = $v->value;
                 } elseif ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
                     //if we dont have then we pass everything except the repourl based id
-                    $otherid =  $v->value;
+                    return $otherid =  $v->value;
                 }
             }
-        }
-        
-        if (!empty($id)) {
-            return $id;
-        } elseif (!empty($otherid)) {
-            return $otherid;
         }
        
         return "";

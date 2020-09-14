@@ -17,6 +17,10 @@ jQuery(function($) {
         }
     }
     
+    if(window.location.href.indexOf("/browser/search/") > -1) {
+        actionPage = 'search_new';
+    }
+    
     //var params = getUrlParams(actionPage);
     
     $(document).ready(function() { 
@@ -117,7 +121,25 @@ jQuery(function($) {
             if(searchValues[3]){
                 urlPage = searchValues[3];
             }
+        } else if(actionPage == 'search_new'){
+            let searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/search/") + 8);
             
+            //split the url to get the order limit and page values
+            var searchValues = searchParams.split('/');
+            
+            if(searchValues[0]){
+                searchStr = searchValues[0];
+            }
+            if(searchValues[1]){
+                urlOrder = searchValues[1];
+            }
+            if(searchValues[2]){
+                urlLimit = searchValues[2];
+            }
+            if(searchValues[3]){
+                urlPage = searchValues[3];
+            }
+             
         } else {
             //detail view child paging
             let searchParams = new URLSearchParams(window.location.href);
@@ -300,6 +322,10 @@ jQuery(function($) {
             newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
             window.history.pushState({path:newurl},'',newurl);
             window.location = newurl;
+        } else if(actionPage == 'search_new') {
+            newurl = window.location.protocol + "//" + window.location.host + '/browser/search/'+ searchStr +'/' + orderBy + '/' + limit + '/' + page; 
+            window.history.pushState({path:newurl},'',newurl);
+            window.location = newurl;    
         } else {
             //child view
             let newUrlLimit = "&limit="+limit;

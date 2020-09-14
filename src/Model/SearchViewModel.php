@@ -18,6 +18,8 @@ use acdhOeaw\acdhRepoLib\SearchTerm;
 class SearchViewModel extends ArcheModel
 {
     private $repodb;
+    private $config;
+    private $repo;
     private $repolibDB;
     private $sqlResult;
     private $siteLang;
@@ -29,18 +31,85 @@ class SearchViewModel extends ArcheModel
     private $offset;
     private $orderby;
     private $orderby_column;
+    private $namespace;
     /* ordering */
     
     public function __construct()
     {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
+        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        $this->repo = Repo::factory($this->config);
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->searchCfg = new \acdhOeaw\acdhRepoLib\SearchConfig();
         $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
         $this->metaObj = new \stdClass();
         $this->log = new \zozlak\logging\Log(drupal_get_path('module', 'acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
+        (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';        
+    }
+    
+    public function getViewData_V2(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
+    {
+        $result = array();
+        $this->metaObj = $metavalue;
+      
+        $sqlYears = $this->formatYearsFilter_V2();
+        $sqlTypes = $this->formatTypeFilter_V2();
+        if(count($this->metaObj->words) > 0) {
+            $sqlWords = implode(" & ", $this->metaObj->words);    
+        } else {
+            $sqlWords = (string)"*";
+        }
+        /*
+        echo "<pre>";
+        var_dump("years: ".(string)$sqlYears);
+        var_dump("types: ".$sqlTypes);
+        var_dump("words: ".$sqlWords);
+        var_dump("limit: ".$limit);
+        var_dump("offset: ".$page);
+        var_dump("order: desc");
+        var_dump("order prop: title");
+        echo "</pre>";
+        */
+        try {
+            $this->setSqlTimeout('30000');
+            //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
+            $query = $this->repodb->query(
+                "select * from gui.search_full_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop);",
+                array(
+                    ':wordStr' => (string)$sqlWords,
+                    ':yearStr' => (string)$sqlYears,
+                    ':lang' => $this->siteLang,
+                    ':limit' => $limit,
+                    ':offset' => $page,
+                    ':order' => 'desc',
+                    ':order_prop' => 'title'
+               )
+            );
+            
+            $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
+            $this->changeBackDBConnection();
+        } catch (\Exception $ex) {
+            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        }
+       
+        if ($this->sqlResult == null) {
+            $this->sqlResult = array();
+        }
+        if(isset($this->sqlResult[0]->cnt)) {
+            $cnt = $this->sqlResult[0]->cnt;
+        } else {
+            $cnt = 0;
+        }
+        
+        return array('count' => $cnt, 'data' => $this->sqlResult);
     }
     
     /**
@@ -80,6 +149,37 @@ class SearchViewModel extends ArcheModel
         return array('count' => $count, 'data' => $this->sqlResult);
     }
     
+    /**
+     * Change the years format for the sql query
+     * 
+     * @return string
+     */
+    private function formatYearsFilter_V2(): string
+    {
+        //%(2020|1997)%
+        $yearsStr = "%";
+        if (isset($this->metaObj->years)) {
+            $yearsStr = '%(';
+            $i = 0;
+            $len = count($this->metaObj->years);
+            if($len > 0) {
+                foreach ($this->metaObj->years as $y) {
+                    if ($i == $len - 1) {
+                        // last
+                        $yearsStr .= $y.')%';
+                    } else {
+                        $yearsStr .= $y.'|';
+                    }
+                    $i++;
+                }
+            } else {
+                $yearsStr = "%";
+            }
+             
+        }
+        return $yearsStr;
+    }
+    
     private function formatYearsFilter(): string
     {
         $yearsStr = "";
@@ -99,6 +199,30 @@ class SearchViewModel extends ArcheModel
             }
         }
         return $yearsStr;
+    }
+    
+    private function formatTypeFilter_V2(): string
+    {
+        $typeStr = "ARRAY[]::text[]";
+        if (isset($this->metaObj->type)) {
+            $count = count($this->metaObj->type);
+            if ($count > 0) {
+                $typeStr = 'ARRAY [ ';
+                $i = 0;
+                foreach ($this->metaObj->type as $t) {
+                    $typeStr .= "'https://vocabs.acdh.oeaw.ac.at/schema#$t'";
+                    if ($count - 1 != $i) {
+                        $typeStr .= ', ';
+                    } else {
+                        $typeStr .= ' ]';
+                    }
+                    $i++;
+                }
+            } else {
+                $typeStr = "ARRAY[]::text[]";
+            }
+        }
+        return $typeStr;
     }
     
     private function formatTypeFilter(): string

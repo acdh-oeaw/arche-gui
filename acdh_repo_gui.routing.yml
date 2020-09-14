@@ -219,5 +219,17 @@ repo_getRootTable:
         _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRootTable'
     requirements:
         _permission: 'access content'
-        _access: 'TRUE'                 
+        _access: 'TRUE'      
+        
+repo_search:    
+  path: '/search/{metavalue}/{order}/{limit}/{page}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::fulltext_search'
+    metavalue: ""
+    order: "datedesc"
+    limit: "10"
+    page: "1"
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'          
         
