@@ -54,7 +54,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
     
     /**
      * New fulltext search with binary search
-     * 
+     *
      * @param string $metavalue
      * @param string $limit
      * @param string $page
@@ -68,7 +68,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
         $metaobj = new \stdClass();
         $metaobj = $this->helper->createMetaObj($metavalue);
         //for the DB we need a 0
-        ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;        
+        ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
         $data = $this->model->getViewData_V2($limit, $page, $order, $metaobj);
         $numPage = ceil((int)$data['count'] / (int)$limit);
         /// for the gui pager we need 1 for the first page

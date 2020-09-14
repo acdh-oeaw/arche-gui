@@ -205,5 +205,5 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         $response->setContent(json_encode("language changed to: ".$lng));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
-    }   
+    }
 }

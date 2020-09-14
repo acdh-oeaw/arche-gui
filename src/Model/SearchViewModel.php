@@ -46,7 +46,7 @@ class SearchViewModel extends ArcheModel
         $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
         $this->metaObj = new \stdClass();
         $this->log = new \zozlak\logging\Log(drupal_get_path('module', 'acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
-        (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';        
+        (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     
     public function getViewData_V2(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
@@ -56,8 +56,8 @@ class SearchViewModel extends ArcheModel
       
         $sqlYears = $this->formatYearsFilter_V2();
         $sqlTypes = $this->formatTypeFilter_V2();
-        if(count($this->metaObj->words) > 0) {
-            $sqlWords = implode(" & ", $this->metaObj->words);    
+        if (count($this->metaObj->words) > 0) {
+            $sqlWords = implode(" & ", $this->metaObj->words);
         } else {
             $sqlWords = (string)"*";
         }
@@ -103,7 +103,7 @@ class SearchViewModel extends ArcheModel
         if ($this->sqlResult == null) {
             $this->sqlResult = array();
         }
-        if(isset($this->sqlResult[0]->cnt)) {
+        if (isset($this->sqlResult[0]->cnt)) {
             $cnt = $this->sqlResult[0]->cnt;
         } else {
             $cnt = 0;
@@ -151,7 +151,7 @@ class SearchViewModel extends ArcheModel
     
     /**
      * Change the years format for the sql query
-     * 
+     *
      * @return string
      */
     private function formatYearsFilter_V2(): string
@@ -162,7 +162,7 @@ class SearchViewModel extends ArcheModel
             $yearsStr = '%(';
             $i = 0;
             $len = count($this->metaObj->years);
-            if($len > 0) {
+            if ($len > 0) {
                 foreach ($this->metaObj->years as $y) {
                     if ($i == $len - 1) {
                         // last
@@ -175,7 +175,6 @@ class SearchViewModel extends ArcheModel
             } else {
                 $yearsStr = "%";
             }
-             
         }
         return $yearsStr;
     }
