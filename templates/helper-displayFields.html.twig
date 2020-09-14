@@ -80,13 +80,23 @@ Field extra type:
                             <a href="{{ value.relvalue }}" target="_blank">{{ value.relvalue|nl2br }}</a>
                         {% endif %}
                     {% elseif(value.type == 'http://www.w3.org/2001/XMLSchema#string') %}
-                        <!-- simple string -->
-                        {% if (value.title) %} 
-                            {{ value.title|nl2br }}
-                        {% elseif (value.value) %} 
-                            {{ value.value|nl2br }}
-                        {% elseif (value.relvalue) %}     
-                            {{ value.relvalue|nl2br }}
+                        {% if(type == 'email') %}
+                            {% if (value.title) %} 
+                                {{ value.title|replace({'@': '(at)'}) }}
+                            {% elseif (value.value) %} 
+                                {{ value.value|replace({'@': '(at)'}) }}
+                            {% elseif (value.relvalue) %}     
+                                {{ value.relvalue|replace({'@': '(at)'}) }}
+                            {% endif %}
+                        {% else %}       
+                            <!-- simple string -->
+                            {% if (value.title) %} 
+                                {{ value.title|nl2br }}
+                            {% elseif (value.value) %} 
+                                {{ value.value|nl2br }}
+                            {% elseif (value.relvalue) %}     
+                                {{ value.relvalue|nl2br }}
+                            {% endif %}
                         {% endif %}
                     {% elseif(type == 'date' and dateformat) %}
                         
@@ -103,8 +113,7 @@ Field extra type:
                             {% endif %}
                         {% else %}
                             {{ value.value|archeTranslateDateFilter(dateformat) }}
-                        {% endif %}
-                        
+                        {% endif %}                    
                     {% elseif(type == 'binary') %}
                         <!-- the binary -->
                         {% if(value.value == 0) %}
