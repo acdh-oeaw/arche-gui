@@ -202,8 +202,7 @@ class ChildApiModel extends ArcheModel
             case 'publication':
                 $this->childProperties = array(
                     'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication', 'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
-                    'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy', 'https://vocabs.acdh.oeaw.ac.at/schema#documents',
-                    'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                    'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy', 'https://vocabs.acdh.oeaw.ac.at/schema#documents'                    
                 );
                 break;
             case 'person':
