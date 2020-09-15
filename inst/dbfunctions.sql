@@ -1450,6 +1450,8 @@ DROP TABLE IF EXISTS title_data;
 DROP TABLE IF EXISTS type_data;
 DROP TABLE IF EXISTS years_data;
 
+--from php we can pass % so we need to remove then the years filter because then we dont filter years
+CASE WHEN (_acdhyears <> '') IS TRUE THEN _acdhyears = ''; END CASE;
 --check the search strings in title/description and binary content
 CASE 
     WHEN (_searchstr <> '') IS TRUE THEN
