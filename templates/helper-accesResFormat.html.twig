@@ -14,7 +14,7 @@
                 {% set break = true %}
             {% endif%} 
         {%  elseif key == 'title' %}
-            {%  if value == 'public' %}
+            {%  if value == 'public' or value == 'öffentlich' %}
                 <span class="green-dot" title="public"></span>
                 {% set break = true %}
             {%  elseif value == 'academic' %}
@@ -26,4 +26,4 @@
             {% endif%} 
         {% endif%} 
     {% endfor%}
-{% endif%}
+{% endif%} 
