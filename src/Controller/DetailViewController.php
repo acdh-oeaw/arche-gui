@@ -113,7 +113,7 @@ class DetailViewController extends ControllerBase
     }
     
     /**
-     * Get the child view data 
+     * Get the child view data
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function getChildData(): \Symfony\Component\HttpFoundation\Response
