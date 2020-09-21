@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\TwigExtension;
 
-class ArcheTwigDateExtension extends \Twig_Extension
+class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension 
 {
     public function getFilters()
     {
