@@ -34,9 +34,8 @@ abstract class ArcheHelper
         "https://vocabs.acdh.oeaw.ac.at/schema#" => "acdh",
         "https://id.acdh.oeaw.ac.at/" => "acdhID",
         "http://purl.org/dc/elements/1.1/" => "dc",
-        "http://purl.org/dc/terms/" => "dct",
+        "http://purl.org/dc/elements/1.1/source/" => "dcSource",        
         "http://purl.org/dc/terms/" => "dcterms",
-        "http://purl.org/dc/terms/" => "dcterm",
         "http://www.w3.org/2002/07/owl#" => "owl",
         "http://xmlns.com/foaf/0.1/" => "foaf",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
@@ -130,7 +129,19 @@ abstract class ArcheHelper
                     $d->uri = $d->vocabsid;
                     unset($d->insideUri);
                 }
-                $result[$d->shortcut][$lang][] = $d;
+                //check and remove the duplicated values from the results
+                if(isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {                    
+                    foreach($result[$d->shortcut][$lang] as $k => $val) {
+                        if(isset($val->value) && isset($val->shortcut)) {
+                            if(($val->value != $d->value) && $val->shortcut != $d->shortcut) {
+                                $result[$d->shortcut][$lang][] = $d;
+                            }
+                        }
+                    }
+                }else{
+                    $result[$d->shortcut][$lang][] = $d;
+                }
+                
             } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
                 $d->property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
@@ -148,6 +159,7 @@ abstract class ArcheHelper
                 $result['acdh:hasIdentifier'][$lang][] = $d;
             }
         }
+        
         if ($root == true) {
             ksort($result);
         }

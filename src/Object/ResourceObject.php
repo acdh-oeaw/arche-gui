@@ -314,6 +314,23 @@ class ResourceObject
     }
     
     /**
+     * Get the skos concept type for the custom gui detail view
+     * 
+     * @return string
+     */
+    public function getSkosType(): string
+    {
+        if (isset($this->properties["rdf:type"])) {
+            foreach ($this->properties["rdf:type"] as $v) {
+                if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#Concept') !== false)) {
+                    return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->title);
+                }
+            }
+        }
+        return "";
+    }
+    
+    /**
      * Get all data
      *
      * @return array

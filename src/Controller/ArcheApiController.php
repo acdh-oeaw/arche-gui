@@ -412,7 +412,7 @@ class ArcheApiController extends ControllerBase
     {
         /*
         * Usage:
-        *  https://domain.com/browser/api/getData/gnd?_format=json
+        *  https://domain.com/browser/api/gnd?_format=json
         */
         
         $response = new Response();
@@ -426,7 +426,6 @@ class ArcheApiController extends ControllerBase
         
         $this->result = $this->helper->createView($this->modelData, 'gndPerson');
         
-        $response->setContent(json_encode(array("status" => "File created", "url" => $fileLocation)));
         if (!isset($this->result["fileLocation"]) || empty($this->result["fileLocation"])) {
             return new JsonResponse(array("There is no data"), 404, ['Content-Type'=> 'application/json']);
         }
