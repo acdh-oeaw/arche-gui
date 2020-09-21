@@ -132,10 +132,6 @@ abstract class ArcheHelper
                     $d->insideUri = $this->makeInsideUri($d->acdhid);
                 }
                 $d->shortcut = $this->createShortcut($d->property);
-                if($d->value == 'CLARIN'){
-                    echo $d->property;
-                    echo $this->createShortcut($d->property);
-                }
                 
                 //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
                 if (isset($d->vocabsid) && !empty($d->vocabsid)) {
