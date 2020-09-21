@@ -315,7 +315,7 @@ class ResourceObject
     
     /**
      * Get the skos concept type for the custom gui detail view
-     * 
+     *
      * @return string
      */
     public function getSkosType(): string

@@ -32,7 +32,7 @@ abstract class ArcheHelper
         "http://www.w3.org/ns/ldp#" => "ldp",
         "http://www.iana.org/assignments/relation/" => "iana",
         "https://vocabs.acdh.oeaw.ac.at/schema#" => "acdh",
-        "https://id.acdh.oeaw.ac.at/" => "acdhID",  
+        "https://id.acdh.oeaw.ac.at/" => "acdhID",
         "http://purl.org/dc/elements/1.1/" => "dc",
         "http://purl.org/dc/terms/" => "dcterms",
         "http://www.w3.org/2002/07/owl#" => "owl",
@@ -139,18 +139,17 @@ abstract class ArcheHelper
                     unset($d->insideUri);
                 }
                 //check and remove the duplicated values from the results
-                if(isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {                    
-                    foreach($result[$d->shortcut][$lang] as $k => $val) {
-                        if(isset($val->value) && isset($val->shortcut)) {
-                            if(($val->value != $d->value) && $val->shortcut != $d->shortcut) {
+                if (isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
+                    foreach ($result[$d->shortcut][$lang] as $k => $val) {
+                        if (isset($val->value) && isset($val->shortcut)) {
+                            if (($val->value != $d->value) && $val->shortcut != $d->shortcut) {
                                 $result[$d->shortcut][$lang][] = $d;
                             }
                         }
                     }
-                }else{
+                } else {
                     $result[$d->shortcut][$lang][] = $d;
                 }
-                
             } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
                 $d->property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
