@@ -1466,7 +1466,15 @@ CASE
                 SELECT 
                     DISTINCT(fts.id),
                     fts.property,
-                    fts.raw,
+                    CASE WHEN fts.property = 'BINARY' THEN
+                        COALESCE(
+                            (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+                            (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+                            (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
+                        )
+                        ELSE 
+                        fts.raw
+                    END as raw,
                     CASE WHEN fts.property = 'BINARY' THEN
                         ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=1,MaxWords=5,MinWords=2')
                     ELSE '' 
