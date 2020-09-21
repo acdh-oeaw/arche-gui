@@ -328,7 +328,7 @@ class ArcheApiHelper extends ArcheHelper
                 file_save_data($resTxt, "public://beacon.txt", FILE_EXISTS_REPLACE);
                 $this->result = array('fileLocation' => $fileLocation);
             } else {
-                $this->result = array();
+                $this->result = array('fileLocation' => '');
             }
         }
     }

@@ -32,9 +32,8 @@ abstract class ArcheHelper
         "http://www.w3.org/ns/ldp#" => "ldp",
         "http://www.iana.org/assignments/relation/" => "iana",
         "https://vocabs.acdh.oeaw.ac.at/schema#" => "acdh",
-        "https://id.acdh.oeaw.ac.at/" => "acdhID",
+        "https://id.acdh.oeaw.ac.at/" => "acdhID",  
         "http://purl.org/dc/elements/1.1/" => "dc",
-        "http://purl.org/dc/elements/1.1/source/" => "dcSource",        
         "http://purl.org/dc/terms/" => "dcterms",
         "http://www.w3.org/2002/07/owl#" => "owl",
         "http://xmlns.com/foaf/0.1/" => "foaf",
@@ -62,11 +61,21 @@ abstract class ArcheHelper
     protected function createShortcut(string $prop): string
     {
         $prefix = array();
-        $prefix = explode('#', $prop);
-        $property = end($prefix);
-        $prefix = $prefix[0];
-        if (isset(self::$prefixesToChange[$prefix.'#'])) {
-            return self::$prefixesToChange[$prefix.'#'].':'.$property;
+        
+        if (strpos($prop, '#') !== false) {
+            $prefix = explode('#', $prop);
+            $property = end($prefix);
+            $prefix = $prefix[0];
+            if (isset(self::$prefixesToChange[$prefix.'#'])) {
+                return self::$prefixesToChange[$prefix.'#'].':'.$property;
+            }
+        } else {
+            $prefix = explode('/', $prop);
+            $property = end($prefix);
+            $pref = str_replace($property, '', $prop);
+            if (isset(self::$prefixesToChange[$pref])) {
+                return self::$prefixesToChange[$pref].':'.$property;
+            }
         }
         return '';
     }
@@ -123,6 +132,10 @@ abstract class ArcheHelper
                     $d->insideUri = $this->makeInsideUri($d->acdhid);
                 }
                 $d->shortcut = $this->createShortcut($d->property);
+                if($d->value == 'CLARIN'){
+                    echo $d->property;
+                    echo $this->createShortcut($d->property);
+                }
                 
                 //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
                 if (isset($d->vocabsid) && !empty($d->vocabsid)) {
