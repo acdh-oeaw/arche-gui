@@ -1684,7 +1684,7 @@ END IF;
 
 DROP TABLE IF EXISTS count_data;
 CREATE TEMPORARY TABLE count_data AS (
-    select count(*) as cnt from final_data
+    select count(*) as cnt from final_data as cfd where cfd.title is not null
 );
 
 RETURN QUERY
