@@ -15,10 +15,12 @@
         "acdh-oeaw/arche-lib" : "*",
         "acdh-oeaw/arche-lib-disserv" : "*",
 	"acdh-oeaw/arche-lib-schema" : "*",
-	"zozlak/logging" : "*"
+	"zozlak/logging" : "*",
+        "twig/extensions": "^1.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+	"drupal/core-dev": "*"
     },
     "autoload": {
         "psr-4": {
@@ -33,6 +35,7 @@
                 "[web-root]/sites/default/default.settings.php": "inst/sites/default/default.settings.php",
                 "[web-root]/sites/default/settings.local.php":   "inst/sites/default/settings.local.php",
                 "[web-root]/sites/default/settings.php":         "inst/sites/default/settings.php",
+ 		"[web-root]/sites/default/development.services.yml":   "inst/sites/default/development.services.yml",
                 "[web-root]/sites/default/files/.htaccess":           "inst/sites/default/files/htaccess",
                 "[web-root]/sites/default/files/.ht.sqlite":          "inst/sites/default/files/.ht.sqlite",
                 "[web-root]/sites/default/files/.arche_cache.sqlite": "inst/sites/default/files/.arche_cache.sqlite",
@@ -53,4 +56,3 @@
     }
 
 }
-
