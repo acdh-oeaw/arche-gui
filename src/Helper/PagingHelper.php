@@ -20,11 +20,11 @@ class PagingHelper
     public function createView(array $data = array()): array
     {
         $this->data = new \stdClass();
-        $this->data->limit = (int)$data['limit'];
-        $this->data->page = (int)$data['page'];
-        $this->data->order = $data['order'];
-        $this->data->numPage = (int)$data['numPage'];
-        $this->data->sum = (int)$data['sum'];
+        $this->data->limit = (int)$data['limit'] ? (int)$data['limit'] : 10;
+        $this->data->page = (int)$data['page'] ? (int)$data['page'] : 1;
+        $this->data->order = $data['order'] ? $data['order'] : 'titleasc';
+        $this->data->numPage = (int)$data['numPage'] ? (int)$data['numPage'] : 1;
+        $this->data->sum = (int)$data['sum'] ? (int)$data['sum'] : 1;
         
         $this->data->pager = $this->createPaginationHTML();
         return array($this->data);

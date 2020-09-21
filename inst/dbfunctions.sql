@@ -1435,6 +1435,9 @@ LANGUAGE 'plpgsql';
 
 
 /** New search test sql **/
+/**
+** select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
+**/
 DROP FUNCTION gui.search_full_func(text, text[], text, text, text, text, text, text);
 CREATE FUNCTION gui.search_full_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title' )
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, cnt bigint, headline text)
@@ -1527,7 +1530,8 @@ CASE
                     SELECT 
                         DISTINCT(fts.id),
                         fts.property,
-                        fts.raw					
+                        fts.raw,
+                        '' as headline					
                     from full_text_search as fts
                     where
                     (
@@ -1556,7 +1560,8 @@ CASE
                     SELECT 
                         DISTINCT(fts.id),
                         fts.property,
-                        fts.raw					
+                        fts.raw,
+                        '' as headline
                     FROM type_data as td
                     LEFT JOIN full_text_search as fts on fts.id = td.id
                     WHERE
@@ -1686,6 +1691,7 @@ RETURN QUERY
     select 
         fd.id, fd.title, CAST(fd.avdate as timestamp) as avdate, fd.description, fd.accessres, fd.titleimage, fd.acdhtype, (select cd.cnt from count_data as cd) as cnt, fd.headline
     from final_data as fd
+    where fd.title is not null
     order by  
         (CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN fd.title WHEN _orderby_prop = 'type' THEN fd.acdhtype ELSE fd.avdate END) END) ASC,
         (CASE WHEN _orderby_prop = 'title' THEN fd.title WHEN _orderby_prop = 'type' THEN fd.acdhtype  ELSE fd.avdate END) DESC

@@ -32,6 +32,15 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
+    /**
+     * Create the search view content
+     * 
+     * @param int $limit
+     * @param int $page
+     * @param string $order
+     * @param string $metavalue
+     * @return array
+     */
     public function generateView(int $limit = 10, int $page = 0, string $order = 'datedesc', string $metavalue = ''): array
     {
         $metaobj = new \stdClass();
@@ -70,19 +79,32 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
         //for the DB we need a 0
         ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
         $data = $this->model->getViewData_V2($limit, $page, $order, $metaobj);
-        $numPage = ceil((int)$data['count'] / (int)$limit);
-        /// for the gui pager we need 1 for the first page
-        ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
-        $pagination = '';
-        $pagination = $this->pagingHelper->createView(
-            array(
-                'limit' => $limit, 'page' => $page, 'order' => $order,
-                'numPage' => $numPage, 'sum' => $data['count']
-            )
-        );
         
-        $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
+        if(count($data) > 0) {
+            $numPage = ceil((int)$data['count'] / (int)$limit);
+            /// for the gui pager we need 1 for the first page
+            ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
+            $pagination = '';
+            $pagination = $this->pagingHelper->createView(
+                array(
+                    'limit' => $limit, 'page' => $page, 'order' => $order,
+                    'numPage' => $numPage, 'sum' => $data['count']
+                )
+            );
+
+            $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
         
+        } else {
+            $guiData['data'] = array();
+            $guiData['pagination'][0] = $this->pagingHelper->createView(
+                array(
+                    'limit' => 10, 'page' => 1, 'order' => 'titleasc',
+                    'numPage' => 1, 'sum' => 1
+                )
+            );
+        }
+        
+       
         return [
             '#theme' => 'acdh-repo-gui-search-full',
             '#data' => $guiData['data'],
