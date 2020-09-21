@@ -39,9 +39,11 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
     }
     
     /**
-     *
-     * Root view
-     *
+     * Create root view
+     * 
+     * @param string $limit
+     * @param string $page
+     * @param string $order
      * @return array
      */
     public function repo_root(string $limit = "10", string $page = "1", string $order = "datedesc"): array
@@ -112,8 +114,6 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
             return $this->repo_root($limit, $page, $order);
         }
         
-        //we have the search view
-        
         //the search view
         $paging = array();
         $searchResult = array();
@@ -172,7 +172,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
             );
             return array();
         }
-        
+        \Drupal::service('page_cache_kill_switch')->trigger();
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,

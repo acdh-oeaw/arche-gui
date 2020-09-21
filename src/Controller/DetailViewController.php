@@ -112,6 +112,10 @@ class DetailViewController extends ControllerBase
         return new \stdClass();
     }
     
+    /**
+     * Get the child view data 
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     private function getChildData(): \Symfony\Component\HttpFoundation\Response
     {
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();

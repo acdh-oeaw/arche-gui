@@ -4,7 +4,9 @@ jq2(function( $ ) {
     var table = jq2('table.display').DataTable({
        "lengthMenu": [[20, 35, 50, -1], [20, 35, 50, "All"]]
     });
-
+    
+    jq2('#expertTable').DataTable({paging: false});
+    
     jq2(".loader-div").hide();
     hidepopup();
 
@@ -174,6 +176,25 @@ jq2(function( $ ) {
                     "errMode": 'throw'
                 });
             }
+        }
+    });
+    
+    jq2(document ).delegate( ".res-act-button-expertview", "click", function(e) {
+        if (jq2(this).hasClass('basic')) {
+            jq2('.single-res-overview-basic').hide();
+            jq2('.single-res-overview-expert').fadeIn(200);
+            jq2(this).removeClass('basic');
+            jq2(this).addClass('expert');
+            jq2(this).children('span').text(Drupal.t('Switch to Basic-View'));
+            //we need to destroy and reinit the expert view datatable, because it has an html data
+            //jq2('#expertTable').DataTable().destroy();
+            //jq2('#expertTable').DataTable({paging: false});
+        } else {
+            jq2('.single-res-overview-expert').hide();
+            jq2('.single-res-overview-basic').fadeIn(200);
+            jq2(this).removeClass('expert');
+            jq2(this).addClass('basic');
+            jq2(this).children('span').text(Drupal.t('Switch to Expert-View'));
         }
     });
 });
