@@ -34,7 +34,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
     
     /**
      * Create the search view content
-     * 
+     *
      * @param int $limit
      * @param int $page
      * @param string $order
@@ -80,7 +80,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
         ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
         $data = $this->model->getViewData_V2($limit, $page, $order, $metaobj);
         
-        if(count($data) > 0) {
+        if (count($data) > 0) {
             $numPage = ceil((int)$data['count'] / (int)$limit);
             /// for the gui pager we need 1 for the first page
             ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
@@ -93,7 +93,6 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             );
 
             $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
-        
         } else {
             $guiData['data'] = array();
             $guiData['pagination'][0] = $this->pagingHelper->createView(
