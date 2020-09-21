@@ -61,17 +61,17 @@ class SearchViewModel extends ArcheModel
         } else {
             $sqlWords = (string)"*";
         }
-       /*
-        echo "<pre>";
-        var_dump("years: ".(string)$sqlYears);
-        var_dump("types: ".$sqlTypes);
-        var_dump("words: ".$sqlWords);
-        var_dump("limit: ".$this->limit);
-        var_dump("offset: ".$this->offset);
-        var_dump("order: ".$this->orderby);
-        var_dump("order prop:".$this->orderby_column);
-        echo "</pre>";
-       */
+        /*
+         echo "<pre>";
+         var_dump("years: ".(string)$sqlYears);
+         var_dump("types: ".$sqlTypes);
+         var_dump("words: ".$sqlWords);
+         var_dump("limit: ".$this->limit);
+         var_dump("offset: ".$this->offset);
+         var_dump("order: ".$this->orderby);
+         var_dump("order prop:".$this->orderby_column);
+         echo "</pre>";
+        */
         try {
             $this->setSqlTimeout('30000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
