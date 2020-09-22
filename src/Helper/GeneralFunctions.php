@@ -274,4 +274,31 @@ class GeneralFunctions
             return array();
         }
     }
+    
+    /**
+     * Handle the default shibboleth user for the federated login
+     *
+     */
+    public function handleShibbolethUser(): void
+    {
+        //the global drupal shibboleth username
+        $shib = user_load_by_name('shibboleth');
+        //if we dont have it then we will create it
+        if ($shib === false) {
+            $user = \Drupal\user\Entity\User::create();
+            // Mandatory.
+            $user->setPassword(RC::get('shibbolethUserPWD'));
+            $user->enforceIsNew();
+            $user->setEmail('sh_guest@acdh.oeaw.ac.at');
+            $user->setUsername('shibboleth');
+            $user->activate();
+            $user->save();
+            $shib = user_load_by_name('shibboleth');
+            user_login_finalize($user);
+        } elseif ($shib->id() != 0) {
+            $user = \Drupal\User\Entity\User::load($shib->id());
+            $user->activate();
+            user_login_finalize($user);
+        }
+    }
 }

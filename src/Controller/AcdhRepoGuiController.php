@@ -222,7 +222,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
                 ) {
             drupal_set_message(t('You are logged in as '.$_SERVER['HTTP_EPPN']), 'status', false);
             //if we already logged in with shibboleth then login the user with the shibboleth account
-            $this->oeawFunctions->handleShibbolethUser();
+            $this->generalFunctions->handleShibbolethUser();
             return $result;
         } else {
             $result =

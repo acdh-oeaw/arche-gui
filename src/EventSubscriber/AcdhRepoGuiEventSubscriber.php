@@ -55,8 +55,8 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
                     && $_SERVER['HTTP_EPPN'] != "(null)"
                     && $userid == 0
                     && \Drupal::currentUser()->isAnonymous()) {
-                $oF = new  \Drupal\oeaw\OeawFunctions();
-                $oF->handleShibbolethUser();
+                $gF = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
+                $gF->handleShibbolethUser();
 
                 $host = \Drupal::request()->getSchemeAndHttpHost();
                 return new TrustedRedirectResponse($host."/browser/federated_login/");
