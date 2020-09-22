@@ -277,7 +277,8 @@ class GeneralFunctions
     
     /**
      * Handle the default shibboleth user for the federated login
-     *
+     * 
+     * @return void
      */
     public function handleShibbolethUser(): void
     {
@@ -287,7 +288,7 @@ class GeneralFunctions
         if ($shib === false) {
             $user = \Drupal\user\Entity\User::create();
             // Mandatory.
-            $user->setPassword(RC::get('shibbolethUserPWD'));
+            $user->setPassword($this->repo->getSchema()->__get('drupal')->shibbolethPwd);
             $user->enforceIsNew();
             $user->setEmail('sh_guest@acdh.oeaw.ac.at');
             $user->setUsername('shibboleth');
