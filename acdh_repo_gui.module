@@ -72,8 +72,10 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         ],
         'acdh-repo-gui-search-full' => [
             'variables' => ['data' => NULL, 'paging' => NULL],
+        ],
+        'acdh-repo-gui-shibboleth-login' => [
+            'variables' => []
         ]
-        
     ];
 }
 

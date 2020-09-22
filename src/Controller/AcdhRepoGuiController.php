@@ -40,7 +40,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
     
     /**
      * Create root view
-     *
+     * 
      * @param string $limit
      * @param string $page
      * @param string $order
@@ -206,4 +206,33 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
+    
+    /**
+      *
+      * Displaying the federated login with shibboleth
+      *
+      * @return array
+    */
+    public function shibboleth_login(): array
+    {
+        $result = array();
+        $userid = \Drupal::currentUser()->id();
+        if ((isset($_SERVER['HTTP_EPPN']) && $_SERVER['HTTP_EPPN'] != "(null)")
+               && (isset($_SERVER['HTTP_AUTHORIZATION']) && $_SERVER['HTTP_AUTHORIZATION'] != "(null)")
+                ) {
+            drupal_set_message(t('You are logged in as '.$_SERVER['HTTP_EPPN']), 'status', false);
+            //if we already logged in with shibboleth then login the user with the shibboleth account
+            $this->oeawFunctions->handleShibbolethUser();
+            return $result;
+        } else {
+            $result =
+                array(
+                    '#cache' => ['max-age' => 0,],
+                    '#theme' => 'acdh-repo-gui-shibboleth-login'
+                );
+        }
+        
+        return $result;
+    }
+      
 }

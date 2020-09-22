@@ -29,7 +29,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
      * @param GetResponseEvent $event
      * @return TrustedRedirectResponse
      */
-    /*
+    
     public function checkForShibboleth(GetResponseEvent $event)
     {
         if (($event->getRequest()->getPathInfo() == '/user/logout') && (\Drupal::currentUser()->getUsername() == "shibboleth")) {
@@ -63,7 +63,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
             }
         }
     }
-*/
+
 
     /**
      * This is the event handler main method
@@ -73,7 +73,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         $events = [];
-        //$events[KernelEvents::REQUEST][] = array('checkForShibboleth', 300);
+        $events[KernelEvents::REQUEST][] = array('checkForShibboleth', 300);
         return $events;
     }
 }
