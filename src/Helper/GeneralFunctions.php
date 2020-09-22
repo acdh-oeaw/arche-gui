@@ -277,7 +277,7 @@ class GeneralFunctions
     
     /**
      * Handle the default shibboleth user for the federated login
-     * 
+     *
      * @return void
      */
     public function handleShibbolethUser(): void
