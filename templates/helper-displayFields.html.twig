@@ -80,7 +80,6 @@ Field extra type:
                             <a href="{{ value.relvalue }}" target="_blank">{{ value.relvalue|nl2br }}</a>
                         {% endif %}
                     {% elseif(value.type == 'http://www.w3.org/2001/XMLSchema#string') %}
-                        string
                         {% if(type == 'email') %}
                             {% if (value.title) %} 
                                 {{ value.title|replace({'@': '(at)'}) }}
