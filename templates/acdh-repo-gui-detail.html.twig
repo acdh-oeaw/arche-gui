@@ -67,7 +67,9 @@
         {% elseif basic.getAcdhType()|lower == 'publication' %}
             {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }} 
         {% elseif basic.getSkosType()|lower == 'concept' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'result': basic } ) }}        
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'result': basic } ) }}      
+        {% elseif basic.getSkosType()|lower == 'conceptscheme' %}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-conceptscheme.html.twig', {'result': basic } ) }}          
         {% else  %}
            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
         {% endif %}

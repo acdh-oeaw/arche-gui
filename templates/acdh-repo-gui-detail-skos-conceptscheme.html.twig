@@ -1,12 +1,12 @@
 
 {% set properties = {
-    'skos:definition': {
+    'dc:description': {
         'icon': 'label',
         'label': 'Description'
     },
-    'skos:inScheme': {
-        'icon': 'label',
-        'label': 'Part of'
+    'acdh:hasNumberOfItems': {
+        'icon': 'attachment',
+        'label': 'Number of Items'
     }
 }
 %}
@@ -16,15 +16,18 @@
     <div class="arche-detail-main" id="arche-dv-main">
         {% set titleimage = basic.getTitleImage() %}        
         {% if titleimage %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
-        
-            {% if  basic.getTitle() %}
-                <div class="res-property">
-                    <span class="res-title detail-title-span">
-                        {{  basic.getTitle() }}
-                    </span>
-                </div>
-            {% endif%} 
-
+            
+            <div class="res-property">
+                <span class="res-title detail-title-span">
+                    {%  if basic.getData('dc:title') %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('dc:title'), 'type': value.type } ) }}            
+                    {%  elseif basic.getData('rdfs:label') %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('rdfs:label'), 'type': value.type } ) }}            
+                    {% endif%}  
+                    
+                </span>
+            </div>
+  
             {% if basic.getSkosType() %}
                 <div class="res-property">
                     <i class="material-icons">&#xE54E;</i>

@@ -51,7 +51,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             ]
         ],
         'acdh-repo-gui-main-page-left-block' => [
-            'variables' => ['result' => NULL],
+            'variables' => ['result' => NULL]
         ],
         'acdh-repo-ds-dl-collection' => [
             'variables' => ['basic' => NULL, 'extra' => NULL],
@@ -74,6 +74,12 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['data' => NULL, 'paging' => NULL],
         ],
         'acdh-repo-gui-shibboleth-login' => [
+            'variables' => []
+        ],
+        'acdh-repo-gui-detail-skos-concept' => [
+            'variables' => []
+        ],
+        'acdh-repo-gui-detail-skos-concepschema' => [
             'variables' => []
         ]
     ];
