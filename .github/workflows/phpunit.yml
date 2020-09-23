@@ -33,7 +33,7 @@ jobs:
         echo $PATH  
         
     - name: install drupal
-      run:  composer create-project drupal/recommended-project:8.8.0 drupal  
+      run:  composer create-project drupal/recommended-project:8.9.6 drupal  
   
     - name: drupal composer update
       run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
@@ -72,24 +72,31 @@ jobs:
         
     - name: test
       run: |
-        mkdir -p build/logs
+        ls -la && mkdir -p build/logs
         ./drupal/vendor/phpunit/phpunit/phpunit --version
-        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml 
+        echo "run test"
+        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml                      
+      
+        #cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
+        #cd drupal/web/modules/arche-gui/build/logs  && ls -la && cp clover.xml ./build/logs
+        #echo "main dir list"
+        #ls -la ./
+        #echo "main build dir"
+        #ls -la ./build/logs        
+    - name: check test results
+      run: |
+        echo "list main build dir"
+        ls -la ./build/logs
         
-        echo "drupal/web/modules/arche dir build"
-        cd drupal/web/modules/arche-gui/build  && ls -la
-        ls drupal/web/modules/arche-gui/build/logs
-        cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
-        
-        echo "main build dir"
-        ls ./build/logs        
-        
+        echo " list arche gui build dir"
+        ls -la ./drupal/web/modules/arche-gui/build/logs/
+            
     - name: coveralls
       run: |
-        composer require symfony/http-kernel
+        composer require symfony/http-kernel ^3
         composer require symfony/process
-        composer require symfony/lock
-        composer require symfony/event-dispatcher
+        composer require symfony/lock ^3
+        composer require symfony/event-dispatcher ^3
         composer fund
         export COVERALLS_RUN_LOCALLY=1
         export COVERALLS_REPO_TOKEN=${{ secrets.coverallsLocalToken }}
