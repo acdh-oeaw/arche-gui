@@ -36,7 +36,7 @@ jobs:
       run:  composer create-project drupal/recommended-project:8.8.0 drupal  
   
     - name: drupal composer update
-      run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit && cd -
+      run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
       
     - name: check drush
       run: |
