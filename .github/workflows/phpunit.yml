@@ -94,7 +94,7 @@ jobs:
     - name: coveralls
       run: |
         composer require symfony/http-kernel ^3
-        composer require symfony/process ^3
+        composer require symfony/process
         composer require symfony/lock ^3
         composer require symfony/event-dispatcher ^3
         composer fund
