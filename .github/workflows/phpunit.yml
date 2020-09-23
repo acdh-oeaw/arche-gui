@@ -77,9 +77,9 @@ jobs:
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml 
         
         echo "drupal/web/modules/arche dir build"
-        cd drupal/web/modules/arche-gui/build  && ls -la
-        ls drupal/web/modules/arche-gui/build/logs
-        cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
+        cd drupal/web/modules/arche-gui/build/logs  && ls -la && cp clover.xml ./build.logs
+      
+        #cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
         
         echo "main build dir"
         ls ./build/logs        
