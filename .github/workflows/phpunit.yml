@@ -93,10 +93,10 @@ jobs:
             
     - name: coveralls
       run: |
-        composer require symfony/http-kernel
-        composer require symfony/process
-        composer require symfony/lock
-        composer require symfony/event-dispatcher
+        composer require symfony/http-kernel ^3
+        composer require symfony/process ^3
+        composer require symfony/lock ^3
+        composer require symfony/event-dispatcher ^3
         composer fund
         export COVERALLS_RUN_LOCALLY=1
         export COVERALLS_REPO_TOKEN=${{ secrets.coverallsLocalToken }}
