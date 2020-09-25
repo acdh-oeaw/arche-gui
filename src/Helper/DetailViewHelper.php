@@ -27,6 +27,7 @@ class DetailViewHelper extends ArcheHelper
      */
     public function createView(array $data = array()): array
     {
+        $this->data = array();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->data = $data;
         
@@ -35,7 +36,8 @@ class DetailViewHelper extends ArcheHelper
         if (count((array)$this->data) == 0) {
             return array();
         }
-        
+      
+        $this->detailViewObjectArray = array();
         $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repo, $this->siteLang);
         
         return $this->detailViewObjectArray;

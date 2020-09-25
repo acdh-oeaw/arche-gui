@@ -32,6 +32,7 @@ class ResourceObject
         }
         
         //set acdhid /repoid / repourl
+        $this->repoid = $this->getRepoID();
     }
     
     /**
@@ -322,7 +323,7 @@ class ResourceObject
     {
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
-                if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#Concept') !== false)) {
+                if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
                     return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->title);
                 }
             }
