@@ -13,8 +13,8 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;
  *
  * @author nczirjak
  */
-class DetailViewController extends ControllerBase {
-
+class DetailViewController extends ControllerBase
+{
     private $config;
     private $model;
     private $helper;
@@ -23,7 +23,8 @@ class DetailViewController extends ControllerBase {
     private $repoid;
     private $generalFunctions;
 
-    public function __construct($repo) {
+    public function __construct($repo)
+    {
         $this->repo = $repo;
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
@@ -36,7 +37,8 @@ class DetailViewController extends ControllerBase {
      * @param string $identifier
      * @return type
      */
-    public function generateDetailView(string $identifier): object {
+    public function generateDetailView(string $identifier): object
+    {
         $this->repoUrl = $identifier;
         //remove the url from the identifier just to have the repoid
         $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
@@ -67,14 +69,18 @@ class DetailViewController extends ControllerBase {
             $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
 
-        if (in_array($this->basicViewData->basic->getAcdhType(),
-                        array("Collection", "Project", "Resource", "Publication", "Metadata"))
+        if (in_array(
+            $this->basicViewData->basic->getAcdhType(),
+            array("Collection", "Project", "Resource", "Publication", "Metadata")
+        )
         ) {
             //get the cite widget data
             $cite = new CH($this->repo, $this->basicViewData->basic);
 
-            if (in_array($this->basicViewData->basic->getAcdhType(),
-                            array("Collection", "Project"))
+            if (in_array(
+                $this->basicViewData->basic->getAcdhType(),
+                array("Collection", "Project")
+            )
             ) {
                 $this->basicViewData->extra->citeWidgetData = $cite->createCiteWidgetCollectionProject();
             } else {
@@ -88,11 +94,10 @@ class DetailViewController extends ControllerBase {
                     $tcm = $this->model->getViewData($this->repo->getBaseUrl() . $this->basicViewData->extra->breadcrumb[0]->parentid);
                                        
                     if (count($tcm) > 0) {
-                       
                         $tc = array();
                         $tc = $this->helper->createView($tcm);
                        
-                        //we have view data 
+                        //we have view data
                         if (count($tc) > 0 && isset($tc[0])) {
                             $tcObj = $tc[0];
                         }
@@ -126,7 +131,8 @@ class DetailViewController extends ControllerBase {
      * @param string $identifier -> full repoUrl
      * @return object
      */
-    public function generateObjDataForDissService(string $identifier): object {
+    public function generateObjDataForDissService(string $identifier): object
+    {
         $dv = array();
         $dv = $this->model->getViewData($identifier);
 
@@ -147,9 +153,9 @@ class DetailViewController extends ControllerBase {
      * Get the child view data
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function getChildData(): \Symfony\Component\HttpFoundation\Response {
+    private function getChildData(): \Symfony\Component\HttpFoundation\Response
+    {
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
         return $child->repo_child_api($this->repoid, '10', '0', 'titleasc');
     }
-
 }
