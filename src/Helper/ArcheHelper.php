@@ -138,17 +138,28 @@ abstract class ArcheHelper
                     $d->uri = $d->vocabsid;
                     unset($d->insideUri);
                 }
+                
                 //check and remove the duplicated values from the results
-                if (isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
-                    foreach ($result[$d->shortcut][$lang] as $k => $val) {
-                        if (isset($val->value) && isset($val->shortcut)) {
-                            if (($val->value != $d->value) && $val->shortcut != $d->shortcut) {
-                                $result[$d->shortcut][$lang][] = $d;
+                if(!isset($result[$d->shortcut][$lang])) {
+                    $result[$d->shortcut][$lang][] = $d;                        
+                } else if(isset($d->repoid) && isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
+                    //we ahve shorcut and repoid and already results in the result array
+                    $searchedValue = $d->repoid; 
+                    $res = array();
+                    //with the array filter we check the objects and the repoid is the same like
+                    //what we already have in the array, then we will skip the results array extension
+                    $res = array_filter(
+                        $result[$d->shortcut][$lang],
+                        function ($e) use (&$searchedValue, &$d) {
+                            if($e->repoid != $searchedValue) {
+                                return true;
                             }
                         }
+                    );
+                    //if we have new value for the same shortcut then add it to the array
+                    if(isset($res[0]->repoid)) {
+                        $result[$d->shortcut][$lang][] = $d;
                     }
-                } else {
-                    $result[$d->shortcut][$lang][] = $d;
                 }
             } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
