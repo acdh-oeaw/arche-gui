@@ -140,24 +140,24 @@ abstract class ArcheHelper
                 }
                 
                 //check and remove the duplicated values from the results
-                if(!isset($result[$d->shortcut][$lang])) {
-                    $result[$d->shortcut][$lang][] = $d;                        
-                } else if(isset($d->repoid) && isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
+                if (!isset($result[$d->shortcut][$lang])) {
+                    $result[$d->shortcut][$lang][] = $d;
+                } elseif (isset($d->repoid) && isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
                     //we ahve shorcut and repoid and already results in the result array
-                    $searchedValue = $d->repoid; 
+                    $searchedValue = $d->repoid;
                     $res = array();
                     //with the array filter we check the objects and the repoid is the same like
                     //what we already have in the array, then we will skip the results array extension
                     $res = array_filter(
                         $result[$d->shortcut][$lang],
                         function ($e) use (&$searchedValue, &$d) {
-                            if($e->repoid != $searchedValue) {
+                            if ($e->repoid != $searchedValue) {
                                 return true;
                             }
                         }
                     );
                     //if we have new value for the same shortcut then add it to the array
-                    if(isset($res[0]->repoid)) {
+                    if (isset($res[0]->repoid)) {
                         $result[$d->shortcut][$lang][] = $d;
                     }
                 }
