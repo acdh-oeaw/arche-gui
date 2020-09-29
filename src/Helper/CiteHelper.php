@@ -7,25 +7,27 @@ namespace Drupal\acdh_repo_gui\Helper;
  *
  * @author nczirjak
  */
-class CiteHelper {
-
+class CiteHelper
+{
     private $cite = array();
     private $repo;
     private $obj;
 
-    public function __construct(\acdhOeaw\acdhRepoLib\Repo $repo, \Drupal\acdh_repo_gui\Object\ResourceObject $obj) {
+    public function __construct(\acdhOeaw\acdhRepoLib\Repo $repo, \Drupal\acdh_repo_gui\Object\ResourceObject $obj)
+    {
         $this->repo = $repo;
         $this->obj = $obj;
     }
     
     /**
      * Get the property data from the object as a string
-     * 
+     *
      * @param object $obj
      * @param string $property
      * @return string
      */
-    private function getCiteWidgetData(object $obj, string $property): string {
+    private function getCiteWidgetData(object $obj, string $property): string
+    {
         $result = "";
 
         if (count((array) $obj) > 0) {
@@ -63,13 +65,14 @@ class CiteHelper {
     }
 
     /**
-     * Create the Collection / project Cite widget 
+     * Create the Collection / project Cite widget
      * EXAMPLE:
-     * Yoshida Sayuri, Klaus Bieber, Gertrude Bieber. The postcard collections of Friedrich Julius Bieber. 
+     * Yoshida Sayuri, Klaus Bieber, Gertrude Bieber. The postcard collections of Friedrich Julius Bieber.
      * ARCHE, https://id.acdh.oeaw.ac.at/fjbieber-postcards. Accessed 16 Jun 2020.
      * @return array
      */
-    public function createCiteWidgetCollectionProject(): array {
+    public function createCiteWidgetCollectionProject(): array
+    {
         $this->cite["MLA"]["string"] = "";
         //hasAuthor/hasCreator, hasPrincipalInvestigator. hasTitle. hasHosting, hasPid/hasIdentifier. Accessed on "current date".
         //get authors/creators
@@ -132,17 +135,18 @@ class CiteHelper {
     }
 
     /**
-     * Create the Resource / Metadata Cite widget 
-     * 
+     * Create the Resource / Metadata Cite widget
+     *
      * EXAMPLE:
-     * Friedrich Julius Bieber, 023_FJB_1902-006a.tif. Digital file created by Sayuri Yoshida. 
-     * In: Sayuri, Yoshida, Klaus Bieber, Gertrude Bieber. The postcard collections of Friedrich Julius Bieber. 
-     * ARCHE, https://repo.hephaistos.arz.oeaw.ac.at/browser/oeaw_detail/52249. Accessed 16 Jun 2020.    
-     * 
+     * Friedrich Julius Bieber, 023_FJB_1902-006a.tif. Digital file created by Sayuri Yoshida.
+     * In: Sayuri, Yoshida, Klaus Bieber, Gertrude Bieber. The postcard collections of Friedrich Julius Bieber.
+     * ARCHE, https://repo.hephaistos.arz.oeaw.ac.at/browser/oeaw_detail/52249. Accessed 16 Jun 2020.
+     *
      * @param object $topCollection
      * @return array
      */
-    public function createCiteWidgetResourceMetadata(object $topCollection): array {
+    public function createCiteWidgetResourceMetadata(object $topCollection): array
+    {
         //hasAuthor/hasCreator. hasTitle. Digitised by hasDigitisingAgent. In: hasCreator(TopCollection), hasPrincipleInvestigator(TopCollection), hasTitle(TopCollection), hasHosting, hasPid. Accessed on "current date".
 
         $this->cite["MLA"]["string"] = "";
@@ -181,8 +185,7 @@ class CiteHelper {
         
         //we have top collection data
         //In: hasCreator(TopCollection), hasPrincipleInvestigator(TopCollection), hasTitle(TopCollection)
-        if(count((array)$topCollection) > 0) {
-           
+        if (count((array)$topCollection) > 0) {
             $hasCreator = $this->getCiteWidgetData($topCollection, "acdh:hasCreator");
             if (!empty($hasCreator)) {
                 $this->cite["MLA"]["topCreator"] = $hasCreator;
@@ -202,7 +205,7 @@ class CiteHelper {
                 $this->cite["MLA"]["string"] .= $topCollection->getTitle();
                 $this->cite["MLA"]["string"] .= ". ";
             }
-        }       
+        }
         
         $hasHosting = $this->getCiteWidgetData($this->obj, "acdh:hasHosting");
         if (!empty($hasHosting)) {
@@ -232,7 +235,8 @@ class CiteHelper {
      *
      * @return array $this->cite Returns the cite-this widget as HTML
      */
-    public function createCiteThisWidget(): array {
+    public function createCiteThisWidget(): array
+    {
         $content = [];
 
         /** MLA Format
@@ -308,7 +312,7 @@ class CiteHelper {
                     if (isset($id->value)) {
                         if (strpos($id->value, $this->repo->getSchema()->__get('drupal')->uuidNamespace) !== false) {
                             $uuid = $id->value;
-                            //if the identifier is the normal acdh identifier then return it
+                        //if the identifier is the normal acdh identifier then return it
                         } elseif (strpos($id->value, $this->repo->getSchema()->__get('id')) !== false) {
                             $uuid = $id->value;
                             break;
@@ -403,5 +407,4 @@ class CiteHelper {
         }
         return $this->cite;
     }
-
 }
