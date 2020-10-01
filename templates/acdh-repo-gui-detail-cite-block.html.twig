@@ -16,7 +16,8 @@
         <span id="copy-cite-btn-confirmation">{{ "Citation information copied"|trans }}!</span>
     </div>
     <figure class="highlight">
-        <span class="cite-content active">{{ result.MLA.string |striptags|convert_encoding('UTF-8', 'HTML-ENTITIES')  }}</span>
+        <span class="cite-content active">{{ result.MLA.string|striptags }}</span>
+        <!-- <span class="cite-content active">{{ result.MLA.string |striptags|convert_encoding('UTF-8', 'HTML-ENTITIES')  }}</span> -->
         <span class="cite-content">{{ result.APA.string | raw }}</span>
         <span class="cite-content">{{ result.CMS.string | raw }}</span>
     </figure>
