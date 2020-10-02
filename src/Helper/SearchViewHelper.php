@@ -173,7 +173,7 @@ class SearchViewHelper extends ArcheHelper
     /**
      * the search object creation steps
      */
-    private function setUpMetadata()
+    private function setUpMetadata(): void
     {
         $this->metadata = urldecode($this->metadata);
         $this->metadata = str_replace(' ', '+', $this->metadata);
@@ -183,9 +183,10 @@ class SearchViewHelper extends ArcheHelper
     /**
     * Fill the search object with the search metadata
     */
-    public function explodeSearchString()
+    
+    public function explodeSearchString(): void
     {
-        $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "solrsearch");
+        $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "payload");
         $strArr = explode('&', $this->metadata);
                 
         foreach ($filters as $f) {

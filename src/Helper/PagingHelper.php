@@ -24,7 +24,7 @@ class PagingHelper
         $this->data->page = (int)$data['page'] ? (int)$data['page'] : 1;
         $this->data->order = $data['order'] ? $data['order'] : 'titleasc';
         $this->data->numPage = (int)$data['numPage'] ? (int)$data['numPage'] : 1;
-        $this->data->sum = (int)$data['sum'] ? (int)$data['sum'] : 1;
+        $this->data->sum = (int)$data['sum'] ? (int)$data['sum'] : 0;
         
         $this->data->pager = $this->createPaginationHTML();
         return array($this->data);

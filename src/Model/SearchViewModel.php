@@ -31,6 +31,7 @@ class SearchViewModel extends ArcheModel
     private $offset;
     private $orderby;
     private $orderby_column;
+    private $binarySearch = false;
     private $namespace;
     /* ordering */
     
@@ -49,6 +50,21 @@ class SearchViewModel extends ArcheModel
         (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     
+    private function setUpPayload(): void {
+        if(isset($this->metaObj->payload)) {
+            $this->binarySearch = $this->metaObj->payload;
+        }
+    }
+    
+    /**
+     * Full content search
+     * 
+     * @param int $limit
+     * @param int $page
+     * @param string $order
+     * @param object $metavalue
+     * @return array
+     */
     public function getViewData_V2(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
     {
         $result = array();
@@ -61,22 +77,14 @@ class SearchViewModel extends ArcheModel
         } else {
             $sqlWords = (string)"*";
         }
-        /*
-         echo "<pre>";
-         var_dump("years: ".(string)$sqlYears);
-         var_dump("types: ".$sqlTypes);
-         var_dump("words: ".$sqlWords);
-         var_dump("limit: ".$this->limit);
-         var_dump("offset: ".$this->offset);
-         var_dump("order: ".$this->orderby);
-         var_dump("order prop:".$this->orderby_column);
-         echo "</pre>";
-        */
+        
+        $this->setUpPayload();
+       
         try {
             $this->setSqlTimeout('30000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
             $query = $this->repodb->query(
-                "select * from gui.search_full_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop);",
+                "select * from gui.search_full_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
                 array(
                     ':wordStr' => (string)$sqlWords,
                     ':yearStr' => (string)$sqlYears,
@@ -84,7 +92,8 @@ class SearchViewModel extends ArcheModel
                     ':limit' => $this->limit,
                     ':offset' => $this->offset,
                     ':order' => $this->orderby,
-                    ':order_prop' => $this->orderby_column
+                    ':order_prop' => $this->orderby_column,
+                    ':binarySearch' => $this->binarySearch
                )
             );
             

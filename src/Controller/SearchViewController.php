@@ -76,11 +76,12 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
         $guiData = array();
         $metaobj = new \stdClass();
         $metaobj = $this->helper->createMetaObj($metavalue);
+       
         //for the DB we need a 0
         ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
         $data = $this->model->getViewData_V2($limit, $page, $order, $metaobj);
         
-        if (count($data) > 0) {
+        if (isset($data['count']) && $data['count'] > 0) {
             $numPage = ceil((int)$data['count'] / (int)$limit);
             /// for the gui pager we need 1 for the first page
             ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
@@ -93,17 +94,16 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             );
 
             $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
-        } else {
+        } else {            
             $guiData['data'] = array();
-            $guiData['pagination'][0] = $this->pagingHelper->createView(
+            $guiData['pagination'] = $this->pagingHelper->createView(
                 array(
-                    'limit' => 10, 'page' => 1, 'order' => 'titleasc',
-                    'numPage' => 1, 'sum' => 1
+                    'limit' => $limit, 'page' => $page, 'order' => $order,
+                    'numPage' => 1, 'sum' => 0
                 )
             );
-        }
-        
-       
+        }        
+               
         return [
             '#theme' => 'acdh-repo-gui-search-full',
             '#data' => $guiData['data'],

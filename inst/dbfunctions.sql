@@ -1439,13 +1439,14 @@ LANGUAGE 'plpgsql';
 ** select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 **/
 DROP FUNCTION gui.search_full_func(text, text[], text, text, text, text, text, text);
-CREATE FUNCTION gui.search_full_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title' )
+CREATE FUNCTION gui.search_full_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE )
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, cnt bigint, headline text)
 AS $func$
 DECLARE	
     _lang2 text := 'de';
     limitint bigint := cast ( _limit as bigint);
     pageint bigint := cast ( _page as bigint);
+
 
 BEGIN
 --remove the tables if they are exists
@@ -1454,11 +1455,25 @@ DROP TABLE IF EXISTS type_data;
 DROP TABLE IF EXISTS years_data;
 
 --from php we can pass % so we need to remove then the years filter because then we dont filter years
-CASE WHEN (_acdhyears <> '') IS TRUE THEN _acdhyears = ''; END CASE;
+CASE WHEN (_acdhyears <> '' and _acdhyears != '%') THEN 
+	RAISE NOTICE USING MESSAGE = 'we have years string'; 
+ELSE 
+	_acdhyears = ''; 
+	RAISE NOTICE USING MESSAGE = 'no years string'; 
+END CASE;
+
+CASE WHEN (_searchstr <> '' and _searchstr != '*') THEN 
+	RAISE NOTICE USING MESSAGE = 'we have search string'; 
+ELSE 
+	_searchstr = ''; 
+	RAISE NOTICE USING MESSAGE = 'no search string'; 
+END CASE;
+
+
 --check the search strings in title/description and binary content
 CASE 
-    WHEN (_searchstr <> '') IS TRUE THEN
-        RAISE NOTICE USING MESSAGE =  'van search string';
+    WHEN (_searchstr <> '' ) IS TRUE THEN
+        RAISE NOTICE USING MESSAGE =  'we have search string';
         --we have text search
         DROP TABLE IF EXISTS title_data;
         CREATE TEMPORARY TABLE title_data AS (
@@ -1476,31 +1491,37 @@ CASE
                         fts.raw
                     END as raw,
                     CASE WHEN fts.property = 'BINARY' THEN
-                        ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=1,MaxWords=5,MinWords=2')
+                        ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8')
                     ELSE '' 
                     END as headline
                 FROM full_text_search as fts 
                 WHERE
                 (
-                    (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
-                    OR
-                    (fts.property = 'BINARY' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
-                ) 
-                UNION
-                SELECT 
-                    DISTINCT(fts2.id), 
-                    fts2.property,
-                    fts2.raw,
-                    '' as headline
-                FROM full_text_search as fts2 
-                WHERE
-                (
-                    (fts2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts2.segments )
-                ) limit 10000
+					CASE WHEN (_binarySearch IS TRUE) THEN
+						(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+						OR (fts.property = 'BINARY' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+					ELSE
+						(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+							
+					END
+                )
+				UNION
+					SELECT 
+						DISTINCT(fts2.id), 
+						fts2.property,
+						fts2.raw,
+						'' as headline
+					FROM full_text_search as fts2 
+					WHERE
+					(
+						(fts2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts2.segments )
+					) limit 10000
+				
             ) select * from title_data
 	);	
-    WHEN (_searchstr <> '') IS NOT TRUE THEN
-        RAISE NOTICE USING MESSAGE =  'we dont have string search';
+   
+	ELSE
+		RAISE NOTICE USING MESSAGE =  'we dont have string search else';
 END CASE;
 
 -- check the acdh type
@@ -1510,7 +1531,8 @@ CASE
         RAISE NOTICE USING MESSAGE =  'we have title table but not the type';
     WHEN _acdhtype  != '{}' THEN
         -- we have type definied
-        CASE WHEN (select exists( select * from title_data) IS TRUE) THEN
+        CASE
+		WHEN (_searchstr <> '') IS TRUE  THEN
             RAISE NOTICE USING MESSAGE =  'we have title table and also the type  - type';
             DROP TABLE IF EXISTS type_data;
             CREATE TEMPORARY TABLE type_data AS (
@@ -1529,7 +1551,8 @@ CASE
                         fts.raw  = ANY (_acdhtype)
                     ) limit 10000
                 ) select * from type_data
-            );	
+            );
+		
         ELSE
             RAISE NOTICE USING MESSAGE =  'we DONT have title table  - type';
             DROP TABLE IF EXISTS type_data;
@@ -1579,7 +1602,8 @@ CASE
                     )	
                 ) select * from years_data
             );	
-        elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'TITLE_DATA')) then	
+        elseif ( (_searchstr <> '') IS TRUE  and _searchstr != '*' and
+		 (select exists( select * from title_data) IS TRUE) ) then	
             RAISE NOTICE USING MESSAGE =  'we have title table - years';
             DROP TABLE IF EXISTS years_data;
             CREATE TEMPORARY TABLE years_data AS (
