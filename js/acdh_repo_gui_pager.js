@@ -64,6 +64,14 @@ jQuery(function($) {
             $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="dateasc" href="#">Date (ASC)</a>');
             $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="datedesc" href="#">Date (DESC)</a>');
         }
+        
+        /** add type to search list view **/    
+        if (currentURL.indexOf("browser/search/") >= 0) {
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="typeasc" href="#">Type (ASC)</a>');
+            $('#sortByDropdown').append('<a class="dropdown-item" data-value="typedesc" href="#">Type (DESC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="typeasc" href="#">Type (ASC)</a>');
+            $('.sortByDropdownBottom').append('<a class="dropdown-item" data-value="typedesc" href="#">Type (DESC)</a>');
+        }
 
         /** add date to root list view **/    
         if (currentURL.indexOf("discover/root") >= 0) {
