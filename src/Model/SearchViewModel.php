@@ -50,15 +50,16 @@ class SearchViewModel extends ArcheModel
         (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     
-    private function setUpPayload(): void {
-        if(isset($this->metaObj->payload)) {
+    private function setUpPayload(): void
+    {
+        if (isset($this->metaObj->payload)) {
             $this->binarySearch = $this->metaObj->payload;
         }
     }
     
     /**
      * Full content search
-     * 
+     *
      * @param int $limit
      * @param int $page
      * @param string $order

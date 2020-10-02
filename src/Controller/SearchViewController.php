@@ -94,7 +94,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             );
 
             $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
-        } else {            
+        } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
                 array(
@@ -102,7 +102,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
                     'numPage' => 1, 'sum' => 0
                 )
             );
-        }        
+        }
                
         return [
             '#theme' => 'acdh-repo-gui-search-full',

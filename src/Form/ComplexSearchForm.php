@@ -7,8 +7,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\acdh_repo_gui\Model\BlocksModel;
 use Drupal\acdh_repo_gui\Helper\FormHelper;
 
-class ComplexSearchForm extends FormBase {
-
+class ComplexSearchForm extends FormBase
+{
     private $langConf;
     private $model;
     private $helper;
@@ -18,7 +18,8 @@ class ComplexSearchForm extends FormBase {
     /**
      * Set up necessary properties
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->langConf = $this->config('arche.settings');
         $this->model = new BlocksModel();
         $this->helper = new FormHelper();
@@ -28,7 +29,8 @@ class ComplexSearchForm extends FormBase {
      * Set up the form id
      * @return string
      */
-    public function getFormId() {
+    public function getFormId()
+    {
         return "sks_form";
     }
 
@@ -38,7 +40,8 @@ class ComplexSearchForm extends FormBase {
      * @param FormStateInterface $form_state
      * @return array
      */
-    public function buildForm(array $form, FormStateInterface $form_state) {
+    public function buildForm(array $form, FormStateInterface $form_state)
+    {
         //the input field
         $this->createSearchInput($form);
 
@@ -76,7 +79,8 @@ class ComplexSearchForm extends FormBase {
      * @param array $form
      * @param FormStateInterface $form_state
      */
-    public function validateForm(array &$form, FormStateInterface $form_state) {
+    public function validateForm(array &$form, FormStateInterface $form_state)
+    {
         $metavalue = $form_state->getValue('metavalue');
         $types = $form_state->getValue('searchbox_types');
         if (count($types) > 0) {
@@ -99,7 +103,8 @@ class ComplexSearchForm extends FormBase {
      * @param array $form
      * @param FormStateInterface $form_state
      */
-    public function submitForm(array &$form, FormStateInterface $form_state) {
+    public function submitForm(array &$form, FormStateInterface $form_state)
+    {
         $metavalue = $form_state->getValue('metavalue');
 
         $extras = array();
@@ -127,8 +132,8 @@ class ComplexSearchForm extends FormBase {
 
         $metaVal = urlencode($metavalue);
         $form_state->setRedirect(
-                'repo_complexsearch',
-                [
+            'repo_complexsearch',
+            [
                     "metavalue" => $metaVal,
                     "order" => "datedesc",
                     "limit" => "10",
@@ -142,7 +147,8 @@ class ComplexSearchForm extends FormBase {
      * @param array $form
      * @param array $data
      */
-    private function createBox(array &$form, array $data) {
+    private function createBox(array &$form, array $data)
+    {
         $form['search'][$data["type"]] = array(
             '#type' => 'checkboxes',
             '#title' => $this->t($data["title"]),
@@ -160,7 +166,8 @@ class ComplexSearchForm extends FormBase {
      * @param array $form
      * @return array
      */
-    private function createSearchInput(array &$form) {
+    private function createSearchInput(array &$form)
+    {
         $form['metavalue'] = array(
             '#type' => 'textfield',
             '#attributes' => array(
@@ -179,5 +186,4 @@ class ComplexSearchForm extends FormBase {
             '#button_type' => 'primary',
         );
     }
-
 }
