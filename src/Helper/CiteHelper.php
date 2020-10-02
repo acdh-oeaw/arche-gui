@@ -65,20 +65,20 @@ class CiteHelper
     }
     
     /**
-     * 
+     *
      * Remove the duplications
-     * 
+     *
      * @param array $arr1
      * @param array $arr2
      * @return string
      */
-    private function removeDuplication(array $arr1, array $arr2): string {
-        
+    private function removeDuplication(array $arr1, array $arr2): string
+    {
         $intersecArray = array();
         $str = "";
-        $intersecArray = array_intersect($arr1,$arr2);
-        if(count($intersecArray) > 0) {
-            foreach($intersecArray as $v) {
+        $intersecArray = array_intersect($arr1, $arr2);
+        if (count($intersecArray) > 0) {
+            foreach ($intersecArray as $v) {
                 foreach (array_keys($arr2, $v, true) as $key) {
                     unset($arr2[$key]);
                 }
@@ -121,22 +121,21 @@ class CiteHelper
         //get hasPrincipalInvestigator
         $hasPrincipalInvestigator = $this->getCiteWidgetData($this->obj, "acdh:hasPrincipalInvestigator");
         if (!empty($hasPrincipalInvestigator)) {
-                        
             $str = "";
             //remove the . and change it to ,
             $this->cite["MLA"]["string"] = substr($this->cite["MLA"]["string"], 0, -2);
             
             //if we already have an author/creator, then we need to filter out the duplications
-            if(!empty($this->cite["MLA"]["string"])) {
+            if (!empty($this->cite["MLA"]["string"])) {
                 if (strpos((string)$hasPrincipalInvestigator, strval($this->cite["MLA"]["string"])) !== false) {
-                    $str = $this->removeDuplication(explode(',',$this->cite["MLA"]["string"]),  explode(',',$hasPrincipalInvestigator));
+                    $str = $this->removeDuplication(explode(',', $this->cite["MLA"]["string"]), explode(',', $hasPrincipalInvestigator));
                 }
-            }else {
+            } else {
                 $str = $hasPrincipalInvestigator;
             }
             //if we already have an author and now we have a prinInv then use the ,
-            if(!empty($this->cite["MLA"]["string"]) && !empty($str)) {
-               $this->cite["MLA"]["string"] .= ", "; 
+            if (!empty($this->cite["MLA"]["string"]) && !empty($str)) {
+                $this->cite["MLA"]["string"] .= ", ";
             }
             
             $this->cite["MLA"]["hasPrincipalInvestigator"] = $str;
@@ -265,5 +264,5 @@ class CiteHelper
 
         $this->cite["MLA"]["string"] .= "Accessed on " . date('d M Y') . ".";
         return $this->cite;
-    }    
+    }
 }
