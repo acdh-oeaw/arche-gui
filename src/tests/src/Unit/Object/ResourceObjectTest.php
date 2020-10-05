@@ -140,22 +140,22 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-/*
-    public function testGetUUID()
-    {
-        $this->assertNotEmpty(self::$object->getUUID());
-    }
+    /*
+        public function testGetUUID()
+        {
+            $this->assertNotEmpty(self::$object->getUUID());
+        }
 
-    public function testGetAcdhID()
-    {
-        $this->assertNotEmpty(self::$object->getAcdhID());
-    }
+        public function testGetAcdhID()
+        {
+            $this->assertNotEmpty(self::$object->getAcdhID());
+        }
 
-    public function testGetInsideUrl()
-    {
-        $this->assertNotEmpty(self::$object->getInsideUrl());
-    }
-    */
+        public function testGetInsideUrl()
+        {
+            $this->assertNotEmpty(self::$object->getInsideUrl());
+        }
+        */
     /*
     public function testGetAvailableDate()
     {
