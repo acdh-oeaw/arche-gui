@@ -1589,7 +1589,7 @@ CASE
                         DISTINCT(fts.id),
                         fts.property,
                         fts.raw,
-                        '' as headline
+                        td.headline as headline
                     FROM type_data as td
                     LEFT JOIN full_text_search as fts on fts.id = td.id
                     WHERE
