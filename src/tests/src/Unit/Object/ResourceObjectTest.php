@@ -42,7 +42,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public function testInitialization() : \Drupal\acdh_repo_gui\Object\ResourceObject
     {
-        self::$object = new \Drupal\acdh_repo_gui\Object\ResourceObject(self::$resourceData, self::$config);
+        self::$object = new \Drupal\acdh_repo_gui\Object\ResourceObject(self::$resourceData, self::$repo);
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Object\ResourceObject::class, self::$object);
         return self::$object;
     }
@@ -121,7 +121,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getData('acdh:hasTitle'));
         $this->assertEmpty(self::$object->getData('acdh:hasTitle1'));
     }
-    /*
+    
     public function testGetIdentifiers()
     {
         //$this->assertEmpty(self::$object->getIdentifiers());
@@ -130,8 +130,8 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getIdentifiers());
     }
-    */
-    /*
+    
+    
     public function testGetNonAcdhIdentifiers()
     {
         //$this->assertEmpty(self::$object->getNonAcdhIdentifiers());
@@ -140,7 +140,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-
+/*
     public function testGetUUID()
     {
         $this->assertNotEmpty(self::$object->getUUID());
