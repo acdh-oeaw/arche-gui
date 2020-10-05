@@ -94,6 +94,54 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
     }
     
+    private function createExampleAcdhIdentifierIdData()
+    {
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
+        $id->type = 'ID';
+        $id->value = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
+        $id->relvalue = null;
+        $id->acdhid = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
+        $id->vocabsid = null;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->uri = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
+        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
+    }
+    
+    private function createExampleAccessRestrictionData()
+    {
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccesssRestriction';
+        $id->type = 'REL';
+        $id->value = '4685';
+        $id->relvalue = null;
+        $id->acdhid = null;
+        $id->vocabsid = 4685;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->uri = 'https://vocabs.acdh.oeaw.ac.at/accesrestriction/public';
+        self::$resourceData["acdh:hasAccessRestriction"]['en'] = array($id);
+    }
+    
+    private function createExamplePidData()
+    {
+        $id = new \stdClass();
+        $id->id = 345;
+        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
+        $id->type = 'ID';
+        $id->value = 'https://example.pid.com';
+        $id->relvalue = null;
+        $id->acdhid = null;
+        $id->vocabsid = null;
+        $id->accessrestriction = '';
+        $id->language = null;
+        $id->uri = 'https://example.pid.com';
+        self::$resourceData["acdh:hasPid"]['en'] = array($id);
+    }
+    
     private function createExampleAvailabelDateData()
     {
         $id = new \stdClass();
@@ -140,14 +188,13 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
     }
-/*
-    public function testGetUUID()
-    {
-        $this->assertNotEmpty(self::$object->getUUID());
-    }
+
 
     public function testGetAcdhID()
     {
+        $this->assertEmpty(self::$object->getAcdhID());
+        $this->createExampleAcdhIdentifierIdData();
+        $this->testInitialization();
         $this->assertNotEmpty(self::$object->getAcdhID());
     }
 
@@ -155,16 +202,31 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNotEmpty(self::$object->getInsideUrl());
     }
-    */
-    /*
+    
+    
     public function testGetAvailableDate()
     {
-        //$this->assertEmpty(self::$object->getAvailableDate());
-        //add idenitifier
         $this->createExampleAvailabelDateData();
-        $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
+        $this->testInitialization();
+        $this->assertNotEmpty(self::$object->getAvailableDate());
     }
-    */
+    
+    public function testGetPid()
+    {
+        $this->assertEmpty(self::$object->getPid());
+        $this->createExamplePidData();
+        $this->testInitialization();
+        $this->assertNotEmpty(self::$object->getPid());
+    }
+    
+    public function testAccessRestriction()
+    {
+        $this->assertEmpty(self::$object->getAccessRestriction());
+        $this->createExampleAccessRestrictionData();
+        $this->testInitialization();
+        $this->assertNotEmpty(self::$object->getAccessRestriction());
+    }
+    
     protected function startTimer(): void
     {
         $this->time = microtime(true);
