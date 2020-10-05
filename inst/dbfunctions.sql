@@ -1584,7 +1584,7 @@ CASE
             RAISE NOTICE USING MESSAGE =  'we have type table  - years';
             DROP TABLE IF EXISTS years_data;
             CREATE TEMPORARY TABLE years_data AS (
-                WITH years_data as (
+                WITH years_data_r as (
                     SELECT 
                         DISTINCT(fts.id),
                         fts.property,
@@ -1597,14 +1597,14 @@ CASE
                         (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
                         fts.raw similar to  _acdhyears )
                     )	
-                ) select * from years_data
+                ) select * from years_data_r
             );	
         elseif ( (_searchstr <> '') IS TRUE  and _searchstr != '*' and
 		 (select exists( select * from title_data) IS TRUE) ) then	
             RAISE NOTICE USING MESSAGE =  'we have title table - years';
             DROP TABLE IF EXISTS years_data;
             CREATE TEMPORARY TABLE years_data AS (
-                WITH years_data as (
+                WITH years_data_r as (
                     SELECT 
                         DISTINCT(fts.id),
                         fts.property,
@@ -1617,7 +1617,7 @@ CASE
                         (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
                         fts.raw similar to  _acdhyears )
                     )	
-                ) select * from years_data
+                ) select * from years_data_r
             );	
         END IF;
     WHEN (_acdhyears <> '') IS NOT TRUE THEN
