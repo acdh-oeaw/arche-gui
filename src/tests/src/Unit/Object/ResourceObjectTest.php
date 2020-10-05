@@ -236,7 +236,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getCopyResourceLink());
         $this->createExampleAcdhIdentifierIdData();
         $this->testInitialization();
-        $this->assertNotEmpty(self::$object->getCopyResourceLink());        
+        $this->assertNotEmpty(self::$object->getCopyResourceLink());
     }
     
     protected function startTimer(): void
