@@ -206,6 +206,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public function testGetAvailableDate()
     {
+        $this->assertEmpty(self::$object->getAvailableDate());
         $this->createExampleAvailabelDateData();
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getAvailableDate());
@@ -225,6 +226,17 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->createExampleAccessRestrictionData();
         $this->testInitialization();
         $this->assertNotEmpty(self::$object->getAccessRestriction());
+    }
+    
+    public function testCopyResourceLink()
+    {
+        $this->assertEmpty(self::$object->getCopyResourceLink());
+        $this->createExamplePidData();
+        $this->testInitialization();
+        $this->assertNotEmpty(self::$object->getCopyResourceLink());
+        $this->createExampleAcdhIdentifierIdData();
+        $this->testInitialization();
+        $this->assertNotEmpty(self::$object->getCopyResourceLink());        
     }
     
     protected function startTimer(): void
