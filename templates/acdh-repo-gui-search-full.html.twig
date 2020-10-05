@@ -35,8 +35,10 @@
                     {% endif%}
                 {% endif%}  
                 
+                {{ item.getAccessRestriction()[0].title  }}
                 
-                {% if item.getData('headline') and item.getData('headline')[0].value %}                    
+                {% if item.getData('headline') and item.getData('headline')[0].value 
+                        and (item.getAccessRestriction().title == 'public' or item.getAccessRestriction().title == 'öffentlich' )%}                    
                     <div class="res-property">
                         <i class="material-icons">&#xe8a0;</i>
                         <span class="res-prop-label">{{ "Binary Content"|trans }}: </span>

@@ -1447,7 +1447,6 @@ DECLARE
     limitint bigint := cast ( _limit as bigint);
     pageint bigint := cast ( _page as bigint);
 
-
 BEGIN
 --remove the tables if they are exists
 DROP TABLE IF EXISTS title_data;
@@ -1575,8 +1574,6 @@ CASE
         END CASE;
         RAISE NOTICE USING MESSAGE =  'we have type';	
 END CASE;
-
-
 --union the title and the 
 
 -- get the years
@@ -1626,6 +1623,16 @@ CASE
     WHEN (_acdhyears <> '') IS NOT TRUE THEN
         RAISE NOTICE USING MESSAGE =  'we DONT have years';
 END CASE;	
+DROP TABLE IF EXISTS accessres;
+CREATE TEMPORARY TABLE accessres AS (
+	WITH accessres as (
+		select 
+		DISTINCT(mv.id), mv2.value, mv2.lang 
+		from metadata_view as mv 
+		left join metadata_view as mv2 on mv2.id = mv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+		where mv.value like 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/%'
+	) select * from accessres order by id
+);
 
 if (
 SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'YEARS_DATA')) then
@@ -1645,11 +1652,11 @@ SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) =
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
                 ) as description,
                 (CASE WHEN 
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
                 THEN
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
                 ELSE
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
                 END) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf'limit 1) as titleimage,	
                 (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'limit 1) as acdhtype,
@@ -1660,6 +1667,7 @@ SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) =
 elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'TYPE_DATA')) then	
     RAISE NOTICE USING MESSAGE =  'final type';
     DROP TABLE IF EXISTS final_data;
+	RAISE NOTICE USING MESSAGE =  'final data create';
     CREATE TEMPORARY TABLE final_data AS (
         WITH final_data as (
             select 
@@ -1674,11 +1682,11 @@ elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
                 ) as description,
                 (CASE WHEN 
-    		    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+    		    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
     		THEN
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
     		ELSE
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
                 END) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf' limit 1) as titleimage,
                 td.raw as acdhtype,
@@ -1686,6 +1694,7 @@ elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table
             from type_data as td
         )select * from final_data											
     );	
+	RAISE NOTICE USING MESSAGE =  'final type final data table create';
 else 
     RAISE NOTICE USING MESSAGE =  'final title';
     DROP TABLE IF EXISTS final_data;
@@ -1700,11 +1709,11 @@ else
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
                 ) as description,
                 (CASE WHEN 
-    		    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
+    		    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
     		THEN
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
     		ELSE
-                    (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
+                    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
                 END) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf' limit 1) as titleimage,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'limit 1) as acdhtype,
