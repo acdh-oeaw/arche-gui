@@ -73,10 +73,10 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     */
     /*
     public function testBeforeTitleOutput() {
-       
+
         print_r("THE TITLE BEFORE");
         var_dump(self::$object->getData('acdh:hasIdentifier'));
-    }   
+    }
 */
     
     public function testGetTitle()
@@ -95,13 +95,13 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEmpty(self::$emptyObject->getIdentifiers());
         $this->assertNotEmpty(self::$object->getIdentifiers());
-    }    
+    }
     
     public function testGetNonAcdhIdentifiers()
     {
         $this->assertEmpty(self::$emptyObject->getNonAcdhIdentifiers());
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
-        $this->assertIsArray(self::$object->getNonAcdhIdentifiers());   
+        $this->assertIsArray(self::$object->getNonAcdhIdentifiers());
     }
 
 
@@ -138,7 +138,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     public function testCopyResourceLink()
     {
         $this->assertEmpty(self::$emptyObject->getCopyResourceLink());
-        $this->assertNotEmpty(self::$object->getCopyResourceLink());     
+        $this->assertNotEmpty(self::$object->getCopyResourceLink());
     }
     
     protected function startTimer(): void
