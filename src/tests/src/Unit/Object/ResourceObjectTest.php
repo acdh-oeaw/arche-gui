@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\acdh_repo_gui\Unit\Object;
 
+require_once dirname(__DIR__, 1) . '/ExampleData.php';
+   
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use DateTime;
 use acdhOeaw\acdhRepoLib\Repo;
@@ -23,6 +25,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     protected static $repo;
     protected static $config;
     private static $object;
+    private static $emptyObject;
     private static $resourceData = array();
     
     public static function setUpBeforeClass(): void
@@ -31,136 +34,54 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $cfgFile      = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
         self::$repo   = Repo::factory($cfgFile);
+        self::$resourceData = \ExampleData::exampleResourceData();
     }
     
     public function setUp(): void
     {
         $this->startTimer();
-        $this->createExampleData();
+        $this->initEmptyObject();
+        $this->initObject();
         $this->noteTime('setUp');
     }
     
-    public function testInitialization() : \Drupal\acdh_repo_gui\Object\ResourceObject
+    public function initObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
     {
         self::$object = new \Drupal\acdh_repo_gui\Object\ResourceObject(self::$resourceData, self::$repo);
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Object\ResourceObject::class, self::$object);
         return self::$object;
     }
     
-    private function createExampleData()
+    public function initEmptyObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
     {
-        $this->createExampleTitleData();
+        $noData = array();
+        $resourceData = array();
+        $data = new \stdClass();
+        $data->id = 345;
+        $data->value = 'my example title';
+        $data->title = 'my example title';
+        $data->property = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle1";
+        $noData["acdh:hasTitle1"]['en'] = array($data);
+        
+        self::$emptyObject = new \Drupal\acdh_repo_gui\Object\ResourceObject($noData, self::$repo);
+        $this->assertInstanceOf(\Drupal\acdh_repo_gui\Object\ResourceObject::class, self::$emptyObject);
+        return self::$emptyObject;
     }
-    
-    private function createExampleTitleData()
-    {
-        self::$resourceData = array();
-        $title = new \stdClass();
-        $title->id = 345;
-        $title->title = 'my example title';
-        $title->property = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle";
-        self::$resourceData["acdh:hasTitle"]['en'] = array($title);
-    }
-    
-    private function createExampleIdentifierData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
-        $id->type = 'ID';
-        $id->value = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
-        $id->relvalue = null;
-        $id->acdhid = null;
-        $id->vocabsid = null;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
-        self::$resourceData["acdh:hasIdentifier"]['en'][] = array($id);
-    }
-    
-    private function createExampleAcdhIdentifierData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
-        $id->type = 'ID';
-        $id->value = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
-        $id->relvalue = null;
-        $id->acdhid = null;
-        $id->vocabsid = null;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->uri = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/244468';
-        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
-    }
-    
-    private function createExampleAcdhIdentifierIdData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
-        $id->type = 'ID';
-        $id->value = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
-        $id->relvalue = null;
-        $id->acdhid = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
-        $id->vocabsid = null;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->uri = 'https://id.acdh.oeaw.ac.at/wollmilchsau/example';
-        self::$resourceData["acdh:hasIdentifier"]['en'] = array($id);
-    }
-    
-    private function createExampleAccessRestrictionData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccesssRestriction';
-        $id->type = 'REL';
-        $id->value = '4685';
-        $id->relvalue = null;
-        $id->acdhid = null;
-        $id->vocabsid = 4685;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->uri = 'https://vocabs.acdh.oeaw.ac.at/accesrestriction/public';
-        self::$resourceData["acdh:hasAccessRestriction"]['en'] = array($id);
-    }
-    
-    private function createExamplePidData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
-        $id->type = 'ID';
-        $id->value = 'https://example.pid.com';
-        $id->relvalue = null;
-        $id->acdhid = null;
-        $id->vocabsid = null;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->uri = 'https://example.pid.com';
-        self::$resourceData["acdh:hasPid"]['en'] = array($id);
-    }
-    
-    private function createExampleAvailabelDateData()
-    {
-        $id = new \stdClass();
-        $id->id = 345;
-        $id->property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate';
-        $id->type = 'http://www.w3.org/2001/XMLSchema#date';
-        $id->value = '2020-07-28 09:39:29';
-        $id->relvalue = null;
-        $id->acdhid = null;
-        $id->vocabsid = null;
-        $id->accessrestriction = '';
-        $id->language = null;
-        $id->title = '2017-10-03';
-        $id->shortcut = 'acdh:hasAvailableDate';
-        self::$resourceData["acdh:hasAvailableDate"]['en'] = array($id);
-    }
+  
+    /**
+    * @outputBuffering disabled
+    */
+    /*
+    public function testBeforeTitleOutput() {
+       
+        print_r("THE TITLE BEFORE");
+        var_dump(self::$object->getData('acdh:hasIdentifier'));
+    }   
+*/
     
     public function testGetTitle()
     {
+        $this->assertEmpty(self::$emptyObject->getTitle());
         $this->assertNotEmpty(self::$object->getTitle());
     }
     
@@ -172,29 +93,21 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public function testGetIdentifiers()
     {
-        //$this->assertEmpty(self::$object->getIdentifiers());
-        //add idenitifier
-        $this->createExampleIdentifierData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getIdentifiers());
         $this->assertNotEmpty(self::$object->getIdentifiers());
-    }
-    
+    }    
     
     public function testGetNonAcdhIdentifiers()
     {
-        //$this->assertEmpty(self::$object->getNonAcdhIdentifiers());
-        //add idenitifier
-        $this->createExampleAcdhIdentifierData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getNonAcdhIdentifiers());
         $this->assertNotEmpty(self::$object->getNonAcdhIdentifiers());
+        $this->assertIsArray(self::$object->getNonAcdhIdentifiers());   
     }
 
 
     public function testGetAcdhID()
     {
-        $this->assertEmpty(self::$object->getAcdhID());
-        $this->createExampleAcdhIdentifierIdData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getAcdhID());
         $this->assertNotEmpty(self::$object->getAcdhID());
     }
 
@@ -206,37 +119,26 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     
     public function testGetAvailableDate()
     {
-        $this->assertEmpty(self::$object->getAvailableDate());
-        $this->createExampleAvailabelDateData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getAvailableDate());
         $this->assertNotEmpty(self::$object->getAvailableDate());
     }
-    
+   
     public function testGetPid()
     {
-        $this->assertEmpty(self::$object->getPid());
-        $this->createExamplePidData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getPid());
         $this->assertNotEmpty(self::$object->getPid());
     }
-    
+     
     public function testAccessRestriction()
     {
-        $this->assertEmpty(self::$object->getAccessRestriction());
-        $this->createExampleAccessRestrictionData();
-        $this->testInitialization();
+        $this->assertEmpty(self::$emptyObject->getAccessRestriction());
         $this->assertNotEmpty(self::$object->getAccessRestriction());
     }
     
     public function testCopyResourceLink()
     {
-        $this->assertEmpty(self::$object->getCopyResourceLink());
-        $this->createExamplePidData();
-        $this->testInitialization();
-        $this->assertNotEmpty(self::$object->getCopyResourceLink());
-        $this->createExampleAcdhIdentifierIdData();
-        $this->testInitialization();
-        $this->assertNotEmpty(self::$object->getCopyResourceLink());        
+        $this->assertEmpty(self::$emptyObject->getCopyResourceLink());
+        $this->assertNotEmpty(self::$object->getCopyResourceLink());     
     }
     
     protected function startTimer(): void
