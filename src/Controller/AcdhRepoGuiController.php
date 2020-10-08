@@ -21,7 +21,6 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
     private $repo;
     private $rootViewController;
     private $searchViewController;
-    private $detailViewController;
     private $siteLang;
     private $langConf;
     
@@ -32,8 +31,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
          
         $this->rootViewController = new RVC($this->repo);
-        $this->searchViewController = new SVC($this->repo);
-        $this->detailViewController = new DVC($this->repo);
+        //$this->searchViewController = new SVC($this->repo);
         $this->generalFunctions = new GeneralFunctions();
         $this->langConf = $this->config('acdh_repo_gui.settings');
     }
@@ -145,51 +143,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         ];
     }
     
-    /**
-     * the detail view
-     *
-     * @param string $identifier
-     * @return type
-     */
-    public function repo_detail(string $identifier)
-    {
-        $ajax = false;
-        
-        if (strpos($identifier, '&ajax') !== false) {
-            $identifier = explode('&', $identifier);
-            $identifier = $identifier[0];
-            $ajax = true;
-        }
-        
-        $dv = array();
-        $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
-        $dv = $this->detailViewController->generateDetailView($identifier);
-        if (count((array)$dv) < 1) {
-            drupal_set_message(
-                $this->langConf->get('errmsg_no_data') ? $this->langConf->get('errmsg_no_data') : 'You do not have data',
-                'error',
-                false
-            );
-            return array();
-        }
-        \Drupal::service('page_cache_kill_switch')->trigger();
-        $return = [
-            '#theme' => 'acdh-repo-gui-detail',
-            '#basic' => $dv->basic,
-            '#extra' => $dv->extra,
-            '#dissemination' => (isset($dv->dissemination)) ? $dv->dissemination : array(),
-            '#cache' => ['max-age' => 0],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles',
-                ]
-            ]
-        ];
-        if ($ajax) {
-            return new Response(render($return));
-        }
-        return $return;
-    }
+    
     
     /**
     * Change language session variable API

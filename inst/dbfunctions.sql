@@ -39,31 +39,27 @@ DECLARE
     /* declare a second language variable, because if we dont have a value on the 
      * queried language then we are getting the results on the other language */
     _lang2 text := 'de';
+    _lang3 text := 'und';
 BEGIN
     /* check the languages and set up the language codes */
     IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 	
 RETURN QUERY
 WITH root_data as (
-	select DISTINCT(r.id) as id,
-        /* check the title based on the language*/
-	(CASE WHEN 
-		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
-	THEN
-		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
-	ELSE
-	 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
-	 END) as title,
+    select DISTINCT(r.id) as id,
+        /* check the title based on the language*/	
+	COALESCE(
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
+	) as title,
 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' LIMIT 1) as titleImage,
         /* check the description based on the language*/
-	(CASE WHEN 
-		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang LIMIT 1) IS NULL
-	THEN
-		(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang2 LIMIT 1)
-	ELSE
-	 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and md.lang = _lang LIMIT 1)
-	 END) as description,
-	
+	COALESCE(
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+	) as description,
 	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
 	from metadata as m
 	left join relations as r on r.id = m.id
@@ -93,6 +89,7 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+
 /*
 * DETAIL VIEW FUNCTION 
 * get the detail view resource data by the resource identifier
@@ -100,6 +97,7 @@ LANGUAGE 'plpgsql';
 * Because we supporting the 3rd party identifiers too, like vicav, etc
 * execution time between: 140-171ms
 */
+
 DROP FUNCTION gui.detail_view_func(text, text);
 CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
     RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
@@ -107,6 +105,7 @@ CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
 AS $func$
 DECLARE
     _lang2 text := 'de';
+	_lang3 text := 'und';
     /* get the arche gui identifier */
     _main_id bigint := (select i.id from identifiers as i where i.ids =_identifier);
 BEGIN
@@ -124,15 +123,15 @@ BEGIN
     --get the english values
     DROP TABLE IF EXISTS detail_meta_main_lng_en;
     CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
-            WITH dmeta as (
-                    select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-                    from metadata as m
-                    left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-                    left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-                    left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-                    where dm.type = 'REL' and m.lang='en'
-            )
-            select * from dmeta
+		WITH dmeta as (
+			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+			from metadata as m
+			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+			where dm.type = 'REL' and m.lang='en'
+		)
+		select * from dmeta
     );
     --get the german values
     DROP TABLE IF EXISTS detail_meta_main_lng_de;
@@ -147,6 +146,20 @@ BEGIN
             )
             select * from dmeta
     );
+	
+	DROP TABLE IF EXISTS detail_meta_main_lng_und;
+    CREATE TEMPORARY TABLE detail_meta_main_lng_und AS (
+		WITH dmeta as (
+			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+			from metadata as m
+			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+			where dm.type = 'REL' and m.lang='und'
+		)
+		select * from dmeta
+    );
+	
     -- compare the missing values and extend the missing labels
     IF _lang = 'en'
     THEN
@@ -158,11 +171,20 @@ BEGIN
                 UNION
                 select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
                 from detail_meta_main_lng_de as t1 
-                where 
+				where 
                 NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
                     from detail_meta_main_lng_en as t2 
                     where t1.id = t2.id
+                )
+				UNION
+                select und.id, und.value, und.acdhid, und.vocabsid, 'en' as lang
+                from detail_meta_main_lng_und as und
+                where				
+				NOT EXISTS( 
+                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'en' as lang
+                    from detail_meta_main_lng_en as t2 
+                    where und.id = t2.id
                 )
                 order by id
             )
@@ -179,12 +201,21 @@ BEGIN
                 from detail_meta_main_lng_de as t3
                 UNION
                 select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
-                from detail_meta_main_lng_en as t1 
-                where 
+                from detail_meta_main_lng_en as t1
+				where 
                 NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
                     from detail_meta_main_lng_de as t2 
                     where t1.id = t2.id
+                )
+				UNION
+                select und.id, und.value, und.acdhid, und.vocabsid, 'de' as lang
+                from detail_meta_main_lng_und as und
+                where	
+				NOT EXISTS( 
+                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'de' as lang
+                    from detail_meta_main_lng_de as t2 
+                    where und.id = t2.id
                 )
                 order by id
             )
@@ -201,7 +232,7 @@ BEGIN
 	CASE WHEN dm.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' THEN dmr.value
 	ELSE ''
 	END,
-	( CASE WHEN dm.lang IS NULL THEN dmr.lang ELSE dm.lang end ) as language
+	( CASE WHEN dm.lang IS NULL OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
     from detail_meta as dm
     left join reldata as dmr on dmr.id = dm.value
     order by property; 
@@ -987,16 +1018,16 @@ CREATE FUNCTION gui.apiGetData(_class text, _searchStr text)
 AS $func$
 
 BEGIN
-	DROP TABLE IF EXISTS ids;
-	CREATE TEMPORARY TABLE ids(id bigint NOT NULL);
-	INSERT INTO ids(
-		select  
-			mv.id
-		from metadata_view as mv
-		where
-		mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-		and mv.value = _class 
-	);
+    DROP TABLE IF EXISTS ids;
+    CREATE TEMPORARY TABLE ids(id bigint NOT NULL);
+    INSERT INTO ids(
+        select  
+            mv.id
+        from metadata_view as mv
+        where
+        mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+        and mv.value = _class 
+    );
 
 return query
 select mv.id, mv.property, mv.value, mv.lang
@@ -1444,6 +1475,7 @@ CREATE FUNCTION gui.search_full_func(_searchstr text DEFAULT '', _acdhtype text[
 AS $func$
 DECLARE	
     _lang2 text := 'de';
+	_lang3 text := 'und';
     limitint bigint := cast ( _limit as bigint);
     pageint bigint := cast ( _page as bigint);
 
@@ -1644,12 +1676,14 @@ SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) =
                 yd.id, 
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
                 ) as title,
                 yd.raw as avdate,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
                 ) as description,
                 (CASE WHEN 
                     (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
@@ -1674,12 +1708,14 @@ elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table
                 td.id,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
                 ) as title,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
                 ) as description,
                 (CASE WHEN 
     		    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
@@ -1706,7 +1742,8 @@ else
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
                 ) as description,
                 (CASE WHEN 
     		    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL

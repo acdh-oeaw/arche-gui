@@ -3,6 +3,8 @@
 namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\HttpFoundation\Response;
+use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Model\DetailViewModel;
 use Drupal\acdh_repo_gui\Helper\DetailViewHelper;
 use Drupal\acdh_repo_gui\Helper\CiteHelper as CH;
@@ -23,21 +25,68 @@ class DetailViewController extends ControllerBase
     private $repoid;
     private $generalFunctions;
 
-    public function __construct($repo)
+    public function __construct()
     {
-        $this->repo = $repo;
+        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        $this->repo = Repo::factory($this->config);
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
         $this->generalFunctions = new GF();
     }
-
+    
+    /**
+     * the detail view
+     *
+     * @param string $identifier
+     * @return type
+     */
+    public function repo_detail(string $identifier)
+    {
+        $ajax = false;
+        
+        if (strpos($identifier, '&ajax') !== false) {
+            $identifier = explode('&', $identifier);
+            $identifier = $identifier[0];
+            $ajax = true;
+        }
+        
+        $dv = array();
+        $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
+        $dv = $this->generateDetailView($identifier);
+        if (count((array)$dv) < 1) {
+            drupal_set_message(
+                $this->langConf->get('errmsg_no_data') ? $this->langConf->get('errmsg_no_data') : 'You do not have data',
+                'error',
+                false
+            );
+            return array();
+        }
+        \Drupal::service('page_cache_kill_switch')->trigger();
+        $return = [
+            '#theme' => 'acdh-repo-gui-detail',
+            '#basic' => $dv->basic,
+            '#extra' => $dv->extra,
+            '#dissemination' => (isset($dv->dissemination)) ? $dv->dissemination : array(),
+            '#cache' => ['max-age' => 0],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-styles',
+                ]
+            ]
+        ];
+        if ($ajax) {
+            return new Response(render($return));
+        }
+        return $return;
+    }
+    
     /**
      * Generate the detail view
      *
      * @param string $identifier
      * @return type
      */
-    public function generateDetailView(string $identifier): object
+    private function generateDetailView(string $identifier): object
     {
         $this->repoUrl = $identifier;
         //remove the url from the identifier just to have the repoid

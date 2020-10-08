@@ -9,7 +9,7 @@ repo_root:
 oeaw_detail:
   path: '/oeaw_detail/{identifier}'
   defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_detail'
+    _controller: '\Drupal\acdh_repo_gui\Controller\DetailViewController::repo_detail'
   requirements:
     identifier: '^[^\?]*$'
     _permission: 'access content'
