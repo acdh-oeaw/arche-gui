@@ -1,8 +1,9 @@
 <?php
 
-class exampleData {
-      
-    static public function exampleResourceData() {
+class exampleData
+{
+    public static function exampleResourceData()
+    {
         $resourceData = array();
         $data = new \stdClass();
         $data->id = 345;
