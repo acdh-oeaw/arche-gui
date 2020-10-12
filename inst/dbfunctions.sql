@@ -460,7 +460,10 @@ DROP FUNCTION gui.breadcrumb_view_func(text, text );
 CREATE FUNCTION gui.breadcrumb_view_func(_pid text, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer)
 AS $func$
+    DECLARE _lang2 text := 'de';
 BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+	
     DROP TABLE IF EXISTS breadcrumbdata;
     CREATE TEMPORARY TABLE breadcrumbdata(mainid bigint, parentid bigint, depth integer);
 	INSERT INTO breadcrumbdata( 
@@ -482,20 +485,19 @@ BEGIN
                 FROM
                     metadata_view as mv2
                 INNER JOIN subordinates s ON s.parentid = mv2.id and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
-		) select * from subordinates
+            ) select * from subordinates
 	);
 
 RETURN QUERY
     select 
-        bd.mainid, bd.parentid, 
-	mv.value,
+        DISTINCT(bd.mainid), bd.parentid, 
+        COALESCE(
+            (select mv.value from metadata_view as mv where mv.id = bd.parentid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+            (select mv.value from metadata_view as mv where mv.id = bd.parentid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
+        ) as title,
         bd.depth 
     from 
-        breadcrumbdata as bd
-    left join 
-        metadata_view as mv on mv.id = bd.parentid 
-     where  
-        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
+        breadcrumbdata as bd;
 END
 $func$
 LANGUAGE 'plpgsql';
