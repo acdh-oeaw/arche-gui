@@ -4,7 +4,6 @@ namespace Drupal\Tests\acdh_repo_gui\Unit;
 
 use acdhOeaw\acdhRepoLib\Repo;
 
-
 /**
  * Tests GeneralFunctions
  *
@@ -31,13 +30,14 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         $this->object = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions(dirname(__DIR__, 1) . '/testconfig.yaml');
     }
     
-    public function testBaseurl() {
+    public function testBaseurl()
+    {
         $this->assertNotEmpty($this->object->getBaseUrl());
     }
     
-    public function testDetailViewUrlDecodeEncode() {
-        $this->assertEquals('http://127.0.0.1/api/263325', $this->object->detailViewUrlDecodeEncode('263325', 0)); 
+    public function testDetailViewUrlDecodeEncode()
+    {
+        $this->assertEquals('http://127.0.0.1/api/263325', $this->object->detailViewUrlDecodeEncode('263325', 0));
         // 263325 ->https://arche-dev.acdh-dev.oeaw.ac.at/api/263325  0
-                
     }
 }
