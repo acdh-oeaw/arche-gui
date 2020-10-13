@@ -15,11 +15,11 @@ class GeneralFunctions
     private $config;
     private $repo;
     
-    public function __construct()
+    public function __construct($cfg = null)
     {
-        $this->langConf = \Drupal::config('oeaw.settings');
-        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
+        (!$cfg) ? $cfg = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml': $cfg = $cfg;
+        $this->config = $cfg;
+        $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
     }
     
     /**
