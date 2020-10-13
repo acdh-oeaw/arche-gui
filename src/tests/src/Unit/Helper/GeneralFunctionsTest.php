@@ -4,7 +4,6 @@ namespace Drupal\Tests\acdh_repo_gui\Unit;
 
 use acdhOeaw\acdhRepoLib\Repo;
 
-
 /**
  * Tests GeneralFunctions
  *
@@ -31,24 +30,25 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         $this->object = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions(dirname(__DIR__, 1) . '/testconfig.yaml');
     }
 
-    public function testDetailViewUrlDecodeEncode() {
+    public function testDetailViewUrlDecodeEncode()
+    {
         $this->assertEmpty($this->object->detailViewUrlDecodeEncode('', 0));
-        $this->assertEquals('https://id.acdh.oeaw.ac.at/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:test:H115', 0)); 
-        $this->assertEquals('https://id.acdh.oeaw.ac.at/uuid/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:uuid:test:H115', 0)); 
-        $this->assertEquals('http://127.0.0.1/api/263325', $this->object->detailViewUrlDecodeEncode('263325', 0)); 
+        $this->assertEquals('https://id.acdh.oeaw.ac.at/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:test:H115', 0));
+        $this->assertEquals('https://id.acdh.oeaw.ac.at/uuid/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:uuid:test:H115', 0));
+        $this->assertEquals('http://127.0.0.1/api/263325', $this->object->detailViewUrlDecodeEncode('263325', 0));
  
         $stub = $this->createStub(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
         //$stub->method('detailViewUrlDecodeEncode')->willReturn('http://hdl.handle.net/263325');
-        //$this->assertEquals('http://hdl.handle.net/263325', $stub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0)); 
+        //$this->assertEquals('http://hdl.handle.net/263325', $stub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
         
         // 263325 ->https://arche-dev.acdh-dev.oeaw.ac.at/api/263325  0
         $map = [
             ['hdl.handle.net:263325', 0, 'http://hdl.handle.net/263325'],
             ['geonames.org:263325', 0, 'http://geonames.org/263325'],
             ['d-nb.info:263325', 0, 'http://d-nb.info/263325']
-        ];  
+        ];
         
-         $stub->method('detailViewUrlDecodeEncode')
+        $stub->method('detailViewUrlDecodeEncode')
              ->will($this->returnValueMap($map));
 
         // $stub->doSomething() returns different values depending on
@@ -57,5 +57,4 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('http://geonames.org/263325', $stub->detailViewUrlDecodeEncode('geonames.org:263325', 0));
         $this->assertSame('http://d-nb.info/263325', $stub->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
     }
-    
 }
