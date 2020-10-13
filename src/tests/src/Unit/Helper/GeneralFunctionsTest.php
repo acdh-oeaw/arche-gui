@@ -56,6 +56,16 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('http://hdl.handle.net/263325', $stub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
         $this->assertSame('http://geonames.org/263325', $stub->detailViewUrlDecodeEncode('geonames.org:263325', 0));
         $this->assertSame('http://d-nb.info/263325', $stub->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
+        
+        $service = $this->getMockBuilder(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class)
+        ->disableOriginalConstructor()
+        ->setMethods(['detailViewUrlDecodeEncode'])
+        ->getMock();
+        $service->expects($this->any())
+        ->method('detailViewUrlDecodeEncode')
+        ->will($this->returnValue('http://d-nb.info/263325'));
+        
+        $this->assertSame('http://d-nb.info/263325', $service->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
     }
     
 }
