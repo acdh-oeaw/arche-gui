@@ -57,8 +57,9 @@ class ChildApiController extends ControllerBase
             $this->repoid = $identifier;
             $identifier = $this->repo->getBaseUrl().$identifier;
         } elseif (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
-            $identifier = $this->repo->getSchema()->__get('drupal')->uuidNamespace.$identifier;
+            $this->repoid = $identifier;
         }
+       
         $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($identifier);
         
