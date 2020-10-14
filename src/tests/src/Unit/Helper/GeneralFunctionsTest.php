@@ -92,6 +92,15 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
      
         $this->assertEquals(array(self::exampleUUIDData()), $service->getViewData());
         
+        $service = $this->getMockBuilder(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class)
+        ->disableOriginalConstructor()
+        ->setMethods(['detailViewUrlDecodeEncode'])
+        ->getMock();
+        $service->expects($this->any())
+        ->method('detailViewUrlDecodeEncode')
+        ->will($this->returnValue('http://hdl.handle.net/263325'));
+        
+        $this->assertSame('http://hdl.handle.net/263325', $service->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
     }
     
 }
