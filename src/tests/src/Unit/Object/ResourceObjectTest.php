@@ -113,9 +113,15 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
 
     public function testGetInsideUrl()
     {
+        $this->assertEmpty(self::$emptyObject->getInsideUrl());
         $this->assertNotEmpty(self::$object->getInsideUrl());
     }
     
+    public function testGetUUID()
+    {
+        $this->assertEmpty(self::$emptyObject->getUUID());
+        $this->assertNotEmpty(self::$object->getUUID());
+    }
     
     public function testGetAvailableDate()
     {
@@ -135,10 +141,51 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getAccessRestriction());
     }
     
+    public function testGetRepoID()
+    {
+        $this->assertEmpty(self::$emptyObject->getRepoID());
+        $this->assertNotEmpty(self::$object->getRepoID());
+    }
+    
+     public function testGetRepoUrl()
+    {
+        //$this->assertEmpty(self::$emptyObject->getRepoUrl());
+        $this->assertNotEmpty(self::$object->getRepoUrl());
+    }
+    
     public function testCopyResourceLink()
     {
         $this->assertEmpty(self::$emptyObject->getCopyResourceLink());
         $this->assertNotEmpty(self::$object->getCopyResourceLink());
+    }
+    
+    public function testIsTitleImage()
+    {
+        $this->assertFalse(self::$emptyObject->isTitleImage());
+        $this->assertTrue(self::$object->isTitleImage());
+    }
+    
+    public function testGetAcdhType()
+    {
+        $this->assertEmpty(self::$emptyObject->getAcdhType());
+        $this->assertNotEmpty(self::$object->getAcdhType());
+    }
+    
+    public function testGetSkosType()
+    {
+        $this->assertEmpty(self::$emptyObject->getSkosType());
+        $this->assertNotEmpty(self::$object->getSkosType());
+    }
+    
+    public function testGetExpertTableData()
+    {
+        $this->assertNotEmpty(self::$object->getExpertTableData());
+    }
+    
+    public function testGetFormattedDateByProperty()
+    {
+        $this->assertEmpty(self::$emptyObject->getFormattedDateByProperty('acdh:hasAvailableDate', 'Y'));
+        $this->assertNotEmpty(self::$object->getFormattedDateByProperty('acdh:hasAvailableDate', 'Y'));
     }
     
     protected function startTimer(): void

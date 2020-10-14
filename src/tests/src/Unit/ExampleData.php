@@ -1,9 +1,8 @@
 <?php
 
-class exampleData
-{
-    public static function exampleResourceData()
-    {
+class exampleData {
+      
+    static public function exampleResourceData() {
         $resourceData = array();
         $data = new \stdClass();
         $data->id = 345;
@@ -90,6 +89,34 @@ class exampleData
         $data->title = '2017-10-03';
         $data->shortcut = 'acdh:hasAvailableDate';
         $resourceData["acdh:hasAvailableDate"]['en'] = array($data);
+        
+        $data = new \stdClass();
+        $data->id = 345;
+        $data->property ='rdf:type';
+        $data->type = 'string';
+        $data->value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection';
+        $data->relvalue = null;
+        $data->acdhid = null;
+        $data->vocabsid = null;
+        $data->accessrestriction = '';
+        $data->language = 'en';
+        $data->title = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection';
+        $data->shortcut = 'rdf:type';
+        $resourceData["rdf:type"]['en'][] = $data;
+        
+        $data = new \stdClass();
+        $data->id = 345;
+        $data->property ='rdf:type';
+        $data->type = 'string';
+        $data->value = 'http://www.w3.org/2004/02/skos/core#Skostype';
+        $data->relvalue = null;
+        $data->acdhid = null;
+        $data->vocabsid = null;
+        $data->accessrestriction = '';
+        $data->language = 'en';
+        $data->title = 'http://www.w3.org/2004/02/skos/core#Skostype';
+        $data->shortcut = 'rdf:type';
+        $resourceData["rdf:type"]['en'][] = $data;
         
         return $resourceData;
     }
