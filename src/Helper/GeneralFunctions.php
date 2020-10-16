@@ -142,10 +142,10 @@ class GeneralFunctions
         try {
             $idsByPid = $model->getViewData($identifier);
         } catch (Exception $ex) {
-            drupal_set_message($ex->getMessage(), 'error');
+            \Drupal::messenger()->addError($ex->getMessage());
             return "";
         } catch (\InvalidArgumentException $ex) {
-            drupal_set_message($ex->getMessage(), 'error');
+            \Drupal::messenger()->addError($ex->getMessage());
             return "";
         }
 

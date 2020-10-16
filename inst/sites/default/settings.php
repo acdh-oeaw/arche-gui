@@ -767,9 +767,20 @@ $databases['external']['default'] = array (
   'driver' => 'sqlite',
 );
 
+$pswd = "";
+
+foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
+  $i = explode(':', $i);
+  if ($i[3] === 'gui') {
+    $pswd = $i[4];
+    break;
+  }
+}
+
 $databases['repo']['default'] = array (
   'database' => 'www-data',
   'username' => 'gui',
+  'password' => $pswd,
   'host' => '127.0.0.1',
   'namespace' => 'Drupal\\Core\\Database\\Driver\\pgsql',
   'driver' => 'pgsql',

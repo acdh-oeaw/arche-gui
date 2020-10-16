@@ -1,11 +1,16 @@
 name: acdh_repo_gui
 type: module
 description: 'ÖAW ACDH REPO Gui.'
-core: 8.x
+core_version_requirement: ^8.8 || ^9
 package: oeaw
 project: acdh_repo_gui
 configure: acdh_repo_gui.settings_form
 libraries:
     - acdh_repo_gui/repo-styles
+    - acdh_repo_gui/repo-root-view
 'interface translation project': acdh_repo_gui
 'interface translation server pattern': modules/contrib/arche-gui/translations/acdh_repo_gui-%language.po    
+
+# Information added by Drupal.org packaging script on 2019-02-08
+version: '0.6.1'
+core: '8.x'

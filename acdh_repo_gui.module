@@ -116,7 +116,7 @@ function acdh_repo_gui_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
     $form['#attached']['library'][] = 'acdh_repo_gui/mylibrary';
     $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['id'] = \Drupal::currentUser()->id();
     $account = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-    $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['name'] = $account->getUsername();
+    $form['#attached']['drupalSettings']['acdh_repo_gui']['users']['name'] = $account->getAccountName();
     $roles = array();
     $roles = \Drupal::currentUser()->getRoles();
     if(count($roles) > 0){ $roles = implode(",", $roles); }
