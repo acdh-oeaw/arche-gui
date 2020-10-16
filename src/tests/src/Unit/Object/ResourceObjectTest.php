@@ -147,7 +147,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getRepoID());
     }
     
-     public function testGetRepoUrl()
+    public function testGetRepoUrl()
     {
         //$this->assertEmpty(self::$emptyObject->getRepoUrl());
         $this->assertNotEmpty(self::$object->getRepoUrl());
