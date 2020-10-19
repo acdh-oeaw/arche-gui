@@ -771,7 +771,7 @@ $pswd = "";
 
 foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
   $i = explode(':', $i);
-  if ($i[3] === 'gui') {
+  if (isset($i[3]) && $i[3] == 'gui' && isset($i[4])) {
     $pswd = $i[4];
     break;
   }
