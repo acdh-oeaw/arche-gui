@@ -22,7 +22,6 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
     private $rootViewController;
     private $searchViewController;
     private $siteLang;
-    private $langConf;
     
     public function __construct()
     {
@@ -33,7 +32,6 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         $this->rootViewController = new RVC($this->repo);
         //$this->searchViewController = new SVC($this->repo);
         $this->generalFunctions = new GeneralFunctions();
-        $this->langConf = $this->config('acdh_repo_gui.settings');
     }
     
     /**
@@ -60,7 +58,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         }
         
         if (!isset($roots['data']) || count($roots['data']) <= 0) {
-            \Drupal::messenger()->addWarning($this->t($this->langConf->get('errmsg_no_root_resources') ? $this->langConf->get('errmsg_no_root_resources') : 'You do not have Root resources'));
+            \Drupal::messenger()->addWarning($this->t('You do not have Root resources'));
             return array();
         }
         
@@ -114,7 +112,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
         $searchResult = $this->searchViewController->generateView($limit, $page, $order, $metavalue);
         
         if (count($searchResult['data']) <= 0) {
-            \Drupal::messenger()->addWarning($this->t($this->langConf->get('errmsg_no_search_res') ? $this->langConf->get('errmsg_no_search_res') : 'Your search yielded no results.'));
+            \Drupal::messenger()->addWarning($this->t('Your search yielded no results.'));
             return array();
         }
         

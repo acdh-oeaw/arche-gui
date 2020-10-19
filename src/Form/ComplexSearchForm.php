@@ -9,7 +9,6 @@ use Drupal\acdh_repo_gui\Helper\FormHelper;
 
 class ComplexSearchForm extends FormBase
 {
-    private $langConf;
     private $model;
     private $helper;
     private $entityData = array();
@@ -20,7 +19,6 @@ class ComplexSearchForm extends FormBase
      */
     public function __construct()
     {
-        $this->langConf = $this->config('arche.settings');
         $this->model = new BlocksModel();
         $this->helper = new FormHelper();
     }
@@ -54,7 +52,7 @@ class ComplexSearchForm extends FormBase
         $this->entityData = $this->model->getViewData("entity");
         if (count($this->entityData) > 0) {
             $this->entityData = $this->helper->formatEntityYears($this->entityData);
-            $resData["title"] = $this->langConf->get('gui_type_of_entity') ? $this->langConf->get('gui_type_of_entity') : 'Type of Entity';
+            $resData["title"] = t('Type of Entity')->__toString();
             $resData["type"] = "searchbox_types";
             $resData["fields"] = $this->entityData['fields'];
             $this->createBox($form, $resData);
@@ -64,7 +62,7 @@ class ComplexSearchForm extends FormBase
         $this->yearsData = $this->model->getViewData("years");
         if (count($this->yearsData) > 0) {
             $this->yearsData = $this->helper->formatEntityYears($this->yearsData, true);
-            $dateData["title"] = $this->langConf->get('gui_entities_by_year') ? $this->langConf->get('gui_entities_by_year') : 'Entities by Year';
+            $dateData["title"] = t('Entities by Year')->__toString();
             $dateData["type"] = "datebox_years";
             $dateData["fields"] = $this->yearsData['fields'];
             $this->createBox($form, $dateData);
@@ -93,7 +91,7 @@ class ComplexSearchForm extends FormBase
         }
 
         if ((empty($metavalue)) && (count($types) <= 0) && (count($formats) <= 0) && empty($form_state->getValue('date_start_date')) && empty($form_state->getValue('date_end_date'))) {
-            $form_state->setErrorByName('metavalue', $this->t('Missing') . ': ' . t('Keyword') . ' ' . t('or') . ' ' . t('Type'));
+            $form_state->setErrorByName('metavalue', $this->t('Missing')->__toString() . ': ' . t('Keyword')->__toString() . ' ' . t('or')->__toString() . ' ' . t('Type')->__toString());
         }
     }
 
@@ -179,7 +177,7 @@ class ComplexSearchForm extends FormBase
         $form['actions']['#type'] = 'actions';
         $form['actions']['submit'] = array(
             '#type' => 'submit',
-            '#value' => $this->langConf->get('gui_apply_selected_filters') ? $this->langConf->get('gui_apply_selected_filters') : 'Apply the selected search filters',
+            '#value' => t('Apply the selected search filters'),
             '#attributes' => array(
                 'class' => array('complexsearch-btn')
             ),

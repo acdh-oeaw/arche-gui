@@ -15,7 +15,7 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;
  *
  * @author nczirjak
  */
-class DetailViewController extends ControllerBase
+class DetailViewController extends \Drupal\Core\Controller\ControllerBase
 {
     private $config;
     private $model;
@@ -54,11 +54,7 @@ class DetailViewController extends ControllerBase
         $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
         $dv = $this->generateDetailView($identifier);
         if (count((array)$dv) < 1) {
-            drupal_set_message(
-                $this->langConf->get('errmsg_no_data') ? $this->langConf->get('errmsg_no_data') : 'You do not have data',
-                'error',
-                false
-            );
+            \Drupal::messenger()->addWarning(t('You do not have data'));
             return array();
         }
         \Drupal::service('page_cache_kill_switch')->trigger();

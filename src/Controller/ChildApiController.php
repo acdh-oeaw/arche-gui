@@ -37,7 +37,6 @@ class ChildApiController extends ControllerBase
         $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        //$this->langConf = $this->config('acdh_repo_gui.settings');
         $this->model = new ChildApiModel();
         $this->helper = new ChildApiHelper();
         $this->data = new \stdClass();
