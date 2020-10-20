@@ -9,7 +9,7 @@ repo_root:
 oeaw_detail:
   path: '/oeaw_detail/{identifier}'
   defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\DetailViewController::repo_detail'
+    _controller: '\Drupal\acdh_repo_gui\Controller\DetailViewController::detailViewMainMethod'
   requirements:
     identifier: '^[^\?]*$'
     _permission: 'access content'
@@ -18,7 +18,7 @@ oeaw_detail:
 repo_child_api:    
     path: '/repo_child_api/{identifier}/{limit}/{page}/{order}'
     defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ChildApiController::repo_child_api'
+        _controller: '\Drupal\acdh_repo_gui\Controller\ChildApiController::generateView'
     requirements:
         _permission: 'access content'
         _access: 'TRUE'    
@@ -26,7 +26,7 @@ repo_child_api:
 repo_complexsearch:
   path: '/discover/{metavalue}/{order}/{limit}/{page}'
   defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_complexsearch'
+    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_root'
     metavalue: ""
     order: "datedesc"
     limit: "10"

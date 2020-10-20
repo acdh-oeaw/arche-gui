@@ -40,7 +40,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
      * @param string $identifier
      * @return type
      */
-    public function repo_detail(string $identifier)
+    public function detailViewMainMethod(string $identifier)
     {
         $ajax = false;
         
@@ -201,6 +201,6 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     private function getChildData(): \Symfony\Component\HttpFoundation\Response
     {
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
-        return $child->repo_child_api($this->repoid, '10', '0', 'titleasc');
+        return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
 }

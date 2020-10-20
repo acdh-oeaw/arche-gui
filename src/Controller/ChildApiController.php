@@ -50,7 +50,7 @@ class ChildApiController extends ControllerBase
      * @param string $page
      * @param string $limit
      */
-    public function repo_child_api(string $identifier, string $limit, string $page, string $order): Response
+    public function generateView(string $identifier, string $limit, string $page, string $order): Response
     {
         if (preg_match("/^\d+$/", $identifier)) {
             $this->repoid = $identifier;
