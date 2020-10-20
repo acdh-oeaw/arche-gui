@@ -108,9 +108,9 @@ class MetadataGuiHelper
     /*
      * If we have multiple properties then we need to get the acdh schema one
      */
-    private function checkDataProperty(array $prop): string 
+    private function checkDataProperty(array $prop): string
     {
-        foreach($prop as $v) {
+        foreach ($prop as $v) {
             if (strpos($v, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
                 return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v);
             }
@@ -134,9 +134,9 @@ class MetadataGuiHelper
                     $prop = "";
                     //check the properties for the custom gui table section
                    
-                    if(is_array($v->property)) {
+                    if (is_array($v->property)) {
                         $prop = $this->checkDataProperty($v->property);
-                    }else {
+                    } else {
                         $prop = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
                     }
                     
