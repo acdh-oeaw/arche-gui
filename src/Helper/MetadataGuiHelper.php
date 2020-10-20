@@ -105,6 +105,19 @@ class MetadataGuiHelper
         $this->formatMetadataGuiView();
     }
     
+    /*
+     * If we have multiple properties then we need to get the acdh schema one
+     */
+    private function checkDataProperty(array $prop): string 
+    {
+        foreach($prop as $v) {
+            if (strpos($v, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
+                return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v);
+            }
+        }
+        return "";
+    }
+    
     /**
      * Format the metadata gui result for the json output
      */
@@ -118,9 +131,17 @@ class MetadataGuiHelper
                 if (!isset($v->label)) {
                     break;
                 } else {
+                    $prop = "";
                     //check the properties for the custom gui table section
-                    $tableClass = $this->isCustomClass(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property));
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
+                   
+                    if(is_array($v->property)) {
+                        $prop = $this->checkDataProperty($v->property);
+                    }else {
+                        $prop = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
+                    }
+                    
+                    $tableClass = $this->isCustomClass($prop);
+                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = $prop;
                     //setup the default values
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = '-';
