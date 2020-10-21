@@ -12,14 +12,15 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
  *
  * @author nczirjak
  */
-class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase {
-
+class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
+{
     private $config;
     private $repo;
     private $rootViewController;
     private $siteLang;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = drupal_get_path('module', 'acdh_repo_gui') . '/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
@@ -36,7 +37,8 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase {
      * @param string $order
      * @return array
      */
-    public function repo_root(string $metavalue = "root", string $order = "datedesc", string $limit = "10", string $page = "1"): array {
+    public function repo_root(string $metavalue = "root", string $order = "datedesc", string $limit = "10", string $page = "1"): array
+    {
         $limit = (int) $limit;
         $page = (int) $page;
         // on the gui we are displaying 1 as the first page.
@@ -79,7 +81,8 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase {
      * @param string $lng
      * @return Response
      */
-    public function oeaw_change_lng(string $lng = 'en'): Response {
+    public function oeaw_change_lng(string $lng = 'en'): Response
+    {
         $_SESSION['language'] = strtolower($lng);
         $response = new Response();
         $response->setContent(json_encode("language changed to: " . $lng));
@@ -93,7 +96,8 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase {
      *
      * @return array
      */
-    public function shibboleth_login(): array {
+    public function shibboleth_login(): array
+    {
         $result = array();
         $userid = \Drupal::currentUser()->id();
         if ((isset($_SERVER['HTTP_EPPN']) && $_SERVER['HTTP_EPPN'] != "(null)") && (isset($_SERVER['HTTP_AUTHORIZATION']) && $_SERVER['HTTP_AUTHORIZATION'] != "(null)")
@@ -112,5 +116,4 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase {
 
         return $result;
     }
-
 }
