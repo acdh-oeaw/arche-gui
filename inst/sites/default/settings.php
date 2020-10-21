@@ -310,7 +310,7 @@ $settings['hash_salt'] = 'wD4-lgsPB_fi_9UxUMeJtAyduaAjWfOK8aWXUqFwgED2HlH3XsKy4S
  * TRUE back to a FALSE!
  */
 $settings['update_free_access'] = FALSE;
-
+$settings['rebuild_access'] = TRUE;
 /**
  * External access proxy settings:
  *
@@ -725,6 +725,13 @@ $settings['container_yamls'][] = __DIR__ . '/services.yml';
  * example.org, with all subdomains included.
  */
 
+$settings['trusted_host_patterns'] = array(
+    '^localhost$', 
+    '^arche-dev.acdh-dev.oeaw.ac.at$',
+    '^arche-curation.acdh-dev.oeaw.ac.at$',
+    '^arche.acdh.oeaw.ac.at$'
+);
+
 /**
  * The default list of directories that will be ignored by Drupal's file API.
  *
@@ -768,13 +775,14 @@ $databases['external']['default'] = array (
 );
 
 $pswd = "";
-
-foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
-  $i = explode(':', $i);
-  if (isset($i[3]) && $i[3] == 'gui' && isset($i[4])) {
-    $pswd = $i[4];
-    break;
-  }
+if(file_exists("/home/www-data/.pgpass")) {
+    foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
+        $i = explode(':', $i);
+        if (isset($i[3]) && $i[3] == 'gui' && isset($i[4])) {
+            $pswd = $i[4];
+            break;
+        }   
+    }
 }
 
 $databases['repo']['default'] = array (
@@ -787,4 +795,7 @@ $databases['repo']['default'] = array (
 );
 
 $settings['install_profile'] = 'standard';
+//d8.8
 $config_directories['sync'] = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
+//d9
+$settings['config_sync_directory']   = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
