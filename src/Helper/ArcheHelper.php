@@ -117,8 +117,8 @@ abstract class ArcheHelper
     
     private function setTitle(object &$d): void
     {
-        if( (isset($d->title) && empty($d->title)) ||
-            !isset($d->title) ) {
+        if ((isset($d->title) && empty($d->title)) ||
+            !isset($d->title)) {
             $d->title = "";
             $d->title = $d->value;
         }
@@ -130,10 +130,10 @@ abstract class ArcheHelper
     
     private function setAcdhId(object &$d): void
     {
-       if (isset($d->acdhid) && !empty($d->acdhid)) {
+        if (isset($d->acdhid) && !empty($d->acdhid)) {
             $d->insideUri = "";
             $d->insideUri = $this->makeInsideUri($d->acdhid);
-        } 
+        }
     }
     
     private function setUri(object &$d): void
@@ -142,7 +142,6 @@ abstract class ArcheHelper
             $d->uri = $d->vocabsid;
             unset($d->insideUri);
         }
-
     }
     /**
      * Extend the actual object with the shortcuts
@@ -177,35 +176,34 @@ abstract class ArcheHelper
                 if (!isset($result[$d->shortcut][$lang])) {
                     $result[$d->shortcut][$lang][] = $d;
                 } elseif (isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
-                    //if we already have a shortcut in the results then we need to check if it id a relation 
+                    //if we already have a shortcut in the results then we need to check if it id a relation
                     //or any other type
                     
                     //this is a relation so we need to check the duplicates
-                    if(isset($d->repoid)){
-                    //we ahve shorcut and repoid and already results in the result array
-                    $searchedValue = $d->repoid;
-                    $res = array();
-                    //with the array filter we check the objects and the repoid is the same like
-                    //what we already have in the array, then we will skip the results array extension
-                    $res = array_filter(
-                        $result[$d->shortcut][$lang],
-                        function ($e) use (&$searchedValue, &$d) {
+                    if (isset($d->repoid)) {
+                        //we ahve shorcut and repoid and already results in the result array
+                        $searchedValue = $d->repoid;
+                        $res = array();
+                        //with the array filter we check the objects and the repoid is the same like
+                        //what we already have in the array, then we will skip the results array extension
+                        $res = array_filter(
+                            $result[$d->shortcut][$lang],
+                            function ($e) use (&$searchedValue, &$d) {
                             if ($e->repoid != $searchedValue) {
                                 return true;
                             }
                         }
-                    );
+                        );
 
-                    //if we have new value for the same shortcut then add it to the array
-                    if (isset($res[0]->repoid)) {
-                        $result[$d->shortcut][$lang][] = $d;
-                    }
-                    }else {
+                        //if we have new value for the same shortcut then add it to the array
+                        if (isset($res[0]->repoid)) {
+                            $result[$d->shortcut][$lang][] = $d;
+                        }
+                    } else {
                         //simple string or date, then we simply extending the actual results array
                         $result[$d->shortcut][$lang][] = $d;
+                    }
                 }
-                }
-                
             } elseif (isset($d->type) && !empty($d->type) && $d->type == "ID") {
                 //setup the acdh uuid variable
                 $d->property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier';
@@ -231,7 +229,7 @@ abstract class ArcheHelper
     {
         if (strpos($d->value, '/id.acdh.oeaw.ac.at/uuid/') !== false) {
             $d->acdhid = $d->value;
-        } 
+        }
     }
     
     private function setIDTypeRepoId(object &$d): void
