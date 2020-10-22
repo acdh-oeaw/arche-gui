@@ -310,7 +310,7 @@ $settings['hash_salt'] = 'wD4-lgsPB_fi_9UxUMeJtAyduaAjWfOK8aWXUqFwgED2HlH3XsKy4S
  * TRUE back to a FALSE!
  */
 $settings['update_free_access'] = FALSE;
-$settings['rebuild_access'] = TRUE;
+$settings['rebuild_access'] = false;
 /**
  * External access proxy settings:
  *
@@ -767,13 +767,6 @@ $databases['default']['default'] = array (
   'driver' => 'sqlite',
 );
 
-$databases['external']['default'] = array (
-  'database' => 'sites/default/files/.arche_cache.sqlite',
-  'prefix' => '',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\sqlite',
-  'driver' => 'sqlite',
-);
-
 $pswd = "";
 if(file_exists("/home/www-data/.pgpass")) {
     foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
@@ -794,8 +787,9 @@ $databases['repo']['default'] = array (
   'driver' => 'pgsql',
 );
 
-$settings['install_profile'] = 'standard';
-//d8.8
-$config_directories['sync'] = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
-//d9
-$settings['config_sync_directory']   = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
+if( substr(\Drupal::VERSION, 0, 1) == "8") {
+    $settings['config_sync_directory']   = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
+    $settings['install_profile'] = 'standard';
+} else {
+    $config_directories['sync'] = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync'; 
+}
