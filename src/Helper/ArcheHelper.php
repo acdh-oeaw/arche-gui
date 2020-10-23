@@ -189,10 +189,10 @@ abstract class ArcheHelper
                         $res = array_filter(
                             $result[$d->shortcut][$lang],
                             function ($e) use (&$searchedValue, &$d) {
-                            if ($e->repoid != $searchedValue) {
-                                return true;
+                                if ($e->repoid != $searchedValue) {
+                                    return true;
+                                }
                             }
-                        }
                         );
 
                         //if we have new value for the same shortcut then add it to the array
