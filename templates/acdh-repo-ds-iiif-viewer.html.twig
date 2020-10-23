@@ -25,7 +25,10 @@
             sequenceMode: true,
             navigatorPosition:   "BOTTOM_LEFT",
             showRotationControl: true,
-            tileSources:   ["{{ lorisUrl }}"],
+            tileSources:  {
+                type: 'image',
+                url: '{{ lorisUrl }}'
+            }
         });
     </script>
 {% else %}   

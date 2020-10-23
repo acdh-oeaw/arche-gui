@@ -72,8 +72,11 @@ class DisseminationServicesHelper extends ArcheHelper
     private function getLorisUrl(): string
     {
         $dissServices = $this->generalFunctions->getDissServices($this->repoid);
-        if (isset($dissServices['iiif']) && !empty($dissServices['iiif'])) {
-            return $dissServices['iiif'];
+        
+        foreach($dissServices as $k => $v) {
+            if($k == "IIIF Endpoint" && isset($dissServices[$k]['uri'])) {
+                return $dissServices[$k]['uri'];
+            }
         }
         return '';
     }
