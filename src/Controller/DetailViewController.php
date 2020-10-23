@@ -83,7 +83,8 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
      * set up the breadcrumb data
      * @return void
      */
-    private function setBreadcrumb(): void {
+    private function setBreadcrumb(): void
+    {
         $breadcrumb = $this->model->getBreadCrumbData($this->repoid);
         //add the breadcrumb to the final results
         if (count((array) $breadcrumb) > 0) {
@@ -114,7 +115,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         $this->basicViewData->extra = new \stdClass();
         $this->setBreadcrumb();
         
-        //extend the data object with the shortcuts        
+        //extend the data object with the shortcuts
         $this->basicViewData->basic = $this->helper->createView($dv);
         $this->basicViewData->basic = $this->basicViewData->basic[0];
         
@@ -123,7 +124,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
             $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
 
-        $this->setCiteData();   
+        $this->setCiteData();
         $this->setToolTip();
 
         //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
@@ -139,7 +140,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
      * Set up tooltip data
      * @return void
      */
-    private function setToolTip(): void 
+    private function setToolTip(): void
     {
         //get the tooltip
         $tooltip = array();
@@ -154,7 +155,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
      * Set up cite data
      * @return void
      */
-    private function setCiteData(): void 
+    private function setCiteData(): void
     {
         if (in_array(
             $this->basicViewData->basic->getAcdhType(),
