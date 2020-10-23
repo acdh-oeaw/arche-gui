@@ -995,7 +995,7 @@ LANGUAGE 'plpgsql';
 /**
 ** select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 **/
-DROP FUNCTION gui.search_full_func(text, text[], text, text, text, text, text, text);
+DROP FUNCTION gui.search_full_func(text, text[], text, text, text, text, text, text, bool);
 CREATE FUNCTION gui.search_full_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE )
   RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, cnt bigint, headline text)
 AS $func$
