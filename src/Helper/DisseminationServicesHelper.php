@@ -73,8 +73,8 @@ class DisseminationServicesHelper extends ArcheHelper
     {
         $dissServices = $this->generalFunctions->getDissServices($this->repoid);
         
-        foreach($dissServices as $k => $v) {
-            if($k == "IIIF Endpoint" && isset($dissServices[$k]['uri'])) {
+        foreach ($dissServices as $k => $v) {
+            if ($k == "IIIF Endpoint" && isset($dissServices[$k]['uri'])) {
                 return $dissServices[$k]['uri'];
             }
         }
