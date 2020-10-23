@@ -275,4 +275,14 @@ class GeneralFunctions
             user_login_finalize($user);
         }
     }
+    
+    /**
+     * Return the json decoded string
+     * @param string $json
+     * @return array
+     */
+    public function jsonDecodeData(string $json): array
+    {
+        return (json_decode($json, true)) ? json_decode($json, true) : array();
+    }
 }

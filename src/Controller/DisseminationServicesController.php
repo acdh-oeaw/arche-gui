@@ -24,7 +24,6 @@ class DisseminationServicesController extends ControllerBase
     private $model;
     private $helper;
     private $basicViewData;
-    private $extraViewData;
     private $generalFunctions;
     private $detailViewController;
     
@@ -70,22 +69,26 @@ class DisseminationServicesController extends ControllerBase
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $fileLocation = '';
+        
         //the binary files
-        (json_decode($_POST['jsonData'], true)) ? $binaries = json_decode($_POST['jsonData'], true) : $binaries = array();
+        $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
+        
         if (count($binaries) == 0) {
             $response->setContent(json_encode(""));
             return $response;
         }
+        
         ($_POST['username']) ? $username = $_POST['username'] : $username = '';
         ($_POST['password']) ? $password = $_POST['password'] : $password = '';
        
         $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
+        
         $response->setContent(json_encode($fileLocation));
         return $response;
     }
     
+    
     /**
-     *
      * This generates the jstree data for the collection download view
      *
      * @param string $repoid

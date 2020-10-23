@@ -24,6 +24,9 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     private $repoUrl;
     private $repoid;
     private $generalFunctions;
+    
+    private static $citeAcdhTypes = array("Collection", "Project", "Resource", "Publication", "Metadata");
+    private static $citeAcdhParentTypes = array("Collection", "Project");
 
     public function __construct()
     {
@@ -77,6 +80,19 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     }
     
     /**
+     * set up the breadcrumb data
+     * @return void
+     */
+    private function setBreadcrumb(): void {
+        $breadcrumb = $this->model->getBreadCrumbData($this->repoid);
+        //add the breadcrumb to the final results
+        if (count((array) $breadcrumb) > 0) {
+            $this->basicViewData->extra->breadcrumb = array();
+            $this->basicViewData->extra->breadcrumb = $breadcrumb;
+        }
+    }
+    
+    /**
      * Generate the detail view
      *
      * @param string $identifier
@@ -91,32 +107,58 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         //get the detail view raw data from the database
         $dv = $this->model->getViewData($this->repoUrl);
 
-        $breadcrumb = array();
-        $breadcrumb = $this->model->getBreadCrumbData($this->repoid);
         if (count((array) $dv) == 0) {
             return new \stdClass();
         }
-
-        //extend the data object with the shortcuts
         $this->basicViewData = new \stdClass();
+        $this->basicViewData->extra = new \stdClass();
+        $this->setBreadcrumb();
+        
+        //extend the data object with the shortcuts        
         $this->basicViewData->basic = $this->helper->createView($dv);
         $this->basicViewData->basic = $this->basicViewData->basic[0];
-        $this->basicViewData->extra = new \stdClass();
-
-        //add the breadcrumb to the final results
-        if (count((array) $breadcrumb) > 0) {
-            $this->basicViewData->extra->breadcrumb = array();
-            $this->basicViewData->extra->breadcrumb = $breadcrumb;
-        }
-
+        
         // check the dissemination services
         if (isset($dv[0]->id) && !is_null($dv[0]->id)) {
             $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
 
+        $this->setCiteData();   
+        $this->setToolTip();
+
+        //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
+        $path = \Drupal::request()->getpathInfo();
+        if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
+            $this->basicViewData->extra->childData = $this->getChildData();
+        }
+
+        return $this->basicViewData;
+    }
+    
+    /**
+     * Set up tooltip data
+     * @return void
+     */
+    private function setToolTip(): void 
+    {
+        //get the tooltip
+        $tooltip = array();
+        $tooltip = $this->model->getTooltipOntology();
+        if (count($tooltip) > 0) {
+            $tooltip = $this->helper->formatTooltip($tooltip);
+            $this->basicViewData->extra->tooltip = $tooltip;
+        }
+    }
+    
+    /**
+     * Set up cite data
+     * @return void
+     */
+    private function setCiteData(): void 
+    {
         if (in_array(
             $this->basicViewData->basic->getAcdhType(),
-            array("Collection", "Project", "Resource", "Publication", "Metadata")
+            self::$citeAcdhTypes
         )
         ) {
             //get the cite widget data
@@ -124,7 +166,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
 
             if (in_array(
                 $this->basicViewData->basic->getAcdhType(),
-                array("Collection", "Project")
+                self::$citeAcdhParentTypes
             )
             ) {
                 $this->basicViewData->extra->citeWidgetData = $cite->createCiteWidgetCollectionProject();
@@ -148,26 +190,9 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
                         }
                     }
                 }
-                
                 $this->basicViewData->extra->citeWidgetData = $cite->createCiteWidgetResourceMetadata($tcObj);
             }
         }
-
-        //get the tooltip
-        $tooltip = array();
-        $tooltip = $this->model->getTooltipOntology();
-        if (count($tooltip) > 0) {
-            $tooltip = $this->helper->formatTooltip($tooltip);
-            $this->basicViewData->extra->tooltip = $tooltip;
-        }
-
-        //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
-        $path = \Drupal::request()->getpathInfo();
-        if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
-            $this->basicViewData->extra->childData = $this->getChildData();
-        }
-
-        return $this->basicViewData;
     }
 
     /**
