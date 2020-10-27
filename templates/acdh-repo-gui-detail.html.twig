@@ -56,6 +56,7 @@
     
     <!-- get the views based on the type -->
     <div class="single-res-overview single-res-overview-basic">
+        
         {% if basic.getAcdhType()|lower == 'person'  %}
             {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
         {% elseif basic.getAcdhType()|lower == 'project' %}
@@ -73,11 +74,13 @@
         {% else  %}
            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
         {% endif %}
+        
     </div>
 	
    <!-- EXPERT VIEW BLOCK -->
     {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic, 'extra': extra.tooltip } ) }}
    
+    
     <!-- DISSEMINATION BLOCK -->
     {% if dissemination %}
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
@@ -110,18 +113,7 @@
             basic.getAcdhType()|lower == 'concept' or
             basic.getSkosType()|lower == 'conceptscheme'
     %}
-        <!--
-        <div class="res-actions" style="padding: 20px;">
-            <div class="res-act-button" style="display: table; margin: 0 auto;">
-                <a href="#" id="getRepoChildView" class="getRepoChildView"><i class="fa fa-angle-down" aria-hidden="true"></i> &nbsp;<b>{{ "Show More"|trans }}</b>&nbsp; <i class="fa fa-angle-down" aria-hidden="true"></i></a>
-            </div>
-            <div class="res-act-button hideChildView" style="display: none; margin: 0 auto;">
-                <a href="#" id="hideRepoChildView" class="hideRepoChildView"><i class="fa fa-angle-up" aria-hidden="true"></i> &nbsp;<b>{{ "Hide View"|trans }}</b>&nbsp; <i class="fa fa-angle-up" aria-hidden="true"></i></a>
-            </div>
-        </div>
-            
-        <div id="child-div-content" style="display: none"></div>
-        -->
+   
         <div id="child-div-content">
             {{ extra.childData.getContent()|raw }}
         </div>
