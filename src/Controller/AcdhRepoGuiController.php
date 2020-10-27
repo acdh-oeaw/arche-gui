@@ -105,7 +105,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
             \Drupal::messenger()->addStatus($this->t('You are logged in as ' . $_SERVER['HTTP_EPPN']));
 
             //if we already logged in with shibboleth then login the user with the shibboleth account
-            $this->generalFunctions->handleShibbolethUser();
+            $this->generalFunctions->handleShibbolethUser($_SERVER['HTTP_EPPN'], $_SERVER['HTTP_EMAIL']);
             return $result;
         } else {
             $result = array(

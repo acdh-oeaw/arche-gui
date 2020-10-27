@@ -253,27 +253,80 @@ class GeneralFunctions
      *
      * @return void
      */
-    public function handleShibbolethUser(): void
+    public function handleShibbolethUser(string $eppn = "", string $email = ""): void
     {
-        //the global drupal shibboleth username
-        $shib = user_load_by_name('shibboleth');
+        $userEmail = "";
+        if($this->checkEmail($eppn)) {
+            $shib = user_load_by_mail($eppn);
+            $userEmail = $eppn;
+        } else if($this->checkEmail($email)) {
+            $shib = user_load_by_mail($email);
+            $userEmail = $email;
+        } else {
+             $shib = user_load_by_name('shibboleth');
+        }
+       
         //if we dont have it then we will create it
         if ($shib === false) {
-            $user = \Drupal\user\Entity\User::create();
-            // Mandatory.
-            $user->setPassword($this->repo->getSchema()->__get('drupal')->shibbolethPwd);
-            $user->enforceIsNew();
-            $user->setEmail('sh_guest@acdh.oeaw.ac.at');
-            $user->setUsername('shibboleth');
-            $user->activate();
-            $user->save();
-            $shib = user_load_by_name('shibboleth');
-            user_login_finalize($user);
+            $this->createShibbolethUser($userEmail);
         } elseif ($shib->id() != 0) {
-            $user = \Drupal\User\Entity\User::load($shib->id());
-            $user->activate();
-            user_login_finalize($user);
+            $this->loadTheUserData($shib);
         }
+    }
+    
+   /**
+    * Load the user from the drupal db
+    * @param object $shib
+    * @return void
+    */
+    private function loadTheUserData(object &$shib): void
+    {
+        $user = \Drupal\User\Entity\User::load($shib->id());
+        $user->activate();
+        user_login_finalize($user);
+    }
+    
+    /**
+     * create the shibboleth users drupal user
+     * @param string $email
+     * @return void
+     */
+    private function createShibbolethUser(string $email = ""): void
+    {
+        $user = \Drupal\user\Entity\User::create();
+        // Mandatory.
+        (!empty($email) ? $user->setPassword($this->createShibbiolethUserPwd(9)) : $user->setPassword($this->repo->getSchema()->__get('drupal')->shibbolethPwd));
+        $user->enforceIsNew();
+        (!empty($email) ? $user->setEmail($email) : $user->setEmail('sh_guest@acdh.oeaw.ac.at'));
+        (!empty($email) ? $user->setUsername($email) : $user->setUsername('shibboleth'));
+        $user->activate();
+        $user->save();
+        (!empty($email) ? $shib = user_load_by_name($email) : $shib = user_load_by_name('shibboleth'));        
+        user_login_finalize($user);
+    }
+    
+    /**
+     * check the string for email address
+     * @param string $str
+     * @return bool
+     */
+    private function checkEmail(string $str): bool
+    {
+        if (strpos($str, '@') !== false) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Generate a new custom password for the new shibboleth drupal user
+     * @param int $length
+     * @return string
+     */
+    private function createShibbiolethUserPwd(int $length): string
+    {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return substr(str_shuffle($chars),0,$length);
     }
     
     /**
