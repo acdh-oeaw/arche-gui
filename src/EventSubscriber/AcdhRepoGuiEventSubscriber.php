@@ -32,7 +32,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
     
     public function checkForShibboleth(GetResponseEvent $event)
     {
-        if (($event->getRequest()->getPathInfo() == '/user/logout') && (\Drupal::currentUser()->getUsername() == "shibboleth")) {
+        if (($event->getRequest()->getPathInfo() == '/user/logout') && (\Drupal::currentUser()->getAccountName() == "shibboleth")) {
             unset($_SERVER['HTTP_AUTHORIZATION']);
             unset($_SERVER['HTTP_EPPN']);
             $_SERVER['HTTP_AUTHORIZATION'] = "";

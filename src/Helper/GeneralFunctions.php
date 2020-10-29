@@ -293,15 +293,17 @@ class GeneralFunctions
      */
     private function createShibbolethUser(string $email = ""): void
     {
+        $this->checkShibbolethGroup();
         $user = \Drupal\user\Entity\User::create();
         // Mandatory.
         (!empty($email) ? $user->setPassword($this->createShibbiolethUserPwd(9)) : $user->setPassword($this->repo->getSchema()->__get('drupal')->shibbolethPwd));
         $user->enforceIsNew();
         (!empty($email) ? $user->setEmail($email) : $user->setEmail('sh_guest@acdh.oeaw.ac.at'));
         (!empty($email) ? $user->setUsername($email) : $user->setUsername('shibboleth'));
+        $user->addRole('shibboleth');
         $user->activate();
         $user->save();
-        (!empty($email) ? $shib = user_load_by_name($email) : $shib = user_load_by_name('shibboleth'));        
+        (!empty($email) ? $shib = user_load_by_name($email) : $shib = user_load_by_name('shibboleth'));    
         user_login_finalize($user);
     }
     
@@ -337,5 +339,27 @@ class GeneralFunctions
     public function jsonDecodeData(string $json): array
     {
         return (json_decode($json, true)) ? json_decode($json, true) : array();
+    }
+
+    /**
+     * Check the shibboleth user role exists or not
+     * @return void
+     */
+    private function checkShibbolethGroup(): void 
+    {
+        $roles = \Drupal\user\Entity\Role::loadMultiple();
+        if(!array_key_exists('shibboleth', $roles)) {
+            $this->createShobbolethGroup();
+        }
+    }
+    
+    /**
+     * Create the shibboleth user role
+     * @return void
+     */
+    private function createShobbolethGroup(): void
+    {
+        $role = \Drupal\user\Entity\Role::create(array('id' => 'shibboleth', 'label' => 'Shibboleth'));
+        $role->save(); 
     }
 }
