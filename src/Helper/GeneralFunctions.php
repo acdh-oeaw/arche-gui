@@ -303,7 +303,7 @@ class GeneralFunctions
         $user->addRole('shibboleth');
         $user->activate();
         $user->save();
-        (!empty($email) ? $shib = user_load_by_name($email) : $shib = user_load_by_name('shibboleth'));    
+        (!empty($email) ? $shib = user_load_by_name($email) : $shib = user_load_by_name('shibboleth'));
         user_login_finalize($user);
     }
     
@@ -345,10 +345,10 @@ class GeneralFunctions
      * Check the shibboleth user role exists or not
      * @return void
      */
-    private function checkShibbolethGroup(): void 
+    private function checkShibbolethGroup(): void
     {
         $roles = \Drupal\user\Entity\Role::loadMultiple();
-        if(!array_key_exists('shibboleth', $roles)) {
+        if (!array_key_exists('shibboleth', $roles)) {
             $this->createShobbolethGroup();
         }
     }
@@ -360,6 +360,6 @@ class GeneralFunctions
     private function createShobbolethGroup(): void
     {
         $role = \Drupal\user\Entity\Role::create(array('id' => 'shibboleth', 'label' => 'Shibboleth'));
-        $role->save(); 
+        $role->save();
     }
 }
