@@ -256,14 +256,14 @@ class GeneralFunctions
     public function handleShibbolethUser(string $eppn = "", string $email = ""): void
     {
         $userEmail = "";
-        if($this->checkEmail($eppn)) {
+        if ($this->checkEmail($eppn)) {
             $shib = user_load_by_mail($eppn);
             $userEmail = $eppn;
-        } else if($this->checkEmail($email)) {
+        } elseif ($this->checkEmail($email)) {
             $shib = user_load_by_mail($email);
             $userEmail = $email;
         } else {
-             $shib = user_load_by_name('shibboleth');
+            $shib = user_load_by_name('shibboleth');
         }
        
         //if we dont have it then we will create it
@@ -274,11 +274,11 @@ class GeneralFunctions
         }
     }
     
-   /**
-    * Load the user from the drupal db
-    * @param object $shib
-    * @return void
-    */
+    /**
+     * Load the user from the drupal db
+     * @param object $shib
+     * @return void
+     */
     private function loadTheUserData(object &$shib): void
     {
         $user = \Drupal\User\Entity\User::load($shib->id());
@@ -328,7 +328,7 @@ class GeneralFunctions
     private function createShibbiolethUserPwd(int $length): string
     {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return substr(str_shuffle($chars),0,$length);
+        return substr(str_shuffle($chars), 0, $length);
     }
     
     /**
