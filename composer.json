@@ -16,6 +16,7 @@
         "acdh-oeaw/arche-lib-disserv" : "*",
 	"acdh-oeaw/arche-lib-schema" : "*",
 	"zozlak/logging" : "*",
+        "easyrdf/easyrdf" : "*",
         "twig/extensions": "^1.5"
     },
     "require-dev": {

@@ -37,56 +37,59 @@
 
 <div class="arche-detail-view" >
     <div class="arche-detail-main" id="arche-dv-main">
-        <div class='row'>
-            {% set titleimage = basic.getTitleImage() %}        
-            {% if titleimage %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+        
+        {% set titleimage = basic.getTitleImage() %}        
+        {% if titleimage %}
+            <div class='row'>
+                <div class="res-inside-wrap col-lg-8 ">
+        {% endif%}
+            {% if  basic.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title detail-title-span">
+                        {{  basic.getTitle() }}
+                    </span>
+                </div>
+            {% endif%} 
 
-                {% if  basic.getTitle() %}
-                    <div class="res-property">
-                        <span class="res-title detail-title-span">
-                            {{  basic.getTitle() }}
-                        </span>
-                    </div>
-                {% endif%} 
+            {%  if basic.getData('acdh:hasAlternativeTitle') %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                    {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
+            {% endif%}
 
-                {%  if basic.getData('acdh:hasAlternativeTitle') %}
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                        {'data': basic.getData('acdh:hasAlternativeTitle'), 'icon': "title", 'label': "Alternative Title"} ) }}
+            {% if basic.getAcdhType() %}
+                <div class="res-property">
+                    <i class="material-icons">&#xE54E;</i>
+                    <span class="res-prop-label">{{ "Type"|trans }}:</span> 
+                    <span class="res-prop-value">
+                        <a href="/browser/discover/&type={{ basic.getAcdhType() }}/10">{{ basic.getAcdhType() }}</a>
+                    </span>
+                </div>
+            {% endif%}
+
+            {%  if basic.getNonAcdhIdentifiers() %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
+            {% endif%}
+
+            {% for key, value in properties %}
+                {% if basic.getData(key) %}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
                 {% endif%}
+            {% endfor %}
+            <br/>    
 
-                {% if basic.getAcdhType() %}
-                    <div class="res-property">
-                        <i class="material-icons">&#xE54E;</i>
-                        <span class="res-prop-label">{{ "Type"|trans }}:</span> 
-                        <span class="res-prop-value">
-                            <a href="/browser/discover/&type={{ basic.getAcdhType() }}/10">{{ basic.getAcdhType() }}</a>
-                        </span>
-                    </div>
-                {% endif%}
-
-                {%  if basic.getNonAcdhIdentifiers() %}
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
-                {% endif%}
-
-                {% for key, value in properties %}
-                    {% if basic.getData(key) %}
-                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
-                    {% endif%}
-                {% endfor %}
-                <br/>    
-
-                {% if titleimage %}</div>{% endif%}
+            {% if titleimage %}</div>{% endif%}
 
             {% if titleimage %}	
-                <div class="res-inside-wrap col-lg-4 ">	
-                    <div class="single-res-thumb">
-                        <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
-                            {{ titleimage|raw }}
-                        </a>
+                    <div class="res-inside-wrap col-lg-4 ">	
+                        <div class="single-res-thumb">
+                            <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
+                                {{ titleimage|raw }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             {% endif%}
-        </div>
+    </div>
         
         <div>
             <h3 class="single-res-heading">{{ "Member(s)"|trans }}</h3>
@@ -106,5 +109,4 @@
             </div>    
         </div>          
         <br/>
-    </div>
 </div>    

@@ -272,9 +272,12 @@ class DisseminationServicesHelper extends ArcheHelper
                 $body = "";
                 $body = $request->getBody()->getContents();
                 if (!empty($body)) {
-                    $graph = new \EasyRdf_Graph();
-                    $graph->parse($body);
-                    return $graph->serialise('turtle');
+                    if(class_exists(\EasyRdf_Graph)) {
+                        $graph = new \EasyRdf_Graph();
+                        $graph->parse($body);
+                        return $graph->serialise('turtle');
+                    } 
+                    return '';
                 }
             }
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
@@ -302,7 +305,7 @@ class DisseminationServicesHelper extends ArcheHelper
         $this->collectionDownloadFiles($binaries, $username, $password);
         //3. add the turtle file into the collection
         if ($this->collectionGetTurtle() === false) {
-            \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$url);
+            \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$this->repoUrl);
         }
         //4. tar the files
         //5. remove the downloaded files and leave just the tar file.
@@ -313,7 +316,49 @@ class DisseminationServicesHelper extends ArcheHelper
         return $wwwurl.'/browser/sites/default/files/collections/'.$this->collectionDate.'/collection.tar';
     }
     
-    /**
+    private function createPathForCollectionDownload(string $path): string
+    {
+        $exp = explode("/", $path);
+        $last = end($exp);
+        return str_replace($last, "", $path);
+    }
+    
+    private function createFileNameForCollectionDownload(string $path): string
+    {
+        $exp = explode("/", $path);
+        $last = end($exp);
+        
+        $file = "";
+        if (strpos($last, '.') !== false) {
+            $file = ltrim($last);
+            $file = str_replace(' ', "_", $file);
+        } else {
+            $file = ltrim($fileName);
+            $file = str_replace(' ', "_", $file);
+        }
+        
+        return $file;
+    }
+    
+    private function createCollectionDir(string $path): string
+    {
+        $dir = "";
+                 
+        if (!file_exists($this->collectionTmpDir.$this->collectionDate)) {
+            mkdir($this->collectionTmpDir.$this->collectionDate, 0777);
+            $dir = $this->collectionTmpDir.$this->collectionDate;
+        }
+
+        if (!empty($path)) {
+            $path = preg_replace('/\s+/', '_', $path);
+            mkdir($this->collectionTmpDir.$this->collectionDate.'/'.$path, 0777, true);
+            $dir = $this->collectionTmpDir.$this->collectionDate.'/'.$path;
+        }
+        
+        return $dir;
+    }
+    
+     /**
      * Download the selected binaries
      *
      * @param array $binaries
@@ -328,33 +373,13 @@ class DisseminationServicesHelper extends ArcheHelper
         foreach ($binaries as $b) {
             if (isset($b['path']) && isset($b['filename'])) {
                 $url = $this->repo->getBaseUrl()."/".$b['uri'];
-                $exp = explode("/", $b['path']);
-                $last = end($exp);
-                $filename = "";
-                $path = $b['path'];
-                $dir = "";
-
-                if (strpos($last, '.') !== false) {
-                    $filename = ltrim($last);
-                    $filename = str_replace(' ', "_", $filename);
-                } else {
-                    $filename = ltrim($b['filename']);
-                    $filename = str_replace(' ', "_", $filename);
-                }
-
-                $path = str_replace($last, "", $path);
-
-                if (!file_exists($this->collectionTmpDir.$this->collectionDate)) {
-                    mkdir($this->collectionTmpDir.$this->collectionDate, 0777);
-                    $dir = $this->collectionTmpDir.$this->collectionDate;
-                }
-
-                if ($path) {
-                    $path = preg_replace('/\s+/', '_', $path);
-                    mkdir($this->collectionTmpDir.$this->collectionDate.'/'.$path, 0777, true);
-                    $dir = $this->collectionTmpDir.$this->collectionDate.'/'.$path;
-                }
-
+               
+                $path = $this->createPathForCollectionDownload($b['path']);
+                
+                $filename = $this->createFileNameForCollectionDownload($b['path']);
+             
+                $dir = $this->createCollectionDir($path);
+                
                 try {
                     $resource = fopen($this->collectionTmpDir.$this->collectionDate.'/'.$path.'/'.$filename, 'w');
                     $client->request('GET', $url, ['save_to' => $resource]);
@@ -375,6 +400,7 @@ class DisseminationServicesHelper extends ArcheHelper
             }
         }
     }
+    
     
     /**
      * Get the turtle file and copy it to the collection download directory
@@ -473,8 +499,9 @@ class DisseminationServicesHelper extends ArcheHelper
     {
         $this->collectionDate = date("Ymd_his");
         //the main dir
-        $this->collectionTmpDir = \Drupal::service('file_system')->realpath(file_default_scheme() . "://")."/collections/";
-        
+        error_log(\Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://")."/collections/");
+        $this->collectionTmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://")."/collections/";
+        error_log('itt');
         //if the main directory is not exists
         if (!file_exists($this->collectionTmpDir)) {
             if (!@mkdir($this->collectionTmpDir, 0777)) {
