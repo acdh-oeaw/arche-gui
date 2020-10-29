@@ -277,7 +277,6 @@ class DisseminationServicesHelper extends ArcheHelper
                     }else {
                         $graph = new \EasyRdf\Graph();
                     }
-                    
                     $graph->parse($body);
                     return $graph->serialise('turtle');
                 }
@@ -360,13 +359,13 @@ class DisseminationServicesHelper extends ArcheHelper
         return $dir;
     }
     
-     /**
-     * Download the selected binaries
-     *
-     * @param array $binaries
-     * @param string $username
-     * @param string $password
-     */
+    /**
+    * Download the selected binaries
+    *
+    * @param array $binaries
+    * @param string $username
+    * @param string $password
+    */
     public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '')
     {
         $client = new \GuzzleHttp\Client(['auth' => [$username, $password], 'verify' => false]);
