@@ -272,9 +272,9 @@ class DisseminationServicesHelper extends ArcheHelper
                 $body = "";
                 $body = $request->getBody()->getContents();
                 if (!empty($body)) {
-                    if(class_exists('EasyRdf_Graph')) {
+                    if (class_exists('EasyRdf_Graph')) {
                         $graph = new \EasyRdf_Graph();
-                    }else {
+                    } else {
                         $graph = new \EasyRdf\Graph();
                     }
                     $graph->parse($body);
