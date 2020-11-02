@@ -96,7 +96,7 @@ class SearchViewModel extends ArcheModel
                     ':order_prop' => $this->orderby_column,
                     ':binarySearch' => $this->binarySearch
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -314,7 +314,7 @@ class SearchViewModel extends ArcheModel
                    // ':typeStr' => $typeStr,
                     ':yearStr' => $yearsStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -355,7 +355,7 @@ class SearchViewModel extends ArcheModel
                     ':yearStr' => $yearsStr,
                     ':lang' => $this->siteLang
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -397,7 +397,7 @@ class SearchViewModel extends ArcheModel
                     ':lang' => $this->siteLang,
                     ':yearStr' => $yearsStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -453,7 +453,7 @@ class SearchViewModel extends ArcheModel
                     ':orderby_column' => $this->orderby_column,
                     ':yearStr' => $yearsStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -497,7 +497,7 @@ class SearchViewModel extends ArcheModel
                     ':orderby_column' => $this->orderby_column,
                     ':yearStr' => $yearsStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -544,7 +544,7 @@ class SearchViewModel extends ArcheModel
                     ':orderby_column' => $this->orderby_column,
                     ':yearStr' => $yearsStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);

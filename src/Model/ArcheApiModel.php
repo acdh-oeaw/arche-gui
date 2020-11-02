@@ -83,7 +83,7 @@ class ArcheApiModel extends ArcheModel
                     ':type' => $this->properties->type,
                     ':searchStr' => $this->properties->searchStr
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
