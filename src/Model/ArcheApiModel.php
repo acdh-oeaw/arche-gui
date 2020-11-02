@@ -79,8 +79,11 @@ class ArcheApiModel extends ArcheModel
             $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
                 "SELECT * from gui.apiGetData(:type, :searchStr)",
-                array(':type' => $this->properties->type,
-                        ':searchStr' => $this->properties->searchStr)
+                array(
+                    ':type' => $this->properties->type,
+                    ':searchStr' => $this->properties->searchStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);

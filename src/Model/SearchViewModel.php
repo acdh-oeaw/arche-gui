@@ -95,7 +95,8 @@ class SearchViewModel extends ArcheModel
                     ':order' => $this->orderby,
                     ':order_prop' => $this->orderby_column,
                     ':binarySearch' => $this->binarySearch
-               )
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -308,11 +309,12 @@ class SearchViewModel extends ArcheModel
                 id
                 from gui.search_count_words_view_func(:wordStr, :lang, ".$typeStr.", :yearStr)",
                 array(
-                        ':wordStr' => $wordStr,
-                        ':lang' => $this->siteLang,
-                       // ':typeStr' => $typeStr,
-                        ':yearStr' => $yearsStr
-                    )
+                    ':wordStr' => $wordStr,
+                    ':lang' => $this->siteLang,
+                   // ':typeStr' => $typeStr,
+                    ':yearStr' => $yearsStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -350,9 +352,10 @@ class SearchViewModel extends ArcheModel
                 id
                 from gui.search_count_years_view_func(:yearStr, :lang, ".$typeStr.")",
                 array(
-                        ':yearStr' => $yearsStr,
-                        ':lang' => $this->siteLang
-                    )
+                    ':yearStr' => $yearsStr,
+                    ':lang' => $this->siteLang
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -391,9 +394,10 @@ class SearchViewModel extends ArcheModel
                 id
                 from gui.search_count_types_view_func(".$typeStr.", :lang,  :yearStr)",
                 array(
-                        ':lang' => $this->siteLang,
-                        ':yearStr' => $yearsStr
-                    )
+                    ':lang' => $this->siteLang,
+                    ':yearStr' => $yearsStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             $return = $query->fetch();
             $this->changeBackDBConnection();
@@ -441,14 +445,15 @@ class SearchViewModel extends ArcheModel
                 :wordStr, :lang, :limit, :offset, 
                 :orderby, :orderby_column, ".$typeStr.", :yearStr)",
                 array(
-                        ':wordStr' => $wordStr,
-                        ':lang' => $this->siteLang,
-                        ':limit' => $this->limit,
-                        ':offset' => $this->offset,
-                        ':orderby' => $this->orderby,
-                        ':orderby_column' => $this->orderby_column,
-                        ':yearStr' => $yearsStr
-                    )
+                    ':wordStr' => $wordStr,
+                    ':lang' => $this->siteLang,
+                    ':limit' => $this->limit,
+                    ':offset' => $this->offset,
+                    ':orderby' => $this->orderby,
+                    ':orderby_column' => $this->orderby_column,
+                    ':yearStr' => $yearsStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -485,13 +490,14 @@ class SearchViewModel extends ArcheModel
                 ".$typeStr.", :lang, :limit, :offset, 
                 :orderby, :orderby_column, :yearStr)",
                 array(
-                        ':lang' => $this->siteLang,
-                        ':limit' => $this->limit,
-                        ':offset' => $this->offset,
-                        ':orderby' => $this->orderby,
-                        ':orderby_column' => $this->orderby_column,
-                        ':yearStr' => $yearsStr
-                    )
+                    ':lang' => $this->siteLang,
+                    ':limit' => $this->limit,
+                    ':offset' => $this->offset,
+                    ':orderby' => $this->orderby,
+                    ':orderby_column' => $this->orderby_column,
+                    ':yearStr' => $yearsStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
@@ -531,13 +537,14 @@ class SearchViewModel extends ArcheModel
                 :yearStr, :lang, :limit, :offset, 
                 :orderby, :orderby_column, ".$typeStr.")",
                 array(
-                        ':lang' => $this->siteLang,
-                        ':limit' => $this->limit,
-                        ':offset' => $this->offset,
-                        ':orderby' => $this->orderby,
-                        ':orderby_column' => $this->orderby_column,
-                        ':yearStr' => $yearsStr
-                    )
+                    ':lang' => $this->siteLang,
+                    ':limit' => $this->limit,
+                    ':offset' => $this->offset,
+                    ':orderby' => $this->orderby,
+                    ':orderby_column' => $this->orderby_column,
+                    ':yearStr' => $yearsStr
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);

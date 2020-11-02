@@ -63,7 +63,8 @@ class ChildApiModel extends ArcheModel
                     ':order' => $order->order,
                     ':orderprop' => $order->property,
                     ':lang' => $this->siteLang
-                )
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
@@ -129,7 +130,8 @@ class ChildApiModel extends ArcheModel
                 "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
                 array(
                     ':id' => $identifier
-                )
+                ),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             $result = $query->fetch();
             
@@ -160,7 +162,8 @@ class ChildApiModel extends ArcheModel
             $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
                 "select value from metadata_view where id = :id and property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
-                array(':id' => $repoid)
+                array(':id' => $repoid),
+                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
             );
             
             $result = $query->fetch();
