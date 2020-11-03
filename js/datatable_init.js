@@ -30,84 +30,83 @@ jq2(function( $ ) {
     }
 
     var accessRestriction = jq2('#accessRestriction').val();
+    
+    if((accessRestriction) && (accessRestriction.indexOf('public') == -1) && (jq2('#userLoggedIn').val() == "no") ){
+        
+        jq2( ".dissServAhref" ).click(function(e) {
 
-    if(accessRestriction){
-        if(accessRestriction.indexOf('public') == -1){
-            jq2( ".dissServAhref" ).click(function(e) {
+            let urlValue = jq2(this).attr("href");
+            let webUrl = window.location.origin + '/browser/';
 
-                let urlValue = jq2(this).attr("href");
-                let webUrl = window.location.origin + '/browser/';
+            if(urlValue.indexOf(webUrl) > -1) {
+                window.location.replace(urlValue);
+            }
+            var xhr = new XMLHttpRequest();
+            let basic_auth = $("input#basic_auth").val();
 
-                if(urlValue.indexOf(webUrl) > -1) {
-                    window.location.replace(urlValue);
-                }
-                var xhr = new XMLHttpRequest();
-                let basic_auth = $("input#basic_auth").val();
+            if(basic_auth){
+                $.ajax
+                ({
+                    type: "GET",
+                    url: urlValue,                            
+                    xhr: function() {
+                        return xhr;
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader ("Authorization", basic_auth);
+                    },
+                    success: function (){
+                        if(xhr.responseURL) {
+                            window.location.replace(xhr.responseURL);
+                        }else{
+                            jq2( "#shibboleth_login_info" ).show().html(Drupal.t('Login error'));
+                        }
+                    },
+                    error( xhr,status,error) {
+                        jq2( "#shibboleth_login_info" ).show().html(Drupal.t('Login error:' + error));
+                    }
+                });
+                return false;
+            }
 
-                if(basic_auth){
+            showpopup();
+
+            jq2( "#dologin" ).click(function(ed) {
+                var username = $("input#username").val();
+                var password = $("input#password").val();
+
+                if( username && password) {
+                    ed.preventDefault();
+
                     $.ajax
                     ({
                         type: "GET",
-                        url: urlValue,                            
+                        url: urlValue,
+                        username: username,
+                        password: password,
                         xhr: function() {
                             return xhr;
                         },
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader ("Authorization", basic_auth);
-                        },
                         success: function (){
                             if(xhr.responseURL) {
+                                hidepopup();
                                 window.location.replace(xhr.responseURL);
                             }else{
-                                jq2( "#shibboleth_login_info" ).show().html(Drupal.t('Login error'));
+                                jq2( "#loginErrorDiv" ).html(Drupal.t('Login error'));
                             }
                         },
                         error( xhr,status,error) {
-                            jq2( "#shibboleth_login_info" ).show().html(Drupal.t('Login error:' + error));
+                            jq2( "#loginErrorDiv" ).html(Drupal.t('Login error'));
                         }
                     });
-                    return false;
+                }else{
+                    jq2( "#loginErrorDiv" ).html(Drupal.t('Please provide your login credentials'));
                 }
 
-                showpopup();
-
-                jq2( "#dologin" ).click(function(ed) {
-                    var username = $("input#username").val();
-                    var password = $("input#password").val();
-
-                    if( username && password) {
-                        ed.preventDefault();
-
-                        $.ajax
-                        ({
-                            type: "GET",
-                            url: urlValue,
-                            username: username,
-                            password: password,
-                            xhr: function() {
-                                return xhr;
-                            },
-                            success: function (){
-                                if(xhr.responseURL) {
-                                    hidepopup();
-                                    window.location.replace(xhr.responseURL);
-                                }else{
-                                    jq2( "#loginErrorDiv" ).html(Drupal.t('Login error'));
-                                }
-                            },
-                            error( xhr,status,error) {
-                                jq2( "#loginErrorDiv" ).html(Drupal.t('Login error'));
-                            }
-                        });
-                    }else{
-                        jq2( "#loginErrorDiv" ).html(Drupal.t('Please provide your login credentials'));
-                    }
-
-                    ed.preventDefault();
-                });  
-                e.preventDefault();
+                ed.preventDefault();
             });  
-        }
+            e.preventDefault();
+        });  
     }
 
     /** check the restriction for the dissemination services END */

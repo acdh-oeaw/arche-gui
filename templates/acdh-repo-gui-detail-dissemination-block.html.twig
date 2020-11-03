@@ -1,9 +1,22 @@
+{% set accesResVal = 'public' %}
+{%  if accessRestriction  is iterable %}
+    {% for key,value in accessRestriction if not break %}
+        {% set accesResVal = value|replace({'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/': ''}) %}
+    {% endfor%}
+{% endif%} 
+
 <div class="arche-detail-dissemination" id="arche-dv-dissemination">
+
     {% if result %}
-        
         <div class="res-property">
             <i class="material-icons">&#xE89F;</i>
             {% for key, value in result %}
+                
+                {%  if (logged_in is empty)  %}
+                    <input type="hidden" id="accessRestriction" value="{{ accesResVal }}" >
+                    <input type="hidden" id="userLoggedIn" value="no" >
+                {% endif %} 
+                
                 <div class="res-act-button">
                     <a href="{{ value.uri }}" title="{{ value.description }}" class="dissServAhref" >
                         <span>{{ value.title|trans }}</span>
