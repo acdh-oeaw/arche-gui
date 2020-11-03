@@ -64,7 +64,7 @@ class ChildApiModel extends ArcheModel
                     ':orderprop' => $order->property,
                     ':lang' => $this->siteLang
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
@@ -131,7 +131,7 @@ class ChildApiModel extends ArcheModel
                 array(
                     ':id' => $identifier
                 ),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $result = $query->fetch();
             
@@ -163,7 +163,7 @@ class ChildApiModel extends ArcheModel
             $query = $this->repodb->query(
                 "select value from metadata_view where id = :id and property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
                 array(':id' => $repoid),
-                ['allow_delimiter_in_query' => TRUE, 'allow_square_brackets' => TRUE]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             
             $result = $query->fetch();
