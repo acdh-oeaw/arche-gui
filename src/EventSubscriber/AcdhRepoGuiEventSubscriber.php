@@ -32,22 +32,26 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
     
     public function checkForShibboleth(GetResponseEvent $event)
     {
-        if (($event->getRequest()->getPathInfo() == '/user/logout') && (\Drupal::currentUser()->getAccountName() == "shibboleth")) {
-            unset($_SERVER['HTTP_AUTHORIZATION']);
-            unset($_SERVER['HTTP_EPPN']);
-            $_SERVER['HTTP_AUTHORIZATION'] = "";
-            $_SERVER['HTTP_EPPN'] = "";
-            foreach (headers_list() as $header) {
-                header_remove($header);
-            }
-            $host = \Drupal::request()->getSchemeAndHttpHost();
-            $userid = \Drupal::currentUser()->id();
-            \Drupal::service('session_manager')->delete($userid);
-            $event->setResponse(new TrustedRedirectResponse($host."/Shibboleth.sso/Logout?return=".$host."/browser/"));
-        }
-
+        global $user;
+         
+        $this->logoutShibbolethUserManually($event);
+        
+        $this->loginShibbolethUser($event);
+        
+        $this->logOutShibbolethUser();
+        
+    }
+    
+    /**
+     * login the shibboleth user 
+     * 
+     * @param GetResponseEvent $event
+     * @return TrustedRedirectResponse
+     */
+    private function loginShibbolethUser(GetResponseEvent &$event)
+    {
         if ($event->getRequest()->getPathInfo() == '/federated_login') {
-            global $user;
+           
             //the actual user id, if the user is logged in
             $userid = \Drupal::currentUser()->id();
             //if it is a shibboleth login and there is no user logged in
@@ -64,6 +68,58 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * If the user clicks the logout button
+     * @param GetResponseEvent $event
+     * @return void
+     */
+    private function logoutShibbolethUserManually(GetResponseEvent &$event): void
+    {
+        if (($event->getRequest()->getPathInfo() == '/user/logout') && $this->checkUserShibbolethRole()) {
+            unset($_SERVER['HTTP_AUTHORIZATION']);
+            unset($_SERVER['HTTP_EPPN']);
+            $_SERVER['HTTP_AUTHORIZATION'] = "";
+            $_SERVER['HTTP_EPPN'] = "";
+            foreach (headers_list() as $header) {
+                header_remove($header);
+            }
+            $host = \Drupal::request()->getSchemeAndHttpHost();
+            \Drupal::service('session_manager')->delete(\Drupal::currentUser()->id());
+            $event->setResponse(new TrustedRedirectResponse($host."/Shibboleth.sso/Logout?return=".$host."/browser/"));
+        }
+    }
+    
+    /**
+     * Check the user shibboleth role
+     * @return bool
+     */
+    private function checkUserShibbolethRole(): bool
+    {
+        if(\Drupal::currentUser()->isAuthenticated() && count(\Drupal::currentUser()->getRoles()) > 0) {
+            foreach (\Drupal::currentUser()->getRoles() as $v) {
+                if (strpos(strtolower($v), 'shibboleth') !== false) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * logout the shibboleth user if we dont have a HTTP_EPPN value
+     * @return void
+     */
+    private function logOutShibbolethUser(): void
+    {
+        //check the logged in user role, if the eppn is null then logout
+        if(\Drupal::currentUser()->isAuthenticated() 
+            && (!isset($_SERVER['HTTP_EPPN'])
+            || (isset($_SERVER['HTTP_EPPN']) &&  $_SERVER['HTTP_EPPN']!= "(null)"))) {
+            if($this->checkUserShibbolethRole()) {
+               \Drupal::service('session_manager')->delete(\Drupal::currentUser()->id()); 
+            }
+        }
+    }
 
     /**
      * This is the event handler main method
