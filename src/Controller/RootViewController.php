@@ -52,7 +52,6 @@ class RootViewController extends ControllerBase
        
         $numPage = ceil((int)$this->numberOfRoots / (int)$limit);
         
-        $pagination = '';
         $pagination = $this->pagingHelper->createView(
             array(
                 'limit' => $limit, 'page' => $page, 'order' => $order,

@@ -24,7 +24,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     private $repoUrl;
     private $repoid;
     private $generalFunctions;
-    
+        
     private static $citeAcdhTypes = array("Collection", "Project", "Resource", "Publication", "Metadata");
     private static $citeAcdhParentTypes = array("Collection", "Project");
 
@@ -37,6 +37,23 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         $this->generalFunctions = new GF();
     }
     
+    private function checkAjaxRequestIsOn(string $identifier): bool
+    {
+        if (strpos($identifier, '&ajax') !== false) {
+            $ajax = true;
+        }
+        return false;
+    }
+    
+    private function getIdentifierFromAjax(string $identifier): string 
+    {
+        if (strpos($identifier, '&ajax') !== false) {
+            $identifier = explode('&', $identifier);
+            return $identifier[0];
+        }
+        return '';
+    }
+    
     /**
      * the detail view
      *
@@ -45,17 +62,16 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
      */
     public function detailViewMainMethod(string $identifier)
     {
-        $ajax = false;
+        $ajax = $this->checkAjaxRequestIsOn($identifier);
         
-        if (strpos($identifier, '&ajax') !== false) {
-            $identifier = explode('&', $identifier);
-            $identifier = $identifier[0];
-            $ajax = true;
+        if($ajax) {
+            $identifier = $this->getIdentifierFromAjax($identifier);
         }
         
         $dv = array();
         $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
         $dv = $this->generateDetailView($identifier);
+        
         if (count((array)$dv) < 1) {
             \Drupal::messenger()->addWarning(t('You do not have data'));
             return array();
@@ -105,6 +121,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         //remove the url from the identifier just to have the repoid
         $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
         $dv = array();
+        
         //get the detail view raw data from the database
         $dv = $this->model->getViewData($this->repoUrl);
 

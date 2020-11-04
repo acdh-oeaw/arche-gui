@@ -41,6 +41,13 @@ class DisseminationServicesController extends ControllerBase
         $this->detailViewController = new DVC($this->repo);
     }
     
+    /**
+     * 
+     * @param string $identifier
+     * @param string $dissemination
+     * @param array $additionalData
+     * @return array
+     */
     public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array
     {
         if (empty($identifier) || !in_array($dissemination, $this->disseminations)) {
@@ -54,8 +61,7 @@ class DisseminationServicesController extends ControllerBase
             }
         }
         
-        $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
-        return $this->basicViewData;
+        return $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
     }
     
     /**
@@ -68,7 +74,6 @@ class DisseminationServicesController extends ControllerBase
         $GLOBALS['resTmpDir'] = "";
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $fileLocation = '';
         
         //the binary files
         $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
@@ -105,10 +110,8 @@ class DisseminationServicesController extends ControllerBase
             //get the root collection data
             $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
             $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
-            if (count((array)$repoBaseObj) > 0) {
-                if ($repoBaseObj->getTitle() !== null) {
-                    $rootTitle = $repoBaseObj->getTitle();
-                }
+            if ((count((array)$repoBaseObj) > 0) && ($repoBaseObj->getTitle() !== null)) {
+                $rootTitle = $repoBaseObj->getTitle();
             }
             
             $result = $this->generateView($repoid, 'collection', array('title' => $rootTitle));
@@ -178,11 +181,9 @@ class DisseminationServicesController extends ControllerBase
     public function repo_iiif_viewer(string $repoid) : array
     {
         //RepoResource->getDissServ()['rawIIIf']->getUrl() -> when it is ready
-        $basic = array();
         $lorisUrl = '';
         
         $repoUrl = $this->repo->getBaseUrl().$repoid;
-        $result = array();
         $result = $this->generateView($repoid, 'iiif');
         if (isset($result['lorisUrl']) && !empty($result['lorisUrl'])) {
             $lorisUrl = $result['lorisUrl'];

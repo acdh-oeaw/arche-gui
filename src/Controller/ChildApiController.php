@@ -4,7 +4,6 @@ namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
 use Drupal\acdh_repo_gui\Model\ChildApiModel;
 use Drupal\acdh_repo_gui\Helper\ChildApiHelper;
 use Drupal\acdh_repo_gui\Helper\PagingHelper;
@@ -31,6 +30,7 @@ class ChildApiController extends ControllerBase
     private $pagingHelper;
     private $repo;
     private $repoid;
+    private $identifier;
     
     public function __construct()
     {
@@ -52,39 +52,16 @@ class ChildApiController extends ControllerBase
      */
     public function generateView(string $identifier, string $limit, string $page, string $order): Response
     {
-        if (preg_match("/^\d+$/", $identifier)) {
-            $this->repoid = $identifier;
-            $identifier = $this->repo->getBaseUrl().$identifier;
-        } elseif (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
-            $this->repoid = $identifier;
-        }
-       
+        $this->setupIdentifier($identifier);
         $this->model->getPropertiesByClass($this->repoid);
-        $this->childNum = $this->model->getCount($identifier);
+        $this->childNum = $this->model->getCount($this->identifier);
         
-        if ($this->childNum < 1) {
-            goto end;
-        }
+        if ($this->childNum < 1) { goto end;}
         
-        $this->data->sum = $this->childNum;
+        $this->setupPagingVariables($limit, $page, $order);
         $this->data->acdhType = strtolower(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $this->model->getAcdhtype()));
-        $this->data->limit = $limit;
-        $this->data->page = $page;
-        $this->data->order = $order;
-        $this->data->identifier = $identifier;
-        $this->data->numPage = ceil((int)$this->childNum / (int)$limit);
-        //change the page and offset variables, because we want the paging to start from 1 not 0
-        ($page == 0) ? $page = 1 : "";
-        ($page == 1) ? $offset = 0 : $offset = ($page -1) * $limit;
         
-        $this->data->pagination = $this->pagingHelper->createView(
-            array(
-                'limit' => $limit, 'page' => $page, 'order' => $order,
-                'numPage' => $this->data->numPage, 'sum' => $this->data->sum
-            )
-        );
-        $this->data->pagination = $this->data->pagination[0];
-        $data = $this->model->getViewData($identifier, (int)$limit, (int)$offset, $order);
+        $data = $this->model->getViewData($this->identifier, (int)$this->data->limit, (int)$this->data->offset, $this->data->order);
         
         $this->data->data = $this->helper->createView($data);
         
@@ -101,5 +78,52 @@ class ChildApiController extends ControllerBase
         ];
         
         return new Response(render($build));
+    }
+    
+    /**
+     * setup the variables for the paging
+     * @param string $limit
+     * @param string $page
+     * @param string $order
+     * @return void
+     */
+    private function setupPagingVariables(string $limit, string $page, string $order): void {
+        $this->data->sum = $this->childNum;
+        $this->data->limit = $limit;
+        $this->data->page = $page;
+        $this->data->order = $order;
+        $this->data->numPage = ceil((int)$this->childNum / (int)$limit);
+        
+        //change the page and offset variables, because we want the paging to start from 1 not 0
+        ($page == 0) ? $page = 1 : "";
+        ($page == 1) ? $offset = 0 : $offset = ($page -1) * $limit;
+        
+        $this->data->offset = $offset;
+         
+        $this->data->pagination = $this->pagingHelper->createView(
+            array(
+                'limit' => $limit, 'page' => $page, 'order' => $order,
+                'numPage' => $this->data->numPage, 'sum' => $this->data->sum
+            )
+        );
+        $this->data->pagination = $this->data->pagination[0];
+    }
+    
+    /**
+     * create the identifiers
+     * @param string $identifier
+     * @return void
+     */
+    private function setupIdentifier(string $identifier): void
+    {
+        if (preg_match("/^\d+$/", $identifier)) {
+            $this->repoid = $identifier;
+            $this->identifier = $this->repo->getBaseUrl().$identifier;
+        } elseif (strpos($identifier, $this->repo->getSchema()->__get('drupal')->uuidNamespace) === false) {
+            $this->repoid = $identifier;
+            $this->identifier = $identifier;
+        }
+        $this->data->identifier = $this->identifier;
+        
     }
 }

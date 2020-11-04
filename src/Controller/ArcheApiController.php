@@ -37,6 +37,16 @@ class ArcheApiController extends ControllerBase
         $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
     }
     
+    
+    private function createDbHelperObject(array $args): object
+    {
+        $obj = new \stdClass();
+        foreach($args as $k => $v) {
+            $obj->$k = $v;
+        }
+        return $obj;
+    }
+    
     /**
      * Get the Persons data for the Metadata Editor
      * @param string $searchStr
@@ -55,9 +65,7 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
         
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Person';
-        $obj->searchStr = strtolower($searchStr);
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#Person', 'searchStr' => strtolower($searchStr)));
         //get the data
         $this->modelData = $this->model->getViewData('persons', $obj);
         
@@ -88,10 +96,8 @@ class ArcheApiController extends ControllerBase
         if (empty($searchStr)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#Place', 'searchStr' => strtolower($searchStr)));
         
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Place';
-        $obj->searchStr = strtolower($searchStr);
         //get the data
         $this->modelData = $this->model->getViewData('places', $obj);
         
@@ -122,10 +128,8 @@ class ArcheApiController extends ControllerBase
         if (empty($searchStr)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#Publication', 'searchStr' => strtolower($searchStr)));
         
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Publication';
-        $obj->searchStr = strtolower($searchStr);
         //get the data
         $this->modelData = $this->model->getViewData('publications', $obj);
         
@@ -157,10 +161,8 @@ class ArcheApiController extends ControllerBase
         if (empty($searchStr)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#Concept', 'searchStr' => strtolower($searchStr)));
         
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Concept';
-        $obj->searchStr = strtolower($searchStr);
         //get the data
         $this->modelData = $this->model->getViewData('concepts', $obj);
         
@@ -192,10 +194,8 @@ class ArcheApiController extends ControllerBase
         if (empty($searchStr)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
-        
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#Organisation';
-        $obj->searchStr = strtolower($searchStr);
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#Organisation', 'searchStr' => strtolower($searchStr)));
+
         //get the data
         $this->modelData = $this->model->getViewData('organisations', $obj);
         
@@ -227,10 +227,8 @@ class ArcheApiController extends ControllerBase
         if (empty($searchStr) && empty($type)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
-        
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#'.ucfirst($type);
-        $obj->searchStr = strtolower($searchStr);
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#'.ucfirst($type), 'searchStr' => strtolower($searchStr)));
+
         //get the data
         $this->modelData = $this->model->getViewData('getData', $obj);
         
@@ -262,10 +260,7 @@ class ArcheApiController extends ControllerBase
         if (empty($lng) && empty($type)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
-        
-        $obj = new \stdClass();
-        $obj->type = 'https://vocabs.acdh.oeaw.ac.at/schema#'.ucfirst($type);
-        $obj->baseUrl = $this->repo->getBaseUrl();
+        $obj = $this->createDbHelperObject(array('type' => 'https://vocabs.acdh.oeaw.ac.at/schema#'.ucfirst($type), 'baseUrl' => $this->repo->getBaseUrl()));
         //get the data
         $this->modelData = $this->model->getViewData('metadata', $obj);
         
@@ -290,6 +285,8 @@ class ArcheApiController extends ControllerBase
         $obj = new \stdClass();
         $obj->baseUrl = $this->repo->getBaseUrl();
         $obj->language = $lng;
+        $obj = $this->createDbHelperObject(array('language' => $lng, 'baseUrl' => $this->repo->getBaseUrl()));
+        
         //get the data
         $this->modelData = $this->model->getViewData('metadataGui', $obj);
         
@@ -320,9 +317,7 @@ class ArcheApiController extends ControllerBase
         
         $response = new Response();
         
-        $obj = new \stdClass();
-        $obj->baseUrl = $this->repo->getBaseUrl();
-        $obj->language = $lng;
+        $obj = $this->createDbHelperObject(array('language' => $lng, 'baseUrl' => $this->repo->getBaseUrl()));
         //get the data
         $this->modelData = $this->model->getViewData('metadataGui', $obj);
         
@@ -350,9 +345,8 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type'=> 'application/json']);
         }
         $response = new Response();
-        $obj = new \stdClass();
-        $obj->repoid = $repoid;
-        $obj->baseUrl = $this->repo->getBaseUrl();
+      
+        $obj = $this->createDbHelperObject(array('repoid' => $repoid, 'baseUrl' => $this->repo->getBaseUrl()));
         //get the data
         $this->modelData = $this->model->getViewData('inverse', $obj);
         
@@ -386,8 +380,7 @@ class ArcheApiController extends ControllerBase
             return new JsonResponse(array("Please provide a repoid"), 404, ['Content-Type'=> 'application/json']);
         }
         
-        $obj = new \stdClass();
-        $obj->repoid = (int)$repoid;
+        $obj = $this->createDbHelperObject(array('repoid' => $repoid));
         //get the data
         $this->modelData = $this->model->getViewData('checkIdentifier', $obj);
         if (count($this->modelData) == 0) {
@@ -476,9 +469,8 @@ class ArcheApiController extends ControllerBase
         */
         
         $response = new Response();
-        $obj = new \stdClass();
-        $obj->repoid = $repoid;
-        $obj->lang = $this->siteLang;
+        $obj = $this->createDbHelperObject(array('repoid' => $repoid, 'lang' => $this->siteLang));
+       
         //get the data
         $this->modelData = $this->model->getViewData('getMembers', $obj);
         
@@ -508,9 +500,8 @@ class ArcheApiController extends ControllerBase
         */
         
         $response = new Response();
-        $obj = new \stdClass();
-        $obj->repoid = $repoid;
-        $obj->lang = $lng;
+        $obj = $this->createDbHelperObject(array('repoid' => $repoid, 'lang' => $lng));
+       
         //get the data
         $this->modelData = $this->model->getViewData('getRPR', $obj);
         
@@ -539,16 +530,14 @@ class ArcheApiController extends ControllerBase
         *  https://domain.com/browser/api/getRootTable/en?_format=json
         */
         
-        
         $response = new Response();
-        $obj = new \stdClass();
-        $obj->baseUrl = $this->repo->getBaseUrl();
-        $obj->language = $lng;
+        $obj = $this->createDbHelperObject(array('baseUrl' => $this->repo->getBaseUrl(), 'language' => $lng));
+       
         //get the data
         $this->modelData = $this->model->getViewData('rootTable', $obj);
         
         if (count($this->modelData) == 0) {
-            $response->setContent('No data!1');
+            $response->setContent('No data!');
             $response->setStatusCode(200);
         }
         

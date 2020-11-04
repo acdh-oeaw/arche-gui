@@ -17,6 +17,11 @@ class PagingHelper
 {
     private $data;
     
+    /**
+     * Create Pagination view
+     * @param array $data
+     * @return array
+     */
     public function createView(array $data = array()): array
     {
         $this->data = new \stdClass();
