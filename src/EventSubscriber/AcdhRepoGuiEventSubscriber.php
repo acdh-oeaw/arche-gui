@@ -39,12 +39,11 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
         $this->loginShibbolethUser($event);
         
         $this->logOutShibbolethUser();
-        
     }
     
     /**
-     * login the shibboleth user 
-     * 
+     * login the shibboleth user
+     *
      * @param GetResponseEvent $event
      * @return TrustedRedirectResponse
      */
@@ -95,7 +94,7 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
      */
     private function checkUserShibbolethRole(): bool
     {
-        if(\Drupal::currentUser()->isAuthenticated() && count(\Drupal::currentUser()->getRoles()) > 0) {
+        if (\Drupal::currentUser()->isAuthenticated() && count(\Drupal::currentUser()->getRoles()) > 0) {
             foreach (\Drupal::currentUser()->getRoles() as $v) {
                 if (strpos(strtolower($v), 'shibboleth') !== false) {
                     return true;
@@ -112,11 +111,11 @@ class AcdhRepoGuiEventSubscriber implements EventSubscriberInterface
     private function logOutShibbolethUser(): void
     {
         //check the logged in user role, if the eppn is null then logout
-        if(\Drupal::currentUser()->isAuthenticated() 
+        if (\Drupal::currentUser()->isAuthenticated()
             && (!isset($_SERVER['HTTP_EPPN'])
             || (isset($_SERVER['HTTP_EPPN']) &&  $_SERVER['HTTP_EPPN']!= "(null)"))) {
-            if($this->checkUserShibbolethRole()) {
-               \Drupal::service('session_manager')->delete(\Drupal::currentUser()->id()); 
+            if ($this->checkUserShibbolethRole()) {
+                \Drupal::service('session_manager')->delete(\Drupal::currentUser()->id());
             }
         }
     }
