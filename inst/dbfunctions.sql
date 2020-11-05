@@ -1136,7 +1136,7 @@ END CASE;
 CASE 
     WHEN (_acdhyears <> '') IS TRUE THEN
         RAISE NOTICE USING MESSAGE =  'we have years';
-        if (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'TYPE_DATA')) then
+        if (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE lower(table_name) = 'type_data')) then
             RAISE NOTICE USING MESSAGE =  'we have type table  - years';
             DROP TABLE IF EXISTS years_data;
             CREATE TEMPORARY TABLE years_data AS (
@@ -1151,12 +1151,12 @@ CASE
                     WHERE
                     (
                         (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-                        fts.raw similar to  _acdhyears )
+						 TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to  _acdhyears )
                     )	
                 ) select * from years_data_r
             );	
         elseif ( (_searchstr <> '') IS TRUE  and _searchstr != '*' and
-		 (select exists( select * from title_data) IS TRUE) ) then	
+		 (select exists( SELECT 1 FROM information_schema.tables WHERE lower(table_name) = 'title_data')) ) then	
             RAISE NOTICE USING MESSAGE =  'we have title table - years';
             DROP TABLE IF EXISTS years_data;
             CREATE TEMPORARY TABLE years_data AS (
@@ -1171,10 +1171,28 @@ CASE
                     WHERE
                     (
                         (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-                        fts.raw similar to  _acdhyears )
+                       TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to  _acdhyears )
                     )	
                 ) select * from years_data_r
-            );	
+            );
+		ELSE
+			RAISE NOTICE USING MESSAGE =  'we have just years';
+            DROP TABLE IF EXISTS years_data;
+            CREATE TEMPORARY TABLE years_data AS (
+                WITH years_data_r as (
+                    SELECT 
+                        DISTINCT(fts.id),
+                        fts.property,
+                        fts.raw,
+                        '' as headline
+                    FROM full_text_search as fts 
+                    WHERE
+                    (
+                        (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                        TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to  _acdhyears )
+                    )	limit 10000
+                ) select * from years_data_r
+            );
         END IF;
     WHEN (_acdhyears <> '') IS NOT TRUE THEN
         RAISE NOTICE USING MESSAGE =  'we DONT have years';
@@ -1191,7 +1209,7 @@ CREATE TEMPORARY TABLE accessres AS (
 );
 
 if (
-SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'YEARS_DATA')) then
+SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE lower(table_name) = 'years_data')) then
     RAISE NOTICE USING MESSAGE =  'final years';
     DROP TABLE IF EXISTS final_data;
     CREATE TEMPORARY TABLE final_data AS (
@@ -1201,28 +1219,29 @@ SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) =
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
                 ) as title,
                 yd.raw as avdate,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
                     (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
                 ) as description,
-                (CASE WHEN 
-                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
-                THEN
-                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
-                ELSE
-                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
-                END) as accessres,
+                COALESCE(
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1),	
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1),
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang3 limit 1),
+					(select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = yd.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' limit 1)
+                ) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf'limit 1) as titleimage,	
                 (select mv.value from metadata_view as mv where mv.id = yd.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'limit 1) as acdhtype,
                 yd.headline
             from years_data as yd
         )select * from final_data
     );	
-elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table_name) = 'TYPE_DATA')) then	
+elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE lower(table_name) = 'type_data')) then	
     RAISE NOTICE USING MESSAGE =  'final type';
     DROP TABLE IF EXISTS final_data;
 	RAISE NOTICE USING MESSAGE =  'final data create';
@@ -1233,21 +1252,22 @@ elseif (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE upper(table
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
                 ) as title,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
                 ) as description,
-                (CASE WHEN 
-    		    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
-    		THEN
-                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
-    		ELSE
-                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
-                END) as accessres,
+                COALESCE(
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1),	
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1),
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang3 limit 1),
+					(select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' limit 1)
+                ) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf' limit 1) as titleimage,
                 td.raw as acdhtype,
                 td.headline
@@ -1267,15 +1287,15 @@ else
                 COALESCE(
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
                     (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+                    (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1),
+					(select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
                 ) as description,
-                (CASE WHEN 
-    		    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1) IS NULL
-    		THEN
-                    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1)
-    		ELSE
-                    (select acs.value from metadata_view as mv left join accessres as acs on mv2.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1)
-                END) as accessres,
+				COALESCE(
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1),	
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1),
+                    (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang3 limit 1),
+					(select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = td.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' limit 1)
+                ) as accessres,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf' limit 1) as titleimage,
                 (select mv.value from metadata_view as mv where mv.id = td.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'limit 1) as acdhtype,
                 td.headline
@@ -1302,7 +1322,6 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
-
 
 
 /*
