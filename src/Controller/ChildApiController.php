@@ -56,7 +56,7 @@ class ChildApiController extends ControllerBase
         $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($this->identifier);
 
-        if ($this->childNum < 1) { 
+        if ($this->childNum < 1) {
             $this->data->errorMSG = $this->t('There are no Child resources');
             goto end;
         }
@@ -89,7 +89,8 @@ class ChildApiController extends ControllerBase
      * @param string $order
      * @return void
      */
-    private function setupPagingVariables(string $limit, string $page, string $order): void {
+    private function setupPagingVariables(string $limit, string $page, string $order): void
+    {
         $this->data->sum = $this->childNum;
         $this->data->limit = $limit;
         $this->data->page = $page;
@@ -126,6 +127,5 @@ class ChildApiController extends ControllerBase
             $this->identifier = $identifier;
         }
         $this->data->identifier = $this->identifier;
-        
     }
 }
