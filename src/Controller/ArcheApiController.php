@@ -41,7 +41,7 @@ class ArcheApiController extends ControllerBase
     private function createDbHelperObject(array $args): object
     {
         $obj = new \stdClass();
-        foreach($args as $k => $v) {
+        foreach ($args as $k => $v) {
             $obj->$k = $v;
         }
         return $obj;

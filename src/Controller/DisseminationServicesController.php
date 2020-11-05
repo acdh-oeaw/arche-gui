@@ -42,7 +42,7 @@ class DisseminationServicesController extends ControllerBase
     }
     
     /**
-     * 
+     *
      * @param string $identifier
      * @param string $dissemination
      * @param array $additionalData

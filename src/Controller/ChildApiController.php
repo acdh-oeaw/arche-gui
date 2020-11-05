@@ -56,7 +56,9 @@ class ChildApiController extends ControllerBase
         $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($this->identifier);
         
-        if ($this->childNum < 1) { goto end;}
+        if ($this->childNum < 1) {
+            goto end;
+        }
         
         $this->setupPagingVariables($limit, $page, $order);
         $this->data->acdhType = strtolower(str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $this->model->getAcdhtype()));
@@ -87,7 +89,8 @@ class ChildApiController extends ControllerBase
      * @param string $order
      * @return void
      */
-    private function setupPagingVariables(string $limit, string $page, string $order): void {
+    private function setupPagingVariables(string $limit, string $page, string $order): void
+    {
         $this->data->sum = $this->childNum;
         $this->data->limit = $limit;
         $this->data->page = $page;
@@ -124,6 +127,5 @@ class ChildApiController extends ControllerBase
             $this->identifier = $identifier;
         }
         $this->data->identifier = $this->identifier;
-        
     }
 }
