@@ -40,12 +40,12 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     private function checkAjaxRequestIsOn(string $identifier): bool
     {
         if (strpos($identifier, '&ajax') !== false) {
-            $ajax = true;
+            return true;
         }
         return false;
     }
     
-    private function getIdentifierFromAjax(string $identifier): string
+    private function getIdentifierFromAjax(string $identifier): string 
     {
         if (strpos($identifier, '&ajax') !== false) {
             $identifier = explode('&', $identifier);
@@ -63,8 +63,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     public function detailViewMainMethod(string $identifier)
     {
         $ajax = $this->checkAjaxRequestIsOn($identifier);
-        
-        if ($ajax) {
+        if($ajax) {
             $identifier = $this->getIdentifierFromAjax($identifier);
         }
         
