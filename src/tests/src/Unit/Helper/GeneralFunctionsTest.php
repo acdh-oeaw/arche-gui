@@ -27,7 +27,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
     }
     
     public function setUp(): void
-    {      
+    {
         $this->initObject();
     }
 
