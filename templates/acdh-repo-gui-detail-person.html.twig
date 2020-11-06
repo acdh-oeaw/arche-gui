@@ -79,17 +79,7 @@
                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('acdh:isMemberOf'), 'icon': "account_balance", 'label': "Member of"  } ) }}
                 {% endif%}
 
-                {%  if (properties) %}
-                    <h3 class="single-res-heading">{{ "Contact Details"|trans }}</h3>
-
-                    {% for key, value in properties %}
-                        {% if basic.getData(key) %}
-                            {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
-                        {% endif%}
-                    {% endfor %}
-
-                {% endif%}
-
+                
                 {% if titleimage %}</div>{% endif%}
 
             {% if titleimage %}	
@@ -102,5 +92,17 @@
                 </div>
             </div>
         {% endif%}
+        {%  if (properties) %}
+            <div>
+                <h3 class="single-res-heading">{{ "Contact Details"|trans }}</h3>
+
+                {% for key, value in properties %}
+                    {% if basic.getData(key) %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                    {% endif%}
+                {% endfor %}
+            </div>
+        {% endif%}
+
     </div>
 </div>    

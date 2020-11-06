@@ -111,3 +111,7 @@
     text-align: center;
 }
 /***  DISSERV LOGIN FORM END  ***/ 
+
+.row {
+    margin-left: 0px !important;
+}
