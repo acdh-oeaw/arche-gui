@@ -3,6 +3,7 @@
 namespace Drupal\Tests\acdh_repo_gui\Unit;
 
 use acdhOeaw\acdhRepoLib\Repo;
+use Drupal\acdh_repo_gui\Helper;
 
 /**
  * Tests GeneralFunctions
@@ -13,23 +14,30 @@ use acdhOeaw\acdhRepoLib\Repo;
 
 class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
 {
-    protected $repo;
-    protected $config;
-    protected $object;
+    protected static $repo;
+    protected static $config;
+    private $object;
     
     public static function setUpBeforeClass(): void
     {
         require_once dirname(__DIR__, 5).'/vendor/autoload.php';
+        $cfgFile      = dirname(__DIR__, 1) . '/testconfig.yaml';
+        self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
+        self::$repo   = Repo::factory($cfgFile);
     }
     
     public function setUp(): void
-    {
-        $cfgFile      = dirname(__DIR__, 1) . '/testconfig.yaml';
-        $this->config = json_decode(json_encode(yaml_parse_file($cfgFile)));
-        $this->repo   = \acdhOeaw\acdhRepoLib\Repo::factory($cfgFile);
-        $this->object = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions(dirname(__DIR__, 1) . '/testconfig.yaml');
+    {      
+        $this->initObject();
     }
 
+    public function initObject() : \Drupal\acdh_repo_gui\Helper\GeneralFunctions
+    {
+        $this->object = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions(dirname(__DIR__, 1) . '/testconfig.yaml');
+        $this->assertInstanceOf(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class, $this->object);
+        return $this->object;
+    }
+    
     public function testDetailViewUrlDecodeEncode()
     {
         $this->assertEmpty($this->object->detailViewUrlDecodeEncode('', 0));
@@ -37,7 +45,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('https://id.acdh.oeaw.ac.at/uuid/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:uuid:test:H115', 0));
         $this->assertEquals('http://127.0.0.1/api/263325', $this->object->detailViewUrlDecodeEncode('263325', 0));
  
-        $stub = $this->createStub(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
+        $stub = $this->createMock(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
         //$stub->method('detailViewUrlDecodeEncode')->willReturn('http://hdl.handle.net/263325');
         //$this->assertEquals('http://hdl.handle.net/263325', $stub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
         
