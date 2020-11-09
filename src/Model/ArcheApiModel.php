@@ -161,7 +161,7 @@ class ArcheApiModel extends ArcheModel
      */
     private function getOntology(): array
     {
-        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
             'skipNamespace'     => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
@@ -185,7 +185,7 @@ class ArcheApiModel extends ArcheModel
      */
     private function getOntologyGui(): array
     {
-        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
             'skipNamespace'     => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
@@ -214,7 +214,7 @@ class ArcheApiModel extends ArcheModel
      */
     private function getRootTableOntology(): array
     {
-        $dbconnStr = yaml_parse_file(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
+        $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
             'skipNamespace'     => $this->properties->baseUrl.'%', // don't forget the '%' at the end!

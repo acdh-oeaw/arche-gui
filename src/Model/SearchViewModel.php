@@ -39,14 +39,14 @@ class SearchViewModel extends ArcheModel
     {
         //set up the DB connections
         \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->searchCfg = new \acdhOeaw\acdhRepoLib\SearchConfig();
-        $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml', 'guest');
+        $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
         $this->metaObj = new \stdClass();
-        $this->log = new \zozlak\logging\Log(drupal_get_path('module', 'acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
+        $this->log = new \zozlak\logging\Log(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
         (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     

@@ -33,7 +33,7 @@ class DisseminationServicesController extends ControllerBase
     
     public function __construct()
     {
-        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         $this->model = new DisseminationServicesModel();
         $this->helper = new DisseminationServicesHelper($this->repo);
