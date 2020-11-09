@@ -38,5 +38,4 @@ class ArcheApiHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Helper\ArcheApiHelper::class, $this->object);
         return $this->object;
     }
-    
 }
