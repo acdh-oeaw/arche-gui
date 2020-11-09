@@ -83,7 +83,7 @@ jobs:
         phpunit --version
         
         echo "run test"
-        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml                      
+        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
       
         #cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
         #cd drupal/web/modules/arche-gui/build/logs  && ls -la && cp clover.xml ./build/logs
