@@ -36,9 +36,8 @@ jobs:
       run:  composer create-project drupal/recommended-project:8.9.6 drupal  
   
     - name: drupal composer update
-      run: cd drupal && composer update && composer require drush/drush && cd -
-      #&& composer require phpunit/phpunit ^8
-        
+      run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
+              
     - name: check drush
       run: |
         cd drupal && vendor/drush/drush/drush status && cd -
@@ -75,6 +74,9 @@ jobs:
       run: |
         ls -la && mkdir -p build/logs
         ./drupal/vendor/phpunit/phpunit/phpunit --version
+        echo "drupal phpunit"
+        ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit --version
+        
         echo "run test"
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml                      
       
