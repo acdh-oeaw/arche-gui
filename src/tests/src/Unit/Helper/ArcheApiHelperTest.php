@@ -39,8 +39,4 @@ class ArcheApiHelperTest extends \PHPUnit\Framework\TestCase
         return $this->object;
     }
     
-    public function testCreateViewWithoutData()
-    {
-        //$this->assertEmpty($this->object->createView(array()));
-    }
 }
