@@ -18,7 +18,7 @@
 	"zozlak/logging" : "*",
         "easyrdf/easyrdf" : "*",
         "twig/extensions": "^1.5",
-	"phpunit/phpunit": "^8",
+	 "phpunit/phpunit": "^8",
         "phpspec/prophecy-phpunit": "*"
     },
     "require-dev": {
@@ -59,4 +59,5 @@
             }
         }
     }
+
 }

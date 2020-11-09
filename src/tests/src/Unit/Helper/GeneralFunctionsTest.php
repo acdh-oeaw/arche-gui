@@ -26,7 +26,8 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
         self::$repo = Repo::factory($cfgFile);
     }
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->initObject();
         $this->gfStub = $this->createMock(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
         $this->gfService = $this->getMockBuilder(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
