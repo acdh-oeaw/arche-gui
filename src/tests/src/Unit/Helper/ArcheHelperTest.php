@@ -13,6 +13,7 @@ namespace Drupal\Tests\acdh_repo_gui\Unit;
  *
  * @author nczirjak
  */
-class ArcheHelperTest {
+class ArcheHelperTest
+{
     //put your code here
 }
