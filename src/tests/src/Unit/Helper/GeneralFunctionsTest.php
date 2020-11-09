@@ -62,6 +62,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
 
         // the provided arguments.
         $this->assertSame('http://hdl.handle.net/263325', $this->gfStub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
+        $this->assertEquals('http://hdl.handle.net/263325', $this->gfStub->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
         $this->assertSame('http://geonames.org/263325', $this->gfStub->detailViewUrlDecodeEncode('geonames.org:263325', 0));
         $this->assertSame('http://d-nb.info/263325', $this->gfStub->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
         $this->assertSame('http://viaf.org/263325', $this->gfStub->detailViewUrlDecodeEncode('viaf.org:263325', 0));
