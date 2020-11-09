@@ -11,15 +11,16 @@ use Drupal\acdh_repo_gui\Helper;
  * @group acdh_repo_gui
  * @coversDefaultClass \Drupal\acdh_repo_gui\Helper\GeneralFunctions
  */
-class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
-
+class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
+{
     protected static $repo;
     protected static $config;
     private $object;
     private $gfStub;
     private $gfService;
 
-    public static function setUpBeforeClass(): void {
+    public static function setUpBeforeClass(): void
+    {
         require_once dirname(__DIR__, 5) . '/vendor/autoload.php';
         $cfgFile = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
@@ -33,14 +34,14 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
         $this->gfService = $this->getMockBuilder(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class);
     }
 
-    public function initObject(): \Drupal\acdh_repo_gui\Helper\GeneralFunctions 
+    public function initObject(): \Drupal\acdh_repo_gui\Helper\GeneralFunctions
     {
         $this->object = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions(dirname(__DIR__, 1) . '/testconfig.yaml');
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Helper\GeneralFunctions::class, $this->object);
         return $this->object;
     }
 
-    public function testDetailViewUrlDecodeEncode_Decode_Acdh() 
+    public function testDetailViewUrlDecodeEncode_Decode_Acdh()
     {
         $this->assertEmpty($this->object->detailViewUrlDecodeEncode('', 0));
         $this->assertEquals('https://id.acdh.oeaw.ac.at/test/H115', $this->object->detailViewUrlDecodeEncode('id.acdh.oeaw.ac.at:test:H115', 0));
@@ -76,7 +77,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame('http://d-nb.info/263325', $this->gfService->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
     }
 
-    public function testDetailViewUrlDecodeEncode_Encode() 
+    public function testDetailViewUrlDecodeEncode_Encode()
     {
         $this->assertSame('hdl.handle.net/263325', $this->object->detailViewUrlDecodeEncode('http://hdl.handle.net/263325', 1));
         $this->assertSame('263325', $this->object->detailViewUrlDecodeEncode('http://127.0.0.1/api/263325', 1));
@@ -84,14 +85,13 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame('example.com/263325', $this->object->detailViewUrlDecodeEncode('http://example.com/263325', 1));
     }
 
-    public static function exampleUUIDData() 
+    public static function exampleUUIDData()
     {
         return (object) array('id' => '263325');
     }
 
-    public function testSpecialIdentifierToUUID_ViewData() 
+    public function testSpecialIdentifierToUUID_ViewData()
     {
-        
         $this->gfService = $this->gfService
                 ->disableOriginalConstructor()
                 ->setMethods(['getViewData'])
@@ -104,9 +104,8 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(array(self::exampleUUIDData()), $this->gfService->getViewData());
     }
 
-    public function testSpecialIdentifierToUUID_UrlEncode() 
+    public function testSpecialIdentifierToUUID_UrlEncode()
     {
-        
         $this->gfService = $this->gfService
                 ->disableOriginalConstructor()
                 ->setMethods(['detailViewUrlDecodeEncode'])
@@ -117,7 +116,5 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertSame('http://hdl.handle.net/263325', $this->gfService->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
     }
-    
-   
 
 }
