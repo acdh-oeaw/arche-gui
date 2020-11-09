@@ -117,5 +117,4 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('http://hdl.handle.net/263325', $this->gfService->detailViewUrlDecodeEncode('hdl.handle.net:263325', 0));
     }
-
 }
