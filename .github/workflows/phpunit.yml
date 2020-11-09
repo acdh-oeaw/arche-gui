@@ -73,9 +73,14 @@ jobs:
     - name: test
       run: |
         ls -la && mkdir -p build/logs
+        
         ./drupal/vendor/phpunit/phpunit/phpunit --version
+        
         echo "drupal phpunit"
-        ./drupal/modules/arche-gui/vendor/phpunit/phpunit/phpunit --version
+        ./drupal/modules/arche-gui/vendor/
+        
+        echo "simple phpunit version"
+        phpunit --version
         
         echo "run test"
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml                      
