@@ -77,7 +77,7 @@ jobs:
         ./drupal/vendor/phpunit/phpunit/phpunit --version
         
         echo "drupal phpunit"
-        ./drupal/modules/arche-gui/vendor/
+        ./drupal/web/modules/arche-gui/vendor/phpunit/phpunit/phpunit --version
         
         echo "simple phpunit version"
         phpunit --version
