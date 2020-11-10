@@ -16,7 +16,7 @@ class GeneralFunctions
     
     public function __construct($cfg = null)
     {
-        (!$cfg) ? $cfg = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml': $cfg = $cfg;
+        (!$cfg) ? $cfg = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml': $cfg = $cfg;
         $this->config = $cfg;
         $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
     }

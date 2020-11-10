@@ -37,7 +37,7 @@ jobs:
   
     - name: drupal composer update
       run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
-      
+              
     - name: check drush
       run: |
         cd drupal && vendor/drush/drush/drush status && cd -
@@ -73,9 +73,17 @@ jobs:
     - name: test
       run: |
         ls -la && mkdir -p build/logs
+        
         ./drupal/vendor/phpunit/phpunit/phpunit --version
+        
+        echo "drupal phpunit"
+        ./drupal/web/modules/arche-gui/vendor/phpunit/phpunit/phpunit --version
+        
+        echo "simple phpunit version"
+        phpunit --version
+        
         echo "run test"
-        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml                      
+        ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
       
         #cp drupal/web/modules/arche-gui/build/logs/clover.xml ./build/logs
         #cd drupal/web/modules/arche-gui/build/logs  && ls -la && cp clover.xml ./build/logs

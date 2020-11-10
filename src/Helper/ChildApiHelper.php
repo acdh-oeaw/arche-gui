@@ -17,6 +17,7 @@ class ChildApiHelper extends ArcheHelper
 {
     private $childViewObjectArray;
     private $siteLang = "en";
+    private $data = array();
         
     /**
      * Child view create

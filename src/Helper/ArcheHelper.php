@@ -39,10 +39,10 @@ abstract class ArcheHelper
     );
     
     
-    public function __construct()
+    public function __construct($cfg = null)
     {
-        $this->generalFunctions = new GeneralFunctions();
-        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        (!$cfg) ? $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml': $this->config = $cfg;
+        $this->generalFunctions = new GeneralFunctions($this->config);
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }

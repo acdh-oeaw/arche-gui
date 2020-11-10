@@ -30,7 +30,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
 
     public function __construct()
     {
-        $this->config = drupal_get_path('module', 'acdh_repo_gui').'/config/config.yaml';
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
