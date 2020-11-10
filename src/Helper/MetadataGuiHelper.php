@@ -189,7 +189,7 @@ class MetadataGuiHelper
     {
         $result = array();
         foreach ($data as $k => $v) {
-            if(isset($v['basic_info']['ordering'])){
+            if (isset($v['basic_info']['ordering'])) {
                 $result[$v['basic_info']['ordering']][$k] = $v;
             }
         }
