@@ -21,7 +21,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
 
     public function __construct()
     {
-        $this->config = drupal_get_path('module', 'acdh_repo_gui') . '/config/config.yaml';
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
 

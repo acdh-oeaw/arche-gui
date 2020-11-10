@@ -80,7 +80,7 @@ class SearchViewModel extends ArcheModel
         }
         
         $this->setUpPayload();
-       
+        
         try {
             $this->setSqlTimeout('30000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
