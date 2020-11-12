@@ -35,9 +35,6 @@ class GeneralFunctions
             return "";
         }
       
-        echo $data;
-        echo '<br>';
-        
         if ($code == 0) {
             //if we have the repo id then we need to add the repo baseurl
             if (strpos($data, ':') === false) {
@@ -61,17 +58,15 @@ class GeneralFunctions
                     $identifier .= $ra."/";
                 }
             }
-            echo $identifier;
+            
             switch (true) {
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/uuid/') !== false:
                     $identifier = str_replace('id.acdh.oeaw.ac.at/uuid/', $this->repo->getSchema()->__get('drupal')->uuidNamespace, $identifier);
                     $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    echo 'itt';
                     break;
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/') !== false:
                     $identifier = str_replace('id.acdh.oeaw.ac.at/', $this->repo->getSchema()->__get('drupal')->idNamespace, $identifier);
                     $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                     echo 'itt2';
                     break;
                 case strpos($identifier, 'hdl.handle.net') !== false:
                     $identifier = str_replace('hdl.handle.net/', $this->repo->getSchema()->__get('drupal')->epicResolver, $identifier);
