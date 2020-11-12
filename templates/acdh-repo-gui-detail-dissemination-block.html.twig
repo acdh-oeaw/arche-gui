@@ -17,8 +17,13 @@
                     <input type="hidden" id="userLoggedIn" value="no" >
                 {% endif %} 
                 
+                {% set dissUri  = value.uri %}
+                {%  if ( (accesResVal == 'restricted') and (key != "gui" or key != "raw") )  %}
+                    {% set dissUri  = '' %}
+                {% endif %} 
+                
                 <div class="res-act-button">
-                    <a href="{{ value.uri }}" title="{{ value.description }}" class="dissServAhref" >
+                    <a href="{{ dissUri }}" title="{{ value.description }}" class="dissServAhref" >
                         <span>{{ value.title|trans }}</span>
                     </a>
                 </div>
