@@ -83,7 +83,7 @@
     
     <!-- DISSEMINATION BLOCK -->
     {% if dissemination %}
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId() } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basig.getAccessRestriction() } ) }}
     {% endif %}
     
     <!-- SUMMARY BLOCK -->
