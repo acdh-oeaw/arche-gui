@@ -4,6 +4,7 @@
         {% set accesResVal = value|replace({'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/': ''}) %}
     {% endfor%}
 {% endif%} 
+<input type="hidden" id="accessRestriction" value="{{ accesResVal }}" >
 
 <div class="arche-detail-dissemination" id="arche-dv-dissemination">
 
@@ -11,17 +12,16 @@
         <div class="res-property">
             <i class="material-icons">&#xE89F;</i>
             {% for key, value in result %}
-                
-                {%  if (logged_in is empty)  %}
-                    <input type="hidden" id="accessRestriction" value="{{ accesResVal }}" >
+
+                {%  if (logged_in is empty)  %}                    
                     <input type="hidden" id="userLoggedIn" value="no" >
                 {% endif %} 
-                
+
                 {% set dissUri  = value.uri %}
-                {%  if ( (accesResVal == 'restricted') and (key != "gui" or key != "raw") )  %}
+                {%  if ( (accesResVal == 'restricted' or accesResVal == 'eingeschränkt') and (key != "gui" or key != "raw") )  %}
                     {% set dissUri  = '' %}
                 {% endif %} 
-                
+
                 <div class="res-act-button">
                     <a href="{{ dissUri }}" title="{{ value.description }}" class="dissServAhref" >
                         <span>{{ value.title|trans }}</span>
@@ -53,4 +53,3 @@
         <!-- DISS LOGIN FORM END  -->
     {% endif %}    	
 </div>
-    

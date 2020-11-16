@@ -31,14 +31,12 @@ jq2(function( $ ) {
 
     var accessRestriction = jq2('#accessRestriction').val();
     
-    if((accessRestriction) && (accessRestriction.indexOf('restricted') == -1) ) {
-        jq2( ".dissServAhref" ).click(function(e) {
-            alert("Resource is restricted! You are not allowed to open it's dissemination services!");
+    if ((accessRestriction) && (accessRestriction.indexOf('restricted') == 0)) {
+        jq2(".dissServAhref").click(function (e) {
+            alert("Resource is restricted! You are not allowed to open the dissemination services!");
             e.preventDefault();
         });
-    }
-    
-    if((accessRestriction) && (accessRestriction.indexOf('public') == -1) && (jq2('#userLoggedIn').val() == "no") ){
+    } else if ((accessRestriction) && (accessRestriction.indexOf('public') == -1) && (jq2('#userLoggedIn').val() == "no") ){
         
         jq2( ".dissServAhref" ).click(function(e) {
 

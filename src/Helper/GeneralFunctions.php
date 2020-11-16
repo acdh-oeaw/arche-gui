@@ -16,8 +16,7 @@ class GeneralFunctions
     
     public function __construct($cfg = null)
     {
-        (!$cfg) ? $cfg = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml': $cfg = $cfg;
-        $this->config = $cfg;
+        ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
     }
     

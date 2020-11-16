@@ -41,7 +41,7 @@ abstract class ArcheHelper
     
     public function __construct($cfg = null)
     {
-        (!$cfg) ? $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml': $this->config = $cfg;
+        ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->generalFunctions = new GeneralFunctions($this->config);
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
