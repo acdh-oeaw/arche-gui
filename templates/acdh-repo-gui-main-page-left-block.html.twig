@@ -19,7 +19,7 @@
             <div class="res-property">
                 <i class="material-icons">&#xE54E;</i>
                 {{ "Type"|trans }}: 
-                <span class="res-rdfType"><a href="{{ url('<front>') }}discover/&type=Collection/10">{{ "Collection"|trans }} </a></span>
+                <span class="res-rdfType"><a href="{{ url('<front>') }}search/type=Collection&payload=false/titleasc/10/1">{{ "Collection"|trans }} </a></span>
             </div>
             
             {% if item.getData('acdh:hasAvailableDate') %}
