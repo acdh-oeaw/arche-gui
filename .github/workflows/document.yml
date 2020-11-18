@@ -22,6 +22,8 @@ jobs:
     - uses: webfactory/ssh-agent@v0.2.0
       with: 
         ssh-private-key: ${{ secrets.docsRepoToken }}
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
     - name: install phpdocumentator
       run: curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar > phpdoc.phar
