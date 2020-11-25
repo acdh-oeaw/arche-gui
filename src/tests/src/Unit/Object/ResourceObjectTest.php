@@ -40,19 +40,19 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->startTimer();
-        $this->initEmptyObject();
-        $this->initObject();
+        $this->testInitEmptyObject();
+        $this->testInitObject();
         $this->noteTime('setUp');
     }
     
-    public function initObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
+    public function testInitObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
     {
         self::$object = new \Drupal\acdh_repo_gui\Object\ResourceObject(self::$resourceData, self::$repo);
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Object\ResourceObject::class, self::$object);
         return self::$object;
     }
     
-    public function initEmptyObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
+    public function testInitEmptyObject() : \Drupal\acdh_repo_gui\Object\ResourceObject
     {
         $noData = array();
         $resourceData = array();
@@ -61,9 +61,9 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $data->value = 'my example title';
         $data->title = 'my example title';
         $data->property = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle1";
-        $noData["acdh:hasTitle1"]['en'] = array($data);
+        $noData["acdh:hasTitle1"]['de'] = array($data);
         
-        self::$emptyObject = new \Drupal\acdh_repo_gui\Object\ResourceObject($noData, self::$repo);
+        self::$emptyObject = new \Drupal\acdh_repo_gui\Object\ResourceObject($noData, self::$repo, "de");
         $this->assertInstanceOf(\Drupal\acdh_repo_gui\Object\ResourceObject::class, self::$emptyObject);
         return self::$emptyObject;
     }
@@ -153,10 +153,21 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty(self::$object->getRepoUrl());
     }
     
+    public function testGetRepoGuiUrl()
+    {
+        $this->assertNotEmpty(self::$object->getRepoGuiUrl());
+    }
+    
     public function testCopyResourceLink()
     {
         $this->assertEmpty(self::$emptyObject->getCopyResourceLink());
         $this->assertNotEmpty(self::$object->getCopyResourceLink());
+    }
+    
+    public function testGetTitleImage()
+    {
+        $this->assertEmpty(self::$emptyObject->getTitleImage());
+        //$this->assertNotEmpty(self::$object->getTitleImage());
     }
     
     public function testIsTitleImage()
