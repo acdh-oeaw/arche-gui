@@ -22,7 +22,7 @@ jobs:
     - uses: webfactory/ssh-agent@v0.4.1
       with: 
         ssh-private-key: ${{ secrets.docsRepoToken }}
-
+     
     - name: install phpdocumentator
       run: curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar > phpdoc.phar
     
