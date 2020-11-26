@@ -3,6 +3,7 @@ type: module
 description: 'ÖAW ACDH REPO Gui.'
 core_version_requirement: ^8.8 || ^9
 package: oeaw
+version 1.6
 project: acdh_repo_gui
 configure: acdh_repo_gui.settings_form
 libraries:
