@@ -6,17 +6,18 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
-use Drupal\acdh_repo_gui\Helper\ArcheHelper;
+
 
 /**
  * Description of ApiViewHelper
  *
  * @author nczirjak
  */
-class ChildApiHelper extends ArcheHelper
+class ChildApiHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $childViewObjectArray;
-    private $siteLang = "en";
     private $data = array();
         
     /**

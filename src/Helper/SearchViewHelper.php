@@ -2,7 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
@@ -12,8 +11,10 @@ use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
  *
  * @author norbertczirjak
  */
-class SearchViewHelper extends ArcheHelper
+class SearchViewHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $searchViewObjectArray;
     private $metadata;
     private $searchObj;

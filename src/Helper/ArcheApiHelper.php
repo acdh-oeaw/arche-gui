@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-include 'ArcheHelper.php';
+
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
@@ -14,13 +14,14 @@ use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
  *
  * @author norbertczirjak
  */
-class ArcheApiHelper extends ArcheHelper
+class ArcheApiHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $data = array();
     private $apiType = '';
     private $result = array();
     private $properties;
-    private $siteLang;
     private $requiredClasses = array();
     
     public function createView(array $data = array(), string $apiType = '', string $lng ='en'): array

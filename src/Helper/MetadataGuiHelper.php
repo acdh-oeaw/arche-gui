@@ -11,7 +11,6 @@ class MetadataGuiHelper
 {
     private $data = array();
     private $result = array();
-    private $siteLang = 'en';
     
     private static $actors_involved = array(
         'hasPrincipalInvestigator', 'hasContact',

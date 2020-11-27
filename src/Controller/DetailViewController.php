@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Model\DetailViewModel;
 use Drupal\acdh_repo_gui\Helper\DetailViewHelper;
-use Drupal\acdh_repo_gui\Helper\CiteHelper as CH;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;
 
 /**
@@ -24,10 +23,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
     private $repoUrl;
     private $repoid;
     private $generalFunctions;
-        
-    private static $citeAcdhTypes = array("Collection", "Project", "Resource", "Publication", "Metadata");
-    private static $citeAcdhParentTypes = array("Collection", "Project");
-
+   
     public function __construct()
     {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
@@ -139,8 +135,14 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         if (isset($dv[0]->id) && !is_null($dv[0]->id)) {
             $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
-
-        $this->setCiteData();
+        
+        $parent = "";
+        if(isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
+            $parent = $this->repo->getBaseUrl().$this->basicViewData->extra->breadcrumb[0]->parentid;
+        }
+        $cite = new \Drupal\acdh_repo_gui\Object\CiteObject($this->basicViewData->basic, $parent);
+        $this->basicViewData->extra->citeWidgetData = $cite->createCiteObject();
+        
         $this->setToolTip();
 
         //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
@@ -167,51 +169,6 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         }
     }
     
-    /**
-     * Set up cite data
-     * @return void
-     */
-    private function setCiteData(): void
-    {
-        if (in_array(
-            $this->basicViewData->basic->getAcdhType(),
-            self::$citeAcdhTypes
-        )
-        ) {
-            //get the cite widget data
-            $cite = new CH($this->repo, $this->basicViewData->basic);
-
-            if (in_array(
-                $this->basicViewData->basic->getAcdhType(),
-                self::$citeAcdhParentTypes
-            )
-            ) {
-                $this->basicViewData->extra->citeWidgetData = $cite->createCiteWidgetCollectionProject();
-            } else {
-                //top collection data
-                $tc = array();
-                $tcObj = new \stdClass();
-
-                //we need the top collection data for the  cite data
-                if (isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
-                    $tcm = array();
-                    $tcm = $this->model->getViewData($this->repo->getBaseUrl() . $this->basicViewData->extra->breadcrumb[0]->parentid);
-                                       
-                    if (count($tcm) > 0) {
-                        $tc = array();
-                        $tc = $this->helper->createView($tcm);
-                       
-                        //we have view data
-                        if (count($tc) > 0 && isset($tc[0])) {
-                            $tcObj = $tc[0];
-                        }
-                    }
-                }
-                $this->basicViewData->extra->citeWidgetData = $cite->createCiteWidgetResourceMetadata($tcObj);
-            }
-        }
-    }
-
     /**
      * Generate the basic metadata for the root resource/collection in the dissemination services view
      *

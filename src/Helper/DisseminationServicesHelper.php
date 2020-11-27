@@ -5,7 +5,6 @@ namespace Drupal\acdh_repo_gui\Helper;
 
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
-use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 
 use EasyRdf\Graph;
@@ -16,8 +15,10 @@ use EasyRdf\Resource;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesHelper extends ArcheHelper
+class DisseminationServicesHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $data;
     private $repoid;
     private $repoUrl;
@@ -42,6 +43,14 @@ class DisseminationServicesHelper extends ArcheHelper
         $this->repoUrl = $this->repo->getBaseUrl().$this->repoid;
     }
     
+    /**
+     * 
+     * @param array $data
+     * @param string $dissemination
+     * @param string $identifier
+     * @param array $additionalData
+     * @return array
+     */
     public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array
     {
         $this->setRepoUrlId($identifier);
@@ -272,9 +281,9 @@ class DisseminationServicesHelper extends ArcheHelper
                 $body = "";
                 $body = $request->getBody()->getContents();
                 if (!empty($body)) {
-                    if (class_exists('EasyRdf_Graph')) {
+                    if(class_exists('EasyRdf_Graph')) {
                         $graph = new \EasyRdf_Graph();
-                    } else {
+                    }else {
                         $graph = new \EasyRdf\Graph();
                     }
                     $graph->parse($body);

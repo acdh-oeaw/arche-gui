@@ -8,17 +8,17 @@ use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
 
-use Drupal\acdh_repo_gui\Helper\ArcheHelper;
 
 /**
  * Description of DetailViewHelper
  *
  * @author nczirjak
  */
-class DetailViewHelper extends ArcheHelper
+class DetailViewHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $detailViewObjectArray;
-    private $siteLang;
     
     /**
      * Build up the necessary data for the detail view

@@ -6,17 +6,18 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
-use Drupal\acdh_repo_gui\Helper\ArcheHelper;
+
 
 /**
  * Description of RootViewHelper
  *
  * @author nczirjak
  */
-class RootViewHelper extends ArcheHelper
+class RootViewHelper 
 {
+    use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
+    
     private $rootViewObjectArray;
-    private $siteLang = "en";
    
     public function createView(array $data = array()): array
     {
