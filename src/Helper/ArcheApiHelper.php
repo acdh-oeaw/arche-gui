@@ -2,7 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoResource;
@@ -14,7 +13,7 @@ use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
  *
  * @author norbertczirjak
  */
-class ArcheApiHelper 
+class ArcheApiHelper
 {
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
     

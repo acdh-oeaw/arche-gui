@@ -137,7 +137,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         }
         
         $parent = "";
-        if(isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
+        if (isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
             $parent = $this->repo->getBaseUrl().$this->basicViewData->extra->breadcrumb[0]->parentid;
         }
         $cite = new \Drupal\acdh_repo_gui\Object\CiteObject($this->basicViewData->basic, $parent);

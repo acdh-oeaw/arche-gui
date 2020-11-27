@@ -11,7 +11,7 @@ use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
  *
  * @author norbertczirjak
  */
-class SearchViewHelper 
+class SearchViewHelper
 {
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
     

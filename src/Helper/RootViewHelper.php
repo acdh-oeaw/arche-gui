@@ -7,13 +7,12 @@ use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
 
-
 /**
  * Description of RootViewHelper
  *
  * @author nczirjak
  */
-class RootViewHelper 
+class RootViewHelper
 {
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
     

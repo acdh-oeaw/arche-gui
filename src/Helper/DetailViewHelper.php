@@ -8,13 +8,12 @@ use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoLib\RepoDb;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
 
-
 /**
  * Description of DetailViewHelper
  *
  * @author nczirjak
  */
-class DetailViewHelper 
+class DetailViewHelper
 {
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
     
