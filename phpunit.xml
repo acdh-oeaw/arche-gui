@@ -10,6 +10,12 @@
             <directory suffix=".php">src</directory>
                 <exclude>
                     <directory>src/tests/*</directory>
+                    <directory>src/Controller/*</directory>
+                    <directory>src/EventSubscriber/*</directory>
+                    <directory>src/Form/*</directory>
+                    <directory>src/PathProcessor/*</directory>
+                    <directory>src/Plugin/*</directory>
+                    <directory>src/TwigExtension/*</directory>
                 </exclude>
         </whitelist>
     </filter>
