@@ -30,7 +30,8 @@
             "Drupal\\acdh_repo_gui\\Object\\": "src/Object",
             "Drupal\\acdh_repo_gui\\Helper\\": "src/Helper",
             "Drupal\\acdh_repo_gui\\Controller\\": "src/Controller",
-            "Drupal\\acdh_repo_gui\\Model\\": "src/Model"            
+            "Drupal\\acdh_repo_gui\\Model\\": "src/Model",
+            "Drupal\\acdh_repo_gui\\Traits\\": "src/Traits"
         }
     },
     "extra": {
