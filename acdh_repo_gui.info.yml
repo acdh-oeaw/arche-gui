@@ -2,12 +2,15 @@ name: acdh_repo_gui
 type: module
 description: 'ÖAW ACDH REPO Gui.'
 core_version_requirement: ^8.8 || ^9
-version: 1.5
-package: oeaw
-project: ACDH-ARCHE
+package: Custom
+
 configure: acdh_repo_gui.settings_form
 libraries:
     - acdh_repo_gui/repo-styles
     - acdh_repo_gui/repo-root-view
 'interface translation project': acdh_repo_gui
 'interface translation server pattern': modules/contrib/arche-gui/translations/acdh_repo_gui-%language.po    
+
+
+# version: 1.6
+# project: ACDH-ARCHE
