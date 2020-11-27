@@ -792,4 +792,5 @@ if( substr(\Drupal::VERSION, 0, 1) == "8") {
     $settings['install_profile'] = 'standard';
 } else {
     $config_directories['sync'] = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync'; 
+    $settings['config_sync_directory']   = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
 }
