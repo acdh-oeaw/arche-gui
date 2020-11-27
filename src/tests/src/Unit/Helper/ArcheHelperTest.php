@@ -43,7 +43,36 @@ class ArcheHelperTest extends \PHPUnit\Framework\TestCase {
                 'createShortcut', 
                 array('http://www.loc.gov/premis/rdf/v1#premisTest'));
         $this->assertSame('premis:premisTest', $returnVal);
+        
+        $retVal = \PHPUnitUtil::callMethod(
+                $this->absObj,
+                'createShortcut', 
+                array('https://id.acdh.oeaw.ac.at/5671'));
+        $this->assertSame('acdhID:5671', $retVal);
     }
+    
+    
+    public function testEmptyLanguage() {
+        
+        $obj = new \stdClass();
+        $retVal = \PHPUnitUtil::callMethod(
+                $this->absObj,
+                'setLanguage', 
+                array($obj));
+        $this->assertSame('en', $retVal);
+    }
+    
+    public function testObjLanguage() {
+        
+        $obj = new \stdClass();
+        $obj->language = "en";
+        $retVal = \PHPUnitUtil::callMethod(
+                $this->absObj,
+                'setLanguage', 
+                array($obj));
+        $this->assertSame('en', $retVal);
+    }
+    
     
 }
 

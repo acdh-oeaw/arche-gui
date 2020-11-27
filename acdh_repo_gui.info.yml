@@ -2,8 +2,9 @@ name: acdh_repo_gui
 type: module
 description: 'ÖAW ACDH REPO Gui.'
 core_version_requirement: ^8.8 || ^9
+version: 1.5
 package: oeaw
-project: acdh_repo_gui
+project: ACDH-ARCHE
 configure: acdh_repo_gui.settings_form
 libraries:
     - acdh_repo_gui/repo-styles
