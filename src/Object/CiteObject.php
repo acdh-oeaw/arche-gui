@@ -7,8 +7,8 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
-    
+class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
+{
     private static $citeAcdhTypes = array("Collection", "Project", "Resource", "Publication", "Metadata");
     private static $citeAcdhParentTypes = array("Collection", "Project");
     private $resObj;
@@ -17,7 +17,8 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
     protected $siteLang;
     private $repodb;
     
-    public function __construct(\Drupal\acdh_repo_gui\Object\ResourceObject $resObj, string $parent) {
+    public function __construct(\Drupal\acdh_repo_gui\Object\ResourceObject $resObj, string $parent)
+    {
         $this->setResObj($resObj);
         $this->parent = $parent;
         $this->cite = array();
@@ -27,29 +28,30 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
     }
     
-    private function setResObj(object $resObj): void {
+    private function setResObj(object $resObj): void
+    {
         $this->resObj = new \stdClass();
-        if(count((array)$resObj)) {
+        if (count((array)$resObj)) {
             $this->resObj = $resObj;
         }
-        
     }
     
-    public function getCite(): array {
+    public function getCite(): array
+    {
         return $this->cite;
     }
     
-    public function createCiteObject(): array {
-        
-        if(count((array)$this->resObj) == 0) {
+    public function createCiteObject(): array
+    {
+        if (count((array)$this->resObj) == 0) {
             return array();
         }
         
-        if(!$this->checkAcdhType()) {
+        if (!$this->checkAcdhType()) {
             return array();
         }
         
-        if($this->checkAcdhParentType()) {
+        if ($this->checkAcdhParentType()) {
             $this->createCiteWidgetCollectionProject();
         } else {
             $parentData = array();
@@ -60,8 +62,8 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
                 $parentObj = new \Drupal\acdh_repo_gui\Helper\DetailViewHelper();
                 $parentObj = $parentObj->createView($parentData);
                 if (count($parentObj) > 0 && isset($parentObj[0])) {
-                        $this->createCiteWidgetByParent($parentObj[0]);
-                } 
+                    $this->createCiteWidgetByParent($parentObj[0]);
+                }
             }
         }
         
@@ -69,23 +71,25 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
     }
     
     
-    private function checkAcdhType(): bool {
+    private function checkAcdhType(): bool
+    {
         if (
-            in_array($this->resObj->getAcdhType(), self::$citeAcdhTypes ) ) {
+            in_array($this->resObj->getAcdhType(), self::$citeAcdhTypes)) {
             return true;
         }
         return false;
     }
     
-    private function checkAcdhParentType(): bool {
+    private function checkAcdhParentType(): bool
+    {
         if (
-            in_array($this->resObj->getAcdhType(), self::$citeAcdhParentTypes ) ) {
+            in_array($this->resObj->getAcdhType(), self::$citeAcdhParentTypes)) {
             return true;
         }
         return false;
     }
     
-    private function createCiteWidgetByParent(object $topCollection): array 
+    private function createCiteWidgetByParent(object $topCollection): array
     {
         //hasAuthor/hasCreator. hasTitle. Digitised by hasDigitisingAgent. In: hasCreator(TopCollection), hasPrincipleInvestigator(TopCollection), hasTitle(TopCollection), hasHosting, hasPid. Accessed on "current date".
         $this->cite["MLA"]["string"] = "";
@@ -344,5 +348,4 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel {
         }
         return $str;
     }
-
 }
