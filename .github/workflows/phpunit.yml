@@ -83,7 +83,7 @@ jobs:
         phpunit --version
         
         echo "create coveralls clover"
-        phpunit --coverage-clover ./build/logs/clover.xml
+        ./drupal/vendor/phpunit/phpunit/phpunit --coverage-clover ./build/logs/clover.xml
         
         echo "run test"
         ./drupal/vendor/phpunit/phpunit/phpunit --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
