@@ -11,7 +11,7 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class GeneralFunctionsModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $identifier;
     private $sqlResult = array();
     

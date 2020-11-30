@@ -11,13 +11,13 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class ChildApiModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $result = array();
     private $data = array();
     private $childProperties = array();
     private $rootAcdhType;
     private $sqlTypes;
-    private $siteLang = 'en';
+    protected $siteLang = 'en';
     
     public function __construct()
     {

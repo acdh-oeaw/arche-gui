@@ -73,10 +73,6 @@ class ChildApiController extends ControllerBase
        
         end:
         
-        echo '<pre>';
-        var_dump($this->data->data[0]->getTitle());
-        echo '</pre>';
-            
         $build = [
             '#theme' => 'acdh-repo-gui-child',
             '#data' => (array)$this->data,

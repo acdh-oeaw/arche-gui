@@ -15,18 +15,6 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
     private $parent;
     public $cite;
     protected $siteLang;
-    private $repodb;
-    
-    public function __construct(\Drupal\acdh_repo_gui\Object\ResourceObject $resObj, string $parent)
-    {
-        $this->setResObj($resObj);
-        $this->parent = $parent;
-        $this->cite = array();
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
-        //set up the DB connections
-        \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
-    }
     
     private function setResObj(object $resObj): void
     {
@@ -41,8 +29,11 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
         return $this->cite;
     }
     
-    public function createCiteObject(): array
+    public function createCiteObject(\Drupal\acdh_repo_gui\Object\ResourceObject $resObj, string $parent): array
     {
+        $this->setResObj($resObj);
+        $this->parent = $parent;
+        $this->cite = array();
         if (count((array)$this->resObj) == 0) {
             return array();
         }

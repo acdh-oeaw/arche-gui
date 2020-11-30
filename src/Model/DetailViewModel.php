@@ -11,8 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class DetailViewModel extends ArcheModel
 {
-    private $repodb;
-    private $siteLang;
+    protected $repodb;
+    protected $siteLang;
     
     public function __construct()
     {

@@ -11,7 +11,7 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class DisseminationServicesModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $sqlResult = array();
     
     public function __construct()

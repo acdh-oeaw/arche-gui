@@ -11,7 +11,7 @@ use acdhOeaw\acdhRepoLib\Repo;
  */
 abstract class ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     
     public function __construct()
     {
@@ -22,13 +22,13 @@ abstract class ArcheModel
     /**
      * Allow the DB connection
      */
-    private function setActiveConnection()
+    protected function setActiveConnection()
     {
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
     }
     
-    public function changeBackDBConnection()
+    protected function changeBackDBConnection()
     {
         \Drupal\Core\Database\Database::setActiveConnection();
     }

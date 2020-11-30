@@ -12,7 +12,7 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class ArcheApiModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $properties;
     
     public function __construct()

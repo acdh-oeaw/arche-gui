@@ -11,7 +11,7 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class BlocksModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     
     
     public function __construct()

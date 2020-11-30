@@ -17,7 +17,7 @@ use acdhOeaw\acdhRepoLib\SearchTerm;
  */
 class SearchViewModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $config;
     private $repo;
     private $repolibDB;

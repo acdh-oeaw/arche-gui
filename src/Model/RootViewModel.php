@@ -11,9 +11,9 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class RootViewModel extends ArcheModel
 {
-    private $repodb;
+    protected $repodb;
     private $sqlResult;
-    private $siteLang = 'en';
+    protected $siteLang = 'en';
     /* ordering */
     private $limit;
     private $offset;
