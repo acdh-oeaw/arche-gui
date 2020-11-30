@@ -35,7 +35,7 @@ class ArcheUtilTraitTest extends \PHPUnit\Framework\TestCase
     {
         $this->absObj = $this->getMockForAbstractClass(\Drupal\acdh_repo_gui\Helper\ArcheHelper::class, [dirname(__DIR__, 1) . '/testconfig.yaml']);
     }
-   
+
     public function testCreateShortCut()
     {
         $returnVal = \PHPUnitUtil::callMethod(
@@ -44,31 +44,31 @@ class ArcheUtilTraitTest extends \PHPUnit\Framework\TestCase
             array('http://www.loc.gov/premis/rdf/v1#premisTest')
         );
         $this->assertSame('premis:premisTest', $returnVal);
-        
+
         $retVal = \PHPUnitUtil::callMethod(
                 $this->absObj,
-                'createShortcut', 
+                'createShortcut',
                 array('https://id.acdh.oeaw.ac.at/5671'));
         $this->assertSame('acdhID:5671', $retVal);
     }
-    
+
     public function testEmptyLanguage() {
-        
+
         $obj = new \stdClass();
         $retVal = \PHPUnitUtil::callMethod(
                 $this->absObj,
-                'setLanguage', 
+                'setLanguage',
                 array($obj));
         $this->assertSame('en', $retVal);
     }
-    
+
     public function testObjLanguage() {
-        
+
         $obj = new \stdClass();
         $obj->language = "en";
         $retVal = \PHPUnitUtil::callMethod(
                 $this->absObj,
-                'setLanguage', 
+                'setLanguage',
                 array($obj));
         $this->assertSame('en', $retVal);
     }
