@@ -130,7 +130,7 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
             $hasCreator = $this->getCiteWidgetData($topCollection, "acdh:hasCreator");
             if (!empty($hasCreator)) {
                 $this->cite["MLA"]["topCreator"] = $hasCreator;
-                $this->cite["MLA"]["string"] .= "In: ".$hasCreator;
+                $this->cite["MLA"]["string"] .= " In: ".$hasCreator;
                 $this->cite["MLA"]["string"] .= ". ";
             }
             
