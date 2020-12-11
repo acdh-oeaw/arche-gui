@@ -29,8 +29,15 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
         return $this->cite;
     }
     
+    private function checkSiteLang(): void {
+        if(!$this->siteLang) {
+            $this->siteLang = "en";
+        }
+    }
+    
     public function createCiteObject(\Drupal\acdh_repo_gui\Object\ResourceObject $resObj, string $parent): array
     {
+        $this->checkSiteLang();
         $this->setResObj($resObj);
         $this->parent = $parent;
         $this->cite = array();
@@ -231,7 +238,6 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
             $this->cite["MLA"]["string"] .= $hasHosting;
             $this->cite["MLA"]["string"] .= ", ";
         }
-
 
         if (!empty($this->resObj->getPid())) {
             $this->cite["MLA"]["hasPid"] = $this->resObj->getPid();
