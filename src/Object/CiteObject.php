@@ -29,8 +29,9 @@ class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
         return $this->cite;
     }
     
-    private function checkSiteLang(): void {
-        if(!$this->siteLang) {
+    private function checkSiteLang(): void
+    {
+        if (!$this->siteLang) {
             $this->siteLang = "en";
         }
     }
