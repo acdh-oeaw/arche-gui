@@ -33,7 +33,7 @@ jobs:
         echo $PATH  
         
     - name: install drupal
-      run:  composer create-project drupal/recommended-project:8.9.6 drupal  
+      run:  composer create-project drupal/recommended-project drupal  
   
     - name: drupal composer update
       run: cd drupal && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
