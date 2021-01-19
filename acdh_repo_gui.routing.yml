@@ -1,7 +1,10 @@
 repo_root:
-  path: '/repo_root'
+  path: '/discover/root/{order}/{limit}/{page}'
   defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_root'
+    _controller: '\Drupal\acdh_repo_gui\Controller\RootViewController::generateView'
+    order: "datedesc"
+    limit: "10"
+    page: "1"
   requirements:
     _permission: 'access content'
     _access: 'TRUE'
@@ -22,18 +25,6 @@ repo_child_api:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'    
-
-repo_complexsearch:
-  path: '/discover/{metavalue}/{order}/{limit}/{page}'
-  defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\AcdhRepoGuiController::repo_root'
-    metavalue: ""
-    order: "datedesc"
-    limit: "10"
-    page: "1"
-  requirements:
-    _permission: 'access content'
-    _access: 'TRUE'
     
 #dissemination services
 

@@ -33,7 +33,7 @@ class StartPageLeftBlock extends BlockBase
         $this->RVC = new RootViewController($this->config);
         $this->config = Repo::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml');
         
-        $data = $this->RVC->generateRootView('3', '0', 'datedesc');
+        $data = $this->RVC->generateRootViewData('3', '0', 'datedesc');
         if (!isset($data['data'])) {
             $data['data'] = array();
         }

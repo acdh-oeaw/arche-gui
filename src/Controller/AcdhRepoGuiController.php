@@ -30,51 +30,6 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
     }
 
     /**
-     * Create root view
-     *
-     * @param string $limit
-     * @param string $page
-     * @param string $order
-     * @return array
-     */
-    public function repo_root(string $metavalue = "root", string $order = "datedesc", string $limit = "10", string $page = "1"): array
-    {
-        $limit = (int) $limit;
-        $page = (int) $page;
-        // on the gui we are displaying 1 as the first page.
-        //$page = $page-1;
-        $count = 0;
-        $count = $this->rootViewController->countRoots();
-
-        $roots = array();
-        $paging = array();
-        if ((int) $count > 0) {
-            $roots = $this->rootViewController->generateRootView((int) $limit, (int) $page, $order);
-        }
-
-        if (!isset($roots['data']) || count($roots['data']) <= 0) {
-            \Drupal::messenger()->addWarning($this->t('You do not have Root resources'));
-            return array();
-        }
-
-        if (count($roots['pagination']) > 0) {
-            $paging = $roots['pagination'][0];
-        }
-
-        return [
-            '#theme' => 'acdh-repo-gui-main',
-            '#data' => $roots['data'],
-            '#paging' => $paging,
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-root-view',
-                ]
-            ],
-            '#cache' => ['max-age' => 0]
-        ];
-    }
-
-    /**
      * Change language session variable API
      * Because of the special path handling, the basic language selector is not working
      *

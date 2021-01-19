@@ -4,10 +4,7 @@ namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\HtmlResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoDb;
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
 use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
 
@@ -30,7 +27,7 @@ class ArcheApiController extends ControllerBase
     public function __construct()
     {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
+        $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         $this->model = new ArcheApiModel();
         $this->helper = new ArcheApiHelper();
