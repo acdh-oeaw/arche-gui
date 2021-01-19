@@ -3,7 +3,7 @@
 
 require_once  'var/www/drupal/git/vendor/autoload.php';
 
-$cfgFile = __DIR__ . '/modules/custom/oeaw/config.ini';
+$cfgFile = __DIR__ . '/modules/custom/arche-gui/config.ini';
 
 use acdhOeaw\util\RepoConfig as RC;
 RC::init($cfgFile);
