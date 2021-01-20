@@ -7,6 +7,7 @@
 namespace Drupal\acdh_repo_gui\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+
 /**
  * Provides a 'StartPageLeftBlock' block.
  *
