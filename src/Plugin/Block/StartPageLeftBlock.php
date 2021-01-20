@@ -7,9 +7,6 @@
 namespace Drupal\acdh_repo_gui\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use acdhOeaw\acdhRepoLib\Repo;
-use Drupal\acdh_repo_gui\Controller\RootViewController;
-
 /**
  * Provides a 'StartPageLeftBlock' block.
  *
@@ -21,19 +18,17 @@ use Drupal\acdh_repo_gui\Controller\RootViewController;
  */
 class StartPageLeftBlock extends BlockBase
 {
-    private $RVC;
-    private $config;
+   
     /**
      * Left block build function
      * @return type
      */
     public function build()
     {
-        $result = array();
-        $this->RVC = new RootViewController($this->config);
-        $this->config = Repo::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml');
+        $data = array();
+        $rvc = new \Drupal\acdh_repo_gui\Controller\RootViewController();
         
-        $data = $this->RVC->generateRootViewData('3', '0', 'datedesc');
+        $data = $rvc->generateRootViewData('3', '0', 'datedesc');
         if (!isset($data['data'])) {
             $data['data'] = array();
         }

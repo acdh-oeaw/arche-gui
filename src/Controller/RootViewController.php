@@ -18,13 +18,12 @@ class RootViewController extends ControllerBase {
     private $numberOfRoots = 0;
     private $pagingHelper;
     private $generalFunctions;
-
-    public function __construct() {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
+    private $config;
+    
+    public function __construct() {        
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';       
         $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
-
-
+        
         $this->generalFunctions = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
         $this->model = new \Drupal\acdh_repo_gui\Model\RootViewModel();
         $this->helper = new \Drupal\acdh_repo_gui\Helper\RootViewHelper();

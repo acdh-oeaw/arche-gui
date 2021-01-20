@@ -1,4 +1,4 @@
-repo_root:
+repo_root_view:
   path: '/discover/root/{order}/{limit}/{page}'
   defaults:
     _controller: '\Drupal\acdh_repo_gui\Controller\RootViewController::generateView'
