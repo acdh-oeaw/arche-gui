@@ -17,9 +17,9 @@ jobs:
     
     - name: update ubuntu
       run: sudo apt-get update
-      
+  
     - name: update sqlite3
-      run: sudo apt-get install sqlite3 libsqlite3-dev
+      run: sudo apt-get install sqlite3
       
     - name: checksqlite version
       run: sqlite3 --version
