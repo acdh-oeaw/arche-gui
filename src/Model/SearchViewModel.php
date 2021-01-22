@@ -38,11 +38,12 @@ class SearchViewModel extends ArcheModel
     public function __construct()
     {
         //set up the DB connections
-        \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
-        $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        parent::__construct();  
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
+        $this->repo = Repo::factory($this->config);        
+        
         $this->searchCfg = new \acdhOeaw\acdhRepoLib\SearchConfig();
         $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
         $this->metaObj = new \stdClass();

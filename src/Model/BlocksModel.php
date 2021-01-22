@@ -16,9 +16,7 @@ class BlocksModel extends ArcheModel
     
     public function __construct()
     {
-        //set up the DB connections
-        \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        parent::__construct();  
     }
     
     /**

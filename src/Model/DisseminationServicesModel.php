@@ -16,9 +16,7 @@ class DisseminationServicesModel extends ArcheModel
     
     public function __construct()
     {
-        //set up the DB connections
-        \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        parent::__construct();  
     }
   
     public function getViewData(string $identifier = "", string $dissemination = ''): array
