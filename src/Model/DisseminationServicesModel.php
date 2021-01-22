@@ -16,7 +16,7 @@ class DisseminationServicesModel extends ArcheModel
     
     public function __construct()
     {
-        parent::__construct();  
+        parent::__construct();
     }
   
     public function getViewData(string $identifier = "", string $dissemination = ''): array
