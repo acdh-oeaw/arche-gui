@@ -20,7 +20,8 @@ class RootViewController extends ControllerBase
     private $generalFunctions;
     private $config;
     
-    public function __construct() {        
+    public function __construct()
+    {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
         
