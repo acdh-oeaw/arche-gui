@@ -23,7 +23,7 @@
                         <span class="res-rdfType"><a href="/browser/search/type={{ item.getAcdhType() }}&payload=false/titleasc/10/1">{{ item.getAcdhType()|trans }}</a></span>
                     </div>
                     <!-- if the type is metdata/resource/collection/project then we will display the availabledate -->
-                    {% if item.getAcdhType() == 'Metadata' or item.getAcdhType() == 'Resource' or item.getAcdhType() == 'Collection' or item.getAcdhType() == 'Project' %}
+                    {% if item.getAcdhType() == 'Metadata' or item.getAcdhType() == 'Resource' or item.getAcdhType() == 'TopCollection' or item.getAcdhType() == 'Collection' or item.getAcdhType() == 'Project' %}
                         {% if item.getData('acdh:hasAvailableDate') %}
                             {{ item.getPropTitle('acdh:hasAvailableDate') }}
                             <div class="res-property">

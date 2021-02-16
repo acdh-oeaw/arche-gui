@@ -90,21 +90,23 @@
     {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-summary-block.html.twig', {'basic': basic } ) }}
     
     <!-- RELATED PUBLICATIONS AND RESOURCES BLOCK -->
-    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
-        or basic.getAcdhType()|lower == 'publication' %}
+    {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' 
+        or basic.getAcdhType()|lower == 'project' or basic.getAcdhType()|lower == 'publication' %}
         <!-- Related Publication(s) and Resource(s) VIEW -->
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
     {% endif%}
     
     <!-- CITE BLOCK -->
-    {% if basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
+    {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
+            basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
             or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
         {% if extra.citeWidgetData %}
             {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
         {% endif%}
     {% endif%}    
     
-    {% if  basic.getAcdhType()|lower == 'collection' or  
+    {% if  basic.getAcdhType()|lower == 'topcollection' or
+            basic.getAcdhType()|lower == 'collection' or  
             basic.getAcdhType()|lower == 'organisation'  or  
             basic.getAcdhType()|lower == 'project'  or 
             basic.getAcdhType()|lower == 'publication' or 

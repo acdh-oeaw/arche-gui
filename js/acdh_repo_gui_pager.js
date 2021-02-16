@@ -139,7 +139,7 @@ jQuery(function($) {
                 searchStr = searchValues[0];
             }
             if(searchValues[1]){
-                urlOrder = searchValues[1];
+                urlOrder = searchValues[1];                
             }
             if(searchValues[2]){
                 urlLimit = searchValues[2];
@@ -341,8 +341,7 @@ jQuery(function($) {
             let newUrlOrder = "&order="+orderBy;
             let cleanPath = getCleanPath();
             newurl = window.location.protocol + "//" + window.location.host + cleanPath + newUrlPage + newUrlLimit + newUrlOrder; 
-            window.history.pushState({path:newurl},'',newurl);
-            
+            window.history.pushState({path:newurl},'',newurl);            
         }  
     }
     

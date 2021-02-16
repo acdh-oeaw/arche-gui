@@ -45,7 +45,7 @@
             </span>
         </div>
     </div>
-    {% if data.acdhType|lower == "collection" %}
+    {% if data.acdhType|lower == "collection" or data.acdhType|lower == "topcollection" %}
         <div class="res-el res-info col-block col-lg-12">
             <div class="result-basic-info" >
                 <div class="res-act-button res-act-button-reverse res-act-button-treeview basic" style="text-align:left; margin-bottom:5px;">

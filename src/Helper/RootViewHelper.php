@@ -137,8 +137,8 @@ class RootViewHelper
                         $this->createObj(
                             $v->id,
                             'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection",
-                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."Collection"
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."TopCollection",
+                            $this->repo->getSchema()->__get('drupal')->vocabsNamespace."TopCollection"
                         )
                     );
                 }
