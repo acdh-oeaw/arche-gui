@@ -8,7 +8,7 @@ CREATE FUNCTION gui.count_root_views_func()
 AS $func$
 DECLARE 
 BEGIN	
-/*count the root elements which type is collection and doesnt have an ispartof property */
+/*count the root elements which type is TopCollection */
 RETURN QUERY
     WITH root_count as (
 	select COUNT(DISTINCT(r.id))
