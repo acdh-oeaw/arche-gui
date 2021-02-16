@@ -16,12 +16,7 @@ RETURN QUERY
 	left join relations as r on r.id = m.id
 	where
             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-            and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
-            and NOT EXISTS ( 
-                SELECT 1 from relations as r2 where r2.id = m.id  
-                    and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-            )
+            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'            
     ) select * from root_count;
 END
 $func$
@@ -65,12 +60,7 @@ WITH root_data as (
 	left join relations as r on r.id = m.id
 	where
 		m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-		and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
-		and NOT EXISTS ( 
-			SELECT 1 from relations as r2 where r2.id = m.id  
-				and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-		)
+		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'		
 ) select 
 rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
 (CASE WHEN 
@@ -670,12 +660,7 @@ CREATE TEMP TABLE count_main_collections AS (
         left join relations as r on r.id = m.id
         where
             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-            and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'	
-            and NOT EXISTS ( 
-                SELECT 1 from relations as r2 where r2.id = m.id  
-                and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
-            )
+            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'
     ) select count(*) as id from count_main_collections
 );
 RETURN QUERY
@@ -875,8 +860,7 @@ WITH query_data as (
             left join relations as r on r.id = m.id
             where
                 m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-                and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-                and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'
                 and r.id NOT IN ( 
                     SELECT DISTINCT(r.id) from metadata_view as m left join relations as r on r.id = m.id
                         where
@@ -936,8 +920,7 @@ WITH query_data as (
         left join relations as r on r.id = m.id
         where
             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'
-            and r.property != 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'
             and r.id NOT IN ( 
                 SELECT 
                     DISTINCT(r.id) 
