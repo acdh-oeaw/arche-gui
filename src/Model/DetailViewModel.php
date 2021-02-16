@@ -16,7 +16,7 @@ class DetailViewModel extends ArcheModel
     
     public function __construct()
     {
-        parent::__construct();  
+        parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
     
