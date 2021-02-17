@@ -9,8 +9,8 @@ namespace Drupal\acdh_repo_gui\Object;
  */
 class CiteObject extends \Drupal\acdh_repo_gui\Model\ArcheModel
 {
-    private static $citeAcdhTypes = array("Collection", "Project", "Resource", "Publication", "Metadata");
-    private static $citeAcdhParentTypes = array("Collection", "Project");
+    private static $citeAcdhTypes = array("TopCollection", "Collection", "Project", "Resource", "Publication", "Metadata");
+    private static $citeAcdhParentTypes = array("TopCollection","Collection", "Project");
     private $resObj;
     private $parent;
     public $cite;
