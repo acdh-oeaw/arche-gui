@@ -10,8 +10,10 @@ class ResourceObject
     private $properties;
     private $acdhid;
     private $repoid;
-    private $language;
+    private $language = 'en';
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
+    private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
+    
    
     public function __construct(array $data, $config, string $language = 'en')
     {
@@ -33,6 +35,14 @@ class ResourceObject
         
         //set acdhid /repoid / repourl
         $this->repoid = $this->getRepoID();
+    }
+    
+    /**
+     * Get the biblatex disserv url
+     * @return string
+     */
+    public function getBiblatexUrl(): string {
+        return $this->biblatexUrl.'?id='.$this->getAcdhID().'&lang='.$this->language;
     }
     
     /**
@@ -216,6 +226,8 @@ class ResourceObject
         }
         return str_replace('/api/', '/browser/oeaw_detail/', $this->config->getBaseUrl()).$this->repoid;
     }
+    
+    
     
     /**
      * Get the repo identifier

@@ -14,7 +14,8 @@ repo-styles:
         js/jstree.min.js: {}
         js/dataTables.bootstrap4.min.js: {}
         js/datatable_init.js: {}
-        js/acdh_repo_gui_pager.js: {}        
+        js/acdh_repo_gui_pager.js: {}   
+        js/citation-0.4.0-8.min.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form   

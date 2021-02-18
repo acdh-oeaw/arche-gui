@@ -133,15 +133,15 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         
         // check the dissemination services
         if (isset($dv[0]->id) && !is_null($dv[0]->id)) {
-            $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
+            $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);            
         }
         
         $parent = "";
         if (isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
             $parent = $this->repo->getBaseUrl().$this->basicViewData->extra->breadcrumb[0]->parentid;
         }
-        $cite = new \Drupal\acdh_repo_gui\Object\CiteObject();
-        $this->basicViewData->extra->citeWidgetData = $cite->createCiteObject($this->basicViewData->basic, $parent);
+        //$cite = new \Drupal\acdh_repo_gui\Object\CiteObject();
+        //$this->basicViewData->extra->citeWidgetData = $cite->createCiteObject($this->basicViewData->basic, $parent);
         
         $this->setToolTip();
 

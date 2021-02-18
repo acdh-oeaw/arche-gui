@@ -1,44 +1,44 @@
 <link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
 
 <!--   MAIN DETAIL VIEW -->
-    <input type="hidden" id="insideUri" name="insideUri" value="{{ basic.getRepoId() }}">
-    <input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
-    
-    <!--  set up the numberofitems value for the resource, we will use it to handle the child tree view display -->
-    {% if basic.getData('acdh:hasNumberOfItems')[0].value %}
-        <input type="hidden" id="numberOfItems" name="numberOfItems" value="{{ basic.getData('acdh:hasNumberOfItems')[0].value }}">
-    {% endif %}
-    
-    <div class="loader-div">
-        <div class="loader-bg">
-            <div class="loader"></div>
-        </div>
+<input type="hidden" id="insideUri" name="insideUri" value="{{ basic.getRepoId() }}">
+<input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
+
+<!--  set up the numberofitems value for the resource, we will use it to handle the child tree view display -->
+{% if basic.getData('acdh:hasNumberOfItems')[0].value %}
+    <input type="hidden" id="numberOfItems" name="numberOfItems" value="{{ basic.getData('acdh:hasNumberOfItems')[0].value }}">
+{% endif %}
+
+<div class="loader-div">
+    <div class="loader-bg">
+        <div class="loader"></div>
     </div>
-    
-    {% if extra.breadcrumb %}
-        {% set breadcrumbLength = extra.breadcrumb|length  %}
-        {% for key, value in extra.breadcrumb %}
-            {% if value.parenttitle %}
-                {% if breadcrumbLength > 3 and key > 0 and key < breadcrumbLength - 1 %}
-                    {% set breadcrumbTitle = "..." %}
-                {% else %}
-                    {% set breadcrumbTitle = value.parenttitle  %}
-                {% endif %} 
-                <a id='archeHref' href='/browser/oeaw_detail/{{value.parentid}}' title='{{ value.parenttitle }}'>{{  breadcrumbTitle }}</a> 
-                {% if breadcrumbLength -1 >= key %}
-                    /  
-                {% endif %}
+</div>
+
+{% if extra.breadcrumb %}
+    {% set breadcrumbLength = extra.breadcrumb|length  %}
+    {% for key, value in extra.breadcrumb %}
+        {% if value.parenttitle %}
+            {% if breadcrumbLength > 3 and key > 0 and key < breadcrumbLength - 1 %}
+                {% set breadcrumbTitle = "..." %}
+            {% else %}
+                {% set breadcrumbTitle = value.parenttitle  %}
+            {% endif %} 
+            <a id='archeHref' href='/browser/oeaw_detail/{{value.parentid}}' title='{{ value.parenttitle }}'>{{  breadcrumbTitle }}</a> 
+            {% if breadcrumbLength -1 >= key %}
+                /  
             {% endif %}
-        {% endfor %}
-    {% endif %}
-    
-    <h3 class="single-res-heading">
-            {{ "Overview"|trans }}
-        <div class="res-act-button res-act-button-expertview basic">
-            <i class="material-icons">&#xE896;</i>
-            <span>{{ "Switch to Expert-View"|trans }}</span>
-        </div>
-        {% if basic.getRepoGuiUrl() %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<h3 class="single-res-heading">
+    {{ "Overview"|trans }}
+    <div class="res-act-button res-act-button-expertview basic">
+        <i class="material-icons">&#xE896;</i>
+        <span>{{ "Switch to Expert-View"|trans }}</span>
+    </div>
+    {% if basic.getRepoGuiUrl() %}
         <div class="res-act-button res-act-button-copy-url" id="res-act-button-copy-url" data-copyuri="{{ basic.getRepoGuiUrl() }}">
             <span id="copy-url-button">
                 <i class="material-icons">&#xE157;</i>
@@ -51,75 +51,86 @@
                 <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getCopyResourceLink() }}"/>
             </span>
         </div>
-        {% endif %}
-    </h3> 
-    
-    <!-- get the views based on the type -->
-    <div class="single-res-overview single-res-overview-basic">
-        
-        {% if basic.getAcdhType()|lower == 'person'  %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
-        {% elseif basic.getAcdhType()|lower == 'project' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
-        {% elseif basic.getAcdhType()|lower == 'organisation' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
-        {% elseif basic.getAcdhType()|lower == 'place' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
-        {% elseif basic.getAcdhType()|lower == 'publication' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }} 
-        {% elseif basic.getSkosType()|lower == 'concept' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'result': basic } ) }}      
-        {% elseif basic.getSkosType()|lower == 'conceptscheme' %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-conceptscheme.html.twig', {'result': basic } ) }}          
-        {% else  %}
-           {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
-        {% endif %}
-        
-    </div>
-	
-   <!-- EXPERT VIEW BLOCK -->
-    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic, 'extra': extra.tooltip } ) }}
-   
-    
-    <!-- DISSEMINATION BLOCK -->
-    {% if dissemination %}
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basic.getAccessRestriction() } ) }}
     {% endif %}
-    
-    <!-- SUMMARY BLOCK -->
+</h3> 
+
+<!-- get the views based on the type -->
+<div class="single-res-overview single-res-overview-basic">
+
+    {% if basic.getAcdhType()|lower == 'person'  %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
+    {% elseif basic.getAcdhType()|lower == 'project' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
+    {% elseif basic.getAcdhType()|lower == 'organisation' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
+    {% elseif basic.getAcdhType()|lower == 'place' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
+    {% elseif basic.getAcdhType()|lower == 'publication' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }} 
+    {% elseif basic.getSkosType()|lower == 'concept' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'result': basic } ) }}      
+    {% elseif basic.getSkosType()|lower == 'conceptscheme' %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-conceptscheme.html.twig', {'result': basic } ) }}          
+    {% else  %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
+    {% endif %}
+
+</div>
+
+<!-- EXPERT VIEW BLOCK -->
+<div id="expert-view-div">
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic, 'extra': extra.tooltip } ) }}
+</div>
+
+<!-- DISSEMINATION BLOCK -->
+{% if dissemination %}
+    <div id="dissemination-view-div">
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basic.getAccessRestriction() } ) }}
+    </div>
+{% endif %}
+
+<!-- SUMMARY BLOCK -->
+<div id="summary-view-div">
     {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-summary-block.html.twig', {'basic': basic } ) }}
-    
-    <!-- RELATED PUBLICATIONS AND RESOURCES BLOCK -->
-    {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' 
+</div>
+
+<!-- RELATED PUBLICATIONS AND RESOURCES BLOCK -->
+{% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' 
         or basic.getAcdhType()|lower == 'project' or basic.getAcdhType()|lower == 'publication' %}
-        <!-- Related Publication(s) and Resource(s) VIEW -->
+<!-- Related Publication(s) and Resource(s) VIEW -->
+    <div id="rel-public-div">
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
-    {% endif%}
+    </div>
+{% endif%}
+
+<!-- CITE BLOCK -->
+{% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
+        basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
+        or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
+
+    <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
     
-    <!-- CITE BLOCK -->
-    {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
-            basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
-            or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
-        {% if extra.citeWidgetData %}
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig', {'result': extra.citeWidgetData } ) }}
-        {% endif%}
-    {% endif%}    
-    
-    {% if  basic.getAcdhType()|lower == 'topcollection' or
-            basic.getAcdhType()|lower == 'collection' or  
-            basic.getAcdhType()|lower == 'organisation'  or  
-            basic.getAcdhType()|lower == 'project'  or 
-            basic.getAcdhType()|lower == 'publication' or 
-            basic.getAcdhType()|lower == 'place' or 
-            basic.getAcdhType()|lower == 'person' or 
-            basic.getAcdhType()|lower == 'concept' or
-            basic.getSkosType()|lower == 'conceptscheme'
-    %}
-   
-        <div id="child-div-content">
-            {{ extra.childData.getContent()|raw }}
-        </div>
-        
-   {% endif%}
+    <div id="cite-div">
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig') }}
+    </div>
+
+{% endif%}    
+
+{% if  basic.getAcdhType()|lower == 'topcollection' or
+    basic.getAcdhType()|lower == 'collection' or  
+    basic.getAcdhType()|lower == 'organisation'  or  
+    basic.getAcdhType()|lower == 'project'  or 
+    basic.getAcdhType()|lower == 'publication' or 
+    basic.getAcdhType()|lower == 'place' or 
+    basic.getAcdhType()|lower == 'person' or 
+    basic.getAcdhType()|lower == 'concept' or
+    basic.getSkosType()|lower == 'conceptscheme'
+%}
+
+    <div id="child-div-content">
+        {{ extra.childData.getContent()|raw }}
+    </div>
+
+{% endif%}
 <br>
 
