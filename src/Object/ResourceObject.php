@@ -41,7 +41,8 @@ class ResourceObject
      * Get the biblatex disserv url
      * @return string
      */
-    public function getBiblatexUrl(): string {
+    public function getBiblatexUrl(): string
+    {
         return $this->biblatexUrl.'?id='.$this->getAcdhID().'&lang='.$this->language;
     }
     
