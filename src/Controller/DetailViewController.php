@@ -133,7 +133,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         
         // check the dissemination services
         if (isset($dv[0]->id) && !is_null($dv[0]->id)) {
-            $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);            
+            $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
         
         $parent = "";
