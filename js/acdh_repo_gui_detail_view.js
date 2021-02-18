@@ -95,6 +95,9 @@ jQuery(function ($) {
 
                 createCiteTab('harvard', false);
                 createCiteContent(cite.get(opt), 'harvard', false);
+                
+                createCiteTab('BiblaTex', false);
+                createCiteContent(data, 'BiblaTex', false);
 
 
             }).error(function (data) {
