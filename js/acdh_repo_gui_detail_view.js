@@ -41,6 +41,7 @@ jQuery(function ($) {
         if (!first) {
             selected = 'hidden';
         }
+        console.log(data);
         var html = "<span class='cite-content " + selected + "' id='highlight-" + type.toLowerCase() + "'>" + data + "</span>";
         $('#cite-content-figure').append(html);
     }

@@ -148,3 +148,7 @@
 .cite-style {
     margin-right: 1px !important;
 }
+
+#highlight-biblatex {
+    white-space: break-spaces !important;
+}
