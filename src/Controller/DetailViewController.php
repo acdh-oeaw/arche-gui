@@ -140,8 +140,6 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         if (isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
             $parent = $this->repo->getBaseUrl().$this->basicViewData->extra->breadcrumb[0]->parentid;
         }
-        //$cite = new \Drupal\acdh_repo_gui\Object\CiteObject();
-        //$this->basicViewData->extra->citeWidgetData = $cite->createCiteObject($this->basicViewData->basic, $parent);
         
         $this->setToolTip();
 

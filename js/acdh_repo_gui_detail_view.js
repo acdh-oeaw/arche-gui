@@ -26,23 +26,37 @@ jQuery(function ($) {
         }
     }
 
-    function createCiteTab(type, first) {
+    /**
+     * Generate the cite tab header
+     * @param string type
+     * @param string first
+     * @param string typeid -> id for the handle event
+     * @returns string
+     */
+    function createCiteTab(type, first, typeid) {
         var selected = 'selected';
         if (!first) {
             selected = '';
         }
-        var html = "<div class='cite-style " + selected + "' id='cite-tab-" + type.toLowerCase() + "'>" + type.toUpperCase() + "</a></div>";
+        var html = "<div class='cite-style " + selected + "' id='cite-tab-" + typeid.toLowerCase() + "'>" + type.toUpperCase() + "</a></div>";
         //<a href='javascript://' id='cite-tooltip-" + type.toLowerCase() + "' data-toggle='cite-tooltip-" + type.toLowerCase() + "'  data-placement='right' data-html='true' data-trigger='focusv title='" + type.toLowerCase() + "'><i class='material-icons'>&#xE88F;</i>
         $('#cite-selector-div').append(html);
     }
 
-    function createCiteContent(data, type, first) {
+    /**
+     * Generate the cite block content
+     * @param string data
+     * @param string typeid -> id for the handle event
+     * @param string first
+     * @returns string
+     */
+    function createCiteContent(data, typeid, first) {
         var selected = 'selected';
         if (!first) {
             selected = 'hidden';
         }
-        console.log(data);
-        var html = "<span class='cite-content " + selected + "' id='highlight-" + type.toLowerCase() + "'>" + data + "</span>";
+
+        var html = "<span class='cite-content " + selected + "' id='highlight-" + typeid.toLowerCase() + "'>" + data + "</span>";
         $('#cite-content-figure').append(html);
     }
 
@@ -64,42 +78,59 @@ jQuery(function ($) {
                 //console.log(data);
                 let cite = new Cite(data);
                 //APA
-                var opt = {
-                    format: 'string'
-                }
-                opt.type = 'html';
-                opt.style = 'citation-apa';
-                opt.lang = 'en-US';
-
-                createCiteTab('apa', true);
-                //$('#highlight-apa').html(cite.get(opt));
-                createCiteContent(cite.get(opt), 'apa', true);
-
+                /*
+                 var opt = {
+                 format: 'string'
+                 };
+                 opt.type = 'html';
+                 opt.style = 'citation-apa';
+                 opt.lang = 'en-US';
+                 
+                 createCiteTab('apa', true);
+                 //$('#highlight-apa').html(cite.get(opt));
+                 createCiteContent(cite.get(opt), 'apa', true);
+                 */
                 //Vancouver
                 var opt = {
                     format: 'string'
-                }
+                };
                 opt.type = 'html';
                 opt.style = 'citation-vancouver';
                 opt.lang = 'en-US';
 
-                createCiteTab('vancouver', false);
-                createCiteContent(cite.get(opt), 'vancouver', false);
+                createCiteTab('vancouver', true, 'vancouver');
+                createCiteContent(cite.get(opt), 'vancouver', true);
 
                 //Vancouver
                 var opt = {
                     format: 'string'
-                }
+                };
                 opt.type = 'html';
                 opt.style = 'citation-harvard1';
                 opt.lang = 'en-US';
 
-                createCiteTab('harvard', false);
+                createCiteTab('harvard', false, 'harvard');
                 createCiteContent(cite.get(opt), 'harvard', false);
-                
-                createCiteTab('BiblaTex', false);
+
+                createCiteTab('BiblaTex', false, 'biblatex');
                 createCiteContent(data, 'BiblaTex', false);
 
+                let templateName = 'apa-6th';
+                var template = "";
+                url_csl_content("/browser/modules/contrib/arche-gui/csl/apa-6th-edition.csl").success(function (data) {
+
+                    template = data;
+                    Cite.CSL.register.addTemplate(templateName, template);
+
+                    var opt = {
+                        format: 'string'
+                    };
+                    opt.type = 'html';
+                    opt.style = 'citation-' + templateName;
+                    opt.lang = 'en-US';
+                    createCiteTab('apa 6th', false, 'apa-6th');
+                    createCiteContent(cite.get(opt), 'apa-6th', false);
+                });
 
             }).error(function (data) {
                 $('#cite-content-div').addClass('show');
@@ -111,6 +142,10 @@ jQuery(function ($) {
         }
     }
 
+    function url_csl_content(url) {
+        return $.get(url);
+    }
+
     function handleCiteTabEvents(obj, selected) {
         $('#' + selected).removeClass('selected');
         let figId = selected.replace('cite-tab-', 'highlight-');
@@ -120,15 +155,12 @@ jQuery(function ($) {
         $('#' + id).addClass('selected');
         let contentId = id.replace('cite-tab-', 'highlight-');
         $('#' + contentId).removeClass('hidden').addClass('selected');
-
     }
-
-
 
     $(document).ready(function () {
         /** add hasTitle value for the document title in every detail view **/
         changeTitle();
-        
+
         //CITE Block
         showCiteBlock();
 
@@ -202,6 +234,7 @@ jQuery(function ($) {
     }
 
     $(document).delegate(".res-act-button-treeview", "click", function (e) {
+
         if ($(this).hasClass('basic')) {
             $('.children-overview-basic').hide();
             $('.child-ajax-pagination').hide();
@@ -210,44 +243,42 @@ jQuery(function ($) {
             $(this).addClass('tree');
             $(this).children('span').text(Drupal.t('Switch to List-View'));
             let numberOfChildElements = $('#numberOfItems').val();
-            if (numberOfChildElements > 10000) {
-                $('#collectionBrowser').html("<h3>Error: </h3><p>" + Drupal.t("This Resource has more than 10.000 child elements! Please use the download collection script!") + "</p>");
-                return false;
-            }
+            /* REMOVED - https://redmine.acdh.oeaw.ac.at/issues/18950
+             if (numberOfChildElements > 10000) {
+             $('#collectionBrowser').html("<h3>Error: </h3><p>" + Drupal.t("This Resource has more than 10.000 child elements! Please use the download collection script!") + "</p>");
+             return false;
+             }*/
             //get the data
             var url = $('#insideUri').val();
             if (url) {
+                $('#collectionBrowser').jstree({
+                    core: {
+                        'check_callback': false,
+                        data: {
+                            "url": '/browser/get_collection_data/' + url,
+                            "dataType": "json"
+                        },
+                        themes: {stripes: true},
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $('#collectionBrowser').html("<h3>Error: </h3><p>" + jqXHR.reason + "</p>");
+                        }
+                    },
+                    search: {
+                        case_sensitive: false,
+                        show_only_matches: true
+                    },
+                    plugins: ['search']
+                });
+                //handle the node clicking to download the file
+                $('#collectionBrowser').bind("click.jstree", function (node, data) {
+                    if (node.originalEvent.target.id) {
 
-                $('#collectionBrowser')
-                        .jstree({
-                            core: {
-                                'check_callback': false,
-                                data: {
-                                    "url": '/browser/get_collection_data/' + url,
-                                    "dataType": "json"
-                                },
-                                themes: {stripes: true},
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    $('#collectionBrowser').html("<h3>Error: </h3><p>" + jqXHR.reason + "</p>");
-                                }
-                            },
-                            search: {
-                                case_sensitive: false,
-                                show_only_matches: true
-                            },
-                            plugins: ['search']
-                        });
-                $('#collectionBrowser')
-                        //handle the node clicking to download the file
-                        .bind("click.jstree", function (node, data) {
-                            if (node.originalEvent.target.id) {
-
-                                var node = $('#collectionBrowser').jstree(true).get_node(node.originalEvent.target.id);
-                                if (node.original.encodedUri) {
-                                    window.location.href = "/browser/oeaw_detail/" + node.original.uri;
-                                }
-                            }
-                        });
+                        var node = $('#collectionBrowser').jstree(true).get_node(node.originalEvent.target.id);
+                        if (node.original.encodedUri) {
+                            window.location.href = "/browser/oeaw_detail/" + node.original.uri;
+                        }
+                    }
+                });
             }
         } else {
             $('.children-overview-tree').hide();
