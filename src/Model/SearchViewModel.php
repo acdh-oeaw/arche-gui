@@ -124,42 +124,63 @@ class SearchViewModel extends ArcheModel
         return array('count' => $cnt, 'data' => $this->sqlResult);
     }
     
-    /**
-    * get the search view data
-    *
-    * @return array
-    */
+    
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
     {
-        //helper function to create object from the metavalue string
+        $result = array();
         $this->metaObj = $metavalue;
-        //init the values for the paging
         $this->initPaging($limit, $page, $order);
-        $count = 0;
-        //user selected words and type
-        if (isset($this->metaObj->words)) {
-            $count = $this->countWordsFromDb();
-            if ((int)$count > 0) {
-                $this->getWordsFromDb();
-            }
-        } elseif (isset($this->metaObj->years)) {
-            $count = $this->countYearsFromDb();
-            if ((int)$count > 0) {
-                $this->getYearsFromDb();
-            }
-        } elseif (isset($this->metaObj->type)) {
-            $count = $this->countTypesFromDb();
-            if ((int)$count > 0) {
-                //user selected just type
-                $this->getTypesFromDB();
-            }
+        $sqlYears = $this->formatYearsFilter_V2();
+        $sqlTypes = $this->formatTypeFilter_V2();
+        if (isset($this->metaObj->words) && (count($this->metaObj->words) > 0)) {
+            $sqlWords = implode(" & ", $this->metaObj->words);
+        } else {
+            $sqlWords = (string)"*";
         }
         
+        $this->setUpPayload();
+        
+        try {
+            $this->setSqlTimeout('30000');
+            //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
+            $query = $this->repodb->query(
+                "select * from gui.search_full_v2_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
+                array(
+                    ':wordStr' => (string)$sqlWords,
+                    ':yearStr' => (string)$sqlYears,
+                    ':lang' => $this->siteLang,
+                    ':limit' => $this->limit,
+                    ':offset' => $this->offset,
+                    ':order' => $this->orderby,
+                    ':order_prop' => $this->orderby_column,
+                    ':binarySearch' => $this->binarySearch
+                ),
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
+            );
+            $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);            
+            $this->changeBackDBConnection();
+        } catch (\Exception $ex) {
+            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        }
+       
         if ($this->sqlResult == null) {
             $this->sqlResult = array();
         }
-        return array('count' => $count, 'data' => $this->sqlResult);
+        if (isset($this->sqlResult[0]->cnt)) {
+            $cnt = $this->sqlResult[0]->cnt;
+        } else {
+            $cnt = 0;
+        }
+        
+        return array('count' => $cnt, 'data' => $this->sqlResult);
     }
+    
     
     /**
      * Change the years format for the sql query

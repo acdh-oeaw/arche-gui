@@ -1311,478 +1311,347 @@ $func$
 LANGUAGE 'plpgsql';
 
 
-/*
-* -------------------------------------------------------------------------------------------------
-*/
+
 
 /**
-* OLD SEARCH SQL section
-*/
-
-/*
-* types count
-* _acdhType = the array of the properties what we want to use during the search -> ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', 'https://vocabs.acdh.oeaw.ac.at/schema#Resource']
-* _acdhyears -> the selected years as a string for example => '2020 or 2019'
-*/
-DROP FUNCTION gui.search_count_types_view_func(text[], text, text);
-CREATE FUNCTION gui.search_count_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _acdhyears text DEFAULT '')
-  RETURNS table (id bigint)
+* New search version
+**/
+DROP FUNCTION gui.search_full_v2_func(text, text[], text, text, text, text, text, text, bool);
+CREATE FUNCTION gui.search_full_v2_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE )
+    RETURNS table (acdhid bigint, title text, description text, acdhtype text, headline_text text, headline_desc text, headline_binary text, avdate timestamp, accessres text, titleimage text, ids text, cnt bigint)
 AS $func$
-DECLARE 
-	_lang2 text := 'de';
+DECLARE	
+    _lang2 text := 'de';
+    _lang3 text := 'und';
+    limitint bigint := cast ( _limit as bigint);
+    pageint bigint := cast ( _page as bigint);
+    _searchstr text := LOWER(_searchstr);
 BEGIN
-    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-	
-DROP TABLE IF EXISTS  typeids;
-CREATE TEMP TABLE typeids AS (        
-    WITH ids AS (
-        SELECT 
-            DISTINCT fts.id,
-            COALESCE(
-                    (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-                    (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
-            ) as title,
-            (select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate
-        FROM full_text_search as fts
-        WHERE  
-        (
-            fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-            and 
-            fts.raw  = ANY (_acdhtype)
-        )
-    ) select * from ids
-);
+--remove the tables if they are exists
+DROP TABLE IF EXISTS title_data;
+DROP TABLE IF EXISTS type_data;
+DROP TABLE IF EXISTS years_data;
+DROP TABLE IF EXISTS collection_data;
 
-DROP TABLE IF EXISTS  typeidsFiltered;
-CREATE TEMP TABLE typeidsFiltered AS (   
-WITH ids2 AS (    
-select DISTINCT(i.id), i.title, i.avdate from typeids as i
-left join full_text_search as fts on fts.id = i.id
-WHERE
-	CASE 
-	WHEN 
-		(_acdhyears <> '') IS TRUE  THEN
-		(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-		fts.raw similar to  _acdhyears )
-	WHEN (_acdhyears <> '') IS NOT TRUE THEN
-		(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
-		fts.raw IS NOT NULL)
-	END
-	order by i.id
-	) select * from ids2 
-);
+--create the dataset for the custom filter values
+--DROP TYPE IF EXISTS dataset CASCADE;
+IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gui_fulltext_dataset')  THEN 
+    CREATE TYPE gui_fulltext_dataset AS (acdhid bigint, headline_title text, headline_desc text, headline_binary text);
+END IF;
 
-RETURN QUERY
-select 
-Count(tf.id)
-from typeidsFiltered as tf;
-END
-$func$
-LANGUAGE 'plpgsql';
+--from php we can pass % so we need to remove then the years filter because then we dont filter years
+CASE WHEN (_acdhyears <> '' and _acdhyears != '%') THEN 
+    RAISE NOTICE USING MESSAGE = 'we have years string'; 
+ELSE 
+    _acdhyears = ''; 
+    RAISE NOTICE USING MESSAGE = 'no years string'; 
+END CASE;
 
-/**
-* Search types
-* _acdhType = the array of the properties what we want to use during the search -> ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', 'https://vocabs.acdh.oeaw.ac.at/schema#Resource']
-* _acdhyears -> the selected years as a string for example => '2020 or 2019'
-* _limit _page _orderby _orderby_prop is for the paging
-*/
-DROP FUNCTION gui.search_types_view_func(text[], text, text, text, text, text, text);
-CREATE FUNCTION gui.search_types_view_func(_acdhtype text[], _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhyears text DEFAULT '')
-  RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
-AS $func$
-DECLARE 
-	_lang2 text := 'de';
-	limitint bigint := cast ( _limit as bigint);
-	pageint bigint := cast ( _page as bigint);
-BEGIN
-RAISE NOTICE USING MESSAGE = _acdhtype;
-	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-	
-DROP TABLE IF EXISTS  typeids;
-CREATE TEMP TABLE typeids AS (        
-WITH ids AS (
-		SELECT DISTINCT fts.id,
-		COALESCE(
-			(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-			(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
-		)
-		 as title,
-		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate
-		FROM full_text_search as fts
-		WHERE  
-			(
-			 fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-			and 
-			fts.raw  = ANY (_acdhtype)
-			)
-	) select * from ids
-);
+CASE WHEN (_searchstr <> '' and _searchstr != '*') THEN         
+    RAISE NOTICE USING MESSAGE = 'we have search string'; 
+ELSE 
+    _searchstr = ''; 
+    RAISE NOTICE USING MESSAGE = 'no search string'; 
+END CASE;
 
-DROP TABLE IF EXISTS  typeidsFiltered;
-CREATE TEMP TABLE typeidsFiltered AS (   
-WITH ids2 AS (    
-select DISTINCT(i.id), i.title, i.avdate from typeids as i
-left join full_text_search as fts on fts.id = i.id
-WHERE
-	i.title is not null and 
-	CASE 
-	WHEN 
-		(_acdhyears <> '') IS TRUE  THEN
-		(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-		fts.raw similar to  _acdhyears )
-	WHEN (_acdhyears <> '') IS NOT TRUE THEN
-		(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
-		fts.raw IS NOT NULL)
-	END
-	order by i.id
-	) select * from ids2 
-	order by  
-		(CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) END) ASC,
-         (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) DESC
-		limit limitint
-		offset pageint
-);
-													  
-													  
-DROP TABLE IF EXISTS  typesFinal;
-CREATE TEMP TABLE typesFinal AS (   
-WITH ids3 AS (  
-	select tf.*,
-	COALESCE(
-			(select mv.value from metadata_view as mv where mv.id = tf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-			(select mv.value from metadata_view as mv where mv.id = tf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
-		) description,
-	(select mv.value from metadata_view as mv where tf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(CASE WHEN 
-        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
-    THEN
-        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
+CREATE TEMPORARY TABLE collection_data of gui_fulltext_dataset;
+
+--check the search strings in title/description and binary content
+CASE 
+    WHEN (_searchstr <> '' ) IS TRUE THEN
+        RAISE NOTICE USING MESSAGE =  'search string query';
+        CREATE TEMPORARY TABLE title_data of gui_fulltext_dataset;
+        INSERT INTO title_data (acdhid, headline_title, headline_desc, headline_binary) select sd.id, sd.headline_title, sd.headline_desc, sd.headline_binary from gui.searchstrData(_searchstr, _lang, _binarySearch) as sd order by sd.id; 
+        INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.acdhid, td.headline_title, td.headline_desc, td.headline_binary from title_data as td;
     ELSE
-        (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = tf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
-	END) as accessres,
-	(select mv.value from metadata_view as mv where tf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
-	from typeidsFiltered as tf
-	) select * from ids3
+        RAISE NOTICE USING MESSAGE =  'search string query skipped';
+END CASE;
+
+--check the type
+CASE 
+    WHEN _acdhtype  = '{}' THEN
+        --we dont have type definied so all type will be searchable.
+        RAISE NOTICE USING MESSAGE =  'type query skipped';
+    WHEN _acdhtype  != '{}' THEN
+        -- we have type definied
+        RAISE NOTICE USING MESSAGE =  'type query ';
+        CASE 
+            WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
+                DROP TABLE IF EXISTS type_data;
+                CREATE TEMPORARY TABLE type_data AS (
+                    WITH type_data as (
+                        SELECT 
+                            DISTINCT(fts.id),                            
+                            cd.headline_title,
+                            cd.headline_desc,
+                            cd.headline_binary
+                        FROM collection_data as cd
+                        LEFT JOIN full_text_search as fts on cd.acdhid = fts.id
+                        WHERE
+                        (
+                            fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                            and 
+                            fts.raw  = ANY (_acdhtype)
+                        ) limit 10000
+                    ) select * from type_data
+                );
+		--remove the data which is not in the 
+                DELETE FROM collection_data cd
+                WHERE NOT EXISTS
+                ( SELECT 1 FROM type_data td WHERE td.id = cd.acdhid );
+			
+            ELSE
+                RAISE NOTICE USING MESSAGE =  'type query insert to collection data';
+                CASE WHEN (_searchstr <> '' ) IS TRUE THEN
+                    RAISE NOTICE USING MESSAGE =  'type query SKIPPEd because we  have saecrh string but we dont have value!';
+                ELSE
+                    RAISE NOTICE USING MESSAGE =  'type query insert to collection data we dont have search string';
+			
+                    WITH type_data_temp as (
+                        SELECT 
+                            DISTINCT(fts.id),
+                            '' as headline_title,
+                            '' as headline_desc,
+                            '' as headline_binary
+                        from full_text_search as fts
+                        where
+                        (
+                            fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                            and 
+                            fts.raw  = ANY (_acdhtype)
+                        ) limit 10000
+                    )INSERT INTO collection_data (id, acdhid, headline_title, headline_desc, headline_binary) SELECT td.ftsid, td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data as td;
+        END CASE;	
+    END CASE;
+END CASE;
+
+CASE 
+    WHEN (_acdhyears <> '') IS TRUE THEN
+        RAISE NOTICE USING MESSAGE =  'years query';
+            CASE 
+                WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
+                    RAISE NOTICE USING MESSAGE =  'type query with have collection data';
+
+                    CREATE TEMPORARY TABLE years_data AS (
+                        WITH years_data as (
+                            SELECT 
+                                DISTINCT(fts.id),
+                                cd.headline_title,
+                                cd.headline_desc,
+                                cd.headline_binary
+                            FROM collection_data as cd
+                            LEFT JOIN full_text_search as fts on fts.id = cd.acdhid				
+                            WHERE
+                            (
+                                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                                TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
+                            )	limit 10000
+                        ) select * from years_data);
+
+                    --delete the differences
+                    DELETE FROM collection_data cd
+                    WHERE NOT EXISTS
+                    ( SELECT 1 FROM years_data yd WHERE yd.id = cd.acdhid );
+
+		ELSE
+                    RAISE NOTICE USING MESSAGE =  'years query insert to collection data';
+		
+                    CASE 
+                        WHEN _acdhtype  != '{}' AND (_searchstr <> '' ) IS TRUE THEN
+                            --we dont have type definied so all type will be searchable.
+                            RAISE NOTICE USING MESSAGE =  'type query skipped';
+			ELSE
+                            WITH years_data_temp as (
+                                SELECT 
+                                    DISTINCT(fts.id),
+                                    '' as headline_title,
+                                    '' as headline_desc,
+                                    '' as headline_binary
+                                FROM full_text_search as fts
+                                WHERE
+                                (
+                                    (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                                    TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
+                                ) limit 10000
+                            )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT  yd.id, yd.headline_title, yd.headline_desc, yd.headline_binary from years_data_temp as yd;
+
+                END CASE;
+        END CASE;	
+    WHEN (_acdhyears <> '') IS NOT TRUE THEN
+        RAISE NOTICE USING MESSAGE =  'years query skipped';
+END CASE;
+
+DROP TABLE IF EXISTS accessres;
+CREATE TEMPORARY TABLE accessres AS (
+    WITH accessres as (
+        select 
+            DISTINCT(mv.id), mv2.value, mv2.lang 
+        from metadata_view as mv 
+        left join metadata_view as mv2 on mv2.id = mv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+        where mv.value like 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/%'
+    ) select * from accessres order by id
 );
 
-RETURN QUERY
-select 
-tf.id, tf.title, CAST(tf.avdate as timestamp), tf.description, tf.accessres, tf.titleimage, tf.acdhtype
-from typesFinal as tf
-where tf.title is not null;
-END
-$func$
-LANGUAGE 'plpgsql';
-
-/**
-* Search years and types
-*/
-DROP FUNCTION gui.search_years_view_func(text, text, text, text, text, text, text[]);
-CREATE FUNCTION gui.search_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate',  _acdhtype text[] DEFAULT '{}')
-  RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
-AS $func$
-DECLARE 
-	_lang2 text := 'de';
-	limitint bigint := cast ( _limit as bigint);
-	pageint bigint := cast ( _page as bigint);
-BEGIN
-RAISE NOTICE USING MESSAGE = _acdhyears;
-	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-	
-DROP TABLE IF EXISTS yearsids;
-CREATE TEMP TABLE yearsids AS (        
-WITH ids AS (
-	SELECT DISTINCT fts.id,
-	COALESCE(
-		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
-	)as title,
-	(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate
-	FROM full_text_search as fts
-	WHERE 
-	(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' 
-	and
-	websearch_to_tsquery('simple', _acdhyears) @@ segments )
-	) select * from ids
+DROP TABLE IF EXISTS final_result;
+CREATE TEMPORARY TABLE final_result AS (
+    WITH final_result as (
+        select 
+            cd.acdhid, 
+            COALESCE(
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1),
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
+            ) as title,
+            COALESCE(
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1),
+                (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
+            ) as description,
+			 cd.headline_title, cd.headline_desc, cd.headline_binary,
+            (select mv.value from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' limit 1) as acdhtype,
+            (select CAST(mv.value as timestamp) as avdate from metadata_view as mv where mv.id = cd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,	 
+            COALESCE(
+                (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = cd.acdhid and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang limit 1),	
+                (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = cd.acdhid and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang2 limit 1),
+                (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = cd.acdhid and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and acs.lang = _lang3 limit 1),
+                (select acs.value from metadata_view as mv left join accessres as acs on acs.id = CAST(mv.value as BIGINT) where mv.id = cd.acdhid and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' limit 1)
+            ) as accessres,
+            (select mv.value from metadata_view as mv where mv.id = cd.acdhid  and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isTitleImageOf' limit 1) as titleimage,
+            (select string_agg(ids.ids, ',') from identifiers as ids where ids.id = cd.acdhid) as ids
+        from collection_data as cd
+    )select * from final_result order by acdhid
 );
 
+DROP TABLE IF EXISTS count_data;
+CREATE TEMPORARY TABLE count_data AS (
+    select count(*) as cnt from final_result as cfd where cfd.title is not null
+);
 
-DROP TABLE IF EXISTS  yearsidsFiltered;
-CREATE TEMP TABLE yearsidsFiltered AS (   
-WITH ids2 AS (  
-	select DISTINCT(i.id),i.title, i.avdate from yearsids as i
-	left join full_text_search as fts on fts.id = i.id
-	WHERE
-		CASE WHEN 
-			_acdhtype  = '{}' THEN
-			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-			fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
-		WHEN _acdhtype  != '{}' THEN
-			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-			fts.raw = ANY (_acdhtype) )
-		END
-) select * from ids2 
+RETURN QUERY 
+  select 
+        fd.acdhid,  fd.title, fd.description, fd.acdhtype,  fd.headline_title, fd.headline_desc, fd.headline_binary,  CAST(fd.avdate as timestamp) as avdate, fd.accessres, fd.titleimage, fd.ids, (select cd.cnt from count_data as cd) as cnt
+    from final_result as fd
+    where fd.title is not null
 	order by  
-		(CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) END) ASC,
-         (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) DESC
-		limit limitint
-		offset pageint
-);
-
-DROP TABLE IF EXISTS  yearsFinal;
-CREATE TEMP TABLE yearsFinal AS (   
-WITH ids3 AS (  
-	select yf.*,
-	COALESCE(
-		(select mv.value from metadata_view as mv where mv.id = yf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-		(select mv.value from metadata_view as mv where mv.id = yf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
-	) description,
-	(select mv.value from metadata_view as mv where yf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(CASE WHEN 
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
-        THEN
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
-        ELSE
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = yf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
-	END) as accessres,
-	(select mv.value from metadata_view as mv where yf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
-	from yearsidsFiltered as yf
-	) select * from ids3
-);
-
-RETURN QUERY
-select 
-yf.id, yf.title, CAST(yf.avdate as timestamp), yf.description, yf.accessres, yf.titleimage, yf.acdhtype
-from yearsFinal as yf;
+	CASE WHEN _orderby = 'desc' THEN
+          CASE _orderby_prop
+              -- Check for each possible value of sort_col.
+              WHEN 'title' THEN fd.title
+              WHEN 'type' THEN fd.acdhtype 
+              WHEN 'avdate' THEN CAST(fd.avdate as text) 
+              ELSE NULL
+          END
+      ELSE
+          NULL
+      END
+      DESC,
+	CASE WHEN _orderby = 'asc' THEN
+          CASE _orderby_prop
+              -- Check for each possible value of sort_col.
+              WHEN 'title' THEN fd.title
+              WHEN 'type' THEN fd.acdhtype 
+              WHEN 'avdate' THEN CAST(fd.avdate as text) 
+              ELSE NULL
+          END
+      ELSE
+          NULL
+      END
+      ASC
+	limit limitint
+    offset pageint; 
 END
 $func$
 LANGUAGE 'plpgsql';
 
 
-/**
-* Search words types and years
-*/
-DROP FUNCTION gui.search_words_view_func(text, text, text, text, text, text, text[], text);
-CREATE FUNCTION gui.search_words_view_func(_searchstr text, _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'avdate', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
-  RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text)
-AS $func$
+/** NEW TITLE DESC BINARY SQL **/
 
+DROP FUNCTION gui.searchstrData( text, text, bool);
+CREATE FUNCTION gui.searchstrData(_searchstr text DEFAULT '', _lang text DEFAULT 'en', _binarySearch bool DEFAULT FALSE )
+  RETURNS table (id bigint, headline_title text, headline_desc text, headline_binary text)
+AS $func$
 DECLARE	
-	_lang2 text := 'de';
-	limitint bigint := cast ( _limit as bigint);
-	pageint bigint := cast ( _page as bigint);
+    _lang2 text := 'de';
+    _lang3 text := 'und';   
+    --_searchstr text := LOWER(REPLACE(REPLACE(_searchstr, 'https://', ''), 'http://', ''));
+    _searchstr text := LOWER(_searchstr);
+    
 BEGIN
---RAISE NOTICE USING MESSAGE = _rdftype;
---RAISE NOTICE USING MESSAGE = _acdhyears;
-	IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 
-DROP TABLE IF EXISTS  wordsids;
-CREATE TEMP TABLE wordsids AS (        
-WITH ids AS (
-	SELECT DISTINCT fts.id,
-	COALESCE(
-		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-		(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1)
-	)
-	 as title,
-	(select mv.value from metadata_view as mv where mv.id = fts.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate
-	FROM full_text_search as fts
-	WHERE 
-	websearch_to_tsquery('simple', _searchstr) @@ segments  
-		AND 
-		(
-		 fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
-		or 
-		fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'
-		)
+DROP TABLE IF EXISTS std_data;
+DROP TABLE IF EXISTS sb_data;
 
-	) select DISTINCT(ids.id), ids.title, ids.avdate from ids where ids.title is not null
-);
+CASE WHEN (_searchstr <> '' ) IS TRUE THEN
+    CREATE TEMPORARY TABLE std_data AS (
+        WITH std_data as (
+            SELECT 
+                DISTINCT(fts.id),
+                trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_title,
+                '' as headline_desc,
+                '' as headline_binary
+            FROM full_text_search as fts 
+            WHERE   
+                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )	
+                
+        UNION 
+            SELECT 
+                DISTINCT(fts.id),
+                '' as headline_title,
+                trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_desc,
+                '' as headline_binary
+            FROM full_text_search as fts 
+            WHERE  
+                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+            limit 10000
+            			
+        ) select * from std_data
+    );
+    ELSE
+	RAISE NOTICE USING MESSAGE =  'searchstring is empty';
+END CASE;
 
-DROP TABLE IF EXISTS  wordsidsFiltered;
-CREATE TEMP TABLE wordsidsFiltered AS (   
-WITH ids2 AS (   
-	Select t1.id, t1.title, t1.avdate
-	FROM (
-		select DISTINCT(i.id),i.title, i.avdate from wordsids as i
-		left join full_text_search as fts on fts.id = i.id
-		WHERE
-			CASE WHEN 
-				_rdftype  = '{}' THEN
-				(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-				fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
-			WHEN _rdftype  != '{}' THEN
-				(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-				fts.raw = ANY (_rdftype) )
-			END) as t1
-	INNER JOIN (
-		select DISTINCT(i.id), i.title, i.avdate from wordsids as i
-		left join full_text_search as fts3 on fts3.id = i.id
-		where
-			CASE WHEN 
-				(_acdhyears <> '') IS TRUE  THEN
-				(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-				fts3.raw similar to  _acdhyears )
-			WHEN (_acdhyears <> '') IS NOT TRUE THEN
-				(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
-				fts3.raw IS NOT NULL)
-			END
-	) as t2 on t1.id = t2.id
-) select * from ids2 
-	order by  
-		(CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) END) ASC,
-         (CASE WHEN _orderby_prop = 'title' THEN ids2.title ELSE ids2.avdate END) DESC
-		limit limitint
-		offset pageint
-);
+CASE WHEN (_binarySearch IS TRUE) THEN
+    CREATE TEMPORARY TABLE sb_data AS (
+        WITH sb_data as (
+            SELECT 
+                DISTINCT(fts.id),
+                '' as headline_title,
+                '' as headline_desc,
+                CASE WHEN fts.property = 'BINARY' THEN
+                    trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g'))
+                ELSE '' 
+                END as headline_binary
+            FROM full_text_search as fts 
+            WHERE
+                 (fts.property = 'BINARY' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+            limit 10000	
+        ) select * from sb_data
+    );	
+ELSE
+    RAISE NOTICE USING MESSAGE =  'there is no binary search option';
+END CASE;
 
-DROP TABLE IF EXISTS  wordsFinal;
-CREATE TEMP TABLE wordsFinal AS (   
-WITH ids3 AS (  
-	select wf.*,
-	COALESCE(
-			(select mv.value from metadata_view as mv where mv.id = wf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-			(select mv.value from metadata_view as mv where mv.id = wf.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1)
-		) description,
-	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype,
-	(CASE WHEN 
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1) IS NULL
-        THEN
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1)
-        ELSE
-            (select mv2.value from metadata_view as mv left join metadata_view as mv2 on mv2.id = CAST(mv.value as BIGINT) where mv.id = wf.id and mv.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1)
-	END) as accessres,
-	(select mv.value from metadata_view as mv where wf.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage
-	from wordsidsFiltered as wf
-	) select * from ids3
-);
+DROP TABLE IF EXISTS final_string_result;
 
-RETURN QUERY
-select 
-wf.id, wf.title, CAST(wf.avdate as timestamp), wf.description, wf.accessres, wf.titleimage, wf.acdhtype
-from wordsFinal as wf;
-END
-$func$
-LANGUAGE 'plpgsql';
+if (SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE lower(table_name) = 'sb_data')) then
+    CREATE TEMPORARY TABLE final_string_result AS (
+        select * from std_data as std 
+        UNION
+        select * from sb_data as sb
+    );
+ELSE
+    CREATE TEMPORARY TABLE final_string_result AS (
+        select * from std_data as std 
+    );
+END IF;
 
-
-
-/**
-** YEARS SEARCH COUNT
-**/
-DROP FUNCTION gui.search_count_years_view_func(text, text, text[]);
-CREATE FUNCTION gui.search_count_years_view_func(_acdhyears text, _lang text DEFAULT 'en', _acdhtype text[] DEFAULT '{}')
-RETURNS table (id bigint)
-AS $func$
-DECLARE	
-	_lang2 text := 'de';
-	_lang text := 'en';
-	
-	BEGIN
-
-DROP TABLE IF EXISTS  yearsids;
-CREATE TEMP TABLE yearsids AS (        
-WITH ids AS (
-	SELECT DISTINCT fts.id
-	FROM full_text_search as fts
-	WHERE 
-	(fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' 
-	and
-	websearch_to_tsquery('simple', _acdhyears) @@ segments )
-	) select * from ids
-	);
-	
-DROP TABLE IF EXISTS  yearsidsFiltered;
-CREATE TEMP TABLE yearsidsFiltered AS (   
-WITH ids2 AS (    
-	select DISTINCT(i.id) from yearsids as i
-	left join full_text_search as fts on fts.id = i.id
-	WHERE
-		CASE WHEN 
-			_acdhtype  = '{}' THEN
-			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-			fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
-		WHEN _acdhtype  != '{}' THEN
-			(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-			fts.raw = ANY (_acdhtype) )
-		END
-	) select * from ids2
-);
-	
-RETURN QUERY
-select 
-Count(yf.id)
-from yearsidsFiltered as yf;
-END
-$func$
-LANGUAGE 'plpgsql';
-
-
-/**
-** WORD TYPE SEARCH COUNT
-**/
-DROP FUNCTION gui.search_count_words_view_func(text, text, text[], text);
-CREATE FUNCTION gui.search_count_words_view_func(_searchstr text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}', _acdhyears text DEFAULT '')
-  RETURNS table (id bigint)
-AS $func$
-
-DECLARE	
-	_lang2 text := 'de';
-	_lang text := 'en';
-	
-	BEGIN
-
-DROP TABLE IF EXISTS  wordsids;
-CREATE TEMP TABLE wordsids AS (        
-WITH ids AS (
-		SELECT DISTINCT fts.id
-		FROM full_text_search as fts
-		WHERE 
-		websearch_to_tsquery('simple', _searchstr) @@ segments  
-			AND 
-			(
-			 fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
-			or 
-			fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'
-			)
-        ) select ids.id from ids
-	);
-	
-DROP TABLE IF EXISTS  wordsidsFiltered;
-CREATE TEMP TABLE wordsidsFiltered AS (   
-WITH ids2 AS (    
-	Select t1.id
-	FROM (
-		select DISTINCT(i.id) from wordsids as i
-		left join full_text_search as fts on fts.id = i.id
-		WHERE
-			CASE WHEN 
-				_rdftype  = '{}' THEN
-				(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-				fts.raw LIKE 'https://vocabs.acdh.oeaw.ac.at/schema#%')
-			WHEN _rdftype  != '{}' THEN
-				(fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and
-				fts.raw = ANY (_rdftype) )
-			END) as t1
-	INNER JOIN (
-		select DISTINCT(i.id) from wordsids as i
-		left join full_text_search as fts3 on fts3.id = i.id
-		where
-			CASE WHEN 
-				(_acdhyears <> '') IS TRUE  THEN
-				(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-				fts3.raw similar to  _acdhyears )
-			WHEN (_acdhyears <> '') IS NOT TRUE THEN
-				(fts3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and	
-				fts3.raw IS NOT NULL)
-			END) as t2 on t1.id = t2.id
-	) select * from ids2
-);
-	
-RETURN QUERY
-select 
-Count(wf.id)
-from wordsidsFiltered as wf;
+RETURN QUERY 
+    SELECT T1.id, MAX(T1.headline_title) AS headline_title, MAX(T1.headline_desc) As headline_desc, MAX(T1.headline_binary) As headline_binary 
+    FROM final_string_result AS T1
+    JOIN final_string_result AS T2 ON T1.id = T2.id
+    GROUP BY T1.id;
 END
 $func$
 LANGUAGE 'plpgsql';

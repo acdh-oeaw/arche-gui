@@ -222,7 +222,19 @@ repo_search:
     page: "1"
   requirements:
     _permission: 'access content'
-    _access: 'TRUE'          
+    _access: 'TRUE'  
+
+repo_search_v2:    
+  path: '/search_v2/{metavalue}/{order}/{limit}/{page}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::generateView'
+    metavalue: ""
+    order: "datedesc"
+    limit: "10"
+    page: "1"
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'      
         
 repo_shibboleth_login:
     path: '/federated_login'
