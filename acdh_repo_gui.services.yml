@@ -11,3 +11,7 @@ services:
         class: Drupal\acdh_repo_gui\TwigExtension\ArcheTwigDateExtension
         tags:
             - { name: twig.extension }
+    acdh_repo_gui_composer.twig_extension:
+        class: Drupal\acdh_repo_gui\TwigExtension\ComposerTwigExtension
+        tags:
+            - { name: twig.extension }        
