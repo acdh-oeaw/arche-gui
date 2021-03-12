@@ -65,7 +65,6 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             );
             
             $guiData = array('data' => $this->helper->createView($data['data'], 2), 'pagination' => $pagination);
-           
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(

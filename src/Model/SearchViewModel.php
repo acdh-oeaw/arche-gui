@@ -157,7 +157,7 @@ class SearchViewModel extends ArcheModel
                 ),
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
-            $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);            
+            $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             error_log($ex->getMessage());
