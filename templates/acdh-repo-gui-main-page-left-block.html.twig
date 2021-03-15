@@ -30,33 +30,9 @@
             {% endif%}
 
             
-            {% if item.getData('acdh:hasDescription') %}
-                <div class="res-property res-property-desc">
-                    <span class="res-description">
-                         {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
-                    </span>
-                </div>
-            {% endif%}
             
-             <div class="res-actions">
-        
-                {% if item.getData('acdh:hasDescription') %}
-                    <div class="res-act-button res-act-button-summary closed">
-                            <i class="material-icons">&#xE145;</i>
-                            <span class="show_summary">{{ "Show Summary"|trans }}</span>
-                            <span class="hide_summary">{{ "Hide Summary"|trans }}</span>
-                    </div>
-                {% endif%}
-                
-                <div class="res-act-button">
-                    <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
-                        <i class="material-icons">&#xE873;</i>
-                        <span>{{ "Detailed View"|trans }}</span>
-                    </a>	
-                </div>
-                
-            </div>	
-
+            
+            
             {% if titleimage %}</div>{% endif%}
 
             {% if titleimage %}	
@@ -68,7 +44,35 @@
                     </div>
                 </div>
             {% endif%}   
-            	                                        
+            	
+            <div class="res-inside-wrap col-lg-12">
+                <div class="res-actions">
+
+                   {% if item.getData('acdh:hasDescription') %}
+                       <div class="res-act-button res-act-button-summary closed">
+                            <i class="material-icons">&#xE145;</i>
+                            <span class="show_summary" id="show_summary_{{  item.getRepoId() }}">{{ "Show Summary"|trans }}</span>
+                            <span class="hide_summary" id="summary_{{  item.getRepoId() }}">{{ "Hide Summary"|trans }}</span>
+                       </div>
+                   {% endif%}
+
+                   <div class="res-act-button">
+                       <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                           <i class="material-icons">&#xE873;</i>
+                           <span>{{ "Detailed View"|trans }}</span>
+                       </a>	
+                   </div>
+
+               </div>
+
+                {% if item.getData('acdh:hasDescription') %}
+                    <div class="res-property res-property-desc" id="res-property-desc-{{  item.getRepoId() }}">
+                        <span class="res-description">
+                             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                        </span>
+                    </div>
+                {% endif%}        
+            </div>
         </div>
     {% endfor %} 
 
