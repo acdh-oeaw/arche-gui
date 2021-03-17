@@ -75,46 +75,10 @@ jQuery(function ($) {
                 $('#cite-loader').addClass('hidden');
 
                 const Cite = require('citation-js');
-                //console.log(data);
                 let cite = new Cite(data);
-                //APA
-                /*
-                 var opt = {
-                 format: 'string'
-                 };
-                 opt.type = 'html';
-                 opt.style = 'citation-apa';
-                 opt.lang = 'en-US';
-                 
-                 createCiteTab('apa', true);
-                 //$('#highlight-apa').html(cite.get(opt));
-                 createCiteContent(cite.get(opt), 'apa', true);
-                 */
-                //Vancouver
-                var opt = {
-                    format: 'string'
-                };
-                opt.type = 'html';
-                opt.style = 'citation-vancouver';
-                opt.lang = 'en-US';
-
-                createCiteTab('vancouver', true, 'vancouver');
-                createCiteContent(cite.get(opt), 'vancouver', true);
-
-                //Vancouver
-                var opt = {
-                    format: 'string'
-                };
-                opt.type = 'html';
-                opt.style = 'citation-harvard1';
-                opt.lang = 'en-US';
-
-                createCiteTab('harvard', false, 'harvard');
-                createCiteContent(cite.get(opt), 'harvard', false);
-
-                createCiteTab('BiblaTex', false, 'biblatex');
-                createCiteContent(data, 'BiblaTex', false);
-
+                
+                var apa_loaded = true;
+                
                 let templateName = 'apa-6th';
                 var template = "";
                 url_csl_content("/browser/modules/contrib/arche-gui/csl/apa-6th-edition.csl").success(function (data) {
@@ -128,10 +92,39 @@ jQuery(function ($) {
                     opt.type = 'html';
                     opt.style = 'citation-' + templateName;
                     opt.lang = 'en-US';
-                    createCiteTab('apa 6th', false, 'apa-6th');
-                    createCiteContent(cite.get(opt), 'apa-6th', false);
-                });
+                    createCiteTab('apa 6th', true, 'apa-6th');
+                    createCiteContent(cite.get(opt), 'apa-6th', true);
+                    apa_loaded = false;
+                }).then(function(d){
+                    
+                    //harvard
+                    var opt = {
+                        format: 'string'
+                    };
+                    opt.type = 'html';
+                    opt.style = 'citation-harvard1';
+                    opt.lang = 'en-US';
 
+                    createCiteTab('harvard', apa_loaded, 'harvard');
+                    createCiteContent(cite.get(opt), 'harvard', apa_loaded);
+                    
+                    //Vancouver
+                    var opt = {
+                        format: 'string'
+                    };
+                    opt.type = 'html';
+                    opt.style = 'citation-vancouver';
+                    opt.lang = 'en-US';
+
+                    createCiteTab('vancouver', false, 'vancouver');
+                    createCiteContent(cite.get(opt), 'vancouver', false);
+
+                    
+
+                    createCiteTab('BiblaTex', false, 'biblatex');
+                    createCiteContent(data, 'BiblaTex', false);
+                });
+                
             }).error(function (data) {
                 $('#cite-content-div').addClass('show');
                 $('#cite-content-div').removeClass('hidden');
