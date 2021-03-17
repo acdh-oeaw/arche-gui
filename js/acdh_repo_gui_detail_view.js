@@ -119,8 +119,6 @@ jQuery(function ($) {
                     createCiteTab('vancouver', false, 'vancouver');
                     createCiteContent(cite.get(opt), 'vancouver', false);
 
-                    
-
                     createCiteTab('BiblaTex', false, 'biblatex');
                     createCiteContent(data, 'BiblaTex', false);
                 });
