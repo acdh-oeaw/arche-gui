@@ -13,8 +13,8 @@ use EasyRdf\Resource;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesHelper {
-
+class DisseminationServicesHelper
+{
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
 
     private $data;
@@ -30,11 +30,13 @@ class DisseminationServicesHelper {
      * @param array $additionalData we pass here the additional data for the resources
      * f.e. colelction root data for the tree view
      */
-    private function setAdditionalData(array $additionalData = array()) {
+    private function setAdditionalData(array $additionalData = array())
+    {
         $this->additionalData = $additionalData;
     }
 
-    private function setRepoUrlId(string $identifier = '') {
+    private function setRepoUrlId(string $identifier = '')
+    {
         $this->repoid = $identifier;
         $this->repoUrl = $this->repo->getBaseUrl() . $this->repoid;
     }
@@ -47,7 +49,8 @@ class DisseminationServicesHelper {
      * @param array $additionalData
      * @return array
      */
-    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array {
+    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array
+    {
         $this->setRepoUrlId($identifier);
         $this->setAdditionalData($additionalData);
 
@@ -77,7 +80,8 @@ class DisseminationServicesHelper {
      *
      * @return string
      */
-    private function getLorisUrl(): string {
+    private function getLorisUrl(): string
+    {
         $dissServices = $this->generalFunctions->getDissServices($this->repoid);
 
         foreach ($dissServices as $k => $v) {
@@ -93,7 +97,8 @@ class DisseminationServicesHelper {
      *
      * @return type
      */
-    private function threeDDissService() {
+    private function threeDDissService()
+    {
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $this->result = array();
         try {
@@ -157,8 +162,8 @@ class DisseminationServicesHelper {
         }
     }
 
-    private function formatCollectionLazyDataStructure() {
-        
+    private function formatCollectionLazyDataStructure()
+    {
         if (count($this->data) > 0) {
             foreach ($this->data as $k => $v) {
                 $v['uri'] = $v['id'];
@@ -182,11 +187,9 @@ class DisseminationServicesHelper {
                 $this->result[$k] = $v;
             }
         } else {
-            $this->result[0] = array("uri" => 0, "text" => "There are no child elements", 
+            $this->result[0] = array("uri" => 0, "text" => "There are no child elements",
                 "userAllowedToDL" => false, "dir" => false, "children" => false);
         }
-       
-       
     }
 
     /////// Collection data functions Start ///////
@@ -194,7 +197,8 @@ class DisseminationServicesHelper {
     /**
      * function for the collection data steps
      */
-    private function createCollection() {
+    private function createCollection()
+    {
         $this->modifyCollectionDataStructure();
         $this->result = $this->createTreeData($this->data, $this->repoid);
     }
@@ -203,7 +207,8 @@ class DisseminationServicesHelper {
      * Modify the collection data structure for the tree view
      *
      */
-    private function modifyCollectionDataStructure() {
+    private function modifyCollectionDataStructure()
+    {
         foreach ($this->data as $k => $v) {
             $v['uri'] = $v['mainid'];
             $v['uri_dl'] = $this->repo->getBaseUrl() . $v['mainid'];
@@ -232,7 +237,8 @@ class DisseminationServicesHelper {
      * @param string $identifier
      * @return array
      */
-    private function createTreeData(array $data, string $identifier): array {
+    private function createTreeData(array $data, string $identifier): array
+    {
         $tree = array();
         $rootTitle = 'main';
         //if we have a definied root title then we use that
@@ -272,7 +278,8 @@ class DisseminationServicesHelper {
      * @param type $parent
      * @return type
      */
-    public function convertToTreeById(&$list, $parent) {
+    public function convertToTreeById(&$list, $parent)
+    {
         $tree = array();
         foreach ($parent as $k => $l) {
             if (isset($list[$l['mainid']])) {
@@ -292,7 +299,8 @@ class DisseminationServicesHelper {
      * @param string $fedoraUrl
      * @return type
      */
-    public function turtleDissService() {
+    public function turtleDissService()
+    {
         $result = array();
         $client = new \GuzzleHttp\Client();
 
@@ -325,7 +333,8 @@ class DisseminationServicesHelper {
      * @param type $repoid
      * @return string
      */
-    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string {
+    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string
+    {
         $this->repoUrl = $this->repo->getBaseUrl() . $repoid;
         //1. setup tmp dir
         if ($this->collectionCreateDlDirectory() === false) {
@@ -346,7 +355,8 @@ class DisseminationServicesHelper {
         return $wwwurl . '/browser/sites/default/files/collections/' . $this->collectionDate . '/collection.tar';
     }
 
-    private function createPathForCollectionDownload(string $path): string {
+    private function createPathForCollectionDownload(string $path): string
+    {
         $exp = explode("/", $path);
         $last = end($exp);
         return str_replace($last, "", $path);
@@ -357,7 +367,8 @@ class DisseminationServicesHelper {
      * @param string $filename
      * @return string
      */
-    private function createFileNameForCollectionDownload(string $filename): string {
+    private function createFileNameForCollectionDownload(string $filename): string
+    {
         $exp = explode("/", $filename);
         $last = end($exp);
         
@@ -377,7 +388,8 @@ class DisseminationServicesHelper {
      * @param string $path
      * @return string
      */
-    private function createCollectionDir(string $path): string {
+    private function createCollectionDir(string $path): string
+    {
         $dir = "";
 
         if (!file_exists($this->collectionTmpDir . $this->collectionDate)) {
@@ -401,12 +413,12 @@ class DisseminationServicesHelper {
      * @param string $username
      * @param string $password
      */
-    public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '') {
+    public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '')
+    {
         $client = new \GuzzleHttp\Client(['auth' => [$username, $password], 'verify' => false]);
         ini_set('max_execution_time', 1800);
 
         foreach ($binaries as $b) {
-            
             if (isset($b['path']) && isset($b['filename'])) {
                 $url = $this->repo->getBaseUrl() . "/" . $b['uri'];
                 $path = $b['path'];
@@ -439,7 +451,8 @@ class DisseminationServicesHelper {
      *
      * @return bool
      */
-    private function collectionGetTurtle(): bool {
+    private function collectionGetTurtle(): bool
+    {
         $ttl = '';
         $ttl = $this->turtleDissService();
         if (!empty($ttl)) {
@@ -457,7 +470,8 @@ class DisseminationServicesHelper {
      * TAR the downloaded collection files
      * @return bool
      */
-    private function collectionTarFiles(): bool {
+    private function collectionTarFiles(): bool
+    {
         ini_set('xdebug.max_nesting_level', 2000);
         //if we have files in the directory
         $dirFiles = scandir($this->collectionTmpDir . $this->collectionDate);
@@ -499,7 +513,8 @@ class DisseminationServicesHelper {
     /**
      * Remove the files from the collections directory
      */
-    private function collectionRemoveTempFiles() {
+    private function collectionRemoveTempFiles()
+    {
         //get the collection directory
         $dir = $this->collectionTmpDir . $this->collectionDate;
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -524,7 +539,8 @@ class DisseminationServicesHelper {
      * @param string $dateID
      * @return string
      */
-    private function collectionCreateDlDirectory(): bool {
+    private function collectionCreateDlDirectory(): bool
+    {
         $this->collectionDate = date("Ymd_his");
         //the main dir
         $this->collectionTmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/collections/";
@@ -548,5 +564,4 @@ class DisseminationServicesHelper {
         }
         return true;
     }
-
 }
