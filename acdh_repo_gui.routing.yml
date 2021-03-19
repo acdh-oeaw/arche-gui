@@ -58,6 +58,15 @@ oeaw_get_collection_data:
         _permission: 'access content'
         _access: 'TRUE'
 
+oeaw_get_collection_data_lazy:    
+    path: '/get_collection_data_lazy/{id}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::get_collection_data_lazy'
+    requirements:
+        uri: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'
+
 repo_3d_viewer:
     path: '/oeaw_3d_viewer/{repoid}'
     defaults:

@@ -21,9 +21,13 @@ class DisseminationServicesModel extends ArcheModel
   
     public function getViewData(string $identifier = "", string $dissemination = ''): array
     {
+       
         switch ($dissemination) {
             case "collection":
                 $this->getCollectionData($identifier);
+                break;
+            case "collection_lazy":
+                $this->getCollectionDataLazy($identifier);
                 break;
             default:
                 break;
@@ -42,6 +46,29 @@ class DisseminationServicesModel extends ArcheModel
                     )
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
+            $this->changeBackDBConnection();
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->sqlResult = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->sqlResult = array();
+        }
+    }
+    
+    private function getCollectionDataLazy(string $identifier)
+    {
+       
+        try {
+            $this->setSqlTimeout('60000');
+            $query = $this->repodb->query(
+                "select * from  gui.collection_v2_views_func(:id, 'en') order by title;",
+                array(
+                       'id' => $identifier
+                    )
+            );
+            $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
+            
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

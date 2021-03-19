@@ -4,9 +4,7 @@ namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
 use Drupal\acdh_repo_gui\Model\DisseminationServicesModel;
 use Drupal\acdh_repo_gui\Helper\DisseminationServicesHelper;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
@@ -28,7 +26,7 @@ class DisseminationServicesController extends ControllerBase
     private $detailViewController;
     
     private $disseminations = array(
-        'collection', '3d', 'iiif'
+        'collection', '3d', 'iiif', 'collection_lazy'
     );
     
     public function __construct()
@@ -53,12 +51,11 @@ class DisseminationServicesController extends ControllerBase
         if (empty($identifier) || !in_array($dissemination, $this->disseminations)) {
             return array();
         }
+        
         $vd = array();
-        if ($dissemination == 'collection') {
-            $vd = $this->model->getViewData($identifier, $dissemination);
-            if (count((array)$vd) == 0) {
-                return array();
-            }
+        $vd = $this->model->getViewData($identifier, $dissemination);
+        if (count((array)$vd) == 0) {
+            return array("id" => 0, "title" => $this->t('No child element'), "text" => $this->t('No child element'));
         }
         
         return $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
@@ -77,7 +74,7 @@ class DisseminationServicesController extends ControllerBase
         
         //the binary files
         $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
-        
+        error_log(print_R($binaries, true));
         if (count($binaries) == 0) {
             $response->setContent(json_encode(""));
             return $response;
@@ -116,6 +113,30 @@ class DisseminationServicesController extends ControllerBase
             
             $result = $this->generateView($repoid, 'collection', array('title' => $rootTitle));
         }
+        
+        $response = new Response();
+        $response->setContent(json_encode($result));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
+    public function get_collection_data_lazy(string $id) : Response
+    {
+        $result = array();
+        $repoBaseObj = new \stdClass();
+        $rootTitle = '';
+        if (empty($id)) {
+            $errorMSG = t('Missing').': Identifier';
+        } else {
+            //get the root collection data
+            $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($id, 0);
+            $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
+            if ((count((array)$repoBaseObj) > 0) && ($repoBaseObj->getTitle() !== null)) {
+                $rootTitle = $repoBaseObj->getTitle();
+            }
+            $result = $this->generateView($id, 'collection_lazy', array('title' => $rootTitle));
+        }
+        
         
         $response = new Response();
         $response->setContent(json_encode($result));

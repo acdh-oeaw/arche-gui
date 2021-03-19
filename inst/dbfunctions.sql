@@ -1655,3 +1655,68 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
+
+/**
+* NEW LAZY LOAD tree view sql
+*/
+DROP FUNCTION IF EXISTS gui.collection_v2_views_func(text, text);
+CREATE FUNCTION gui.collection_v2_views_func(_pid text, _lang text DEFAULT 'en' )
+    RETURNS table (id bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text)
+AS $func$
+DECLARE
+    _lang2 text := 'de';
+BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+    DROP TABLE IF EXISTS accessres;
+    CREATE TEMP TABLE accessres AS (
+        WITH acs as (
+            select 
+                distinct(r.target_id) as accessid , mv.value,
+                mv.lang
+            from relations as r
+            left join metadata_view as mv on mv.id = r.target_id
+            where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+                and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+                and mv.lang = _lang
+        ) select * from acs
+    );
+	
+    DROP TABLE IF EXISTS basic_collection_data;
+    CREATE TEMPORARY TABLE basic_collection_data(id bigint);
+    INSERT INTO basic_collection_data( 
+        WITH RECURSIVE subordinates AS (
+            select 
+                mv.id
+            from metadata_view as mv
+            where
+                mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf'
+                and mv.value = _pid
+            order by mv.property
+        ) select * from subordinates
+    );
+	
+    DROP TABLE IF EXISTS collectionData;
+    CREATE TEMP TABLE collectionData(id bigint, title text, accesres bigint, license text, binarysize text, filename text, locationpath text);
+    INSERT INTO collectionData( 
+        WITH  c2d AS (
+            select 
+                bcd.id,
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.id = bcd.id limit 1) as title,
+                (select CAST(mv.value as bigint) from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and mv.id = bcd.id limit 1) as accessres,
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense' and mv.id = bcd.id limit 1) as license,
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and mv.id = bcd.id limit 1) as binarysize,
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename' and mv.id = bcd.id limit 1) as filename,
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and mv.id = bcd.id limit 1) as locationpath
+            from basic_collection_data as bcd
+        ) select * from c2d	
+    );
+
+RETURN QUERY   
+    select 
+        mv.id, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath
+    from collectionData as mv
+    left join accessres as ar on mv.accesres  = ar.accessid;
+END
+$func$
+LANGUAGE 'plpgsql';
+

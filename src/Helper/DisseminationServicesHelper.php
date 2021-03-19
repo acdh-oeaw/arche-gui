@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Drupal\acdh_repo_gui\Helper;
 
 use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-
 use EasyRdf\Graph;
 use EasyRdf\Resource;
 
@@ -15,10 +13,10 @@ use EasyRdf\Resource;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesHelper
-{
+class DisseminationServicesHelper {
+
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
-    
+
     private $data;
     private $repoid;
     private $repoUrl;
@@ -26,23 +24,21 @@ class DisseminationServicesHelper
     private $collectionDate;
     private $collectionTmpDir;
     private $additionalData = array();
-    
+
     /**
      *
      * @param array $additionalData we pass here the additional data for the resources
      * f.e. colelction root data for the tree view
      */
-    private function setAdditionalData(array $additionalData = array())
-    {
+    private function setAdditionalData(array $additionalData = array()) {
         $this->additionalData = $additionalData;
     }
-    
-    private function setRepoUrlId(string $identifier = '')
-    {
+
+    private function setRepoUrlId(string $identifier = '') {
         $this->repoid = $identifier;
-        $this->repoUrl = $this->repo->getBaseUrl().$this->repoid;
+        $this->repoUrl = $this->repo->getBaseUrl() . $this->repoid;
     }
-    
+
     /**
      *
      * @param array $data
@@ -51,11 +47,10 @@ class DisseminationServicesHelper
      * @param array $additionalData
      * @return array
      */
-    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array
-    {
+    public function createView(array $data = array(), string $dissemination = '', string $identifier = '', array $additionalData = array()): array {
         $this->setRepoUrlId($identifier);
         $this->setAdditionalData($additionalData);
-        
+
         switch ($dissemination) {
             case 'collection':
                 $this->data = $data;
@@ -67,21 +62,24 @@ class DisseminationServicesHelper
             case 'iiif':
                 $this->result['lorisUrl'] = $this->getLorisUrl();
                 break;
+            case 'collection_lazy':
+                $this->data = $data;
+                $this->formatCollectionLazyDataStructure();
+                break;
             default:
                 break;
         }
         return $this->result;
     }
-    
+
     /**
      * Get the loris url for the loris disserv viewer
      *
      * @return string
      */
-    private function getLorisUrl(): string
-    {
+    private function getLorisUrl(): string {
         $dissServices = $this->generalFunctions->getDissServices($this->repoid);
-        
+
         foreach ($dissServices as $k => $v) {
             if ($k == "IIIF Endpoint" && isset($dissServices[$k]['uri'])) {
                 return $dissServices[$k]['uri'];
@@ -89,14 +87,13 @@ class DisseminationServicesHelper
         }
         return '';
     }
-    
+
     /**
      * 3d dissemination service function
      *
      * @return type
      */
-    private function threeDDissService()
-    {
+    private function threeDDissService() {
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $this->result = array();
         try {
@@ -109,7 +106,7 @@ class DisseminationServicesHelper
                         $txt = explode(";", $response->getHeader('Content-Disposition')[0]);
                         $filename = "";
                         $extension = "";
-                        
+
                         foreach ($txt as $t) {
                             if (strpos($t, 'filename') !== false) {
                                 $filename = str_replace("filename=", "", $t);
@@ -124,28 +121,28 @@ class DisseminationServicesHelper
                         if ($extension == "nxs" || $extension == "ply") {
                             if (!empty($filename)) {
                                 $dir = str_replace(".", "_", $filename);
-                                $tmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://")."/".$dir."/";
+                                $tmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/" . $dir . "/";
                                 //if the file dir is not exists then we will create it
                                 // and we will download the file
-                                if (!file_exists($tmpDir) || !file_exists($tmpDir.'/'.$filename)) {
+                                if (!file_exists($tmpDir) || !file_exists($tmpDir . '/' . $filename)) {
                                     mkdir($tmpDir, 0777);
-                                    $file = fopen($tmpDir.'/'.$filename, "w");
+                                    $file = fopen($tmpDir . '/' . $filename, "w");
                                     fwrite($file, $response->getBody());
                                     fclose($file);
                                 } else {
                                     //if the file is not exists
-                                    if (!file_exists($tmpDir.'/'.$filename)) {
-                                        $file = fopen($tmpDir.'/'.$filename, "w");
+                                    if (!file_exists($tmpDir . '/' . $filename)) {
+                                        $file = fopen($tmpDir . '/' . $filename, "w");
                                         fwrite($file, $response->getBody());
                                         fclose($file);
                                     }
                                 }
-                                $url = '/sites/default/files/'.$dir.'/'.$filename;
+                                $url = '/sites/default/files/' . $dir . '/' . $filename;
                                 $this->result['result'] = $url;
                                 $this->result['error'] = "";
                             }
                         } else {
-                            $this->result['error'] = t('File extension').' '.t('Error');
+                            $this->result['error'] = t('File extension') . ' ' . t('Error');
                             $this->result['result'] = "";
                         }
                     }
@@ -159,28 +156,57 @@ class DisseminationServicesHelper
             $this->result['error'] = $ex->getMessage();
         }
     }
-    
-    
+
+    private function formatCollectionLazyDataStructure() {
+        
+        if (count($this->data) > 0) {
+            foreach ($this->data as $k => $v) {
+                $v['uri'] = $v['id'];
+                $v['uri_dl'] = $this->repo->getBaseUrl() . $v['id'];
+                $v['text'] = $v['title'];
+                $v['resShortId'] = $v['id'];
+                if ($v['accesres'] == 'public') {
+                    $v['userAllowedToDL'] = true;
+                } else {
+                    $v['userAllowedToDL'] = false;
+                }
+                if (empty($v['filename'])) {
+                    $v['dir'] = true;
+                    $v['children'] = true;
+                } else {
+                    $v['dir'] = false;
+                    $v['icon'] = "jstree-file";
+                }
+                $v['accessRestriction'] = $v['accesres'];
+                $v['encodedUri'] = $this->repo->getBaseUrl() . $v['id'];
+                $this->result[$k] = $v;
+            }
+        } else {
+            $this->result[0] = array("uri" => 0, "text" => "There are no child elements", 
+                "userAllowedToDL" => false, "dir" => false, "children" => false);
+        }
+       
+       
+    }
+
     /////// Collection data functions Start ///////
+
     /**
      * function for the collection data steps
      */
-    private function createCollection()
-    {
+    private function createCollection() {
         $this->modifyCollectionDataStructure();
         $this->result = $this->createTreeData($this->data, $this->repoid);
     }
-    
-    
+
     /**
      * Modify the collection data structure for the tree view
      *
      */
-    private function modifyCollectionDataStructure()
-    {
+    private function modifyCollectionDataStructure() {
         foreach ($this->data as $k => $v) {
             $v['uri'] = $v['mainid'];
-            $v['uri_dl'] = $this->repo->getBaseUrl().$v['mainid'];
+            $v['uri_dl'] = $this->repo->getBaseUrl() . $v['mainid'];
             $v['text'] = $v['title'];
             $v['resShortId'] = $v['mainid'];
             if ($v['accesres'] == 'public') {
@@ -195,31 +221,30 @@ class DisseminationServicesHelper
                 $v['icon'] = "jstree-file";
             }
             $v['accessRestriction'] = $v['accesres'];
-            $v['encodedUri'] = $this->repo->getBaseUrl().$v['mainid'];
+            $v['encodedUri'] = $this->repo->getBaseUrl() . $v['mainid'];
             $this->data[$k] = $v;
         }
     }
-    
+
     /**
      * Creates the tree data for the collection download views
      * @param array $data
      * @param string $identifier
      * @return array
      */
-    private function createTreeData(array $data, string $identifier): array
-    {
+    private function createTreeData(array $data, string $identifier): array {
         $tree = array();
         $rootTitle = 'main';
         //if we have a definied root title then we use that
         if (isset($this->additionalData['title'])) {
             $rootTitle = $this->additionalData['title'];
         }
-                
-        
+
+
         $first = array(
             "mainid" => $identifier,
             "uri" => $identifier,
-            "uri_dl" => $this->repo->getBaseUrl().$identifier,
+            "uri_dl" => $this->repo->getBaseUrl() . $identifier,
             "filename" => "main",
             "resShortId" => $identifier,
             "title" => $rootTitle,
@@ -228,18 +253,17 @@ class DisseminationServicesHelper
             "userAllowedToDL" => true,
             "dir" => true,
             "accessRestriction" => 'public',
-            "encodedUri" => $this->repo->getBaseUrl().$identifier
+            "encodedUri" => $this->repo->getBaseUrl() . $identifier
         );
-        
+
         $new = array();
         foreach ($data as $a) {
-            $a = (array)$a;
+            $a = (array) $a;
             $new[$a['parentid']][] = $a;
         }
         $tree = $this->convertToTreeById($new, array($first));
         return $tree;
     }
-
 
     /**
      * This func is generating a child based array from a single array by ID
@@ -248,10 +272,9 @@ class DisseminationServicesHelper
      * @param type $parent
      * @return type
      */
-    public function convertToTreeById(&$list, $parent)
-    {
+    public function convertToTreeById(&$list, $parent) {
         $tree = array();
-        foreach ($parent as $k=>$l) {
+        foreach ($parent as $k => $l) {
             if (isset($list[$l['mainid']])) {
                 $l['children'] = $this->convertToTreeById($list, $list[$l['mainid']]);
             }
@@ -259,24 +282,22 @@ class DisseminationServicesHelper
         }
         return $tree;
     }
-    
+
     /////// Collection data functions end ///////
-    
-    
+
     /**
-      *
-      * Create turtle file from the resource
-      *
-      * @param string $fedoraUrl
-      * @return type
-      */
-    public function turtleDissService()
-    {
+     *
+     * Create turtle file from the resource
+     *
+     * @param string $fedoraUrl
+     * @return type
+     */
+    public function turtleDissService() {
         $result = array();
         $client = new \GuzzleHttp\Client();
-        
+
         try {
-            $request = $client->request('GET', $this->repoUrl.'/metadata', ['Accept' => ['application/n-triples']]);
+            $request = $client->request('GET', $this->repoUrl . '/metadata', ['Accept' => ['application/n-triples']]);
             if ($request->getStatusCode() == 200) {
                 $body = "";
                 $body = $request->getBody()->getContents();
@@ -296,7 +317,7 @@ class DisseminationServicesHelper
             return "";
         }
     }
-    
+
     /**
      * Generate tar file from the selected files
      *
@@ -304,9 +325,8 @@ class DisseminationServicesHelper
      * @param type $repoid
      * @return string
      */
-    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string
-    {
-        $this->repoUrl = $this->repo->getBaseUrl().$repoid;
+    public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string {
+        $this->repoUrl = $this->repo->getBaseUrl() . $repoid;
         //1. setup tmp dir
         if ($this->collectionCreateDlDirectory() === false) {
             return '';
@@ -315,7 +335,7 @@ class DisseminationServicesHelper
         $this->collectionDownloadFiles($binaries, $username, $password);
         //3. add the turtle file into the collection
         if ($this->collectionGetTurtle() === false) {
-            \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error'.$this->repoUrl);
+            \Drupal::logger('acdh_repo_gui')->notice('collection turtle file generating error' . $this->repoUrl);
         }
         //4. tar the files
         //5. remove the downloaded files and leave just the tar file.
@@ -323,19 +343,22 @@ class DisseminationServicesHelper
             return false;
         }
         $wwwurl = str_replace('/api/', '', $this->repo->getBaseUrl());
-        return $wwwurl.'/browser/sites/default/files/collections/'.$this->collectionDate.'/collection.tar';
+        return $wwwurl . '/browser/sites/default/files/collections/' . $this->collectionDate . '/collection.tar';
     }
-    
-    private function createPathForCollectionDownload(string $path): string
-    {
+
+    private function createPathForCollectionDownload(string $path): string {
         $exp = explode("/", $path);
         $last = end($exp);
         return str_replace($last, "", $path);
     }
-    
-    private function createFileNameForCollectionDownload(string $path): string
-    {
-        $exp = explode("/", $path);
+
+    /**
+     * Remove the white spaces from the filename
+     * @param string $filename
+     * @return string
+     */
+    private function createFileNameForCollectionDownload(string $filename): string {
+        $exp = explode("/", $filename);
         $last = end($exp);
         
         $file = "";
@@ -343,107 +366,104 @@ class DisseminationServicesHelper
             $file = ltrim($last);
             $file = str_replace(' ', "_", $file);
         } else {
-            $file = ltrim($fileName);
+            $file = ltrim($filename);
             $file = str_replace(' ', "_", $file);
         }
-        
         return $file;
     }
-    
-    private function createCollectionDir(string $path): string
-    {
+
+    /**
+     * Create the directory for the collection
+     * @param string $path
+     * @return string
+     */
+    private function createCollectionDir(string $path): string {
         $dir = "";
-                 
-        if (!file_exists($this->collectionTmpDir.$this->collectionDate)) {
-            mkdir($this->collectionTmpDir.$this->collectionDate, 0777);
-            $dir = $this->collectionTmpDir.$this->collectionDate;
+
+        if (!file_exists($this->collectionTmpDir . $this->collectionDate)) {
+            mkdir($this->collectionTmpDir . $this->collectionDate, 0777);
+            $dir = $this->collectionTmpDir . $this->collectionDate;
         }
 
         if (!empty($path)) {
             $path = preg_replace('/\s+/', '_', $path);
-            mkdir($this->collectionTmpDir.$this->collectionDate.'/'.$path, 0777, true);
-            $dir = $this->collectionTmpDir.$this->collectionDate.'/'.$path;
+            mkdir($this->collectionTmpDir . $this->collectionDate . '/' . $path, 0777, true);
+            $dir = $this->collectionTmpDir . $this->collectionDate . '/' . $path;
         }
-        
+
         return $dir;
     }
-    
+
     /**
-    * Download the selected binaries
-    *
-    * @param array $binaries
-    * @param string $username
-    * @param string $password
-    */
-    public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '')
-    {
+     * Download the selected binaries
+     *
+     * @param array $binaries
+     * @param string $username
+     * @param string $password
+     */
+    public function collectionDownloadFiles(array $binaries, string $username = '', string $password = '') {
         $client = new \GuzzleHttp\Client(['auth' => [$username, $password], 'verify' => false]);
         ini_set('max_execution_time', 1800);
-        
+
         foreach ($binaries as $b) {
+            
             if (isset($b['path']) && isset($b['filename'])) {
-                $url = $this->repo->getBaseUrl()."/".$b['uri'];
-               
-                $path = $this->createPathForCollectionDownload($b['path']);
-                
-                $filename = $this->createFileNameForCollectionDownload($b['path']);
-             
+                $url = $this->repo->getBaseUrl() . "/" . $b['uri'];
+                $path = $b['path'];
+                $filename = $this->createFileNameForCollectionDownload($b['filename']);
                 $dir = $this->createCollectionDir($path);
                 
                 try {
-                    $resource = fopen($this->collectionTmpDir.$this->collectionDate.'/'.$path.'/'.$filename, 'w');
+                    $resource = fopen($this->collectionTmpDir . $this->collectionDate . '/' . $path . '/' . $filename, 'w');
                     $client->request('GET', $url, ['save_to' => $resource]);
-                    chmod($this->collectionTmpDir.$this->collectionDate.'/'.$path.'/'.$filename, 0777);
+                    chmod($this->collectionTmpDir . $this->collectionDate . '/' . $path . '/' . $filename, 0777);
                 } catch (\GuzzleHttp\Exception\ClientException $ex) {
-                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:'.$ex->getMessage(). " ".$url);
+                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:' . $ex->getMessage() . " " . $url);
                     continue;
                 } catch (\GuzzleHttp\Exception\ServerException $ex) {
-                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:'.$ex->getMessage(). " ".$url);
+                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:' . $ex->getMessage() . " " . $url);
                     //the file is empty
                     continue;
                 } catch (\RuntimeException $ex) {
-                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:'.$ex->getMessage(). " ".$url);
+                    \Drupal::logger('acdh_repo_gui')->notice('collection dl error:' . $ex->getMessage() . " " . $url);
                     continue;
                 }
             } elseif (isset($b['path'])) {
-                mkdir($this->collectionTmpDir.$this->collectionDate.'/'.$b['path'], 0777);
+                mkdir($this->collectionTmpDir . $this->collectionDate . '/' . $b['path'], 0777);
             }
         }
     }
-    
-    
+
     /**
      * Get the turtle file and copy it to the collection download directory
      *
      * @return bool
      */
-    private function collectionGetTurtle(): bool
-    {
+    private function collectionGetTurtle(): bool {
         $ttl = '';
         $ttl = $this->turtleDissService();
         if (!empty($ttl)) {
-            $turtleFile = fopen($this->collectionTmpDir.$this->collectionDate.'/turtle.ttl', "w");
+            $turtleFile = fopen($this->collectionTmpDir . $this->collectionDate . '/turtle.ttl', "w");
             fwrite($turtleFile, $ttl);
             fclose($turtleFile);
-            chmod($this->collectionTmpDir.$this->collectionDate.'/turtle.ttl', 0777);
+            chmod($this->collectionTmpDir . $this->collectionDate . '/turtle.ttl', 0777);
         } else {
             return false;
         }
         return true;
     }
-    
+
     /**
      * TAR the downloaded collection files
      * @return bool
      */
-    private function collectionTarFiles(): bool
-    {
+    private function collectionTarFiles(): bool {
         ini_set('xdebug.max_nesting_level', 2000);
         //if we have files in the directory
-        $dirFiles = scandir($this->collectionTmpDir.$this->collectionDate);
+        $dirFiles = scandir($this->collectionTmpDir . $this->collectionDate);
         if (count($dirFiles) > 0) {
-            chmod($this->collectionTmpDir.$this->collectionDate, 0777);
-            $archiveFile = $this->collectionTmpDir.$this->collectionDate.'/collection.tar';
+            chmod($this->collectionTmpDir . $this->collectionDate, 0777);
+            $archiveFile = $this->collectionTmpDir . $this->collectionDate . '/collection.tar';
             fopen($archiveFile, "w");
             fclose($archiveFile);
             chmod($archiveFile, 0777);
@@ -460,32 +480,31 @@ class DisseminationServicesHelper
                             $ext = pathinfo($d, PATHINFO_EXTENSION);
                             $tarFilename = str_replace($ext, '', $d);
                             $tarFilename = substr($tarFilename, 0, 90);
-                            $tarFilename = $tarFilename.'.'.$ext;
+                            $tarFilename = $tarFilename . '.' . $ext;
                         }
-                        chdir($this->collectionTmpDir.$this->collectionDate.'/');
+                        chdir($this->collectionTmpDir . $this->collectionDate . '/');
                         $tar->add($d);
                     }
                 }
                 $this->collectionRemoveTempFiles();
             } catch (Exception $e) {
-                \Drupal::logger('acdh_repo_gui')->notice('collection tar files error:'.$e->getMessage());
+                \Drupal::logger('acdh_repo_gui')->notice('collection tar files error:' . $e->getMessage());
                 return false;
             }
             return true;
         }
         return false;
     }
-    
+
     /**
      * Remove the files from the collections directory
      */
-    private function collectionRemoveTempFiles()
-    {
+    private function collectionRemoveTempFiles() {
         //get the collection directory
-        $dir = $this->collectionTmpDir.$this->collectionDate;
+        $dir = $this->collectionTmpDir . $this->collectionDate;
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-        
+
         foreach ($files as $file) {
             //remove the directory
             if ($file->isDir()) {
@@ -498,37 +517,36 @@ class DisseminationServicesHelper
             }
         }
     }
-    
+
     /**
      * Setup the collection directory for the downloads
      *
      * @param string $dateID
      * @return string
      */
-    private function collectionCreateDlDirectory(): bool
-    {
+    private function collectionCreateDlDirectory(): bool {
         $this->collectionDate = date("Ymd_his");
         //the main dir
-        error_log(\Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://")."/collections/");
-        $this->collectionTmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://")."/collections/";
-        error_log('itt');
+        $this->collectionTmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/collections/";
+        
         //if the main directory is not exists
         if (!file_exists($this->collectionTmpDir)) {
             if (!@mkdir($this->collectionTmpDir, 0777)) {
-                \Drupal::logger('acdh_repo_gui')->notice('cant create directory: '.$this->collectionTmpDir);
+                \Drupal::logger('acdh_repo_gui')->notice('cant create directory: ' . $this->collectionTmpDir);
                 return false;
             }
         }
         //if we have the main directory then create the sub
         if (file_exists($this->collectionTmpDir)) {
             //create the actual dir
-            if (!file_exists($this->collectionTmpDir.$this->collectionDate)) {
-                if (!@mkdir($this->collectionTmpDir.$this->collectionDate, 0777)) {
-                    \Drupal::logger('acdh_repo_gui')->notice('cant create directory: '.$this->collectionDate);
+            if (!file_exists($this->collectionTmpDir . $this->collectionDate)) {
+                if (!@mkdir($this->collectionTmpDir . $this->collectionDate, 0777)) {
+                    \Drupal::logger('acdh_repo_gui')->notice('cant create directory: ' . $this->collectionDate);
                     return false;
                 }
             }
         }
         return true;
     }
+
 }
