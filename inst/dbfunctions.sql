@@ -44,36 +44,35 @@ WITH root_data as (
     select DISTINCT(r.id) as id,
         /* check the title based on the language*/	
 	COALESCE(
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
 	) as title,
 	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' LIMIT 1) as titleImage,
         /* check the description based on the language*/
 	COALESCE(
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-		(select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
 	) as description,
 	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
 	from metadata as m
 	left join relations as r on r.id = m.id
 	where
-		m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-		and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'		
+            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'		
 ) select 
-rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
-(CASE WHEN 
+    rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
+    (CASE WHEN 
         (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
     THEN
         (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
     ELSE
         (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
-END) as accessres,
-i.ids as acdhid
+    END) as accessres,
+    (select i.ids from identifiers as i where i.id = rd.id  and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar) limit 1 ) as acdhid
 from root_data as rd
 left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-left join identifiers as i on i.id = rd.id and (i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar) and i.ids NOT LIKE CAST('%/id.acdh.oeaw.ac.at/uuid/%' as varchar) )
 where rd.title is not null;
 END
 $func$
@@ -113,41 +112,41 @@ BEGIN
     --get the english values
     DROP TABLE IF EXISTS detail_meta_main_lng_en;
     CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
-		WITH dmeta as (
-			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-			from metadata as m
-			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-			where dm.type = 'REL' and m.lang='en'
-		)
-		select * from dmeta
+        WITH dmeta as (
+            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+            from metadata as m
+            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where dm.type = 'REL' and m.lang='en'
+        )
+        select * from dmeta
     );
     --get the german values
     DROP TABLE IF EXISTS detail_meta_main_lng_de;
     CREATE TEMPORARY TABLE detail_meta_main_lng_de AS (
-            WITH dmeta as (
-                    select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-                    from metadata as m
-                    left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-                    left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-                    left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-                    where dm.type = 'REL' and m.lang='de'
-            )
-            select * from dmeta
+        WITH dmeta as (
+            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+            from metadata as m
+            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where dm.type = 'REL' and m.lang='de'
+        )
+        select * from dmeta
     );
 	
-	DROP TABLE IF EXISTS detail_meta_main_lng_und;
+    DROP TABLE IF EXISTS detail_meta_main_lng_und;
     CREATE TEMPORARY TABLE detail_meta_main_lng_und AS (
-		WITH dmeta as (
-			select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-			from metadata as m
-			left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-			left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-			left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-			where dm.type = 'REL' and m.lang='und'
-		)
-		select * from dmeta
+        WITH dmeta as (
+            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+            from metadata as m
+            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where dm.type = 'REL' and m.lang='und'
+        )
+        select * from dmeta
     );
 	
     -- compare the missing values and extend the missing labels
@@ -161,17 +160,17 @@ BEGIN
                 UNION
                 select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
                 from detail_meta_main_lng_de as t1 
-				where 
+                where 
                 NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
                     from detail_meta_main_lng_en as t2 
                     where t1.id = t2.id
                 )
-				UNION
+                UNION
                 select und.id, und.value, und.acdhid, und.vocabsid, 'en' as lang
                 from detail_meta_main_lng_und as und
                 where				
-				NOT EXISTS( 
+                NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'en' as lang
                     from detail_meta_main_lng_en as t2 
                     where und.id = t2.id
@@ -192,17 +191,17 @@ BEGIN
                 UNION
                 select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
                 from detail_meta_main_lng_en as t1
-				where 
+                where 
                 NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
                     from detail_meta_main_lng_de as t2 
                     where t1.id = t2.id
                 )
-				UNION
+                UNION
                 select und.id, und.value, und.acdhid, und.vocabsid, 'de' as lang
                 from detail_meta_main_lng_und as und
                 where	
-				NOT EXISTS( 
+                NOT EXISTS( 
                     select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'de' as lang
                     from detail_meta_main_lng_de as t2 
                     where und.id = t2.id
@@ -246,40 +245,40 @@ BEGIN
 IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 DROP TABLE IF EXISTS accessres;
 CREATE TEMP TABLE accessres AS (
-	WITH acs as (
-		select 
-		distinct(r.target_id) as accessid , mv.value,
-		mv.lang
-		from relations as r
-		left join metadata_view as mv on mv.id = r.target_id
-		where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-		and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-                and mv.lang = _lang
-	) select * from acs
+    WITH acs as (
+        select 
+        distinct(r.target_id) as accessid , mv.value,
+        mv.lang
+        from relations as r
+        left join metadata_view as mv on mv.id = r.target_id
+        where r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+        and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+        and mv.lang = _lang
+    ) select * from acs
 );
 /* get only the collection resource and the parent id  and also the depth to we can build up the tree view */
 DROP TABLE IF EXISTS basic_collection_data;
 CREATE TEMPORARY TABLE basic_collection_data(mainid bigint, parentid bigint, depth integer);
 INSERT INTO basic_collection_data( 
-	WITH RECURSIVE subordinates AS (
-	   SELECT
-		  mv.id as mainid,
-		CAST(mv.value as bigint) as parentid, 
-		   1 as depthval
-	   FROM
-		metadata_view as mv
-	   WHERE
-		  mv.value = _pid
-		   and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
-	   UNION
-		  SELECT
-			 mv2.id,
-		CAST(mv2.value as bigint) as m2val, 
-			depthval + 1 
-		  FROM
-			 metadata_view as mv2
-		  INNER JOIN subordinates s ON s.mainid = CAST(mv2.value as bigint) and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
-	) select * from subordinates
+    WITH RECURSIVE subordinates AS (
+        SELECT
+            mv.id as mainid,
+            CAST(mv.value as bigint) as parentid, 
+            1 as depthval
+        FROM
+            metadata_view as mv
+        WHERE
+            mv.value = _pid
+            and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+        UNION
+            SELECT
+                mv2.id,
+                CAST(mv2.value as bigint) as m2val, 
+                depthval + 1 
+            FROM
+                metadata_view as mv2
+            INNER JOIN subordinates s ON s.mainid = CAST(mv2.value as bigint) and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
+    ) select * from subordinates
 );
 
 /* extend the tree data with the property data what we need to display on the gui */
@@ -334,7 +333,7 @@ RAISE NOTICE USING MESSAGE = _orderby;
     IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 DROP TABLE IF EXISTS child_ids;
 CASE WHEN _orderby = 'asc' then 
-	CREATE TEMP TABLE child_ids AS(
+    CREATE TEMP TABLE child_ids AS(
     WITH ids AS (
         select 
             DISTINCT(r.id),
