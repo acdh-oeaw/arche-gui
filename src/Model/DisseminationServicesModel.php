@@ -21,7 +21,6 @@ class DisseminationServicesModel extends ArcheModel
   
     public function getViewData(string $identifier = "", string $dissemination = ''): array
     {
-       
         switch ($dissemination) {
             case "collection":
                 $this->getCollectionData($identifier);
@@ -58,7 +57,6 @@ class DisseminationServicesModel extends ArcheModel
     
     private function getCollectionDataLazy(string $identifier)
     {
-       
         try {
             $this->setSqlTimeout('60000');
             $query = $this->repodb->query(
