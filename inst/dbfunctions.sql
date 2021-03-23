@@ -1310,10 +1310,9 @@ $func$
 LANGUAGE 'plpgsql';
 
 
-
-
 /**
 * New search version
+* select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 **/
 DROP FUNCTION gui.search_full_v2_func(text, text[], text, text, text, text, text, text, bool);
 CREATE FUNCTION gui.search_full_v2_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE )
@@ -1614,7 +1613,7 @@ END CASE;
 CASE WHEN (_binarySearch IS TRUE) THEN
     CREATE TEMPORARY TABLE sb_data AS (
         WITH sb_data as (
-            SELECT 
+        /*    SELECT 
                 DISTINCT(fts.id),
                 '' as headline_title,
                 '' as headline_desc,
@@ -1625,8 +1624,22 @@ CASE WHEN (_binarySearch IS TRUE) THEN
             FROM full_text_search as fts 
             WHERE
                  (fts.property = 'BINARY' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
-            limit 10000	
-        ) select * from sb_data
+            limit 10000	*/
+            SELECT To_tsquery(_searchstr) AS query),
+            ranked AS(
+                    SELECT DISTINCT(fts.id), fts.raw--, ts_rank_cd(segments,query) AS rank
+                    from  full_text_search as fts, sb_data
+                    where sb_data.query @@ segments
+                    limit 150
+                    )
+            --select * from sb_data
+            select ranked.id,
+            '' as headline_title,
+            '' as headline_desc,
+            trim(regexp_replace(ts_headline(ranked.raw, sb_data.query, 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_binary
+            --ts_headline(raw,q.query, 'MaxFragments=3,MaxWords=10,MinWords=4') as highlighted
+            from ranked, sb_data
+            limit 150
     );	
 ELSE
     RAISE NOTICE USING MESSAGE =  'there is no binary search option';
