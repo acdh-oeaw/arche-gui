@@ -222,7 +222,7 @@ repo_getRootTable:
         _access: 'TRUE'      
         
 repo_search:    
-  path: '/search/{metavalue}/{order}/{limit}/{page}'
+  path: '/search_old/{metavalue}/{order}/{limit}/{page}'
   defaults:
     _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::fulltext_search'
     metavalue: ""
@@ -234,7 +234,7 @@ repo_search:
     _access: 'TRUE'  
 
 repo_search_v2:    
-  path: '/search_v2/{metavalue}/{order}/{limit}/{page}'
+  path: '/search/{metavalue}/{order}/{limit}/{page}'
   defaults:
     _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::generateView'
     metavalue: ""
