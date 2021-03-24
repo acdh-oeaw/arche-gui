@@ -142,7 +142,7 @@ class MetadataGuiHelper
                     }
                     
                     $tableClass = $this->isCustomClass($prop);
-                    if(!isset($v->label[$this->siteLang])) {
+                    if (!isset($v->label[$this->siteLang])) {
                         $v->label[$this->siteLang] = $prop;
                     }
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = $prop;
@@ -176,31 +176,31 @@ class MetadataGuiHelper
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
         }
-        $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ? 
-                $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) : 
+        $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ?
+                $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) :
             array();
         
-        $this->result['properties']['relations_other_projects'] = 
-                ($this->result['properties']['relations_other_projects'] != null) ? 
-                $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']) : 
+        $this->result['properties']['relations_other_projects'] =
+                ($this->result['properties']['relations_other_projects'] != null) ?
+                $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']) :
             array();
         
-        $this->result['properties']['coverage'] = ($this->result['properties']['coverage'] != null) ? 
-                $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']) : 
+        $this->result['properties']['coverage'] = ($this->result['properties']['coverage'] != null) ?
+                $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']) :
             array();
         
-        $this->result['properties']['actors_involved'] = ($this->result['properties']['actors_involved'] != null) ? 
+        $this->result['properties']['actors_involved'] = ($this->result['properties']['actors_involved'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['actors_involved']) :
             array();
         
-        $this->result['properties']['curation'] = ($this->result['properties']['curation'] != null) ? 
-                $this->reorderPropertiesByOrderValue($this->result['properties']['curation']) : 
+        $this->result['properties']['curation'] = ($this->result['properties']['curation'] != null) ?
+                $this->reorderPropertiesByOrderValue($this->result['properties']['curation']) :
             array();
-        $this->result['properties']['dates'] = ($this->result['properties']['dates']) ? 
-                $this->reorderPropertiesByOrderValue($this->result['properties']['dates']) : 
+        $this->result['properties']['dates'] = ($this->result['properties']['dates']) ?
+                $this->reorderPropertiesByOrderValue($this->result['properties']['dates']) :
             array();
         
-        $this->result['properties']['right_access'] = ($this->result['properties']['right_access'] != null) ? 
+        $this->result['properties']['right_access'] = ($this->result['properties']['right_access'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']) :
             array();
     }
