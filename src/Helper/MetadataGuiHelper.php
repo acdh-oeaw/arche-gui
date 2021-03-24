@@ -143,8 +143,11 @@ class MetadataGuiHelper
                     }
                     
                     $tableClass = $this->isCustomClass($prop);
-                    
+                    if(!isset($v->label[$this->siteLang])) {
+                        $v->label[$this->siteLang] = $prop;
+                    }
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = $prop;
+                    
                     //setup the default values
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = '-';
@@ -166,7 +169,7 @@ class MetadataGuiHelper
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = $v->max;
                 }
                 
-                if (isset($v->recommended) && $v->recommended === true) {
+                if (isset($v->recommendedClass) && $v->recommendedClass === true) {
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '1';
                 }
                 
@@ -175,13 +178,33 @@ class MetadataGuiHelper
             }
             
         }
-        $this->result['properties']['basic'] = $this->reorderPropertiesByOrderValue($this->result['properties']['basic']);
-        $this->result['properties']['relations_other_projects'] = $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']);
-        $this->result['properties']['coverage'] = $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']);
-        $this->result['properties']['actors_involved'] = $this->reorderPropertiesByOrderValue($this->result['properties']['actors_involved']);
-        $this->result['properties']['curation'] = $this->reorderPropertiesByOrderValue($this->result['properties']['curation']);
-        $this->result['properties']['dates'] = $this->reorderPropertiesByOrderValue($this->result['properties']['dates']);
-        $this->result['properties']['right_access'] = $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']);
+        $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) : 
+            array();
+        
+        $this->result['properties']['relations_other_projects'] = 
+                ($this->result['properties']['relations_other_projects'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']) : 
+            array();
+        
+        $this->result['properties']['coverage'] = ($this->result['properties']['coverage'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']) : 
+            array();
+        
+        $this->result['properties']['actors_involved'] = ($this->result['properties']['actors_involved'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['actors_involved']) :
+            array();
+        
+        $this->result['properties']['curation'] = ($this->result['properties']['curation'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['curation']) : 
+            array();
+        $this->result['properties']['dates'] = ($this->result['properties']['dates']) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['dates']) : 
+            array();
+        
+        $this->result['properties']['right_access'] = ($this->result['properties']['right_access'] != null) ? 
+                $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']) :
+            array();
     }
     
     /**
@@ -220,7 +243,7 @@ class MetadataGuiHelper
             }
         }
           
-        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommended !== true) {
+        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommendedClass !== true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 $val =  'm*';
             } else {
@@ -230,7 +253,7 @@ class MetadataGuiHelper
             return $val;
         }
           
-        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) || $data->recommended === true) {
+        if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) || $data->recommendedClass === true) {
             if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
                 $val =  'r*';
             } else {
@@ -301,6 +324,11 @@ class MetadataGuiHelper
             // Open the table
 
             $html .= "<style>
+                table thead tr th {
+                    position: sticky;
+                    z-index: 100;
+                    top: 0;
+                }
                 table, tr, th, td {
                     border: 1px solid black;
                 }
@@ -315,8 +343,10 @@ class MetadataGuiHelper
                 }
                 tr:hover {background-color: #f5f5f5;}
                 tr:nth-child(even) {background-color: #f2f2f2;}
+                .sticky {position: sticky; z.index: 100; left: 0; background-color: #4CAF50; color:white;}
                 </style>";
             $html .= "<table >";
+            $html .= "<thead >";
             $html .= '<tr>';
             $html .= '<th><b>Property</b></th>';
             $html .= '<th><b>Project</b></th>';
@@ -334,6 +364,7 @@ class MetadataGuiHelper
             $html .= '<th><b>Vocabulary</b></th>';
             $html .= '<th><b>Recommended Class</b></th>';
             $html .= '<th><b>LangTag</b></th>';
+            $html .= "</thead >";
             $html .= '</tr>';
 
             // Cycle through the array
@@ -342,9 +373,9 @@ class MetadataGuiHelper
                 $html .= '<tr>';
                 
                 if (isset($type['main']['title'])) {
-                    $html .= '<td><b>'.$type['main']['title'].'</b></td>';
+                    $html .= '<td class="sticky"><b>'.$type['main']['title'].'</b></td>';
                 } else {
-                    $html .= '<td>TITLE MISSING</td>';
+                    $html .= '<td class="sticky">TITLE MISSING</td>';
                 }
                 //create the type values
                 $html .= $this->getRtTypeValues($type);
@@ -443,16 +474,18 @@ class MetadataGuiHelper
     {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
-       
+        $values = array();
         foreach ($types as $t => $v) {
             if (isset($type[$t]['range']) && count($type[$t]['range']) > 0) {
                 foreach ($type[$t]['range'] as $r) {
                     if (strpos($r, '/api/') === false) {
-                        $html .= ''.$r.',';
+                        $values[] = $r;
                     }
                 }
             }
         }
+        $values = array_unique($values);
+        $html = implode(", ", $values);
         return $html;
     }
     

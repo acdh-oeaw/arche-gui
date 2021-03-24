@@ -186,18 +186,21 @@ class ArcheApiModel extends ArcheModel
         $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
-            'skipNamespace'     => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
+            //'skipNamespace'     => $this->properties->baseUrl.'%', // don't forget the '%' at the end!
             'ontologyNamespace' => 'https://vocabs.acdh.oeaw.ac.at/schema#',
             'parent'            => 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf',
             'label'             => 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle',
-            'order'             => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
-            'cardinality'       => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
-            'recommended'       => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
-            'langTag'           => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
-            'vocabs'            => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
-            'altLabel'          => 'http://www.w3.org/2004/02/skos/core#altLabel'
+            //'order'             => 'https://vocabs.acdh.oeaw.ac.at/schema#ordering',
+            //'cardinality'       => 'https://vocabs.acdh.oeaw.ac.at/schema#cardinality',
+            //'recommended'       => 'https://vocabs.acdh.oeaw.ac.at/schema#recommendedClass',
+            //'langTag'           => 'https://vocabs.acdh.oeaw.ac.at/schema#langTag',
+            //'vocabs'            => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
+            //'altLabel'          => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
+        
+       
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        
         $collectionProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;
         $projectProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
         $resourceProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties;
