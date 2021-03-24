@@ -31,14 +31,16 @@ class MetadataGuiHelper
     private static $right_access = array(
         'hasOwner', 'hasRightsHolder',
         'hasLicense', 'hasAccessRestriction',
-        'hasRestrictionRole'
+        'hasRestrictionRole', 'hasLicenseSummary',
+        'hasAccessRestrictionSummary'
     );
     
     private static $dates = array(
         'hasDate', 'hasStartDate',
         'hasEndDate', 'hasCreatedDate',
         'hasCreatedStartDate', 'hasCreatedEndDate',
-        'hasCollectedStartDate', 'hasCollectedEndDate'
+        'hasCollectedStartDate', 'hasCollectedEndDate',
+        'hasCreatedStartDateOriginal', 'hasCreatedEndDateOriginal'
     );
     
     private static $relations_other_projects = array(
@@ -50,7 +52,8 @@ class MetadataGuiHelper
         'hasSource', 'isSourceOf',
         'isNewVersionOf', 'isPreviousVersionOf',
         'hasPart', 'isPartOf',
-        'hasTitleImage', 'isTitleImageOf'
+        'hasTitleImage', 'isTitleImageOf',
+        'hasVersionInfo'
     );
     
     private static $curation = array(
@@ -122,10 +125,10 @@ class MetadataGuiHelper
      */
     private function formatMetadataGuiView()
     {
-        
         //key => collection/project/resource
         foreach ($this->data as $key => $values) {
             foreach ($values as $k => $v) {
+          
                 $tableClass = 'basic';
                 if (!isset($v->label)) {
                     break;
@@ -140,6 +143,7 @@ class MetadataGuiHelper
                     }
                     
                     $tableClass = $this->isCustomClass($prop);
+                    
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = $prop;
                     //setup the default values
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
@@ -151,8 +155,8 @@ class MetadataGuiHelper
                 if (isset($v->property)) {
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['property'] = $v->label[$this->siteLang];
                 }
-                if (isset($v->order)) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['ordering'] = $v->order;
+                if (isset($v->ordering)) {
+                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['ordering'] = $v->ordering;
                 }
                 if (isset($v->min)) {
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = $v->min;
@@ -169,6 +173,7 @@ class MetadataGuiHelper
                 $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
+            
         }
         $this->result['properties']['basic'] = $this->reorderPropertiesByOrderValue($this->result['properties']['basic']);
         $this->result['properties']['relations_other_projects'] = $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']);
@@ -506,7 +511,7 @@ class MetadataGuiHelper
                     if (isset($v->domain)) {
                         $this->data[$v->ordering][$kt]['domain'] = $v->domain;
                     }
-                    
+
                     $this->data[$v->ordering]['main']['min'] = $v->min;
                     $this->data[$v->ordering]['main']['max'] = $v->max;
 
@@ -527,16 +532,15 @@ class MetadataGuiHelper
                         $this->data[$v->ordering][$kt]['recommended'] = $v->recommendedClass;
                     }
                     $this->data[$v->ordering]['main']['order'] = $v->ordering;
-                    
+
                     if (isset($v->langTag)) {
                         $this->data[$v->ordering]['main']['langTag'] = $v->langTag;
                         $this->data[$v->ordering][$kt]['langTag'] = $v->langTag;
                     }
-                    
+
                     $this->data[$v->ordering]['main']['domain'] = $domain;
                 }
             }
-            
             ksort($this->data);
         }
     }
