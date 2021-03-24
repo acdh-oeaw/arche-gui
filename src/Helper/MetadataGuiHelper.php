@@ -128,6 +128,7 @@ class MetadataGuiHelper
         //key => collection/project/resource
         foreach ($this->data as $key => $values) {
             foreach ($values as $k => $v) {
+          
                 $tableClass = 'basic';
                 if (!isset($v->label)) {
                     break;
@@ -175,6 +176,7 @@ class MetadataGuiHelper
                 $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
+            
         }
         $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ? 
                 $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) : 
@@ -524,55 +526,56 @@ class MetadataGuiHelper
         foreach ($data as $kt => $kv) {
             $domain = '';
             $domain .= $kt.' ';
-           
-            foreach ($kv as $v) {
-                if (isset($v->ordering)) {
-                    if (isset($v->uri)) {
-                        $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
-                        $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
-                    }
-                    if (isset($v->min) || isset($v->max)) {
-                        $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
-                    } elseif ((is_null($v->min) && is_null($v->max))) {
-                        $this->data[$v->ordering][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
-                    }
-                    if (isset($v->label['en'])) {
-                        $this->data[$v->ordering][$kt]['title'] = $v->label['en'];
-                    }
-                    if (isset($v->domain)) {
-                        $this->data[$v->ordering][$kt]['domain'] = $v->domain;
-                    }
+            if(is_array($kv)) {
+                foreach ($kv as $v) {
+                    if (isset($v->ordering)) {
+                        if (isset($v->uri)) {
+                            $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
+                            $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
+                        }
+                        if (isset($v->min) || isset($v->max)) {
+                            $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
+                        } elseif ((is_null($v->min) && is_null($v->max))) {
+                            $this->data[$v->ordering][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
+                        }
+                        if (isset($v->label['en'])) {
+                            $this->data[$v->ordering][$kt]['title'] = $v->label['en'];
+                        }
+                        if (isset($v->domain)) {
+                            $this->data[$v->ordering][$kt]['domain'] = $v->domain;
+                        }
 
-                    $this->data[$v->ordering]['main']['min'] = $v->min;
-                    $this->data[$v->ordering]['main']['max'] = $v->max;
+                        $this->data[$v->ordering]['main']['min'] = $v->min;
+                        $this->data[$v->ordering]['main']['max'] = $v->max;
 
-                    $this->data[$v->ordering][$kt]['min'] = $v->min;
-                    $this->data[$v->ordering][$kt]['max'] = $v->max;
-                    if (isset($v->range)) {
-                        $this->data[$v->ordering]['main']['range'] = $v->range;
-                        $this->data[$v->ordering][$kt]['range'] = $v->range;
+                        $this->data[$v->ordering][$kt]['min'] = $v->min;
+                        $this->data[$v->ordering][$kt]['max'] = $v->max;
+                        if (isset($v->range)) {
+                            $this->data[$v->ordering]['main']['range'] = $v->range;
+                            $this->data[$v->ordering][$kt]['range'] = $v->range;
+                        }
+
+                        if (isset($v->vocabs)) {
+                            $this->data[$v->ordering]['main']['vocabs'] = $v->vocabs;
+                            $this->data[$v->ordering][$kt]['vocabs'] = $v->vocabs;
+                        }
+
+                        if (isset($v->recommendedClass)) {
+                            $this->data[$v->ordering]['main']['recommended'] = $v->recommendedClass;
+                            $this->data[$v->ordering][$kt]['recommended'] = $v->recommendedClass;
+                        }
+                        $this->data[$v->ordering]['main']['order'] = $v->ordering;
+
+                        if (isset($v->langTag)) {
+                            $this->data[$v->ordering]['main']['langTag'] = $v->langTag;
+                            $this->data[$v->ordering][$kt]['langTag'] = $v->langTag;
+                        }
+
+                        $this->data[$v->ordering]['main']['domain'] = $domain;
                     }
-
-                    if (isset($v->vocabs)) {
-                        $this->data[$v->ordering]['main']['vocabs'] = $v->vocabs;
-                        $this->data[$v->ordering][$kt]['vocabs'] = $v->vocabs;
-                    }
-
-                    if (isset($v->recommendedClass)) {
-                        $this->data[$v->ordering]['main']['recommended'] = $v->recommendedClass;
-                        $this->data[$v->ordering][$kt]['recommended'] = $v->recommendedClass;
-                    }
-                    $this->data[$v->ordering]['main']['order'] = $v->ordering;
-
-                    if (isset($v->langTag)) {
-                        $this->data[$v->ordering]['main']['langTag'] = $v->langTag;
-                        $this->data[$v->ordering][$kt]['langTag'] = $v->langTag;
-                    }
-
-                    $this->data[$v->ordering]['main']['domain'] = $domain;
                 }
+                ksort($this->data);
             }
-            ksort($this->data);
         }
     }
 }
