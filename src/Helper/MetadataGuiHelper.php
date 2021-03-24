@@ -128,7 +128,6 @@ class MetadataGuiHelper
         //key => collection/project/resource
         foreach ($this->data as $key => $values) {
             foreach ($values as $k => $v) {
-          
                 $tableClass = 'basic';
                 if (!isset($v->label)) {
                     break;
@@ -176,7 +175,6 @@ class MetadataGuiHelper
                 $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
-            
         }
         $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ? 
                 $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) : 
