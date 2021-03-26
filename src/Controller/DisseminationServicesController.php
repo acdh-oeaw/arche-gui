@@ -54,7 +54,7 @@ class DisseminationServicesController extends ControllerBase
         
         $vd = array();
         $vd = $this->model->getViewData($identifier, $dissemination);
-        if (count((array)$vd) == 0 && ($dissemination == "collection" || $dissemination == "collection_lazy" )) {
+        if (count((array)$vd) == 0 && ($dissemination == "collection" || $dissemination == "collection_lazy")) {
             return array("id" => 0, "title" => $this->t('No child element'), "text" => $this->t('No child element'));
         }
         
