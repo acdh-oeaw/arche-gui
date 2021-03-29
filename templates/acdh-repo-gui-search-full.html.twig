@@ -19,13 +19,16 @@
                 </div>
             {% endif%}    
 
-            {% if item.getAcdhType() %}
+            {% if item.getRdfTypes() %}
                 <div class="res-property">
                     <i class="material-icons">&#xE54E;</i>
-                    <span class="res-prop-label">{{ "Type"|trans }}: </span>
-                    <span class="res-rdfType"><a href="/browser/search/type={{ item.getAcdhType() }}&payload=false/titleasc/10/1">{{ item.getAcdhType()|trans }}</a></span>
+                    <span class="res-prop-label">{{ "Type"|trans }}:</span> 
+                    <span class="res-prop-value">
+                        {% for value in item.getRdfTypes() %}
+                            <a id='archeHref' href="/browser/search/type={{ value }}&payload=false/titleasc/10/1">{{ value }}</a>
+                        {% endfor %}
+                    </span>
                 </div>
-                <!-- if the type is metdata/resource/collection/project then we will display the availabledate -->
                 {% if item.getAcdhType() == 'Metadata' or item.getAcdhType() == 'Resource' or item.getAcdhType() == 'TopCollection' or item.getAcdhType() == 'Collection' or item.getAcdhType() == 'Project' %}
                     {% if item.getData('acdh:hasAvailableDate') %}
                         {{ item.getPropTitle('acdh:hasAvailableDate') }}
@@ -34,8 +37,8 @@
                         </div>
                     {% endif%}
                 {% endif%}
-            {% endif%}  
-
+            {% endif%}
+            
             {% if titleimage %}
                 </div>
             {% endif%}
