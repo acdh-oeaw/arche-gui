@@ -59,5 +59,4 @@ class FormHelper
         $result['fields'] = $fields;
         return $result;
     }
-            
 }

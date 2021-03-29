@@ -208,7 +208,8 @@ class SearchViewHelper
      * @param string $data
      * @return string
      */
-    private function explodeSearchStringValues(string $data): string {
+    private function explodeSearchStringValues(string $data): string
+    {
         return str_replace('+', '', $data);
     }
     
@@ -218,14 +219,15 @@ class SearchViewHelper
      * @param string $data
      * @return array
      */
-    private function explodeTypes(string $data): array {
+    private function explodeTypes(string $data): array
+    {
         $data = explode('+', $data);
         $res = array();
         if (($key = array_search('or', $data)) !== false) {
             unset($data[$key]);
         }
         
-        foreach($data as $k => $v) {
+        foreach ($data as $k => $v) {
             $res[$k] = ArcheHelper::createFullPropertyFromShortcut($v);
         }
         return $res;

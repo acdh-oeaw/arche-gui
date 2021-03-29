@@ -6,7 +6,6 @@ use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
 class ResourceObject
 {
-    
     private $config;
     private $properties;
     private $acdhid;
