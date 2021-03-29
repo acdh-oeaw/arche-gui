@@ -51,7 +51,7 @@ class ComplexSearchForm extends FormBase
         //the entity box section
         $this->entityData = $this->model->getViewData("entity");
         if (count($this->entityData) > 0) {
-            $this->entityData = $this->helper->formatEntityYears($this->entityData);
+            $this->entityData = $this->helper->formatEntityTypes($this->entityData);
             $resData["title"] = t('Type of Entity')->__toString();
             $resData["type"] = "searchbox_types";
             $resData["fields"] = $this->entityData['fields'];
@@ -109,7 +109,7 @@ class ComplexSearchForm extends FormBase
 
         $types = $form_state->getValue('searchbox_types');
         $types = array_filter($types);
-
+        
         $formats = $form_state->getValue('searchbox_format');
         $formats = array_filter($formats);
 

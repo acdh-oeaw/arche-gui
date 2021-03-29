@@ -71,7 +71,9 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
             \Drupal::messenger()->addWarning(t('You do not have data'));
             return array();
         }
+        
         \Drupal::service('page_cache_kill_switch')->trigger();
+       
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,
@@ -115,7 +117,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
         $this->repoUrl = $identifier;
         //remove the url from the identifier just to have the repoid
         $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
-        $dv = array();
+        $dv = [];
         
         //get the detail view raw data from the database
         $dv = $this->model->getViewData($this->repoUrl);

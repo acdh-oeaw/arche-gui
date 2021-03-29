@@ -14,7 +14,7 @@ Data Type :
 - http://www.w3.org/2001/XMLSchema#anyURI
 
 Field extra type:
-- binary / date
+- binary / date / shortCut
 - delimiter (optional): basic is ",", you can use also "<br>"
 - icon: the fontawesome icon name, what will be displayed before the label
 - label: the label what should be displayed before the value
@@ -44,9 +44,21 @@ Field extra type:
             {% if data is iterable %}
                 
                 {% for value in data %}
+                    
                     <!-- The identifiers will open in the same window -->
                     {% if (value.type == 'ID') %}
-                        {% if (value.title and value.repoid )  %}
+                        
+                        {% if(type == 'shortCut') %}  
+                            {% if (value.shortCut)  %}
+                                <a href="{{ value.value }}" target="_blank">{{ value.shortCut|nl2br }}</a>
+                            {% elseif (value.value)  %}
+                                <a href="{{ value.value }}" target="_blank">{{ value.value|nl2br }}</a>
+                            {% elseif (value.title) %}   
+                                <a href="{{ value.title }}" target="_blank">{{ value.title|nl2br }}</a>
+                            {% elseif (value.relvalue)  %}
+                                <a href="{{ value.relvalue }}" target="_blank">{{ value.relvalue|nl2br }}</a>
+                            {% endif %}
+                        {% elseif (value.title and value.repoid )  %}
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" target="_blank">{{ value.title|nl2br }}</a>
                         {% elseif (value.value and value.repoid )  %}                            
                             <a id='archeHref' href="/browser/oeaw_detail/{{ value.repoid }}" target="_blank">{{ value.value|nl2br }}</a>
@@ -132,6 +144,7 @@ Field extra type:
                                 {{ kiloBytes }} KB
                             {% endif%}    
                         {% endif%}
+                    
                     {% else %}
                         
                         <!-- if there is no type defined then simply display the title -->

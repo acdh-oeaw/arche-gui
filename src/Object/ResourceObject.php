@@ -2,10 +2,11 @@
 
 namespace Drupal\acdh_repo_gui\Object;
 
-use GuzzleHttp;
+use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
 class ResourceObject
 {
+    
     private $config;
     private $properties;
     private $acdhid;
@@ -113,7 +114,6 @@ class ResourceObject
         }
         return $result;
     }
-    
     
     
     /**
@@ -325,6 +325,23 @@ class ResourceObject
             }
         }
         return "";
+    }
+    
+    /**
+     * Display all RDF:Type Values
+     * @return array
+     */
+    public function getRdfTypes(): array
+    {
+        $result = array();
+        if (isset($this->properties["rdf:type"])) {
+            foreach ($this->properties["rdf:type"] as $v) {
+                if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
+                    $result[] = Helper::createShortcut($v->title);
+                }
+            }
+        }
+        return $result;
     }
     
     /**

@@ -129,6 +129,7 @@ class SearchViewModel extends ArcheModel
     {
         $result = array();
         $this->metaObj = $metavalue;
+        
         $this->initPaging($limit, $page, $order);
         $sqlYears = $this->formatYearsFilter_V2();
         $sqlTypes = $this->formatTypeFilter_V2();
@@ -242,7 +243,7 @@ class SearchViewModel extends ArcheModel
                 $typeStr = 'ARRAY [ ';
                 $i = 0;
                 foreach ($this->metaObj->type as $t) {
-                    $typeStr .= "'https://vocabs.acdh.oeaw.ac.at/schema#$t'";
+                    $typeStr .= "'$t'";
                     if ($count - 1 != $i) {
                         $typeStr .= ', ';
                     } else {
@@ -254,6 +255,7 @@ class SearchViewModel extends ArcheModel
                 $typeStr = "ARRAY[]::text[]";
             }
         }
+        
         return $typeStr;
     }
     

@@ -3,9 +3,8 @@
 namespace Drupal\acdh_repo_gui\Traits;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use Drupal\acdh_repo_gui\Object\ResourceObject;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
+use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
 /**
  * Description of ArcheHelper
@@ -19,26 +18,6 @@ trait ArcheUtilTrait
     protected $repo;
     protected $siteLang;
    
-    public static $prefixesToChange = array(
-        "http://fedora.info/definitions/v4/repository#" => "fedora",
-        "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#" => "ebucore",
-        "http://www.loc.gov/premis/rdf/v1#" => "premis",
-        "http://www.jcp.org/jcr/nt/1.0#" => "nt",
-        "http://www.w3.org/2000/01/rdf-schema#" => "rdfs",
-        "http://www.w3.org/ns/ldp#" => "ldp",
-        "http://www.iana.org/assignments/relation/" => "iana",
-        "https://vocabs.acdh.oeaw.ac.at/schema#" => "acdh",
-        "https://id.acdh.oeaw.ac.at/" => "acdhID",
-        "http://purl.org/dc/elements/1.1/" => "dc",
-        "http://purl.org/dc/terms/" => "dcterms",
-        "http://www.w3.org/2002/07/owl#" => "owl",
-        "http://xmlns.com/foaf/0.1/" => "foaf",
-        "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
-        "http://www.w3.org/2004/02/skos/core#" => "skos",
-        //"http://xmlns.com/foaf/spec/" => "foaf"
-    );
-    
-    
     public function __construct($cfg = null)
     {
         ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
@@ -46,35 +25,7 @@ trait ArcheUtilTrait
         $this->repo = Repo::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
-    
-    /**
-     * Create shortcut from the property for the gui
-     *
-     * @param string $prop
-     * @return string
-     */
-    protected function createShortcut(string $prop): string
-    {
-        $prefix = array();
-        
-        if (strpos($prop, '#') !== false) {
-            $prefix = explode('#', $prop);
-            $property = end($prefix);
-            $prefix = $prefix[0];
-            if (isset(self::$prefixesToChange[$prefix.'#'])) {
-                return self::$prefixesToChange[$prefix.'#'].':'.$property;
-            }
-        } else {
-            $prefix = explode('/', $prop);
-            $property = end($prefix);
-            $pref = str_replace($property, '', $prop);
-            if (isset(self::$prefixesToChange[$pref])) {
-                return self::$prefixesToChange[$pref].':'.$property;
-            }
-        }
-        return '';
-    }
-    
+   
     /**
      * Create gui inside uri from the identifier
      *
@@ -167,7 +118,7 @@ trait ArcheUtilTrait
                 
                 $this->setAcdhId($d);
                 
-                $d->shortcut = $this->createShortcut($d->property);
+                $d->shortcut = Helper::createShortcut($d->property);
                 
                 //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
                 $this->setUri($d);
@@ -246,5 +197,4 @@ trait ArcheUtilTrait
         }
     }
     
-    //abstract public function createView(): array;
 }

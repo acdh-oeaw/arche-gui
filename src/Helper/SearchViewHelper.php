@@ -3,8 +3,7 @@
 namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Object\ResourceObject;
-use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
+use Drupal\acdh_repo_gui\Helper\ArcheHelper as ArcheHelper;
 
 /**
  * Description of SearchViewHelper
@@ -190,25 +189,46 @@ class SearchViewHelper
             foreach ($strArr as $arr) {
                 if (strpos($arr, $f) !== false) {
                     $arr = str_replace($f . '=', '', $arr);
-                    if (($f == "mindate") || ($f == "maxdate")) {
-                        $arr = str_replace('+', '', $arr);
+                    
+                    if (($f == "mindate") || ($f == "maxdate") || ($f == "words") || ($f == "years")) {
+                        $arr = $this->explodeSearchStringValues($arr);
                     }
-                    if ($f == 'words') {
-                        $arr = explode('+', $arr);
+                    if ($f == "type") {
+                        $arr =$this->explodeTypes($arr);
                     }
-                    if ($f == 'type') {
-                        $arr = explode('+', $arr);
-                        if (($key = array_search('or', $arr)) !== false) {
-                            unset($arr[$key]);
-                        }
-                    }
-                    if ($f == 'years') {
-                        $arr = explode('+', $arr);
-                    }
+                    
                     $this->searchObj->$f = $arr;
                 }
             }
         }
+    }
+    
+    /**
+     * explode the search string  values
+     * @param string $data
+     * @return string
+     */
+    private function explodeSearchStringValues(string $data): string {
+        return str_replace('+', '', $data);
+    }
+    
+    
+    /**
+     * Explode the search string types
+     * @param string $data
+     * @return array
+     */
+    private function explodeTypes(string $data): array {
+        $data = explode('+', $data);
+        $res = array();
+        if (($key = array_search('or', $data)) !== false) {
+            unset($data[$key]);
+        }
+        
+        foreach($data as $k => $v) {
+            $res[$k] = ArcheHelper::createFullPropertyFromShortcut($v);
+        }
+        return $res;
     }
 
     private function formatResultV2(array $data)

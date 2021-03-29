@@ -1401,7 +1401,7 @@ CASE
             ELSE
                 RAISE NOTICE USING MESSAGE =  'type query insert to collection data';
                 CASE WHEN (_searchstr <> '' ) IS TRUE THEN
-                    RAISE NOTICE USING MESSAGE =  'type query SKIPPEd because we  have saecrh string but we dont have value!';
+                    RAISE NOTICE USING MESSAGE =  'type query SKIPPED because we have search string but we dont have value!';
                 ELSE
                     RAISE NOTICE USING MESSAGE =  'type query insert to collection data we dont have search string';
 			
@@ -1418,7 +1418,7 @@ CASE
                             and 
                             fts.raw  = ANY (_acdhtype)
                         ) limit 10000
-                    )INSERT INTO collection_data (id, acdhid, headline_title, headline_desc, headline_binary) SELECT td.ftsid, td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data as td;
+                    )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data_temp as td;
         END CASE;	
     END CASE;
 END CASE;
