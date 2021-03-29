@@ -2,7 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-
 /**
  * Description of ArcheHelper Static Class
  *
@@ -59,12 +58,13 @@ class ArcheHelper
         return '';
     }
     
-    public static function createFullPropertyFromShortcut(string $prop): string {
+    public static function createFullPropertyFromShortcut(string $prop): string
+    {
         $domain = self::getDomainFromShortCut($prop);
         $value = self::getValueFromShortCut($prop);
-        if($domain) {
-            foreach(self::$prefixesToChange as $k => $v){
-                if($v == $domain) {
+        if ($domain) {
+            foreach (self::$prefixesToChange as $k => $v) {
+                if ($v == $domain) {
                     return $k.$value;
                 }
             }
@@ -72,20 +72,21 @@ class ArcheHelper
         return "";
     }
     
-    private static function getDomainFromShortCut(string $prop): string {        
+    private static function getDomainFromShortCut(string $prop): string
+    {
         $prefix = explode(':', $prop);
-        if(is_array($prefix)) {
+        if (is_array($prefix)) {
             return $prefix[0];
         }
         return '';
     }
     
-    private static function getValueFromShortCut(string $prop): string {        
+    private static function getValueFromShortCut(string $prop): string
+    {
         $prefix = explode(':', $prop);
-        if(is_array($prefix)) {
+        if (is_array($prefix)) {
             return end($prefix);
         }
         return '';
     }
-    
 }

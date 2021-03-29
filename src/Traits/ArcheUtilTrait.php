@@ -196,5 +196,4 @@ trait ArcheUtilTrait
             $d->uri = $d->value;
         }
     }
-    
 }
