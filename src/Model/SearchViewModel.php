@@ -133,8 +133,8 @@ class SearchViewModel extends ArcheModel
         $this->initPaging($limit, $page, $order);
         $sqlYears = $this->formatYearsFilter_V2();
         $sqlTypes = $this->formatTypeFilter_V2();
-        if (isset($this->metaObj->words) && (count($this->metaObj->words) > 0)) {
-            $sqlWords = implode(" & ", $this->metaObj->words);
+        if (isset($this->metaObj->words) && (count((array)$this->metaObj->words) > 0)) {
+            $sqlWords = implode(" & ", (array)$this->metaObj->words);
         } else {
             $sqlWords = (string)"*";
         }
