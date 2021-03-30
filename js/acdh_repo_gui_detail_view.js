@@ -195,6 +195,7 @@ jQuery(function ($) {
                     });
                     e.preventDefault();
                 } else {
+                    e.preventDefault();
                     window.open(url, '_blank');
                     $(".loader-div").hide();
                 }

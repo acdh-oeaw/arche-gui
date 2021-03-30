@@ -77,11 +77,15 @@
                     {% endif%}    
 
 
-                    {% if item.getAcdhType() %}
+                    {% if item.getRdfTypes() %}
                         <div class="res-property">
                             <i class="material-icons">&#xE54E;</i>
                             <span class="res-prop-label">{{ "Type"|trans }}: </span>
-                            <span class="res-rdfType"><a href="/browser/search/type={{ item.getAcdhType() }}&payload=false/titleasc/10/1">{{ item.getAcdhType() }}</a></span>
+                            <span class="res-rdfType">
+                                {% for value in item.getRdfTypes() %}
+                                    <a id='archeHref' href="/browser/search/type={{ value }}&payload=false/titleasc/10/1">{{ value }}</a>
+                                {% endfor %}
+                            </span>
                         </div>
                     {% endif%}
 
