@@ -105,8 +105,7 @@
 
 <!-- CITE BLOCK -->
 {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
-        basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' 
-        or  basic.getAcdhType()|lower == 'publication'  or  basic.getAcdhType()|lower == 'metadata'  %}
+        basic.getAcdhType()|lower == 'resource' or  basic.getAcdhType()|lower == 'metadata'  %}
 
     <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
     
