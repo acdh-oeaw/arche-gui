@@ -14,11 +14,11 @@ RETURN QUERY
 	select COUNT(DISTINCT(r.id))
 	from metadata as m
 	left join relations as r on r.id = m.id
-        left join resources as rs on rs.id = m.id and rs.state = 'active'
+        left join resources as rs on rs.id = m.id 
 	where
             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
             and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'
-            
+            and rs.state = 'active'            
     ) select * from root_count;
 END
 $func$
@@ -75,9 +75,9 @@ WITH root_data as (
     (select i.ids from identifiers as i where i.id = rd.id  and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar) limit 1 ) as acdhid
 from root_data as rd
 left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-left join resources as rs on rs.id = rd.id and rs.state = 'active'
+left join resources as rs on rs.id = rd.id
 where 
-    rd.title is not null;
+    rd.title is not null and rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -228,7 +228,8 @@ BEGIN
 	( CASE WHEN dm.lang IS NULL OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
     from detail_meta as dm
     left join reldata as dmr on dmr.id = dm.value
-    left join resources as rs on rs.id = dm.id and rs.state = 'active'
+    left join resources as rs on rs.id = dm.id 
+    where rs.state = 'active'
     order by property; 
 END
 $func$
@@ -309,7 +310,8 @@ RETURN QUERY
         mv.mainid, mv.parentid, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath, mv.depth 
     from collectionData as mv
     left join accessres as ar on mv.accesres  = ar.accessid
-    left join resources as rs on rs.id = mv.mainid and rs.state = 'active'
+    left join resources as rs on rs.id = mv.mainid 
+    where rs.state = 'active'
     order by mv.depth;
 END
 $func$
@@ -419,7 +421,8 @@ alter table child_ids add orderid serial;
 RETURN QUERY
     select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype, ci.orderid
     from child_ids as ci 
-    left join resources as rs on rs.id = ci.id and rs.state = 'active'
+    left join resources as rs on rs.id = ci.id 
+    where rs.state = 'active'
     order by ci.orderid;
 END
 $func$
@@ -452,7 +455,8 @@ BEGIN
 RETURN QUERY
     select count(ci.id)
     from child_ids as ci
-    left join resources as rs on rs.id = ci.id and rs.state = 'active';
+    left join resources as rs on rs.id = ci.id 
+    where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -505,7 +509,8 @@ RETURN QUERY
         bd.depth 
     from 
         breadcrumbdata as bd
-    left join resources as rs on rs.id = bd.mainid and rs.state = 'active';
+    left join resources as rs on rs.id = bd.mainid 
+    where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -534,10 +539,11 @@ RETURN QUERY
             ) as title	
         from
         metadata_view as mv
-        left join resources as rs on rs.id = mv.id and rs.state = 'active'
+        left join resources as rs on rs.id = mv.id
         where 
         mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isMemberOf'
         and mv.value = _repoid 
+        and rs.state = 'active'
     ) select * from subordinates order by title;
 END
 $func$
@@ -573,10 +579,11 @@ return query
         mv.id, mv.property, mv.value, mv.lang
     from ids as i 
     left join metadata_view as mv on mv.id = i.id
-    left join resources as rs on rs.id = mv.id and rs.state = 'active'
+    left join resources as rs on rs.id = mv.id 
     where 
         mv.property in ('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle' ) 
-        and LOWER(mv.value) like '%' ||_searchStr || '%' ;
+        and LOWER(mv.value) like '%' ||_searchStr || '%' 
+        and rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -608,9 +615,10 @@ RETURN QUERY
         DISTINCT(iv.id), iv.property, mv.value 
     from inverseIds as iv
     left join metadata_view as mv on mv.id = iv.id
-    left join resources as rs on rs.id = iv.id and rs.state = 'active'
+    left join resources as rs on rs.id = iv.id
     where
-        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle';
+        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
+        and rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -645,7 +653,8 @@ RETURN QUERY
     REPLACE(mv.value, 'https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:')
     from ontologyData as od
     left join metadata_view as mv on mv.id = od.id and mv.type = 'ID' and mv.value like 'https://vocabs.acdh%'
-    left join resources as rs on rs.id = od.id and rs.sate = 'active';
+    left join resources as rs on rs.id = od.id 
+    where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -686,7 +695,8 @@ select
 c.id as collections,
 (select b.id as binaries FROM count_binaries as b) as binaries
 FROM count_main_collections as c
-left join resources as rs on rs.id = c.id and rs.state = 'active';
+left join resources as rs on rs.id = c.id 
+where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -723,7 +733,7 @@ WITH query_data as (
     mv.property,
     (select mv2.value from metadata_view as mv2 where mv2.id = mv.id and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv2.value like '%.oeaw.ac.at/%' LIMIT 1)
     from metadata_view as mv
-    left join resources as rs on rs.id = mv.id and rs.state = 'active'
+    left join resources as rs on rs.id = mv.id 
     where 
     mv.property in (
         'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
@@ -732,6 +742,7 @@ WITH query_data as (
         'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
     ) 
     and mv.value = _identifier
+    and rs.state = 'active'
     UNION
     select 
     DISTINCT(CAST(mv.value as bigint)),
@@ -1320,8 +1331,9 @@ RETURN QUERY
     select 
         fd.id, fd.title, CAST(fd.avdate as timestamp) as avdate, fd.description, fd.accessres, fd.titleimage, fd.acdhtype, (select cd.cnt from count_data as cd) as cnt, fd.headline
     from final_data as fd
-    left join resources as rs on rs.id = fd.id and rs.state = 'active'
+    left join resources as rs on rs.id = fd.id 
     where fd.title is not null
+    and rs.state = 'active'
     order by  
         (CASE WHEN _orderby = 'asc' THEN (CASE WHEN _orderby_prop = 'title' THEN fd.title WHEN _orderby_prop = 'type' THEN fd.acdhtype ELSE fd.avdate END) END) ASC,
         (CASE WHEN _orderby_prop = 'title' THEN fd.title WHEN _orderby_prop = 'type' THEN fd.acdhtype  ELSE fd.avdate END) DESC
@@ -1553,9 +1565,11 @@ RETURN QUERY
   select 
         fd.acdhid,  fd.title, fd.description, fd.acdhtype,  fd.headline_title, fd.headline_desc, fd.headline_binary,  CAST(fd.avdate as timestamp) as avdate, fd.accessres, fd.titleimage, fd.ids, (select cd.cnt from count_data as cd) as cnt
     from final_result as fd
-    left join resources as rs on rs.id = fd.acdhid and rs.state = 'active'
-    where fd.title is not null
-	order by  
+    left join resources as rs on rs.id = fd.acdhid
+    where 
+        fd.title is not null
+        and rs.state = 'active'
+    order by  
 	CASE WHEN _orderby = 'desc' THEN
           CASE _orderby_prop
               -- Check for each possible value of sort_col.
@@ -1686,7 +1700,8 @@ RETURN QUERY
     SELECT T1.id, MAX(T1.headline_title) AS headline_title, MAX(T1.headline_desc) As headline_desc, MAX(T1.headline_binary) As headline_binary 
     FROM final_string_result AS T1
     JOIN final_string_result AS T2 ON T1.id = T2.id
-    left join resources as rs on rs.id = T1.id and rs.state = 'active'
+    left join resources as rs on rs.id = T1.id 
+    where rs.state = 'active'
     GROUP BY T1.id;
 END
 $func$
@@ -1752,7 +1767,8 @@ RETURN QUERY
         mv.id, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath
     from collectionData as mv
     left join accessres as ar on mv.accesres  = ar.accessid
-    left join resources as rs on rs.id = mv.id and rs.state = 'active';
+    left join resources as rs on rs.id = mv.id 
+    where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
