@@ -1419,9 +1419,10 @@ CASE
                             cd.headline_binary
                         FROM collection_data as cd
                         LEFT JOIN full_text_search as fts on cd.acdhid = fts.id
+						LEFT JOIN metadata as m on m.id = fts.mid
                         WHERE
                         (
-                            fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
                             and 
                             fts.raw  = ANY (_acdhtype)
                         ) limit 10000
@@ -1446,9 +1447,10 @@ CASE
                             '' as headline_desc,
                             '' as headline_binary
                         from full_text_search as fts
+						LEFT JOIN metadata as m on m.id = fts.mid
                         where
                         (
-                            fts.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
                             and 
                             fts.raw  = ANY (_acdhtype)
                         ) limit 10000
@@ -1472,10 +1474,11 @@ CASE
                                 cd.headline_desc,
                                 cd.headline_binary
                             FROM collection_data as cd
-                            LEFT JOIN full_text_search as fts on fts.id = cd.acdhid				
+                            LEFT JOIN full_text_search as fts on fts.id = cd.acdhid		
+							LEFT JOIN metadata as m on m.id = fts.mid
                             WHERE
                             (
-                                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                                (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
                                 TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
                             )	limit 10000
                         ) select * from years_data);
@@ -1500,9 +1503,10 @@ CASE
                                     '' as headline_desc,
                                     '' as headline_binary
                                 FROM full_text_search as fts
+								LEFT JOIN metadata as m on m.id = fts.mid
                                 WHERE
                                 (
-                                    (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                                    (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
                                     TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
                                 ) limit 10000
                             )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT  yd.id, yd.headline_title, yd.headline_desc, yd.headline_binary from years_data_temp as yd;
@@ -1627,8 +1631,9 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
                 '' as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
+			LEFT JOIN metadata as m on m.id = fts.mid
             WHERE   
-                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )	
+                (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )	
                 
         UNION 
             SELECT 
@@ -1637,8 +1642,9 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
                 trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
+			LEFT JOIN metadata as m on m.id = fts.mid
             WHERE  
-                (fts.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
+                (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
             limit 10000
             			
         ) select * from std_data
@@ -1666,7 +1672,7 @@ CASE WHEN (_binarySearch IS TRUE) THEN
             ranked AS(
                     SELECT DISTINCT(fts.id), fts.raw--, ts_rank_cd(segments,query) AS rank
                     from  full_text_search as fts, sb_data
-                    where sb_data.query @@ segments
+                    where sb_data.query @@ segments and fts.mid is null
                     limit 150
                     )
             --select * from sb_data
