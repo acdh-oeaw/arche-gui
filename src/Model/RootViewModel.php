@@ -63,10 +63,10 @@ class RootViewModel extends ArcheModel
             $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "SELECT 
-                    id, title, avdate, string_agg(DISTINCT description, '.') as description, accesres, titleimage, acdhid
+                    id, title, avdate, string_agg(DISTINCT description, '.') as description, acdhid
                 from gui.root_views_func( :lang ) 
                 where title is not null
-                group by id, title, avdate, accesres, titleimage, acdhid
+                group by id, title, avdate, acdhid
                 order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
                  ; ",
                 array(

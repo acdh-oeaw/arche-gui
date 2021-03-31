@@ -30,7 +30,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION  gui.root_views_func(_lang text);
 CREATE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, titleimage text, description text, avDate timestamp, accesres text, acdhid text )
+  RETURNS table (id bigint, title text, description text, avDate timestamp, acdhid text )
 AS $func$
 DECLARE 
     /* declare a second language variable, because if we dont have a value on the 
@@ -43,41 +43,30 @@ BEGIN
 	
 RETURN QUERY
 WITH root_data as (
-    select DISTINCT(r.id) as id,
-        /* check the title based on the language*/	
-	COALESCE(
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
-	) as title,
-	(select md.value from metadata_view as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' LIMIT 1) as titleImage,
-        /* check the description based on the language*/
-	COALESCE(
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
-	) as description,
-	CAST((select md.value from metadata as md where md.id = r.id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate
-	from metadata as m
-	left join relations as r on r.id = m.id
-	where
-            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-            and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'		
-) select 
-    rd.id, rd.title, rd.titleimage, rd.description, rd.avdate,
-    (CASE WHEN 
-        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1) IS NULL
-    THEN
-        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang2 LIMIT 1)
-    ELSE
-        (select md.value from metadata_view as md where md.id = r.target_id and md.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and md.lang = _lang LIMIT 1)
-    END) as accessres,
-    (select i.ids from identifiers as i where i.id = rd.id  and i.ids LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar) limit 1 ) as acdhid
-from root_data as rd
-left join relations as r on rd.id = r.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-left join resources as rs on rs.id = rd.id
-where 
-    rd.title is not null and rs.state = 'active';
+    select 
+        DISTINCT(m.id) as id,
+        COALESCE(
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
+        ) as title,	
+        COALESCE(
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
+        ) as description,
+        CAST((select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate,
+        (select mv.value from metadata_view as mv where mv.id = m.id and mv.type = 'ID' and mv.value LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar)  LIMIT 1) as acdhid
+    from metadata_view as m
+    left join resources as rs on rs.id = m.id
+    where 
+	m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+	and m.value = 'https://vocabs.acdh.oeaw.ac.at/schema#TopCollection'
+	and rs.state = 'active'	
+) 
+select 
+    rd.id, rd.title,  rd.description, rd.avdate, rd.acdhid
+from root_data as rd;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -90,7 +79,6 @@ LANGUAGE 'plpgsql';
 * Because we supporting the 3rd party identifiers too, like vicav, etc
 * execution time between: 140-171ms
 */
-
 DROP FUNCTION gui.detail_view_func(text, text);
 CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
     RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
@@ -1419,7 +1407,7 @@ CASE
                             cd.headline_binary
                         FROM collection_data as cd
                         LEFT JOIN full_text_search as fts on cd.acdhid = fts.id
-						LEFT JOIN metadata as m on m.id = fts.mid
+						LEFT JOIN metadata as m on m.mid = fts.mid
                         WHERE
                         (
                             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
@@ -1447,7 +1435,7 @@ CASE
                             '' as headline_desc,
                             '' as headline_binary
                         from full_text_search as fts
-						LEFT JOIN metadata as m on m.id = fts.mid
+						LEFT JOIN metadata as m on m.mid = fts.mid
                         where
                         (
                             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
@@ -1475,7 +1463,7 @@ CASE
                                 cd.headline_binary
                             FROM collection_data as cd
                             LEFT JOIN full_text_search as fts on fts.id = cd.acdhid		
-							LEFT JOIN metadata as m on m.id = fts.mid
+							LEFT JOIN metadata as m on m.mid = fts.mid
                             WHERE
                             (
                                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
@@ -1503,7 +1491,7 @@ CASE
                                     '' as headline_desc,
                                     '' as headline_binary
                                 FROM full_text_search as fts
-								LEFT JOIN metadata as m on m.id = fts.mid
+								LEFT JOIN metadata as m on m.mid = fts.mid
                                 WHERE
                                 (
                                     (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
@@ -1606,7 +1594,6 @@ LANGUAGE 'plpgsql';
 
 
 /** NEW TITLE DESC BINARY SQL **/
-
 DROP FUNCTION gui.searchstrData( text, text, bool);
 CREATE FUNCTION gui.searchstrData(_searchstr text DEFAULT '', _lang text DEFAULT 'en', _binarySearch bool DEFAULT FALSE )
   RETURNS table (id bigint, headline_title text, headline_desc text, headline_binary text)
@@ -1626,23 +1613,23 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
     CREATE TEMPORARY TABLE std_data AS (
         WITH std_data as (
             SELECT 
-                DISTINCT(fts.id),
+                DISTINCT COALESCE(m.id, fts.id) AS id,
                 trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_title,
                 '' as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
-			LEFT JOIN metadata as m on m.id = fts.mid
+			LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE   
                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )	
                 
         UNION 
             SELECT 
-                DISTINCT(fts.id),
+                DISTINCT COALESCE(m.id, fts.id) AS id,
                 '' as headline_title,
                 trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
-			LEFT JOIN metadata as m on m.id = fts.mid
+			LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE  
                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
             limit 10000
