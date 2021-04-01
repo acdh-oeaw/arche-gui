@@ -7,11 +7,10 @@ namespace Drupal\acdh_repo_gui\Helper;
  *
  * @author norbertczirjak
  */
-class MetadataGuiHelper
-{
+class MetadataGuiHelper {
+
     private $data = array();
     private $result = array();
-    
     private static $actors_involved = array(
         'hasPrincipalInvestigator', 'hasContact',
         'hasCreator', 'hasAuthor',
@@ -19,7 +18,6 @@ class MetadataGuiHelper
         'hasFunder', 'hasLicensor',
         'hasMetadataCreator'
     );
-     
     private static $coverage = array(
         'hasRelatedDiscipline', 'hasCoverage',
         'hasActor', 'hasSpatialCoverage',
@@ -27,14 +25,12 @@ class MetadataGuiHelper
         'hasTemporalCoverageIdentifier', 'hasCoverageEndDate',
         'hasCoverageStartDate'
     );
-    
     private static $right_access = array(
         'hasOwner', 'hasRightsHolder',
         'hasLicense', 'hasAccessRestriction',
         'hasRestrictionRole', 'hasLicenseSummary',
         'hasAccessRestrictionSummary'
     );
-    
     private static $dates = array(
         'hasDate', 'hasStartDate',
         'hasEndDate', 'hasCreatedDate',
@@ -42,7 +38,6 @@ class MetadataGuiHelper
         'hasCollectedStartDate', 'hasCollectedEndDate',
         'hasCreatedStartDateOriginal', 'hasCreatedEndDateOriginal'
     );
-    
     private static $relations_other_projects = array(
         'relation', 'hasRelatedProject',
         'hasRelatedCollection', 'continues',
@@ -55,7 +50,6 @@ class MetadataGuiHelper
         'hasTitleImage', 'isTitleImageOf',
         'hasVersionInfo'
     );
-    
     private static $curation = array(
         'hasDepositor', 'hasAvailableDate',
         'hasPid', 'hasNumberOfItems',
@@ -66,9 +60,8 @@ class MetadataGuiHelper
         'hasTransferDate', 'hasTransferMethod',
         'hasUpdateDate'
     );
-    
-    private function isCustomClass(string $type): string
-    {
+
+    private function isCustomClass(string $type): string {
         if (in_array($type, self::$actors_involved)) {
             return 'actors_involved';
         }
@@ -89,29 +82,28 @@ class MetadataGuiHelper
         }
         return'basic';
     }
-    
-    public function getData(array $data, string $lang = 'en')
-    {
+
+    public function getData(array $data, string $lang = 'en') {
         $this->siteLang = $lang;
         $this->data = $data;
         $this->setupMetadataGuiType();
         return $this->result;
     }
+
     /**
      * Create the reponse header
      * @param array $data
      */
-    private function setupMetadataGuiType()
-    {
+    private function setupMetadataGuiType() {
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
         $this->formatMetadataGuiView();
     }
-    
+
     /*
      * If we have multiple properties then we need to get the acdh schema one
      */
-    private function checkDataProperty(array $prop): string
-    {
+
+    private function checkDataProperty(array $prop): string {
         foreach ($prop as $v) {
             if (strpos($v, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
                 return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v);
@@ -119,90 +111,116 @@ class MetadataGuiHelper
         }
         return "";
     }
-    
+
     /**
      * Format the metadata gui result for the json output
      */
-    private function formatMetadataGuiView()
-    {
+    private function formatMetadataGuiView() {
         //key => collection/project/resource
         foreach ($this->data as $key => $values) {
+
             foreach ($values as $k => $v) {
                 $tableClass = 'basic';
-                if (!isset($v->label)) {
+                //filter out the duplications
+                if (strpos($k, 'https://vocabs.acdh.oeaw.ac.at/schema#') === false) {
+                    continue;
+                }
+
+                if (!isset($v->label) || !isset($v->property)) {
                     break;
-                } else {
-                    $prop = "";
+                } else if (isset($v->ordering) && ((int) $v->ordering !== 99999)) {
+                    
                     //check the properties for the custom gui table section
-                   
-                    if (is_array($v->property)) {
-                        $prop = $this->checkDataProperty($v->property);
-                    } else {
-                        $prop = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
-                    }
+                    $prop = $this->checkPropertyValue($v);
                     
                     $tableClass = $this->isCustomClass($prop);
+                    
                     if (!isset($v->label[$this->siteLang])) {
                         $v->label[$this->siteLang] = $prop;
                     }
+                   
                     $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['machine_name'] = $prop;
                     
-                    //setup the default values
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = '-';
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '-';
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = '-';
-                }
-                
-                if (isset($v->property)) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['property'] = $v->label[$this->siteLang];
-                }
-                if (isset($v->ordering)) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['ordering'] = $v->ordering;
-                }
-                if (isset($v->min)) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = $v->min;
-                }
+                    $this->createCardinalityFieldsDefaultValue($v, $tableClass, $key);
+                    
+                    if (isset($v->property)) {
+                        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['property'] = $v->label[$this->siteLang];
+                    }
+                    if (isset($v->ordering)) {
+                        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['basic_info']['ordering'] = $v->ordering;
+                    }
+                    if (isset($v->min)) {
+                        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = $v->min;
+                    }
 
-                if (isset($v->max)) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = $v->max;
+                    if (isset($v->max)) {
+                        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = $v->max;
+                    }
+
+                    if (isset($v->recommendedClass) && $v->recommendedClass === true) {
+                        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '1';
+                    }
+
+                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
                 }
-                
-                if (isset($v->recommendedClass) && $v->recommendedClass === true) {
-                    $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '1';
-                }
-                
-                $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinality($v);
                 //$this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = $this->metadataGuiCardinalityByMartina($v);
             }
         }
+
         $this->result['properties']['basic'] = ($this->result['properties']['basic'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['basic']) :
-            array();
-        
-        $this->result['properties']['relations_other_projects'] =
-                ($this->result['properties']['relations_other_projects'] != null) ?
+                array();
+
+        $this->result['properties']['relations_other_projects'] = ($this->result['properties']['relations_other_projects'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['relations_other_projects']) :
-            array();
-        
+                array();
+
         $this->result['properties']['coverage'] = ($this->result['properties']['coverage'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['coverage']) :
-            array();
-        
+                array();
+
         $this->result['properties']['actors_involved'] = ($this->result['properties']['actors_involved'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['actors_involved']) :
-            array();
-        
+                array();
+
         $this->result['properties']['curation'] = ($this->result['properties']['curation'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['curation']) :
-            array();
+                array();
         $this->result['properties']['dates'] = ($this->result['properties']['dates']) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['dates']) :
-            array();
-        
+                array();
+
         $this->result['properties']['right_access'] = ($this->result['properties']['right_access'] != null) ?
                 $this->reorderPropertiesByOrderValue($this->result['properties']['right_access']) :
-            array();
+                array();
+    }
+
+    /**
+     * Check the property value
+     * @param type $v
+     * @return string
+     */
+    private function checkPropertyValue(object &$v): string {
+        if (is_array($v->property)) {
+           return $this->checkDataProperty($v->property);
+        } else {
+            return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
+        }
+        return "";
+    }
+    
+    /**
+     * Set up the default values for the cardinalities
+     * @param object $v
+     * @param string $tableClass
+     * @param string $key
+     * @return void
+     */
+    private function createCardinalityFieldsDefaultValue(object &$v, string $tableClass, string $key): void {
+        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
+        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = '-';
+        $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '-';
+        $this->result['properties'][$tableClass][$v->label[$this->siteLang]][$key] = '-';
     }
     
     /**
@@ -210,8 +228,7 @@ class MetadataGuiHelper
      * @param array $data
      * @return array
      */
-    private function reorderPropertiesByOrderValue(array $data): array
-    {
+    private function reorderPropertiesByOrderValue(array $data): array {
         $result = array();
         foreach ($data as $k => $v) {
             if (isset($v['basic_info']['ordering'])) {
@@ -220,7 +237,7 @@ class MetadataGuiHelper
         }
         return $result;
     }
-    
+
     /**
      * "optional" means "$min empty or equal to 0"
      * "mandatory" is "$min greater than 0 and $recommended not equal true"
@@ -229,48 +246,48 @@ class MetadataGuiHelper
      * @param object $data
      * @return string
      */
-    private function metadataGuiCardinality(object $data): string
-    {
+    private function metadataGuiCardinality(object $data): string {
         $val = '-';
         if ($data->min == 0 || empty($data->min)) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
+            if ((isset($data->max) && $data->max > 1) || $data->min > 1 || !isset($data->max)) {
                 $val = 'o*';
             } else {
                 //optional
                 $val = 'o';
             }
         }
-          
+
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) && $data->recommendedClass !== true) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
-                $val =  'm*';
+            if ((isset($data->max) && $data->max > 1) || $data->min > 1 || !isset($data->max)) {
+                $val = 'm*';
             } else {
                 //mandatory
-                $val =  'm';
+                $val = 'm';
             }
             return $val;
         }
-          
+
         if ((isset($data->min) && (!empty($data->min)) && $data->min > 0) || $data->recommendedClass === true) {
-            if ((isset($data->max) && $data->max > 1)|| $data->min > 1 || !isset($data->max)) {
-                $val =  'r*';
+            if ((isset($data->max) && $data->max > 1) || $data->min > 1 || !isset($data->max)) {
+                $val = 'r*';
             } else {
                 //recommended
-                $val =  'r';
+                $val = 'r';
             }
         }
-        
+
         return $val;
     }
+
     /*
-    - if we have minCardinality and minCardinality >=1 => m
-    - if we have minCardinality and it is 0 or empty => o
-    - if we have recommendedClass and it is not empty => r
-    - if we have cardinality and it is 1 => m
-    - if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
-    */
-    private function metadataGuiCardinalityByMartina(object $data): string
-    {
+      - if we have minCardinality and minCardinality >=1 => m
+      - if we have minCardinality and it is 0 or empty => o
+      - if we have recommendedClass and it is not empty => r
+      - if we have cardinality and it is 1 => m
+      - if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
+     */
+
+    private function metadataGuiCardinalityByMartina(object $data): string {
         $cardinality = '';
         //- if we have minCardinality and minCardinality >=1 => m
         //if we have cardinality and it is 1 => m
@@ -285,16 +302,15 @@ class MetadataGuiHelper
         if (isset($data->recommended) && $data->recommended === true) {
             $cardinality = 'r';
         }
-                
+
         //if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
         if ((isset($data->max) && $data->max > 1) || (isset($data->max) && empty($data->max))) {
             $cardinality .= '*';
         }
-        
+
         return $cardinality;
     }
-    
-    
+
     /**
      * Get the root table data
      *
@@ -302,22 +318,20 @@ class MetadataGuiHelper
      * @param string $lang
      * @return string
      */
-    public function getRootTable(array $data, string $lang = 'en'): string
-    {
+    public function getRootTable(array $data, string $lang = 'en'): string {
         $this->siteLang = $lang;
         $this->reorderRootTable($data);
-       
+
         return $this->createRootTableHtml();
     }
-    
+
     /**
      * Create the response html string
      * @return string
      */
-    private function createRootTableHtml(): string
-    {
+    private function createRootTableHtml(): string {
         $html = '';
-        
+
         if (count($this->data) > 0) {
             // Open the table
 
@@ -366,12 +380,12 @@ class MetadataGuiHelper
             $html .= '</tr>';
 
             // Cycle through the array
-                
+
             foreach ($this->data as $type) {
                 $html .= '<tr>';
-                
+
                 if (isset($type['main']['title'])) {
-                    $html .= '<td class="sticky"><b>'.$type['main']['title'].'</b></td>';
+                    $html .= '<td class="sticky"><b>' . $type['main']['title'] . '</b></td>';
                 } else {
                     $html .= '<td class="sticky">TITLE MISSING</td>';
                 }
@@ -379,25 +393,25 @@ class MetadataGuiHelper
                 $html .= $this->getRtTypeValues($type);
 
                 if (isset($type['main']['order'])) {
-                    $html .= '<td>'.$type['main']['order'].'</td>';
+                    $html .= '<td>' . $type['main']['order'] . '</td>';
                 } else {
                     $html .= '<td></td>';
                 }
 
-                $html .= '<td>'.$this->getRtTypeDomain($type).'</td>';
-                
-                $html .= '<td>'.$this->getRtTypeRange($type).'</td>';
+                $html .= '<td>' . $this->getRtTypeDomain($type) . '</td>';
+
+                $html .= '<td>' . $this->getRtTypeRange($type) . '</td>';
 
                 if (isset($type['main']['vocabs'])) {
-                    $html .= '<td>'.$type['main']['vocabs'].'</td>';
+                    $html .= '<td>' . $type['main']['vocabs'] . '</td>';
                 } else {
                     $html .= '<td></td>';
                 }
 
-                $html .= '<td>'.$this->getRtTypeRecommended($type).'</td>';
+                $html .= '<td>' . $this->getRtTypeRecommended($type) . '</td>';
 
                 if (isset($type['main']['langTag'])) {
-                    $html .= '<td>'.$type['main']['langTag'].'</td>';
+                    $html .= '<td>' . $type['main']['langTag'] . '</td>';
                 } else {
                     $html .= '<td></td>';
                 }
@@ -406,70 +420,66 @@ class MetadataGuiHelper
             }
             $html .= "</table>";
         }
-        
+
         return $html;
     }
-    
+
     /**
      * Create the HTML table acdh class values
      * @param array $type
      * @return string
      */
-    private function getRtTypeValues(array $type): string
-    {
+    private function getRtTypeValues(array $type): string {
         $types = array('project', 'collection', 'resource', 'metadata', 'image', 'publication', 'place', 'organisation', 'person');
         $html = '';
         foreach ($types as $t) {
             if (isset($type[$t]['value'])) {
-                $html .= '<td>'.$type[$t]['value'].'</td>';
+                $html .= '<td>' . $type[$t]['value'] . '</td>';
             } else {
                 $html .= '<td>x</td>';
             }
         }
         return $html;
     }
-    
+
     /**
      * Get and display the domain values from the ontology
      * @param array $type
      * @return string
      */
-    private function getRtTypeDomain(array $type): string
-    {
+    private function getRtTypeDomain(array $type): string {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
             if (isset($type[$t]['domain'])) {
-                $html .= ''.$v.',';
+                $html .= '' . $v . ',';
             }
         }
         return $html;
     }
-    
+
     /**
      * Get and display the recommended values from the ontology
      * @param array $type
      * @return string
      */
-    private function getRtTypeRecommended(array $type): string
-    {
+    private function getRtTypeRecommended(array $type): string {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
             if (isset($t) && isset($type[$t]['recommended']) && $type[$t]['recommended'] == true) {
-                $html .= ''.$v.',';
+                $html .= '' . $v . ',';
             }
         }
         return $html;
     }
-    
+
     /**
      * Get and display the range values from the ontology
      * @param array $type
      * @return string
      */
-    private function getRtTypeRange(array $type): string
-    {
+    private function getRtTypeRange(array $type): string {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         $values = array();
@@ -486,7 +496,7 @@ class MetadataGuiHelper
         $html = implode(", ", $values);
         return $html;
     }
-    
+
     /**
      * Create the cardinality for the roottable
      *
@@ -494,36 +504,34 @@ class MetadataGuiHelper
      * @param string $max
      * @return string
      */
-    private function rtCardinality(string $min = null, string $max = null): string
-    {
+    private function rtCardinality(string $min = null, string $max = null): string {
         if (is_null($min) && is_null($max)) {
             return '0-n';
         }
-        
-        if (((int)$min >= 1) && ((!(int)$max) || (int)$max > 1)) {
+
+        if (((int) $min >= 1) && ((!(int) $max) || (int) $max > 1)) {
             return '1-n';
         }
-        
-        if ((is_null($min)) && ((int)$max >= 1)) {
+
+        if ((is_null($min)) && ((int) $max >= 1)) {
             return '0-1';
         }
-        
-        if ((int)$min ==  1 && (int)$max == 1) {
+
+        if ((int) $min == 1 && (int) $max == 1) {
             return '1';
         }
         return 'x';
     }
-    
+
     /**
      * Reorder the root table result
      *
      * @param array $data
-    */
-    private function reorderRootTable(array $data)
-    {
+     */
+    private function reorderRootTable(array $data) {
         foreach ($data as $kt => $kv) {
             $domain = '';
-            $domain .= $kt.' ';
+            $domain .= $kt . ' ';
             if (is_array($kv)) {
                 foreach ($kv as $v) {
                     if (isset($v->ordering)) {
@@ -532,9 +540,9 @@ class MetadataGuiHelper
                             $this->data[$v->ordering][$kt]['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
                         }
                         if (isset($v->min) || isset($v->max)) {
-                            $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /*. '<br>_min: '.$v->min.'_ max: '.$v->max;*/
+                            $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max); /* . '<br>_min: '.$v->min.'_ max: '.$v->max; */
                         } elseif ((is_null($v->min) && is_null($v->max))) {
-                            $this->data[$v->ordering][$kt]['value'] = '0-n'; /* <br> _ min and max null';*/
+                            $this->data[$v->ordering][$kt]['value'] = '0-n'; /* <br> _ min and max null'; */
                         }
                         if (isset($v->label['en'])) {
                             $this->data[$v->ordering][$kt]['title'] = $v->label['en'];
@@ -576,4 +584,5 @@ class MetadataGuiHelper
             }
         }
     }
+
 }
