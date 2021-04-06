@@ -13,8 +13,8 @@ use Drupal\acdh_repo_gui\Controller\DetailViewController as DVC;
  *
  * @author norbertczirjak
  */
-class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $basicViewData;
     private $generalFunctions;
     private $detailViewController;
@@ -22,7 +22,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         'collection', '3d', 'iiif', 'collection_lazy'
     );
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new DisseminationServicesModel();
         $this->helper = new DisseminationServicesHelper($this->repo);
@@ -37,7 +38,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param array $additionalData
      * @return array
      */
-    public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array {
+    public function generateView(string $identifier, string $dissemination, array $additionalData = array()): array
+    {
         if (empty($identifier) || !in_array($dissemination, $this->disseminations)) {
             return array();
         }
@@ -56,7 +58,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid
      * @return Response
      */
-    public function repo_dl_collection_binaries(string $repoid): Response {
+    public function repo_dl_collection_binaries(string $repoid): Response
+    {
         $GLOBALS['resTmpDir'] = "";
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -84,7 +87,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid
      * @return Response
      */
-    public function repo_get_collection_data(string $repoid): Response {
+    public function repo_get_collection_data(string $repoid): Response
+    {
         $result = array();
         $repoBaseObj = new \stdClass();
         $rootTitle = '';
@@ -107,7 +111,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         return $response;
     }
 
-    public function get_collection_data_lazy(string $id): Response {
+    public function get_collection_data_lazy(string $id): Response
+    {
         $result = array();
         $repoBaseObj = new \stdClass();
         $rootTitle = '';
@@ -136,7 +141,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid
      * @return type
      */
-    public function repo_dl_collection_view(string $repoid) {
+    public function repo_dl_collection_view(string $repoid)
+    {
         $view = array();
         $repoid = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
 
@@ -162,7 +168,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $url
      * @return Response
      */
-    public function repo_get_collection_dl_script(string $repoid): Response {
+    public function repo_get_collection_dl_script(string $repoid): Response
+    {
         if (empty($repoid)) {
             $result = '';
         } else {
@@ -183,7 +190,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid -> repoid
      * @return array
      */
-    public function repo_iiif_viewer(string $repoid): array {
+    public function repo_iiif_viewer(string $repoid): array
+    {
         //RepoResource->getDissServ()['rawIIIf']->getUrl() -> when it is ready
         $lorisUrl = '';
 
@@ -209,7 +217,8 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid -> repoid only
      * @return array
      */
-    public function repo_3d_viewer(string $repoid): array {
+    public function repo_3d_viewer(string $repoid): array
+    {
         $basic = array();
         $result = array();
         if (!empty($repoid)) {
@@ -230,5 +239,4 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
                     '#basic' => $basic
         );
     }
-
 }

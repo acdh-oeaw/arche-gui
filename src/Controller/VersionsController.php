@@ -13,14 +13,16 @@ namespace Drupal\acdh_repo_gui\Controller;
  *
  * @author nczirjak
  */
-class VersionsController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-    
-    public function __construct() {
+class VersionsController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new \Drupal\acdh_repo_gui\Model\BlocksModel();
     }
     
-    public function generateView(string $identifier): array {
+    public function generateView(string $identifier): array
+    {
         return $this->model->getViewData('versions', array('identifier' => $identifier, 'lang' => $this->siteLang));
     }
 }

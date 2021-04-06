@@ -122,11 +122,10 @@ class BlocksModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "select * from gui.getResourceVersion(:id, :lang) ", 
-                    array(':id' => $params['identifier'], ':lang' => $params['lang'])
+                "select * from gui.getResourceVersion(:id, :lang) ",
+                array(':id' => $params['identifier'], ':lang' => $params['lang'])
             );
             $result = $query->fetchAll();
-            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();

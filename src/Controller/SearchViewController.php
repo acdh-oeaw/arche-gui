@@ -14,11 +14,12 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  *
  * @author nczirjak
  */
-class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $pagingHelper;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new SearchViewModel();
         $this->helper = new SearchViewHelper();
@@ -33,7 +34,8 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $order
      * @return array
      */
-    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
+    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
+    {
         $data = array();
         $guiData = array();
 
@@ -47,7 +49,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
 
             $pagination = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => $numPage, 'sum' => $data['count']
                     )
@@ -57,7 +59,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => 1, 'sum' => 0
                     )
@@ -86,7 +88,8 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $order
      * @return array
      */
-    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
+    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
+    {
         $data = array();
         $guiData = array();
         $metaobj = new \stdClass();
@@ -102,7 +105,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
             $pagination = '';
             $pagination = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => $numPage, 'sum' => $data['count']
                     )
@@ -112,7 +115,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => 1, 'sum' => 0
                     )
@@ -132,8 +135,8 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         ];
     }
 
-    public function rest_search(string $metavalue = "root") {
-
+    public function rest_search(string $metavalue = "root")
+    {
         $url = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@&value[]=Ressourcen&readMode=resource';
         $urlroot= 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@'
                 . '&property[]=http://www.w3.org/1999/02/22-rdf-syntax-ns%23type'
@@ -142,7 +145,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         
         $connection = new \Drupal\acdh_repo_gui\Helper\ArcheRestConnection();
        
-            $response = $connection->callEndpoint($url, [
+        $response = $connection->callEndpoint($url, [
                 'limit' => 10,
                 'offset' => 0,
                 'url_query' => [
@@ -153,18 +156,16 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             
             
             
-            echo '<pre>';
-            var_dump($response);
-            echo '</pre>';
-            die();
+        echo '<pre>';
+        var_dump($response);
+        echo '</pre>';
+        die();
             
-            $json = json_decode($response->getBody());
+        $json = json_decode($response->getBody());
             
-            echo '<pre>';
-            var_dump($response->getBody());
-            echo '</pre>';
-            die();
-        
+        echo '<pre>';
+        var_dump($response->getBody());
+        echo '</pre>';
+        die();
     }
-
 }
