@@ -7,8 +7,8 @@ namespace Drupal\acdh_repo_gui\Helper;
  *
  * @author norbertczirjak
  */
-class MetadataGuiHelper {
-
+class MetadataGuiHelper
+{
     private $data = array();
     private $result = array();
     private static $actors_involved = array(
@@ -61,7 +61,8 @@ class MetadataGuiHelper {
         'hasUpdateDate'
     );
 
-    private function isCustomClass(string $type): string {
+    private function isCustomClass(string $type): string
+    {
         if (in_array($type, self::$actors_involved)) {
             return 'actors_involved';
         }
@@ -83,7 +84,8 @@ class MetadataGuiHelper {
         return'basic';
     }
 
-    public function getData(array $data, string $lang = 'en') {
+    public function getData(array $data, string $lang = 'en')
+    {
         $this->siteLang = $lang;
         $this->data = $data;
         $this->setupMetadataGuiType();
@@ -94,7 +96,8 @@ class MetadataGuiHelper {
      * Create the reponse header
      * @param array $data
      */
-    private function setupMetadataGuiType() {
+    private function setupMetadataGuiType()
+    {
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
         $this->formatMetadataGuiView();
     }
@@ -103,7 +106,8 @@ class MetadataGuiHelper {
      * If we have multiple properties then we need to get the acdh schema one
      */
 
-    private function checkDataProperty(array $prop): string {
+    private function checkDataProperty(array $prop): string
+    {
         foreach ($prop as $v) {
             if (strpos($v, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false) {
                 return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v);
@@ -115,10 +119,10 @@ class MetadataGuiHelper {
     /**
      * Format the metadata gui result for the json output
      */
-    private function formatMetadataGuiView() {
+    private function formatMetadataGuiView()
+    {
         //key => collection/project/resource
         foreach ($this->data as $key => $values) {
-
             foreach ($values as $k => $v) {
                 $tableClass = 'basic';
                 //filter out the duplications
@@ -128,7 +132,7 @@ class MetadataGuiHelper {
 
                 if (!isset($v->label) || !isset($v->property)) {
                     break;
-                } else if (isset($v->ordering) && ((int) $v->ordering !== 99999)) {
+                } elseif (isset($v->ordering) && ((int) $v->ordering !== 99999)) {
                     
                     //check the properties for the custom gui table section
                     $prop = $this->checkPropertyValue($v);
@@ -200,9 +204,10 @@ class MetadataGuiHelper {
      * @param type $v
      * @return string
      */
-    private function checkPropertyValue(object &$v): string {
+    private function checkPropertyValue(object &$v): string
+    {
         if (is_array($v->property)) {
-           return $this->checkDataProperty($v->property);
+            return $this->checkDataProperty($v->property);
         } else {
             return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
         }
@@ -216,7 +221,8 @@ class MetadataGuiHelper {
      * @param string $key
      * @return void
      */
-    private function createCardinalityFieldsDefaultValue(object &$v, string $tableClass, string $key): void {
+    private function createCardinalityFieldsDefaultValue(object &$v, string $tableClass, string $key): void
+    {
         $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['minCardinality'] = '-';
         $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['maxCardinality'] = '-';
         $this->result['properties'][$tableClass][$v->label[$this->siteLang]]['cardinalities'][$key]['recommendedClass'] = '-';
@@ -228,7 +234,8 @@ class MetadataGuiHelper {
      * @param array $data
      * @return array
      */
-    private function reorderPropertiesByOrderValue(array $data): array {
+    private function reorderPropertiesByOrderValue(array $data): array
+    {
         $result = array();
         foreach ($data as $k => $v) {
             if (isset($v['basic_info']['ordering'])) {
@@ -246,7 +253,8 @@ class MetadataGuiHelper {
      * @param object $data
      * @return string
      */
-    private function metadataGuiCardinality(object $data): string {
+    private function metadataGuiCardinality(object $data): string
+    {
         $val = '-';
         if ($data->min == 0 || empty($data->min)) {
             if ((isset($data->max) && $data->max > 1) || $data->min > 1 || !isset($data->max)) {
@@ -287,7 +295,8 @@ class MetadataGuiHelper {
       - if we have (maxCardinality and it is empty) and (if we don't have cardinality (cardinality not = 1) => *
      */
 
-    private function metadataGuiCardinalityByMartina(object $data): string {
+    private function metadataGuiCardinalityByMartina(object $data): string
+    {
         $cardinality = '';
         //- if we have minCardinality and minCardinality >=1 => m
         //if we have cardinality and it is 1 => m
@@ -318,7 +327,8 @@ class MetadataGuiHelper {
      * @param string $lang
      * @return string
      */
-    public function getRootTable(array $data, string $lang = 'en'): string {
+    public function getRootTable(array $data, string $lang = 'en'): string
+    {
         $this->siteLang = $lang;
         $this->reorderRootTable($data);
 
@@ -329,7 +339,8 @@ class MetadataGuiHelper {
      * Create the response html string
      * @return string
      */
-    private function createRootTableHtml(): string {
+    private function createRootTableHtml(): string
+    {
         $html = '';
 
         if (count($this->data) > 0) {
@@ -429,7 +440,8 @@ class MetadataGuiHelper {
      * @param array $type
      * @return string
      */
-    private function getRtTypeValues(array $type): string {
+    private function getRtTypeValues(array $type): string
+    {
         $types = array('project', 'collection', 'resource', 'metadata', 'image', 'publication', 'place', 'organisation', 'person');
         $html = '';
         foreach ($types as $t) {
@@ -447,7 +459,8 @@ class MetadataGuiHelper {
      * @param array $type
      * @return string
      */
-    private function getRtTypeDomain(array $type): string {
+    private function getRtTypeDomain(array $type): string
+    {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
@@ -463,7 +476,8 @@ class MetadataGuiHelper {
      * @param array $type
      * @return string
      */
-    private function getRtTypeRecommended(array $type): string {
+    private function getRtTypeRecommended(array $type): string
+    {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
@@ -479,7 +493,8 @@ class MetadataGuiHelper {
      * @param array $type
      * @return string
      */
-    private function getRtTypeRange(array $type): string {
+    private function getRtTypeRange(array $type): string
+    {
         $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         $values = array();
@@ -504,7 +519,8 @@ class MetadataGuiHelper {
      * @param string $max
      * @return string
      */
-    private function rtCardinality(string $min = null, string $max = null): string {
+    private function rtCardinality(string $min = null, string $max = null): string
+    {
         if (is_null($min) && is_null($max)) {
             return '0-n';
         }
@@ -528,7 +544,8 @@ class MetadataGuiHelper {
      *
      * @param array $data
      */
-    private function reorderRootTable(array $data) {
+    private function reorderRootTable(array $data)
+    {
         foreach ($data as $kt => $kv) {
             $domain = '';
             $domain .= $kt . ' ';
@@ -584,5 +601,4 @@ class MetadataGuiHelper {
             }
         }
     }
-
 }
