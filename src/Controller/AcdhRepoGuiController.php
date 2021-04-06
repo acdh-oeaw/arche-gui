@@ -12,19 +12,12 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
  *
  * @author nczirjak
  */
-class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
-{
-    private $config;
-    private $repo;
+class AcdhRepoGuiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
+
     private $rootViewController;
-    private $siteLang;
 
-    public function __construct()
-    {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
-
+    public function __construct() {
+        parent::__construct();
         $this->rootViewController = new RVC($this->repo);
         $this->generalFunctions = new GeneralFunctions();
     }
@@ -36,8 +29,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
      * @param string $lng
      * @return Response
      */
-    public function oeaw_change_lng(string $lng = 'en'): Response
-    {
+    public function oeaw_change_lng(string $lng = 'en'): Response {
         $_SESSION['language'] = strtolower($lng);
         $response = new Response();
         $response->setContent(json_encode("language changed to: " . $lng));
@@ -51,8 +43,7 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
      *
      * @return array
      */
-    public function shibboleth_login(): array
-    {
+    public function shibboleth_login(): array {
         $result = array();
         $userid = \Drupal::currentUser()->id();
         if ((isset($_SERVER['HTTP_EPPN']) && $_SERVER['HTTP_EPPN'] != "(null)") && (isset($_SERVER['HTTP_AUTHORIZATION']) && $_SERVER['HTTP_AUTHORIZATION'] != "(null)")
@@ -64,11 +55,12 @@ class AcdhRepoGuiController extends \Drupal\Core\Controller\ControllerBase
             return $result;
         } else {
             $result = array(
-                        '#cache' => ['max-age' => 0,],
-                        '#theme' => 'acdh-repo-gui-shibboleth-login'
+                '#cache' => ['max-age' => 0,],
+                '#theme' => 'acdh-repo-gui-shibboleth-login'
             );
         }
 
         return $result;
     }
+
 }

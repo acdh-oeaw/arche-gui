@@ -53,6 +53,9 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         'acdh-repo-gui-main-page-left-block' => [
             'variables' => ['result' => NULL]
         ],
+        'acdh-repo-gui-detail-versions-block' => [
+            'variables' => ['result' => NULL]
+        ],
         'acdh-repo-ds-dl-collection' => [
             'variables' => ['basic' => NULL, 'extra' => NULL],
             '#attached' => [

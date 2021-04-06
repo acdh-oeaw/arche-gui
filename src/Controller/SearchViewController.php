@@ -14,25 +14,17 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  *
  * @author nczirjak
  */
-class SearchViewController extends \Drupal\Core\Controller\ControllerBase
-{
-    private $repo;
-    private $config;
-    private $model;
-    private $helper;
+class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
+
     private $pagingHelper;
-    
-    public function __construct()
-    {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
+
+    public function __construct() {
+        parent::__construct();
         $this->model = new SearchViewModel();
         $this->helper = new SearchViewHelper();
         $this->pagingHelper = new PagingHelper();
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
-    
-    
+
     /**
      * Full text search version 2
      * @param string $metavalue
@@ -41,38 +33,37 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
      * @param string $order
      * @return array
      */
-    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
-    {
+    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
         $data = array();
         $guiData = array();
-        
+
         //for the DB we need a 0
-        ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
+        ((int) $page == 1) ? (int) $page = 0 : $page = (int) $page;
         $data = $this->model->getViewData($limit, $page, $order, $this->helper->createMetaObj($metavalue));
-        
+
         if (isset($data['count']) && $data['count'] > 0) {
-            $numPage = ceil((int)$data['count'] / (int)$limit);
+            $numPage = ceil((int) $data['count'] / (int) $limit);
             /// for the gui pager we need 1 for the first page
-            ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
-            
+            ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
+
             $pagination = $this->pagingHelper->createView(
-                array(
-                    'limit' => $limit, 'page' => $page, 'order' => $order,
-                    'numPage' => $numPage, 'sum' => $data['count']
-                )
+                    array(
+                        'limit' => $limit, 'page' => $page, 'order' => $order,
+                        'numPage' => $numPage, 'sum' => $data['count']
+                    )
             );
-            
+
             $guiData = array('data' => $this->helper->createView($data['data'], 2), 'pagination' => $pagination);
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                array(
-                    'limit' => $limit, 'page' => $page, 'order' => $order,
-                    'numPage' => 1, 'sum' => 0
-                )
+                    array(
+                        'limit' => $limit, 'page' => $page, 'order' => $order,
+                        'numPage' => 1, 'sum' => 0
+                    )
             );
         }
-        
+
         return [
             '#theme' => 'acdh-repo-gui-search-full',
             '#data' => $guiData['data'],
@@ -85,7 +76,7 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             '#cache' => ['max-age' => 0]
         ];
     }
-    
+
     /**
      * New fulltext search with binary search
      *
@@ -94,41 +85,40 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
      * @param string $page
      * @param string $order
      * @return array
-    */
-    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
-    {
+     */
+    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
         $data = array();
         $guiData = array();
         $metaobj = new \stdClass();
         $metaobj = $this->helper->createMetaObj($metavalue);
-       
+
         //for the DB we need a 0
-        ((int)$page == 1) ? (int)$page = 0: $page = (int)$page;
+        ((int) $page == 1) ? (int) $page = 0 : $page = (int) $page;
         $data = $this->model->getViewData_V2($limit, $page, $order, $metaobj);
-        
+
         if (isset($data['count']) && $data['count'] > 0) {
-            $numPage = ceil((int)$data['count'] / (int)$limit);
+            $numPage = ceil((int) $data['count'] / (int) $limit);
             /// for the gui pager we need 1 for the first page
-            ((int)$page == 0) ? (int)$page = 1: $page = (int)$page;
+            ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
             $pagination = '';
             $pagination = $this->pagingHelper->createView(
-                array(
-                    'limit' => $limit, 'page' => $page, 'order' => $order,
-                    'numPage' => $numPage, 'sum' => $data['count']
-                )
+                    array(
+                        'limit' => $limit, 'page' => $page, 'order' => $order,
+                        'numPage' => $numPage, 'sum' => $data['count']
+                    )
             );
 
             $guiData = array('data' => $this->helper->createView($data['data']), 'pagination' => $pagination);
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                array(
-                    'limit' => $limit, 'page' => $page, 'order' => $order,
-                    'numPage' => 1, 'sum' => 0
-                )
+                    array(
+                        'limit' => $limit, 'page' => $page, 'order' => $order,
+                        'numPage' => 1, 'sum' => 0
+                    )
             );
         }
-               
+
         return [
             '#theme' => 'acdh-repo-gui-search-full',
             '#data' => $guiData['data'],
@@ -141,4 +131,40 @@ class SearchViewController extends \Drupal\Core\Controller\ControllerBase
             '#cache' => ['max-age' => 0]
         ];
     }
+
+    public function rest_search(string $metavalue = "root") {
+
+        $url = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@&value[]=Ressourcen&readMode=resource';
+        $urlroot= 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@'
+                . '&property[]=http://www.w3.org/1999/02/22-rdf-syntax-ns%23type'
+                . '&value[]=https://vocabs.acdh.oeaw.ac.at/schema%23TopCollection'
+                . '&readMode=resource&format=application/json';
+        
+        $connection = new \Drupal\acdh_repo_gui\Helper\ArcheRestConnection();
+       
+            $response = $connection->callEndpoint($url, [
+                'limit' => 10,
+                'offset' => 0,
+                'url_query' => [
+                    'sort' => 'title',
+                ]
+            ]);
+            
+            
+            
+            
+            echo '<pre>';
+            var_dump($response);
+            echo '</pre>';
+            die();
+            
+            $json = json_decode($response->getBody());
+            
+            echo '<pre>';
+            var_dump($response->getBody());
+            echo '</pre>';
+            die();
+        
+    }
+
 }

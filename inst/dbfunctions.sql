@@ -1784,3 +1784,57 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+
+/**
+* Versions block SQL
+**/
+DROP FUNCTION IF EXISTS gui.getResourceVersion( text, text);
+CREATE FUNCTION gui.getResourceVersion(_identifier text, _lang text DEFAULT 'en')
+  RETURNS table (id bigint, title text, avDate timestamp)
+AS $func$
+DECLARE	
+    _lang2 text := 'de';
+    _lang3 text := 'und';   
+BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
+RETURN QUERY
+    WITH resource_version AS (
+        select 
+            DISTINCT(CAST(mv.value as bigint)) as id
+        from metadata_view as mv
+        where 
+            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+            and mv.id = CAST(_identifier as bigint)
+        UNION
+        select 
+            DISTINCT(mv.id) as id
+        from  metadata_view as mv
+        where 
+            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf' 
+            and mv.id = CAST(_identifier as bigint)
+        UNION
+        select 
+            DISTINCT(mv.id) as id
+        from  metadata_view as mv
+        where 
+            mv.id = CAST(_identifier as bigint)
+        UNION
+        select 
+            DISTINCT(mv.id) as id
+        from  metadata_view as mv
+        where 
+            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf' 
+            and mv.value = _identifier
+ ) select 
+    DISTINCT(rv.id),
+    COALESCE(
+        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
+        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
+    ) as title,
+    (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
+    from resource_version as rv
+    order by avdate desc;
+END
+$func$
+LANGUAGE 'plpgsql';

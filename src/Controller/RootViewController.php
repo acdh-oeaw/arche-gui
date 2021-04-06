@@ -2,44 +2,31 @@
 
 namespace Drupal\acdh_repo_gui\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
-
 /**
  * Description of RootViewController
  *
  * @author nczirjak
  */
-class RootViewController extends ControllerBase
-{
-    private $repo;
-    private $model;
-    private $helper;
-    private $siteLang;
+class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
+
     private $numberOfRoots = 0;
     private $pagingHelper;
     private $generalFunctions;
-    private $config;
-    
-    public function __construct()
-    {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
-        $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
-        
-        $this->generalFunctions = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
+
+    public function __construct() {
+        parent::__construct();
         $this->model = new \Drupal\acdh_repo_gui\Model\RootViewModel();
         $this->helper = new \Drupal\acdh_repo_gui\Helper\RootViewHelper();
+        $this->generalFunctions = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
         $this->pagingHelper = new \Drupal\acdh_repo_gui\Helper\PagingHelper();
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
 
-    public function countRoots()
-    {
+    public function countRoots() {
         //count the actual root values
         $this->numberOfRoots = 0;
         $this->numberOfRoots = $this->model->countRoots($this->siteLang);
     }
 
-   
     /**
      * Generate the main root view
      * @param string $order
@@ -47,8 +34,8 @@ class RootViewController extends ControllerBase
      * @param string $page
      * @return array
      */
-    public function generateView(string $order = "datedesc", string $limit = "10", string $page = "1"): array
-    {
+    public function generateView(string $order = "datedesc", string $limit = "10", string $page = "1"): array {
+
         $limit = (int) $limit;
         $page = (int) $page;
         // on the gui we are displaying 1 as the first page.
@@ -90,8 +77,7 @@ class RootViewController extends ControllerBase
      * @param string $order
      * @return array
      */
-    public function generateRootViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
-    {
+    public function generateRootViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
         $data = $this->model->getViewData($limit, $page, $order);
         if (count((array) $data) == 0) {
             return array();
@@ -100,11 +86,12 @@ class RootViewController extends ControllerBase
         $numPage = ceil((int) $this->numberOfRoots / (int) $limit);
 
         $pagination = $this->pagingHelper->createView(
-            array(
+                array(
                     'limit' => $limit, 'page' => $page, 'order' => $order,
                     'numPage' => $numPage, 'sum' => $this->numberOfRoots
                 )
         );
         return array('data' => $this->helper->createView($data), 'pagination' => $pagination);
     }
+
 }

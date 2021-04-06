@@ -25,7 +25,7 @@ class BlocksModel extends ArcheModel
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "entity"): array
+    public function getViewData(string $identifier = "entity", array $params = array()): array
     {
         switch ($identifier) {
             case "entity":
@@ -33,6 +33,9 @@ class BlocksModel extends ArcheModel
                 break;
             case "years":
                 return $this->getYearsData();
+                break;
+            case "versions":
+                return $this->getVersionsData($params);
                 break;
             default:
                 return array();
@@ -95,6 +98,35 @@ class BlocksModel extends ArcheModel
                 order by year desc"
             );
             $result = $query->fetchAll();
+        } catch (Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        }
+        
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    /**
+     * Get the Versions block data
+     * @param array $params
+     * @return array
+     */
+    private function getVersionsData(array $params): array
+    {
+        $result = array();
+        //run the actual query
+        try {
+            $this->setSqlTimeout();
+            $query = $this->repodb->query(
+                    "select * from gui.getResourceVersion(:id, :lang) ", 
+                    array(':id' => $params['identifier'], ':lang' => $params['lang'])
+            );
+            $result = $query->fetchAll();
+            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();

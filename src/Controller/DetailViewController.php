@@ -2,7 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
 use acdhOeaw\acdhRepoLib\Repo;
 use Drupal\acdh_repo_gui\Model\DetailViewModel;
@@ -14,11 +13,8 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;
  *
  * @author nczirjak
  */
-class DetailViewController extends \Drupal\Core\Controller\ControllerBase
+class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
 {
-    private $config;
-    private $model;
-    private $helper;
     private $basicViewData;
     private $repoUrl;
     private $repoid;
@@ -26,8 +22,7 @@ class DetailViewController extends \Drupal\Core\Controller\ControllerBase
    
     public function __construct()
     {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
+        parent::__construct();
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
         $this->generalFunctions = new GF();
