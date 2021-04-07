@@ -34,6 +34,10 @@ class ArcheVersionsBlock extends BlockBase {
             $controller = new \Drupal\acdh_repo_gui\Controller\VersionsController();
             $data = $controller->generateView($id);
         }
+        
+        if(count($data) < 1) {
+            $data = array();
+        }
 
         return [
             '#theme' => 'acdh-repo-gui-detail-versions-block',

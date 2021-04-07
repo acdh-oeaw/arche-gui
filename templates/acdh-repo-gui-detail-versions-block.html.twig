@@ -1,16 +1,21 @@
 <!--  ARCHE DETAIL VIEW VERSIONS BLOCK TEMPLATE -->
-<div class="">
-    <h3 class="">
-        {{ "Versions"|trans }}
-    </h3>
-</div>
-    
-<div class="block">
-    {% for key, value in result %}
-        <div class="pl-2 pb-1">
-            <a href="/browser/oeaw_detail/{{ value.id }}">{{ "Version"|trans }} - {{ value.avdate|date('Y-m-d') }}</a>
-        </div>
-    {% endfor %}
-</div>
+{% if result|length > 1 %}
+    <div class="">
+        <h3 class="">
+            {{ "Versions"|trans }}
+        </h3>
+    </div>
 
+    <div class="block">
+        {% for key, value in result %}
+            {% set versionTxt = 'Previous Version' %}
+            {% if key == 0 %}
+                {% set versionTxt = 'Latest Version' %}
+            {% endif %}    
+            <div class="pl-2 pb-1">
+                <i class="material-icons" style="font-size:14px !important">layers</i>&nbsp;<a href="/browser/oeaw_detail/{{ value.id }}">{{ versionTxt|trans }}: {{ value.title }} {{ value.avdate|date('d M Y') }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %} 
 
