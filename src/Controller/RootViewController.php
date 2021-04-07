@@ -7,13 +7,14 @@ namespace Drupal\acdh_repo_gui\Controller;
  *
  * @author nczirjak
  */
-class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $numberOfRoots = 0;
     private $pagingHelper;
     private $generalFunctions;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new \Drupal\acdh_repo_gui\Model\RootViewModel();
         $this->helper = new \Drupal\acdh_repo_gui\Helper\RootViewHelper();
@@ -21,7 +22,8 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $this->pagingHelper = new \Drupal\acdh_repo_gui\Helper\PagingHelper();
     }
 
-    public function countRoots() {
+    public function countRoots()
+    {
         //count the actual root values
         $this->numberOfRoots = 0;
         $this->numberOfRoots = $this->model->countRoots($this->siteLang);
@@ -34,8 +36,8 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $page
      * @return array
      */
-    public function generateView(string $order = "datedesc", string $limit = "10", string $page = "1"): array {
-
+    public function generateView(string $order = "datedesc", string $limit = "10", string $page = "1"): array
+    {
         $limit = (int) $limit;
         $page = (int) $page;
         // on the gui we are displaying 1 as the first page.
@@ -77,7 +79,8 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $order
      * @return array
      */
-    public function generateRootViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
+    public function generateRootViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
+    {
         $data = $this->model->getViewData($limit, $page, $order);
         if (count((array) $data) == 0) {
             return array();
@@ -86,12 +89,11 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $numPage = ceil((int) $this->numberOfRoots / (int) $limit);
 
         $pagination = $this->pagingHelper->createView(
-                array(
+            array(
                     'limit' => $limit, 'page' => $page, 'order' => $order,
                     'numPage' => $numPage, 'sum' => $this->numberOfRoots
                 )
         );
         return array('data' => $this->helper->createView($data), 'pagination' => $pagination);
     }
-
 }

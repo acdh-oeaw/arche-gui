@@ -12,15 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author nczirjak
  */
-class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $data;
     private $childNum;
     private $pagingHelper;
     private $repoid;
     private $identifier;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new ChildApiModel();
         $this->helper = new ChildApiHelper();
@@ -35,7 +36,8 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $page
      * @param string $limit
      */
-    public function generateView(string $identifier, string $limit, string $page, string $order): Response {
+    public function generateView(string $identifier, string $limit, string $page, string $order): Response
+    {
         $this->setupIdentifier($identifier);
         $this->model->getPropertiesByClass($this->repoid);
         $this->childNum = $this->model->getCount($this->identifier);
@@ -73,7 +75,8 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $order
      * @return void
      */
-    private function setupPagingVariables(string $limit, string $page, string $order): void {
+    private function setupPagingVariables(string $limit, string $page, string $order): void
+    {
         $this->data->sum = $this->childNum;
         $this->data->limit = $limit;
         $this->data->page = $page;
@@ -87,7 +90,7 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $this->data->offset = $offset;
 
         $this->data->pagination = $this->pagingHelper->createView(
-                array(
+            array(
                     'limit' => $limit, 'page' => $page, 'order' => $order,
                     'numPage' => $this->data->numPage, 'sum' => $this->data->sum
                 )
@@ -100,7 +103,8 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $identifier
      * @return void
      */
-    private function setupIdentifier(string $identifier): void {
+    private function setupIdentifier(string $identifier): void
+    {
         if (preg_match("/^\d+$/", $identifier)) {
             $this->repoid = $identifier;
             $this->identifier = $this->repo->getBaseUrl() . $identifier;
@@ -110,5 +114,4 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         }
         $this->data->identifier = $this->identifier;
     }
-
 }

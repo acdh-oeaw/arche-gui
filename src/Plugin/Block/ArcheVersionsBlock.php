@@ -18,7 +18,8 @@ use Drupal\Core\Block\BlockBase;
  *   category = @Translation("ARCHE Resource Versions Block")
  * )
  */
-class ArcheVersionsBlock extends BlockBase {
+class ArcheVersionsBlock extends BlockBase
+{
 
     private $data = array();
     /**
@@ -26,8 +27,9 @@ class ArcheVersionsBlock extends BlockBase {
      *
      * @return type
      */
-    public function build() {
-        \Drupal::service('page_cache_kill_switch')->trigger(); 
+    public function build()
+    {
+        \Drupal::service('page_cache_kill_switch')->trigger();
         
         
         $id = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
@@ -56,7 +58,8 @@ class ArcheVersionsBlock extends BlockBase {
     /**
      * @return int
      */
-    public function getCacheMaxAge() {
+    public function getCacheMaxAge()
+    {
         return 0;
     }
     
@@ -67,5 +70,4 @@ class ArcheVersionsBlock extends BlockBase {
             }
         }
     }
-
 }
