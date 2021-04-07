@@ -152,3 +152,9 @@
 #highlight-biblatex {
     white-space: break-spaces !important;
 }
+
+div.pl-2.pb-1.arche-versions-row.version-highlighted {
+    background-color: #5aa8cc !important;
+    color: white !important;
+}
+

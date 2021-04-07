@@ -20,6 +20,7 @@ use Drupal\Core\Block\BlockBase;
  */
 class ArcheVersionsBlock extends BlockBase {
 
+    private $data = array();
     /**
      * Search Sb block
      *
@@ -28,20 +29,27 @@ class ArcheVersionsBlock extends BlockBase {
     public function build() {
         \Drupal::service('page_cache_kill_switch')->trigger(); 
         
-        $data = array();
+        
         $id = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         if (!empty($id)) {
             $controller = new \Drupal\acdh_repo_gui\Controller\VersionsController();
-            $data = $controller->generateView($id);
+            $this->data = $controller->generateView($id);
+            $this->checkActualID($id);
         }
         
-        if(count($data) < 1) {
-            $data = array();
+        if(count($this->data) < 1) {
+            $this->data = array();
         }
 
         return [
             '#theme' => 'acdh-repo-gui-detail-versions-block',
-            '#result' => $data
+            '#result' => $this->data,
+            '#cache' => ['max-age' => 0],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-styles',
+                ]
+            ]
         ];
     }
 
@@ -50,6 +58,14 @@ class ArcheVersionsBlock extends BlockBase {
      */
     public function getCacheMaxAge() {
         return 0;
+    }
+    
+    private function checkActualID(string $id): void  {
+        foreach($this->data as $k => $v) {
+            if($v->id == $id) {
+                $this->data[$k]->actual = "version-highlighted";
+            }
+        }
     }
 
 }

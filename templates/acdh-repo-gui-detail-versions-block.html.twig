@@ -5,15 +5,15 @@
             {{ "Versions"|trans }}
         </h3>
     </div>
-
+        
     <div class="block">
         {% for key, value in result %}
-            {% set versionTxt = 'Previous Version' %}
+            {% set versionTxt = '' %}
             {% if key == 0 %}
-                {% set versionTxt = 'Latest Version' %}
+                {% set versionTxt = 'Latest:' %}
             {% endif %}    
-            <div class="pl-2 pb-1">
-                <i class="material-icons" style="font-size:14px !important">layers</i>&nbsp;<a href="/browser/oeaw_detail/{{ value.id }}">{{ versionTxt|trans }}: {{ value.title }} {{ value.avdate|date('d M Y') }}</a>
+            <div class="pl-2 pb-1 arche-versions-row {{ value.actual }}">
+                <i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;<a href="/browser/oeaw_detail/{{ value.id }}">{{ versionTxt|trans }} {{ value.avdate|date('d M Y') }}</a>
             </div>
         {% endfor %}
     </div>
