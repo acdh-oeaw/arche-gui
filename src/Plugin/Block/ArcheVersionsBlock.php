@@ -20,7 +20,6 @@ use Drupal\Core\Block\BlockBase;
  */
 class ArcheVersionsBlock extends BlockBase
 {
-
     private $data = array();
     /**
      * Search Sb block
@@ -39,7 +38,7 @@ class ArcheVersionsBlock extends BlockBase
             $this->checkActualID($id);
         }
         
-        if(count($this->data) < 1) {
+        if (count($this->data) < 1) {
             $this->data = array();
         }
 
@@ -63,9 +62,10 @@ class ArcheVersionsBlock extends BlockBase
         return 0;
     }
     
-    private function checkActualID(string $id): void  {
-        foreach($this->data as $k => $v) {
-            if($v->id == $id) {
+    private function checkActualID(string $id): void
+    {
+        foreach ($this->data as $k => $v) {
+            if ($v->id == $id) {
                 $this->data[$k]->actual = "version-highlighted";
             }
         }
