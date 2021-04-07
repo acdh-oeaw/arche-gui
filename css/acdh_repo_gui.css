@@ -158,3 +158,14 @@ div.pl-2.pb-1.arche-versions-row.version-highlighted {
     color: white !important;
 }
 
+div.version-warning {
+   background-color: #faeb90;
+   margin: 10px;
+   padding: 10px;
+   color: black;
+   border-radius: 5px;
+   font-weight: bold;
+   text-align: center;
+}
+
+

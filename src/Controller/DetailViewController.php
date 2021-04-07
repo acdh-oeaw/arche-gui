@@ -67,6 +67,11 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             return array();
         }
         
+        // check if the actual resource is an old version
+        if(count((array)$dv->basic->getData('acdh:isNewVersionOf')) < 1) {
+            $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
+        }
+        
         \Drupal::service('page_cache_kill_switch')->trigger();
        
         $return = [
@@ -85,6 +90,22 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             return new Response(render($return));
         }
         return $return;
+    }
+    
+    /**
+     * Check if the actual resource has a newer version
+     * @param string $id
+     * @return bool
+     */
+    private function checkVersions(string $id): bool 
+    {
+        $blockModel = new \Drupal\acdh_repo_gui\Model\BlocksModel();
+        $params = array('identifier' => $id, 'lang' => $this->siteLang);
+        $data = $blockModel->getViewData("versions", $params); 
+        if(count((array)$data) > 1) {
+            return true;
+        }
+        return false;
     }
     
     /**

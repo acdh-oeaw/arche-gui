@@ -53,6 +53,10 @@
         </div>
     {% endif %}
 </h3> 
+    
+{% if extra.old_version %}
+    <div class="version-warning">{{  "There is a newer version of this resource available!"|trans }} {{ "Please check the left Versions block!"|trans }}</div>
+{% endif%}  
 
 <!-- get the views based on the type -->
 <div class="single-res-overview single-res-overview-basic">
