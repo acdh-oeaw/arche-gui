@@ -14,7 +14,9 @@ jobs:
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    
+      with:
+        php-version: 7.4
+        
     - name: update ubuntu
       run: sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
   
