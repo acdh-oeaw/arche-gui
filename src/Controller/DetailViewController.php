@@ -68,9 +68,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
         
         // check if the actual resource is an old version
-        if (count((array)$dv->basic->getData('acdh:isNewVersionOf')) < 1) {
-            $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
-        }
+        $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
         
         \Drupal::service('page_cache_kill_switch')->trigger();
        
@@ -97,14 +95,16 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $id
      * @return bool
      */
-    private function checkVersions(string $id): string
+    private function checkVersions(string $id): string 
     {
         $blockModel = new \Drupal\acdh_repo_gui\Model\BlocksModel();
         $params = array('identifier' => $id, 'lang' => $this->siteLang);
-        $data = $blockModel->getViewData("versions", $params);
+        $data = $blockModel->getViewData("versions", $params); 
         
-        if (count((array)$data) > 1) {
-            return $data[0]->id;
+        if(count((array)$data) > 1) {
+            if($data[0]->id != $id){
+                return $data[0]->id;
+            }
         }
         return "";
     }

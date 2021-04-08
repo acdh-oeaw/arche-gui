@@ -79,7 +79,7 @@ LANGUAGE 'plpgsql';
 * Because we supporting the 3rd party identifiers too, like vicav, etc
 * execution time between: 140-171ms
 */
-DROP FUNCTION gui.detail_view_func(text, text);
+DROP FUNCTION IF EXISTS gui.detail_view_func(text, text);
 CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
     RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
     
@@ -217,7 +217,7 @@ BEGIN
     from detail_meta as dm
     left join reldata as dmr on dmr.id = dm.value
     left join resources as rs on rs.id = dm.id 
-    where rs.state = 'active'
+    where rs.state = 'active'      
     order by property; 
 END
 $func$
@@ -1788,6 +1788,7 @@ LANGUAGE 'plpgsql';
 /**
 * Versions block SQL
 **/
+
 DROP FUNCTION IF EXISTS gui.getResourceVersion( text, text);
 CREATE FUNCTION gui.getResourceVersion(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, avDate timestamp)
@@ -1798,42 +1799,65 @@ DECLARE
 BEGIN
     IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 RETURN QUERY
-    WITH resource_version AS (
-        select 
-            DISTINCT(CAST(mv.value as bigint)) as id
-        from metadata_view as mv
-        where 
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
-            and mv.id = CAST(_identifier as bigint)
-        UNION
-        select 
-            DISTINCT(mv.id) as id
-        from  metadata_view as mv
-        where 
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf' 
-            and mv.id = CAST(_identifier as bigint)
-        UNION
-        select 
-            DISTINCT(mv.id) as id
-        from  metadata_view as mv
-        where 
+    WITH RECURSIVE child_subordinates AS (
+        SELECT
+            mv.value
+        FROM
+            metadata_view as mv
+        WHERE
             mv.id = CAST(_identifier as bigint)
+            and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
         UNION
-        select 
-            DISTINCT(mv.id) as id
-        from  metadata_view as mv
-        where 
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf' 
-            and mv.value = _identifier
- ) select 
-    DISTINCT(rv.id),
-    COALESCE(
-        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
-        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
-        (select mv2.value from metadata_view as mv2 where mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
-    ) as title,
-    (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = rv.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
-    from resource_version as rv
+        SELECT
+            mv2.value
+        FROM
+            metadata_view mv2
+        INNER JOIN child_subordinates s ON CAST(s.value as bigint) = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+    ),
+    --get the parents
+    parent_subordinates AS (
+        SELECT
+            mv.id
+        FROM
+            metadata_view as mv
+        WHERE
+            mv.value = _identifier
+            and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+        UNION
+            SELECT
+                    mv2.id
+            FROM
+                    metadata_view mv2
+            INNER JOIN parent_subordinates s ON s.id = CAST(mv2.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+    ) SELECT
+        CAST(c.value as bigint),
+        COALESCE(
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
+        ) as title,
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
+    FROM
+        child_subordinates as c
+    UNION
+    Select 
+        p.id,
+        COALESCE(
+            (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
+            (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
+        ) as title,
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
+    from parent_subordinates as p
+    UNION
+    select
+        CAST(_identifier as bigint) as id,
+        COALESCE(
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
+        ) as title,
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
     order by avdate desc;
 END
 $func$
