@@ -68,7 +68,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
         
         // check if the actual resource is an old version
-        if(count((array)$dv->basic->getData('acdh:isNewVersionOf')) < 1) {
+        if (count((array)$dv->basic->getData('acdh:isNewVersionOf')) < 1) {
             $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
         }
         
