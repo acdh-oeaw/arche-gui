@@ -83,7 +83,7 @@ jobs:
         phpunit --version
        
         echo "run test"
-        ./drupal/vendor/phpunit/phpunit/phpunit --coverage-clover ./build/logs/clover.xml --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
+        XDEBUG_MODE=coverage ./drupal/vendor/phpunit/phpunit/phpunit --coverage-clover ./build/logs/clover.xml --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
       
         echo "check  clover xml"
         cat ./build/logs/clover.xml
