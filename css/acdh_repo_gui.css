@@ -31,13 +31,13 @@
 }
 
 .loader-cite {
-  border: 6px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 6px solid #88DBDF;
-  width: 30px;
-  height: 30px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #88DBDF;
+    width: 30px;
+    height: 30px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
@@ -134,7 +134,7 @@
     */
     width:100%;
     height:auto;
-    
+
 }
 
 @keyframes citeloadanim {
@@ -159,13 +159,17 @@ div.pl-2.pb-1.arche-versions-row.version-highlighted {
 }
 
 div.version-warning {
-   background-color: #faeb90;
-   margin: 10px;
-   padding: 10px;
-   color: black;
-   border-radius: 5px;
-   font-weight: bold;
-   text-align: center;
+    background-color: #faeb90;
+    margin: 0 0 5px;
+    padding: 4px 0 2px 0;
+    border-radius: 0px;
+    font-weight: normal;
+    text-align: center;
+}
+
+div.version-warning i.material-icons{
+    font-size: 1em;
+    padding-right: 2px;
 }
 
 
