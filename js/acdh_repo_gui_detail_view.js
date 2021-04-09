@@ -1,4 +1,8 @@
+
+
 jQuery(function ($) {
+    const Cite = require('citation-js');
+    
     "use strict";
     /** Handle the child button click  END **/
 
@@ -74,7 +78,7 @@ jQuery(function ($) {
                 $('#cite-content-div').removeClass('hidden');
                 $('#cite-loader').addClass('hidden');
 
-                const Cite = require('citation-js');
+                
                 let cite = new Cite(data);
 
                 var apa_loaded = true;

@@ -8,17 +8,17 @@ repo-styles:
             css/jqtree/themes/default/style.min.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
+        js/citation-js-0.5.0.min.js: {}
         js/acdh_repo_gui.js: {}
         js/acdh_repo_gui_detail_view.js: {}
         js/jquery.dataTables.min.js: {}
         js/jstree.min.js: {}
         js/dataTables.bootstrap4.min.js: {}
         js/datatable_init.js: {}
-        js/acdh_repo_gui_pager.js: {}   
-        js/citation-js-0.5.0-alpha.10.min.js: {}
+        js/acdh_repo_gui_pager.js: {}
     dependencies:
         - core/drupal
-        - core/drupal.form   
+        - core/drupal.form 
 
 repo-root-view:
     version: 1.0.1
