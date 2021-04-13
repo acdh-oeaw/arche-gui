@@ -6,6 +6,7 @@ repo-styles:
             css/dataTables.bootstrap4.min.css: {}
             css/font-awesome/css/font-awesome.min.css: {}
             css/jqtree/themes/default/style.min.css: {}
+            css/lightbox.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
         js/citation-js-0.5.0.min.js: {}
@@ -16,6 +17,7 @@ repo-styles:
         js/dataTables.bootstrap4.min.js: {}
         js/datatable_init.js: {}
         js/acdh_repo_gui_pager.js: {}
+        js/lightbox.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form 
@@ -25,9 +27,11 @@ repo-root-view:
     css:
         base:
             css/acdh_repo_gui.css: {}
+            css/lightbox.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
         js/acdh_repo_gui_pager.js: {}
+        js/lightbox.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form           

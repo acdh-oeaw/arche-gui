@@ -1069,13 +1069,13 @@ CASE
                 CREATE TEMPORARY TABLE type_data AS (
                     WITH type_data as (
                         SELECT 
-                            DISTINCT(fts.id),                            
+                            DISTINCT(cd.acdhid) as id,                            
                             cd.headline_title,
                             cd.headline_desc,
                             cd.headline_binary
                         FROM collection_data as cd
-                        LEFT JOIN full_text_search as fts on cd.acdhid = fts.id
-						LEFT JOIN metadata as m on m.mid = fts.mid
+                        LEFT JOIN metadata as m on m.id = cd.acdhid
+                        LEFT JOIN full_text_search as fts on m.mid = fts.mid			
                         WHERE
                         (
                             m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 

@@ -298,6 +298,30 @@ class ResourceObject
     }
     
     /**
+     * Get the titleimage URL
+     * @param string $width
+     * @return string
+     */
+    public function getTitleImageUrl(string $width = '200px'): string
+    {
+        $img = '';
+        $imgBinary = '';
+        $width = str_replace('px', '', $width);
+        //check the thumbnail service first
+        if ($acdhid = $this->getAcdhID()) {
+            $acdhid = str_replace('http://', '', $acdhid);
+            $acdhid = str_replace('https://', '', $acdhid);
+            if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
+                $type = fgets($file, 40);
+                if (!empty($type)) {
+                    return $this->thumbUrl.$acdhid.'?width='.$width;
+                }
+            }
+        }
+        return '';
+    }
+    
+    /**
      * Check if we have a titleimage id or not
      * @return bool
      */
