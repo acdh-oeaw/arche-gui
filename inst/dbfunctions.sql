@@ -1098,7 +1098,7 @@ CASE
 			
                     WITH type_data_temp as (
                         SELECT 
-                            DISTINCT(fts.id),
+                            DISTINCT(m.id),
                             '' as headline_title,
                             '' as headline_desc,
                             '' as headline_binary
@@ -1125,17 +1125,16 @@ CASE
                     CREATE TEMPORARY TABLE years_data AS (
                         WITH years_data as (
                             SELECT 
-                                DISTINCT(fts.id),
+                                DISTINCT(cd.acdhid) as id,
                                 cd.headline_title,
                                 cd.headline_desc,
                                 cd.headline_binary
                             FROM collection_data as cd
-                            LEFT JOIN full_text_search as fts on fts.id = cd.acdhid		
-							LEFT JOIN metadata as m on m.mid = fts.mid
+                            LEFT JOIN metadata as m on m.mid = cd.acdhid
                             WHERE
                             (
                                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-                                TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
+                                TO_CHAR(m.value_t, 'YYYY')  similar to _acdhyears   )
                             )	limit 10000
                         ) select * from years_data);
 
@@ -1154,16 +1153,15 @@ CASE
 			ELSE
                             WITH years_data_temp as (
                                 SELECT 
-                                    DISTINCT(fts.id),
+                                    DISTINCT(m.id) as id,
                                     '' as headline_title,
                                     '' as headline_desc,
                                     '' as headline_binary
-                                FROM full_text_search as fts
-								LEFT JOIN metadata as m on m.mid = fts.mid
+                                FROM metadata as m
                                 WHERE
                                 (
                                     (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-                                    TO_CHAR(TO_TIMESTAMP(fts.raw, 'YYYY'), 'YYYY')  similar to _acdhyears  )
+                                    TO_CHAR(m.value_t, 'YYYY')  similar to _acdhyears  )
                                 ) limit 10000
                             )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT  yd.id, yd.headline_title, yd.headline_desc, yd.headline_binary from years_data_temp as yd;
 
@@ -1286,7 +1284,7 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
                 '' as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
-			LEFT JOIN metadata as m on m.mid = fts.mid
+            LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE   
                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )	
                 
@@ -1297,7 +1295,7 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
                 trim(regexp_replace(ts_headline('english', REGEXP_REPLACE(fts.raw, '\s', ' ', 'g'), to_tsquery(_searchstr), 'MaxFragments=3,MaxWords=15,MinWords=8'), '\s+', ' ', 'g')) as headline_desc,
                 '' as headline_binary
             FROM full_text_search as fts 
-			LEFT JOIN metadata as m on m.mid = fts.mid
+            LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE  
                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and websearch_to_tsquery('simple', _searchstr) @@ fts.segments )
             limit 10000
@@ -1313,11 +1311,11 @@ CASE WHEN (_binarySearch IS TRUE) THEN
         WITH sb_data as (
             SELECT To_tsquery(_searchstr) AS query),
             ranked AS(
-                    SELECT DISTINCT(fts.id), fts.raw--, ts_rank_cd(segments,query) AS rank
-                    from  full_text_search as fts, sb_data
-                    where sb_data.query @@ segments and fts.mid is null
-                    limit 150
-                    )
+                SELECT DISTINCT(fts.id), fts.raw--, ts_rank_cd(segments,query) AS rank
+                from  full_text_search as fts, sb_data
+                where sb_data.query @@ segments and fts.mid is null
+                limit 150
+            )
             select ranked.id,
             '' as headline_title,
             '' as headline_desc,
@@ -1353,6 +1351,7 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
+
 
 /**
 * OLD full text search SQL
