@@ -208,9 +208,9 @@ class SearchViewHelper
      * @param string $data
      * @return string
      */
-    private function explodeSearchStringValues(string $data): string
+    private function explodeSearchStringValues(string $data): array
     {
-        return str_replace('+', '', $data);
+        return explode('+', $data);
     }
     
     

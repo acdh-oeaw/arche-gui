@@ -38,7 +38,8 @@ class ComposerTwigExtension extends \Twig_Extension
         if (count((array)$file) > 0) {
             foreach ($file as $v) {
                 if (strpos($v->name, 'acdh-oeaw/') !== false) {
-                    $str.= "<span>".str_replace('acdh-oeaw/', '', $v->name)." : ".$v->version.".</span>| ";
+                    $url = str_replace('acdh-oeaw/', 'https://packagist.org/packages/acdh-oeaw/', $v->name);
+                    $str.= "<span><a href='".$url."' target='_blank' >".str_replace('acdh-oeaw/', '', $v->name)." : ".$v->version.".</a></span>| ";
                 }
             }
             $str = substr($str, 0, -2);
