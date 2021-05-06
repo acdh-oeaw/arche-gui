@@ -16,7 +16,7 @@ class MetadataGuiHelper
         'hasCreator', 'hasAuthor',
         'hasEditor', 'hasContributor',
         'hasFunder', 'hasLicensor',
-        'hasMetadataCreator'
+        'hasMetadataCreator', 'hasDigitisingAgent'
     );
     private static $coverage = array(
         'hasRelatedDiscipline', 'hasCoverage',
