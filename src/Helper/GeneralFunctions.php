@@ -140,7 +140,7 @@ class GeneralFunctions
         
         try {
             $idsByPid = $model->getViewData($identifier);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::messenger()->addError($ex->getMessage());
             return "";
         } catch (\InvalidArgumentException $ex) {
@@ -221,14 +221,14 @@ class GeneralFunctions
                     if (!isset($shown[$hash])) {
                         try {
                             //if the dissemination services has a title then i will use it, if not then the hasReturnType as a label
-                            if ($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString()) {
-                                $k = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasTitle')->__toString();
+                            if ($v->getGraph()->get($this->repo->getSchema()->label)->__toString()) {
+                                $k = $v->getGraph()->get($this->repo->getSchema()->label)->__toString();
                             }
                             $result[$k]['uri'] = (string) $v->getRequest($repDiss)->getUri();
                             $result[$k]['title'] = (string) $k;
                             //if we have a description then we will use it
-                            if ($v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString()) {
-                                $result[$k]['description'] = $v->getGraph()->get('https://vocabs.acdh.oeaw.ac.at/schema#hasDescription')->__toString();
+                            if ($v->getGraph()->get($this->repo->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString()) {
+                                $result[$k]['description'] = $v->getGraph()->get($this->repo->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString();
                             }
                             $shown[$hash] = true;
                         } catch (\Exception $ex) {
@@ -238,7 +238,7 @@ class GeneralFunctions
                 }
             }
             return $result;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return array();
         } catch (\GuzzleHttp\Exception\ServerException $ex) {
             return array();
@@ -360,5 +360,12 @@ class GeneralFunctions
     {
         $role = \Drupal\user\Entity\Role::create(array('id' => 'shibboleth', 'label' => 'Shibboleth'));
         $role->save();
+    }
+    
+    public function getRepoIdFromApiUrl(string $apiUrl): string {
+        if (strpos($apiUrl, $this->repo->getBaseUrl()) !== false) {
+            return str_replace($this->repo->getBaseUrl(), '', $apiUrl);
+        }
+        return '';
     }
 }
