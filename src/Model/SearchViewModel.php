@@ -537,8 +537,4 @@ class SearchViewModel extends ArcheModel
                 $this->orderby_column = "avdate";
         }
     }
-    
-    
-    
-    
 }
