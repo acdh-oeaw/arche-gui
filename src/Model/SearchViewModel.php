@@ -4,11 +4,6 @@ namespace Drupal\acdh_repo_gui\Model;
 
 use Drupal\acdh_repo_gui\Model\ArcheModel;
 use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
-use acdhOeaw\acdhRepoLib\RepoDb;
-use acdhOeaw\acdhRepoLib\SearchConfig;
-use acdhOeaw\acdhRepoLib\RepoResourceInterface;
-use acdhOeaw\acdhRepoLib\SearchTerm;
 
 /**
  * Description of SearchViewModel
@@ -18,8 +13,8 @@ use acdhOeaw\acdhRepoLib\SearchTerm;
 class SearchViewModel extends ArcheModel
 {
     protected $repodb;
-    private $config;
-    private $repo;
+    protected $config;
+    protected $repo;
     private $repolibDB;
     private $sqlResult;
     private $siteLang;
@@ -27,12 +22,12 @@ class SearchViewModel extends ArcheModel
     private $metaObj;
     private $log;
     /* ordering */
-    private $limit;
-    private $offset;
-    private $orderby;
-    private $orderby_column;
-    private $binarySearch = false;
-    private $namespace;
+    protected $limit;
+    protected $offset;
+    protected $orderby;
+    protected $orderby_column;
+    protected $binarySearch = false;
+    protected $namespace;
     /* ordering */
     
     public function __construct()
@@ -58,73 +53,6 @@ class SearchViewModel extends ArcheModel
         }
     }
     
-    /**
-     * Full content search
-     *
-     * @param int $limit
-     * @param int $page
-     * @param string $order
-     * @param object $metavalue
-     * @return array
-     */
-    public function getViewData_V2(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
-    {
-        $result = array();
-        $this->metaObj = $metavalue;
-        $this->initPaging($limit, $page, $order);
-        $sqlYears = $this->formatYearsFilter_V2();
-        $sqlTypes = $this->formatTypeFilter_V2();
-        if (isset($this->metaObj->words) && (count($this->metaObj->words) > 0)) {
-            $sqlWords = implode(" & ", $this->metaObj->words);
-        } else {
-            $sqlWords = (string)"*";
-        }
-        
-        $this->setUpPayload();
-        
-        try {
-            $this->setSqlTimeout('30000');
-            //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
-            $query = $this->repodb->query(
-                "select * from gui.search_full_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
-                array(
-                    ':wordStr' => (string)$sqlWords,
-                    ':yearStr' => (string)$sqlYears,
-                    ':lang' => $this->siteLang,
-                    ':limit' => $this->limit,
-                    ':offset' => $this->offset,
-                    ':order' => $this->orderby,
-                    ':order_prop' => $this->orderby_column,
-                    ':binarySearch' => $this->binarySearch
-                ),
-                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
-            );
-            
-            $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-            $this->changeBackDBConnection();
-        } catch (\Exception $ex) {
-            error_log($ex->getMessage());
-            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            return array();
-        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
-            error_log($ex->getMessage());
-            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            return array();
-        }
-       
-        if ($this->sqlResult == null) {
-            $this->sqlResult = array();
-        }
-        if (isset($this->sqlResult[0]->cnt)) {
-            $cnt = $this->sqlResult[0]->cnt;
-        } else {
-            $cnt = 0;
-        }
-        
-        return array('count' => $cnt, 'data' => $this->sqlResult);
-    }
-    
-    
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
     {
         $result = array();
@@ -142,10 +70,10 @@ class SearchViewModel extends ArcheModel
         $this->setUpPayload();
         
         try {
-            $this->setSqlTimeout('30000');
+            $this->setSqlTimeout('60000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
             $query = $this->repodb->query(
-                "select * from gui.search_full_v2_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
+                "select * from gui.search_full_v3_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
                 array(
                     ':wordStr' => (string)$sqlWords,
                     ':yearStr' => (string)$sqlYears,
@@ -609,4 +537,8 @@ class SearchViewModel extends ArcheModel
                 $this->orderby_column = "avdate";
         }
     }
+    
+    
+    
+    
 }

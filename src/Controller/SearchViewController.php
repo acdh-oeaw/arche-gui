@@ -135,37 +135,5 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         ];
     }
 
-    public function rest_search(string $metavalue = "root")
-    {
-        $url = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@&value[]=Ressourcen&readMode=resource';
-        $urlroot= 'https://arche-dev.acdh-dev.oeaw.ac.at/api/search?operator[]=@@'
-                . '&property[]=http://www.w3.org/1999/02/22-rdf-syntax-ns%23type'
-                . '&value[]=https://vocabs.acdh.oeaw.ac.at/schema%23TopCollection'
-                . '&readMode=resource&format=application/json';
-        
-        $connection = new \Drupal\acdh_repo_gui\Helper\ArcheRestConnection();
-       
-        $response = $connection->callEndpoint($url, [
-                'limit' => 10,
-                'offset' => 0,
-                'url_query' => [
-                    'sort' => 'title',
-                ]
-            ]);
-            
-            
-            
-            
-        echo '<pre>';
-        var_dump($response);
-        echo '</pre>';
-        die();
-            
-        $json = json_decode($response->getBody());
-            
-        echo '<pre>';
-        var_dump($response->getBody());
-        echo '</pre>';
-        die();
-    }
+    
 }
