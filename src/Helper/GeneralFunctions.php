@@ -362,7 +362,8 @@ class GeneralFunctions
         $role->save();
     }
     
-    public function getRepoIdFromApiUrl(string $apiUrl): string {
+    public function getRepoIdFromApiUrl(string $apiUrl): string
+    {
         if (strpos($apiUrl, $this->repo->getBaseUrl()) !== false) {
             return str_replace($this->repo->getBaseUrl(), '', $apiUrl);
         }
