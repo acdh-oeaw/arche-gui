@@ -131,8 +131,11 @@ jQuery(function ($) {
                 $('#cite-content-div').addClass('show');
                 $('#cite-content-div').removeClass('hidden');
                 $('#cite-loader').addClass('hidden');
+                $('#cite-selector-div').hide();
+                $('#cite-content-figure').hide();
+                $('.bd-clipboard').hide();
                 //stop spinner
-                $('#cite-content-div').append('Error, please reload the page');
+                $('#cite-content-div').append('<div class="messages messages--warning">'+Drupal.t("The Resource does not have CITE data.")+'</>');
             });
         }
     }
