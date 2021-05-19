@@ -134,6 +134,4 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             '#cache' => ['max-age' => 0]
         ];
     }
-
-    
 }
