@@ -4,8 +4,8 @@ namespace Drupal\acdh_repo_gui\Object;
 
 use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
-class ResourceObject
-{
+class ResourceObject {
+
     private $config;
     private $properties;
     private $acdhid;
@@ -13,14 +13,12 @@ class ResourceObject
     private $language = 'en';
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
-    
-   
-    public function __construct(array $data, $config, string $language = 'en')
-    {
+
+    public function __construct(array $data, $config, string $language = 'en') {
         $this->properties = array();
         $this->config = $config;
         $this->language = $language;
-        
+
         foreach ($data as $k => $v) {
             if (isset($v[$language])) {
                 $this->setData($k, $v[$language]);
@@ -32,31 +30,29 @@ class ResourceObject
                 }
             }
         }
-        
+
         //set acdhid /repoid / repourl
         $this->repoid = $this->getRepoID();
     }
-    
+
     /**
      * Get the biblatex disserv url
      * @return string
      */
-    public function getBiblatexUrl(): string
-    {
-        return $this->biblatexUrl.'?id='.$this->getAcdhID().'&lang='.$this->language;
+    public function getBiblatexUrl(): string {
+        return $this->biblatexUrl . '?id=' . $this->getAcdhID() . '&lang=' . $this->language;
     }
-    
+
     /**
      * get the data based on the property
      *
      * @param string $property
      * @return array
      */
-    public function getData(string $property): array
-    {
+    public function getData(string $property): array {
         return (isset($this->properties[$property]) && !empty($this->properties[$property])) ? $this->properties[$property] : array();
     }
-    
+
     /**
      *
      * Change property data
@@ -64,82 +60,80 @@ class ResourceObject
      * @param string $prop
      * @param array $v
      */
-    private function setData(string $prop = null, array $v = array())
-    {
+    private function setData(string $prop = null, array $v = array()) {
         if (
-            isset($prop) && count((array)$v) > 0
+                isset($prop) && count((array) $v) > 0
         ) {
             $this->properties[$prop] = $v;
         }
     }
-    
+
     /**
      * Get the Resource title
      *
      * @return string
      */
-    public function getTitle(): string
-    {
-        return (isset($this->properties["acdh:hasTitle"][0]->title) && !empty($this->properties["acdh:hasTitle"][0]->title)) ? $this->properties["acdh:hasTitle"][0]->title : "";
+    public function getTitle(): string {
+        if (isset($this->properties["acdh:hasTitle"][0]->title) && !empty($this->properties["acdh:hasTitle"][0]->title)) {
+            return $this->properties["acdh:hasTitle"][0]->title;
+        }
+
+        if (isset($this->properties["acdh:hasTitle"][0]->value) && !empty($this->properties["acdh:hasTitle"][0]->value)) {
+            return $this->properties["acdh:hasTitle"][0]->value;
+        }
+
+        return "";
     }
-    
+
     /**
      * All identifiers
      *
      * @return array
      */
-    public function getIdentifiers(): array
-    {
+    public function getIdentifiers(): array {
         return (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) ? $this->properties["acdh:hasIdentifier"] : array();
     }
-    
+
     /**
      * Get all identifiers which are not acdh related
      *
      * @return type
      */
-    public function getNonAcdhIdentifiers(): array
-    {
+    public function getNonAcdhIdentifiers(): array {
         $result = array();
         if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
                 //filter out the baseurl related identifiers and which contains the id.acdh
                 if ((strpos($v->value, $this->config->getBaseUrl()) === false) &&
                         (strpos($v->value, 'https://id.acdh.oeaw.ac.at') === false)
-                    ) {
+                ) {
                     $result[] = $v;
                 }
             }
         }
         return $result;
     }
-    
-    
+
     /**
      * PID
      *
      * @return string
      */
-    public function getPid(): string
-    {
+    public function getPid(): string {
         return (
-                isset($this->properties["acdh:hasPid"][0]->value)
-                && !empty($this->properties["acdh:hasPid"][0]->value)
-                && (
-                    (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false)
-                ||
+                isset($this->properties["acdh:hasPid"][0]->value) && !empty($this->properties["acdh:hasPid"][0]->value) && (
+                (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false) ||
                 (strpos($this->properties["acdh:hasPid"][0]->value, 'https://') !== false)
                 )
-                )  ? $this->properties["acdh:hasPid"][0]->value : "";
+                ) ? $this->properties["acdh:hasPid"][0]->value : "";
     }
-    
+
     /**
-    * Get resource inside uri
-    *
-    * @return string
-    */
-    public function getInsideUrl(): string
-    {
+     * Get resource inside uri
+     *
+     * @return string
+     */
+    public function getInsideUrl(): string {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->acdhid) && !empty($v->acdhid)) {
@@ -149,13 +143,12 @@ class ResourceObject
         }
         return "";
     }
-    
+
     /**
      * Get the available date in a specified format
      * @return string
      */
-    public function getAvailableDate(): string
-    {
+    public function getAvailableDate(): string {
         if (isset($this->properties["acdh:hasAvailableDate"])) {
             foreach ($this->properties["acdh:hasAvailableDate"] as $v) {
                 if (isset($v->value)) {
@@ -166,15 +159,13 @@ class ResourceObject
         }
         return "";
     }
-   
-    
+
     /**
      * Get the resource acdh uuid
      *
      * @return string
      */
-    public function getUUID(): string
-    {
+    public function getUUID(): string {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->acdhid) && !empty($v->acdhid)) {
@@ -184,14 +175,13 @@ class ResourceObject
         }
         return "";
     }
-    
+
     /**
      * Get the resource acdh id
      *
      * @return string
      */
-    public function getAcdhID(): string
-    {
+    public function getAcdhID(): string {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false) {
@@ -201,66 +191,66 @@ class ResourceObject
         }
         return "";
     }
-    
+
     /**
      * Get the full repo url with the identifier for the actual resource
      *
      * @return string
      */
-    public function getRepoUrl(): string
-    {
+    public function getRepoUrl(): string {
         if (!isset($this->repoid) && empty($this->repoid)) {
             $this->getRepoID();
         }
-        return $this->config->getBaseUrl().$this->repoid;
+        return $this->config->getBaseUrl() . $this->repoid;
     }
-    
+
     /**
      * Get the Gui related url for the resource
      * @return string
      */
-    public function getRepoGuiUrl(): string
-    {
+    public function getRepoGuiUrl(): string {
         if (!isset($this->repoid) && empty($this->repoid)) {
             $this->getRepoID();
         }
-        return str_replace('/api/', '/browser/oeaw_detail/', $this->config->getBaseUrl()).$this->repoid;
+        return str_replace('/api/', '/browser/oeaw_detail/', $this->config->getBaseUrl()) . $this->repoid;
     }
-    
-    
-    
+
     /**
      * Get the repo identifier
      * @return string
      */
-    public function getRepoID(): string
-    {
+    public function getRepoID(): string {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->id) && !empty($v->id)) {
                     $this->repoid = $v->id;
                     return $v->id;
+                } else {
+                    if (strpos($v->value, $this->config->getBaseUrl()) !== false) {
+                        $this->repoid = str_replace($this->config->getBaseUrl(), '', $v->value);
+                        return str_replace($this->config->getBaseUrl(), '', $v->value);
+                    }
                 }
             }
         }
         return "";
     }
-    
-    
+
     /**
      * Get the accessrestriction url and title
      *
      * @return array
      */
-    public function getAccessRestriction(): array
-    {
+    public function getAccessRestriction(): array {
         $result = array();
         if (isset($this->properties["acdh:hasAccessRestriction"])) {
             foreach ($this->properties["acdh:hasAccessRestriction"] as $v) {
                 if (isset($v->title) && !empty($v->title)) {
                     $result['title'] = $v->title;
+                } else if (isset($v->value) && !empty($v->value)) {
+                    $result['title'] = $v->value;
                 }
-                
+
                 if (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
                     $result['uri'] = $v->accessrestriction;
                 }
@@ -271,14 +261,13 @@ class ResourceObject
         }
         return $result;
     }
-    
+
     /**
      * get the title image url
      *
      * @return string
      */
-    public function getTitleImage(string $width = '200px'): string
-    {
+    public function getTitleImage(string $width = '200px'): string {
         $img = '';
         $imgBinary = '';
         $width = str_replace('px', '', $width);
@@ -286,24 +275,23 @@ class ResourceObject
         if ($acdhid = $this->getAcdhID()) {
             $acdhid = str_replace('http://', '', $acdhid);
             $acdhid = str_replace('https://', '', $acdhid);
-            if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
+            if ($file = @fopen($this->thumbUrl . $acdhid, "r")) {
                 $type = fgets($file, 40);
                 if (!empty($type)) {
-                    $img = $this->thumbUrl.$acdhid.'?width='.$width;
-                    return '<img src="'.$img.'" class="img-responsive">';
+                    $img = $this->thumbUrl . $acdhid . '?width=' . $width;
+                    return '<img src="' . $img . '" class="img-responsive">';
                 }
             }
         }
         return '';
     }
-    
+
     /**
      * Get the titleimage URL
      * @param string $width
      * @return string
      */
-    public function getTitleImageUrl(string $width = '200px'): string
-    {
+    public function getTitleImageUrl(string $width = '200px'): string {
         $img = '';
         $imgBinary = '';
         $width = str_replace('px', '', $width);
@@ -311,89 +299,90 @@ class ResourceObject
         if ($acdhid = $this->getAcdhID()) {
             $acdhid = str_replace('http://', '', $acdhid);
             $acdhid = str_replace('https://', '', $acdhid);
-            if ($file = @fopen($this->thumbUrl.$acdhid, "r")) {
+            if ($file = @fopen($this->thumbUrl . $acdhid, "r")) {
                 $type = fgets($file, 40);
                 if (!empty($type)) {
-                    return $this->thumbUrl.$acdhid.'?width='.$width;
+                    return $this->thumbUrl . $acdhid . '?width=' . $width;
                 }
             }
         }
         return '';
     }
-    
+
     /**
      * Check if we have a titleimage id or not
      * @return bool
      */
-    public function isTitleImage(): bool
-    {
+    public function isTitleImage(): bool {
         if (!empty($this->getAcdhID())) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * Get the acdh type string
      *
      * @return string
      */
-    public function getAcdhType(): string
-    {
+    public function getAcdhType(): string {
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->title);
+                } else if (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
+                    return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->value);
                 }
             }
         }
         return "";
     }
-    
+
     /**
      * Display all RDF:Type Values
      * @return array
      */
-    public function getRdfTypes(): array
-    {
+    public function getRdfTypes(): array {
         $result = array();
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     $result[] = Helper::createShortcut($v->title);
+                } else if (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
+                    $result[] = Helper::createShortcut($v->value);
                 }
             }
         }
         return $result;
     }
-    
+
     /**
      * Get the skos concept type for the custom gui detail view
      *
      * @return string
      */
-    public function getSkosType(): string
-    {
+    public function getSkosType(): string {
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
                     return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->title);
+                } else if (isset($v->title) && !empty($v->value) && (strpos($v->value, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
+                    return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->value);
                 }
             }
         }
         return "";
     }
-    
+
     /**
      * Get all data
      *
      * @return array
      */
-    public function getExpertTableData(): array
-    {
+    public function getExpertTableData(): array {
         return $this->properties;
     }
-    
+
     /**
      * Format the date values for the twig template
      *
@@ -401,8 +390,7 @@ class ResourceObject
      * @param string $dateFormat
      * @return string
      */
-    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y') : string
-    {
+    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y'): string {
         if (isset($this->properties[$property])) {
             if (isset($this->properties[$property][0]->value)) {
                 $val = strtotime($this->properties[$property][0]->value);
@@ -411,13 +399,12 @@ class ResourceObject
         }
         return '';
     }
-    
+
     /**
      * Select the identifier for the Copy resource link
      * @return string
      */
-    public function getCopyResourceLink() : string
-    {
+    public function getCopyResourceLink(): string {
         //check the pid
         if (!empty($this->getPid())) {
             return $this->getPid();
@@ -432,11 +419,53 @@ class ResourceObject
                     return $id = $v->value;
                 } elseif ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
                     //if we dont have then we pass everything except the repourl based id
-                    return $otherid =  $v->value;
+                    return $otherid = $v->value;
                 }
             }
         }
-       
+
         return "";
     }
+
+    /**
+     * Create the JS string for the leaflet map MultiPolyLang
+     * @return string
+     */
+    public function getMultiPolygonForLeaflet(): string {
+        $str = "";
+        if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
+            $data = explode(" ", $this->properties["acdh:hasWKT"][0]->title);
+            foreach ($data as $d) {
+                if (strpos($d, 'MULTIPOLYGON') !== false) {
+                    $d = str_replace('MULTIPOLYGON', '', $d);
+                } else if (strpos($d, '(') !== false) {
+                    $d = str_replace('(', '', $d);
+                } else if (strpos($d, ')))') !== false) {
+                    $d = str_replace(')))', ',', $d);
+                }
+                if (!empty($d)) {
+                    //if this is the second parameter
+                    if (substr($d, -1) == ",") {
+                        $str .= str_replace(",", "],", $d);
+                    } else {
+                        $str .= '[' . $d . ',';
+                    }
+                }
+            }
+        }
+        return $str;
+    }
+
+    /**
+     * Get the first coordinate for the multipolygon leaflet map
+     * @return string
+     */
+    public function getMultiPolygonFirstCoordinate(): string {
+        $multi = $this->getMultiPolygonForLeaflet();
+        if (!empty($multi)) {
+            return explode("],", $multi)[0] . "]";
+        }
+        return "";
+    }
+
 }

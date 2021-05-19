@@ -52,81 +52,107 @@
 
 <div class="arche-detail-view" >
     <div class="arche-detail-main" id="arche-dv-main">
-       
+
         {% set titleimage = basic.getTitleImage() %}        
         {% if titleimage %}
             <div class='row'>
                 <div class="res-inside-wrap col-lg-8 ">
-        {% endif%}
-
-            {% if  basic.getTitle() %}
-                <div class="res-property">
-                    <span class="res-title detail-title-span">
-                        {{  basic.getTitle() }}
-                    </span>
-                </div>
-            {% endif%} 
-
-            {% if basic.getRdfTypes() %}
-                <div class="res-property">
-                    <i class="material-icons">&#xE54E;</i>
-                    <span class="res-prop-label">{{ "Type"|trans }}:</span> 
-                    <span class="res-prop-value">
-                        {% for value in basic.getRdfTypes() %}
-                            <a href="/browser/search/type={{ value }}&payload=false/titleasc/10/1">{{ value }}</a>
-                        {% endfor %}
-                    </span>
-                </div>
-            {% endif%}
-
-            {%  if basic.getNonAcdhIdentifiers() %}
-                <div class="res-property">
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
-                </div>
-            {% endif%}
-
-            {% for key, value in properties %}
-                {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
                 {% endif%}
-            {% endfor %}
 
-            <h3 class="single-res-heading">{{ "Spatial Information"|trans }}</h3>
+                {% if  basic.getTitle() %}
+                    <div class="res-property">
+                        <span class="res-title detail-title-span">
+                            {{  basic.getTitle() }}
+                        </span>
+                    </div>
+                {% endif%} 
 
-            {% for key, value in extProperties %}
-                {% if basic.getData(key) %}
-                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                {% if basic.getRdfTypes() %}
+                    <div class="res-property">
+                        <i class="material-icons">&#xE54E;</i>
+                        <span class="res-prop-label">{{ "Type"|trans }}:</span> 
+                        <span class="res-prop-value">
+                            {% for value in basic.getRdfTypes() %}
+                                <a href="/browser/search/type={{ value }}&payload=false/titleasc/10/1">{{ value }}</a>
+                            {% endfor %}
+                        </span>
+                    </div>
                 {% endif%}
-            {% endfor %}
 
-            {% if basic.getData('acdh:hasLongitude').0.title and  basic.getData('acdh:hasLatitude').0.title %}
-                <div class="res-property">
-                    <span class="res-prop-label">{{"Map"|trans }}: </span>
-                     <span class="res-prop-value">
-                        <iframe 
-                            width="425" height="350" frameborder="0" 
-                            scrolling="no" marginheight="0" marginwidth="0" 
-                            src="https://www.openstreetmap.org/export/embed.html?bbox={{ basic.getData('acdh:hasLongitude').0.title }}%2C{{ basic.getData('acdh:hasLatitude').0.title }}%2C{{ basic.getData('acdh:hasLongitude').0.title }}%2C{{ basic.getData('acdh:hasLatitude').0.title }}&amp;layer=mapnik&amp;marker={{ basic.getData('acdh:hasLatitude').0.title }}%2C{{ basic.getData('acdh:hasLongitude').0.title }}" 
-                            style="border: 1px solid black"
-                            >
+                {%  if basic.getNonAcdhIdentifiers() %}
+                    <div class="res-property">
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                    </div>
+                {% endif%}
 
-                        </iframe>
-                         <br/><small><a href="https://www.openstreetmap.org/?mlat=48.2082&amp;mlon=16.3288#map=12/{{basic.getData('acdh:hasLatitude').0.title }}/{{ basic.getData('acdh:hasLongitude').0.title }}">View Larger Map</a></small>
+                {% for key, value in properties %}
+                    {% if basic.getData(key) %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                    {% endif%}
+                {% endfor %}
 
-                    </span>
-                </div>
-            {% endif%}
+                <h3 class="single-res-heading">{{ "Spatial Information"|trans }}</h3>
 
-        {% if titleimage %}</div>{% endif%}
+                {% for key, value in extProperties %}
+                    {% if basic.getData(key) %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                    {% endif%}
+                {% endfor %}
 
-        {% if titleimage %}	
+                {% if basic.getData('acdh:hasLongitude').0.title and  basic.getData('acdh:hasLatitude').0.title %}
+                    <div class="res-property">
+                        <span class="res-prop-label">{{"Map"|trans }}: </span>
+                        <span class="res-prop-value">
+                            <iframe 
+                                width="425" height="350" frameborder="0" 
+                                scrolling="no" marginheight="0" marginwidth="0" 
+                                src="https://www.openstreetmap.org/export/embed.html?bbox={{ basic.getData('acdh:hasLongitude').0.title }}%2C{{ basic.getData('acdh:hasLatitude').0.title }}%2C{{ basic.getData('acdh:hasLongitude').0.title }}%2C{{ basic.getData('acdh:hasLatitude').0.title }}&amp;layer=mapnik&amp;marker={{ basic.getData('acdh:hasLatitude').0.title }}%2C{{ basic.getData('acdh:hasLongitude').0.title }}" 
+                                style="border: 1px solid black"
+                                >
+
+                            </iframe>
+                            <br/><small><a href="https://www.openstreetmap.org/?mlat=48.2082&amp;mlon=16.3288#map=12/{{basic.getData('acdh:hasLatitude').0.title }}/{{ basic.getData('acdh:hasLongitude').0.title }}">View Larger Map</a></small>
+
+                        </span>
+                    </div>
+                {% endif%}
+
+                {% if basic.getMultiPolygonForLeaflet() %}
+                   
+                    <div class="res-property">
+                        <span class="res-prop-label">{{"Map"|trans }}: </span>
+                        <span class="res-prop-value">
+                            <div id="mapMultiPolyLong" style="width: 425px; height: 350px;"></div>
+                            <script>
+                                var mplmap = L.map('mapMultiPolyLong').setView({{ basic.getMultiPolygonFirstCoordinate()}}, 8);
+                                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                                    maxZoom: 18,
+                                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                                            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                                    id: 'mapbox/streets-v11',
+                                    tileSize: 512,
+                                    zoomOffset: -1
+                                }).addTo(mplmap);
+
+                                L.polygon([
+                                    {{ basic.getMultiPolygonForLeaflet() }}
+                                ]).addTo(mplmap);
+
+                            </script>
+                        </span>
+                    </div>
+                {% endif%}
+
+                {% if titleimage %}</div>{% endif%}
+
+            {% if titleimage %}	
                 <div class="res-inside-wrap col-lg-4 ">	
-                     <div class="single-res-thumb">
-                         <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
-                             {{ titleimage|raw }}
-                         </a>
-                     </div>
-                 </div>
+                    <div class="single-res-thumb">
+                        <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
+                            {{ titleimage|raw }}
+                        </a>
+                    </div>
+                </div>
             </div>
         {% endif%}
     </div>
