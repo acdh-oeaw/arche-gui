@@ -247,7 +247,7 @@ class ResourceObject {
             foreach ($this->properties["acdh:hasAccessRestriction"] as $v) {
                 if (isset($v->title) && !empty($v->title)) {
                     $result['title'] = $v->title;
-                } else if (isset($v->value) && !empty($v->value)) {
+                } elseif (isset($v->value) && !empty($v->value)) {
                     $result['title'] = $v->value;
                 }
 
@@ -330,7 +330,7 @@ class ResourceObject {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->title);
-                } else if (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
+                } elseif (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     return str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->value);
                 }
             }
@@ -348,7 +348,7 @@ class ResourceObject {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     $result[] = Helper::createShortcut($v->title);
-                } else if (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
+                } elseif (isset($v->value) && !empty($v->value) && (strpos($v->value, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
                     $result[] = Helper::createShortcut($v->value);
                 }
             }
@@ -366,7 +366,7 @@ class ResourceObject {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
                     return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->title);
-                } else if (isset($v->title) && !empty($v->value) && (strpos($v->value, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
+                } elseif (isset($v->title) && !empty($v->value) && (strpos($v->value, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
                     return str_replace('http://www.w3.org/2004/02/skos/core#', '', $v->value);
                 }
             }
@@ -434,16 +434,13 @@ class ResourceObject {
     public function getMultiPolygonFirstCoordinate(): string {
         $str = "";
         if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
-            $data =  str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
+            $data = str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
             $data = array_filter(explode(" ", $data));
-            
+
             $first_coordinate = array_slice($data, 0, 2);
-           
-            $str = "[".$first_coordinate[1]." ".$first_coordinate[0]."]";
-            error_log($str);
+
+            $str = "[" . $first_coordinate[1] . " " . $first_coordinate[0] . "]";
         }
         return $str;
     }
-
-
 }
