@@ -21,6 +21,8 @@ repo-styles:
         js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
         js/leaflet.js: {}
+        js/wicket.js: {}
+        js/wicket-leaflet.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form 

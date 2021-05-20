@@ -431,41 +431,19 @@ class ResourceObject {
      * Create the JS string for the leaflet map MultiPolyLang
      * @return string
      */
-    public function getMultiPolygonForLeaflet(): string {
+    public function getMultiPolygonFirstCoordinate(): string {
         $str = "";
         if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
-            $data = explode(" ", $this->properties["acdh:hasWKT"][0]->title);
-            foreach ($data as $d) {
-                if (strpos($d, 'MULTIPOLYGON') !== false) {
-                    $d = str_replace('MULTIPOLYGON', '', $d);
-                } else if (strpos($d, '(') !== false) {
-                    $d = str_replace('(', '', $d);
-                } else if (strpos($d, ')))') !== false) {
-                    $d = str_replace(')))', ',', $d);
-                }
-                if (!empty($d)) {
-                    //if this is the second parameter
-                    if (substr($d, -1) == ",") {
-                        $str .= str_replace(",", "],", $d);
-                    } else {
-                        $str .= '[' . $d . ',';
-                    }
-                }
-            }
+            $data =  str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
+            $data = array_filter(explode(" ", $data));
+            
+            $first_coordinate = array_slice($data, 0, 2);
+           
+            $str = "[".$first_coordinate[1]." ".$first_coordinate[0]."]";
+            error_log($str);
         }
         return $str;
     }
 
-    /**
-     * Get the first coordinate for the multipolygon leaflet map
-     * @return string
-     */
-    public function getMultiPolygonFirstCoordinate(): string {
-        $multi = $this->getMultiPolygonForLeaflet();
-        if (!empty($multi)) {
-            return explode("],", $multi)[0] . "]";
-        }
-        return "";
-    }
 
 }
