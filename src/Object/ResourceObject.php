@@ -4,8 +4,8 @@ namespace Drupal\acdh_repo_gui\Object;
 
 use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
-class ResourceObject {
-
+class ResourceObject
+{
     private $config;
     private $properties;
     private $acdhid;
@@ -14,7 +14,8 @@ class ResourceObject {
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
 
-    public function __construct(array $data, $config, string $language = 'en') {
+    public function __construct(array $data, $config, string $language = 'en')
+    {
         $this->properties = array();
         $this->config = $config;
         $this->language = $language;
@@ -39,7 +40,8 @@ class ResourceObject {
      * Get the biblatex disserv url
      * @return string
      */
-    public function getBiblatexUrl(): string {
+    public function getBiblatexUrl(): string
+    {
         return $this->biblatexUrl . '?id=' . $this->getAcdhID() . '&lang=' . $this->language;
     }
 
@@ -49,7 +51,8 @@ class ResourceObject {
      * @param string $property
      * @return array
      */
-    public function getData(string $property): array {
+    public function getData(string $property): array
+    {
         return (isset($this->properties[$property]) && !empty($this->properties[$property])) ? $this->properties[$property] : array();
     }
 
@@ -60,7 +63,8 @@ class ResourceObject {
      * @param string $prop
      * @param array $v
      */
-    private function setData(string $prop = null, array $v = array()) {
+    private function setData(string $prop = null, array $v = array())
+    {
         if (
                 isset($prop) && count((array) $v) > 0
         ) {
@@ -73,7 +77,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         if (isset($this->properties["acdh:hasTitle"][0]->title) && !empty($this->properties["acdh:hasTitle"][0]->title)) {
             return $this->properties["acdh:hasTitle"][0]->title;
         }
@@ -90,7 +95,8 @@ class ResourceObject {
      *
      * @return array
      */
-    public function getIdentifiers(): array {
+    public function getIdentifiers(): array
+    {
         return (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) ? $this->properties["acdh:hasIdentifier"] : array();
     }
 
@@ -99,7 +105,8 @@ class ResourceObject {
      *
      * @return type
      */
-    public function getNonAcdhIdentifiers(): array {
+    public function getNonAcdhIdentifiers(): array
+    {
         $result = array();
         if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
@@ -119,10 +126,11 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getPid(): string {
+    public function getPid(): string
+    {
         return (
                 isset($this->properties["acdh:hasPid"][0]->value) && !empty($this->properties["acdh:hasPid"][0]->value) && (
-                (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false) ||
+                    (strpos($this->properties["acdh:hasPid"][0]->value, 'http://') !== false) ||
                 (strpos($this->properties["acdh:hasPid"][0]->value, 'https://') !== false)
                 )
                 ) ? $this->properties["acdh:hasPid"][0]->value : "";
@@ -133,7 +141,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getInsideUrl(): string {
+    public function getInsideUrl(): string
+    {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->acdhid) && !empty($v->acdhid)) {
@@ -148,7 +157,8 @@ class ResourceObject {
      * Get the available date in a specified format
      * @return string
      */
-    public function getAvailableDate(): string {
+    public function getAvailableDate(): string
+    {
         if (isset($this->properties["acdh:hasAvailableDate"])) {
             foreach ($this->properties["acdh:hasAvailableDate"] as $v) {
                 if (isset($v->value)) {
@@ -165,7 +175,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getUUID(): string {
+    public function getUUID(): string
+    {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->acdhid) && !empty($v->acdhid)) {
@@ -181,7 +192,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getAcdhID(): string {
+    public function getAcdhID(): string
+    {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false) {
@@ -197,7 +209,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getRepoUrl(): string {
+    public function getRepoUrl(): string
+    {
         if (!isset($this->repoid) && empty($this->repoid)) {
             $this->getRepoID();
         }
@@ -208,7 +221,8 @@ class ResourceObject {
      * Get the Gui related url for the resource
      * @return string
      */
-    public function getRepoGuiUrl(): string {
+    public function getRepoGuiUrl(): string
+    {
         if (!isset($this->repoid) && empty($this->repoid)) {
             $this->getRepoID();
         }
@@ -219,7 +233,8 @@ class ResourceObject {
      * Get the repo identifier
      * @return string
      */
-    public function getRepoID(): string {
+    public function getRepoID(): string
+    {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
                 if (isset($v->id) && !empty($v->id)) {
@@ -241,7 +256,8 @@ class ResourceObject {
      *
      * @return array
      */
-    public function getAccessRestriction(): array {
+    public function getAccessRestriction(): array
+    {
         $result = array();
         if (isset($this->properties["acdh:hasAccessRestriction"])) {
             foreach ($this->properties["acdh:hasAccessRestriction"] as $v) {
@@ -267,7 +283,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getTitleImage(string $width = '200px'): string {
+    public function getTitleImage(string $width = '200px'): string
+    {
         $img = '';
         $imgBinary = '';
         $width = str_replace('px', '', $width);
@@ -291,7 +308,8 @@ class ResourceObject {
      * @param string $width
      * @return string
      */
-    public function getTitleImageUrl(string $width = '200px'): string {
+    public function getTitleImageUrl(string $width = '200px'): string
+    {
         $img = '';
         $imgBinary = '';
         $width = str_replace('px', '', $width);
@@ -313,7 +331,8 @@ class ResourceObject {
      * Check if we have a titleimage id or not
      * @return bool
      */
-    public function isTitleImage(): bool {
+    public function isTitleImage(): bool
+    {
         if (!empty($this->getAcdhID())) {
             return true;
         }
@@ -325,7 +344,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getAcdhType(): string {
+    public function getAcdhType(): string
+    {
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'https://vocabs.acdh.oeaw.ac.at/schema#') !== false)) {
@@ -342,7 +362,8 @@ class ResourceObject {
      * Display all RDF:Type Values
      * @return array
      */
-    public function getRdfTypes(): array {
+    public function getRdfTypes(): array
+    {
         $result = array();
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
@@ -361,7 +382,8 @@ class ResourceObject {
      *
      * @return string
      */
-    public function getSkosType(): string {
+    public function getSkosType(): string
+    {
         if (isset($this->properties["rdf:type"])) {
             foreach ($this->properties["rdf:type"] as $v) {
                 if (isset($v->title) && !empty($v->title) && (strpos($v->title, 'http://www.w3.org/2004/02/skos/core#') !== false)) {
@@ -379,7 +401,8 @@ class ResourceObject {
      *
      * @return array
      */
-    public function getExpertTableData(): array {
+    public function getExpertTableData(): array
+    {
         return $this->properties;
     }
 
@@ -390,7 +413,8 @@ class ResourceObject {
      * @param string $dateFormat
      * @return string
      */
-    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y'): string {
+    public function getFormattedDateByProperty(string $property, string $dateFormat = 'Y'): string
+    {
         if (isset($this->properties[$property])) {
             if (isset($this->properties[$property][0]->value)) {
                 $val = strtotime($this->properties[$property][0]->value);
@@ -404,7 +428,8 @@ class ResourceObject {
      * Select the identifier for the Copy resource link
      * @return string
      */
-    public function getCopyResourceLink(): string {
+    public function getCopyResourceLink(): string
+    {
         //check the pid
         if (!empty($this->getPid())) {
             return $this->getPid();
@@ -431,7 +456,8 @@ class ResourceObject {
      * Create the JS string for the leaflet map MultiPolyLang
      * @return string
      */
-    public function getMultiPolygonFirstCoordinate(): string {
+    public function getMultiPolygonFirstCoordinate(): string
+    {
         $str = "";
         if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
             $data = str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
