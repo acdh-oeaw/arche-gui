@@ -9,8 +9,8 @@ use Drupal\Core\Controller\ControllerBase;
  *
  * @author nczirjak
  */
-class ArcheBaseController extends ControllerBase
-{
+class ArcheBaseController extends ControllerBase {
+
     protected $config;
     protected $repo;
     protected $repodb;
@@ -18,11 +18,16 @@ class ArcheBaseController extends ControllerBase
     protected $helper;
     protected $model;
 
-    public function __construct()
-    {
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
-        $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
+    public function __construct() {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
-        $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
+        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
+        try {
+            $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
+            $this->repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
+        } catch (\Exception $ex) {
+            \Drupal::messenger()->addWarning($this->t('Error during the BaseController initialization!').' '.$ex->getMessage());
+            return array();
+        }
     }
+
 }
