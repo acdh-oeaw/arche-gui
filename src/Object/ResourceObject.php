@@ -453,20 +453,80 @@ class ResourceObject
     }
 
     /**
-     * Create the JS string for the leaflet map MultiPolyLang
+     * Create the JS string for the leaflet map MultiPolyLang from Multipolygon data
      * @return string
      */
-    public function getMultiPolygonFirstCoordinate(): string
-    {
+    public function getMultiPolygonFirstCoordinate(): string {
         $str = "";
         if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
-            $data = str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
-            $data = array_filter(explode(" ", $data));
-
+            $data = array_filter(explode(" ", $this->checkMultiPolygonMapString()));
             $first_coordinate = array_slice($data, 0, 2);
-
             $str = "[" . $first_coordinate[1] . " " . $first_coordinate[0] . "]";
         }
         return $str;
+    }
+
+    /**
+     * Create the JS string for the leaflet map MultiPolyLang from Polygon data
+     * @return string
+     */
+    public function getPolygonFirstCoordinate(): string {
+        $str = "";
+        if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
+            $data = array_filter(explode(" ", $this->checkMultiPolygonMapString()));
+            $coordinate1 = $data[1];
+            $coordinate2 = $data[0];
+            if (strpos($data[1], ",") !== false) {
+                $coordinate1 = substr($data[1], 0, strpos($data[1], ","));
+            }
+            if (strpos($data[0], ",") !== false) {
+                $coordinate2 = substr($data[0], 0, strpos($data[0], ","));
+            }
+            $str = "[" . $coordinate1 . ", " . $coordinate2 . "]";
+        }
+        return $str;
+    }
+
+    /**
+     * Transform Multipolygon string
+     * @return string
+     */
+    private function checkMultiPolygonMapString(): string {
+        if (strpos(strtolower($this->properties["acdh:hasWKT"][0]->title), 'multipolygon') !== false) {
+            return str_replace(')', '', str_replace('(', '', str_replace('MULTIPOLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
+        } else if (strpos(strtolower($this->properties["acdh:hasWKT"][0]->title), 'polygon') !== false) {
+            return str_replace(')', '', str_replace('(', '', str_replace('POLYGON', '', $this->properties["acdh:hasWKT"][0]->title)));
+        }
+        return "";
+    }
+
+    /**
+     * Get the WKT map type
+     * @return string
+     */
+    public function getMapType(): string {
+        if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
+            if (strpos(strtolower($this->properties["acdh:hasWKT"][0]->title), 'multipolygon') !== false) {
+                return 'multipolygon';
+            } else if (strpos(strtolower($this->properties["acdh:hasWKT"][0]->title), 'polygon') !== false) {
+                return 'polygon';
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Add Multipolygon string for the polygon dataset, othwerwise the js plugin cant handle it
+     * @return string
+     */
+    public function getPolygonData(): string {
+        if (isset($this->properties["acdh:hasWKT"][0]->title) && !empty($this->properties["acdh:hasWKT"][0]->title)) {
+            if (strpos(strtolower($this->properties["acdh:hasWKT"][0]->title), 'polygon') !== false) {
+                $data = str_replace('Polygon', 'MultiPolygon', $this->properties["acdh:hasWKT"][0]->title);
+                $data = str_replace('POLYGON', 'MultiPolygon', $this->properties["acdh:hasWKT"][0]->title);
+                return $data;
+            }
+        }
+        return "";
     }
 }
