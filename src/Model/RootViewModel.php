@@ -9,18 +9,20 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class RootViewModel extends ArcheModel {
-
+class RootViewModel extends ArcheModel
+{
     protected $repodb;
     private $sqlResult;
     protected $siteLang = 'en';
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
 
-    private function initPaging(int $limit, int $page, string $order) {
+    private function initPaging(int $limit, int $page, string $order)
+    {
         $this->limit = $limit;
         ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page - 1);
 
@@ -47,20 +49,21 @@ class RootViewModel extends ArcheModel {
      *
      * @return array
      */
-    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
+    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
+    {
         $this->initPaging($limit, $page, $order);
 
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "SELECT 
+                "SELECT 
                     id, title, avdate, string_agg(DISTINCT description, '.') as description, acdhid
                 from gui.root_views_func( :lang ) 
                 where title is not null
                 group by id, title, avdate, acdhid
                 order by " . $this->order . " limit " . $this->limit . " offset " . $this->offset . "
                  ; ",
-                    array(
+                array(
                         ':lang' => $this->siteLang
                     )
             );
@@ -82,7 +85,8 @@ class RootViewModel extends ArcheModel {
      * Count the actual root resources
      * @return int
      */
-    public function countRoots(): int {
+    public function countRoots(): int
+    {
         $result = array();
         try {
             $this->setSqlTimeout();
@@ -101,5 +105,4 @@ class RootViewModel extends ArcheModel {
         }
         return 0;
     }
-    
 }

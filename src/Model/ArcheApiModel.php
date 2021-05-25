@@ -395,8 +395,4 @@ class ArcheApiModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
-    
-    
-    
-    
 }

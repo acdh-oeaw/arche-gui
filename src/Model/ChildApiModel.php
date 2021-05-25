@@ -9,8 +9,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class ChildApiModel extends ArcheModel {
-
+class ChildApiModel extends ArcheModel
+{
     protected $repodb;
     private $data = array();
     private $childProperties = array();
@@ -18,12 +18,14 @@ class ChildApiModel extends ArcheModel {
     private $sqlTypes;
     protected $siteLang = 'en';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
 
-    private function getOrganisationTypes(): array {
+    private function getOrganisationTypes(): array
+    {
         return array(
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasFunder',
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasOwner', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasLicensor',
@@ -31,13 +33,15 @@ class ChildApiModel extends ArcheModel {
         );
     }
 
-    private function getPublicationTypes(): array {
+    private function getPublicationTypes(): array
+    {
         return array(
             $this->repo->getSchema()->parent
         );
     }
 
-    private function getPersonTypes(): array {
+    private function getPersonTypes(): array
+    {
         return array(
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasCreator',
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasAuthor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasEditor',
@@ -45,37 +49,43 @@ class ChildApiModel extends ArcheModel {
         );
     }
 
-    private function getProjectTypes(): array {
+    private function getProjectTypes(): array
+    {
         return array(
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasRelatedProject'
         );
     }
 
-    private function getConceptTypes() {
+    private function getConceptTypes()
+    {
         return array(
             'http://www.w3.org/2004/02/skos/core#narrower'
         );
     }
 
-    private function getInstituteTypes(): array {
+    private function getInstituteTypes(): array
+    {
         return array(
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasMember'
         );
     }
 
-    private function getPlaceTypes(): array {
+    private function getPlaceTypes(): array
+    {
         return array(
             $this->repo->getSchema()->__get('namespaces')->ontology . 'hasSpatialCoverage'
         );
     }
 
-    private function getChildTypes(): array {
+    private function getChildTypes(): array
+    {
         return array(
             $this->repo->getSchema()->parent
         );
     }
 
-    public function getAcdhtype(): string {
+    public function getAcdhtype(): string
+    {
         if (!empty($this->rootAcdhType)) {
             return $this->rootAcdhType;
         }
@@ -91,7 +101,8 @@ class ChildApiModel extends ArcheModel {
      * @param string $orderby
      * @return array
      */
-    public function getViewData(string $identifier = "", int $limit = 10, int $page = 0, string $orderby = "titleasc"): array {
+    public function getViewData(string $identifier = "", int $limit = 10, int $page = 0, string $orderby = "titleasc"): array
+    {
         $order = $this->ordering($orderby);
         if (empty($this->sqlTypes)) {
             $this->sqlTypes = "ARRAY[]::text[]";
@@ -102,8 +113,8 @@ class ChildApiModel extends ArcheModel {
             $this->setSqlTimeout('30000');
             // distinct is removing the ordering
             $query = $this->repodb->query(
-                    "select id, title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
-                    array(
+                "select id, title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
+                array(
                         ':id' => $identifier,
                         ':limit' => $limit,
                         ':page' => $page,
@@ -111,7 +122,7 @@ class ChildApiModel extends ArcheModel {
                         ':orderprop' => $order->property,
                         ':lang' => $this->siteLang
                     ),
-                    ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->data = $query->fetchAll();
         } catch (Exception $ex) {
@@ -132,7 +143,8 @@ class ChildApiModel extends ArcheModel {
      * @param string $orderby
      * @return object
      */
-    private function ordering(string $orderby = "titleasc"): object {
+    private function ordering(string $orderby = "titleasc"): object
+    {
         $result = new \stdClass();
         $result->property = $this->repo->getSchema()->label;
         $result->order = 'asc';
@@ -164,7 +176,8 @@ class ChildApiModel extends ArcheModel {
      *
      * @param string $identifier
      */
-    public function getCount(string $identifier): int {
+    public function getCount(string $identifier): int
+    {
         if (empty($this->sqlTypes)) {
             $this->sqlTypes = "ARRAY['" . $this->repo->getSchema()->parent . "']";
         }
@@ -172,11 +185,11 @@ class ChildApiModel extends ArcheModel {
         try {
             $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
-                    "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
-                    array(
+                "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
+                array(
                         ':id' => $identifier
                     ),
-                    ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $result = $query->fetch();
 
@@ -201,15 +214,16 @@ class ChildApiModel extends ArcheModel {
      * @param string $repoid
      * @return string
      */
-    private function getProperties(string $repoid): string {
+    private function getProperties(string $repoid): string
+    {
         $rdf = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
 
         try {
             $this->setSqlTimeout('30000');
             $query = $this->repodb->query(
-                    "select value from metadata_view where id = :id and property = '" . $rdf . "' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
-                    array(':id' => $repoid),
-                    ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
+                "select value from metadata_view where id = :id and property = '" . $rdf . "' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
+                array(':id' => $repoid),
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
 
             $result = $query->fetch();
@@ -231,7 +245,8 @@ class ChildApiModel extends ArcheModel {
      * @param string $class
      * @return array
      */
-    public function getPropertiesByClass(string $repoid) {
+    public function getPropertiesByClass(string $repoid)
+    {
         $class = $this->getProperties($repoid);
         $property = '';
         $this->rootAcdhType = $class;
@@ -249,7 +264,8 @@ class ChildApiModel extends ArcheModel {
      * Check the root for the special properties
      * @param string $class
      */
-    private function checkChildProperties(string $class) {
+    private function checkChildProperties(string $class)
+    {
         switch (strtolower($class)) {
             case 'organisation':
                 $this->childProperties = $this->getOrganisationTypes();
@@ -282,7 +298,8 @@ class ChildApiModel extends ArcheModel {
      * Format the acdh type for the sql query as an array
      * @return string
      */
-    private function formatTypeFilter() {
+    private function formatTypeFilter()
+    {
         $this->sqlTypes = "";
         if (isset($this->childProperties)) {
             $count = count($this->childProperties);
@@ -303,7 +320,4 @@ class ChildApiModel extends ArcheModel {
             }
         }
     }
-
-    
-
 }
