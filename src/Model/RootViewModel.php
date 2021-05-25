@@ -9,29 +9,21 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class RootViewModel extends ArcheModel
-{
+class RootViewModel extends ArcheModel {
+
     protected $repodb;
     private $sqlResult;
     protected $siteLang = 'en';
-    /* ordering */
-    private $limit;
-    private $offset;
-    private $order;
-    /* ordering */
     
-    
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
-    
-    private function initPaging(int $limit, int $page, string $order)
-    {
+
+    private function initPaging(int $limit, int $page, string $order) {
         $this->limit = $limit;
-        ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page -1);
-        
+        ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page - 1);
+
         switch ($order) {
             case 'dateasc':
                 $this->order = "avdate asc";
@@ -49,33 +41,32 @@ class RootViewModel extends ArcheModel
                 $this->order = "avdate desc";
         }
     }
-        
+
     /**
      * get the root views data
      *
      * @return array
      */
-    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
-    {
+    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array {
         $this->initPaging($limit, $page, $order);
-        
+
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                "SELECT 
+                    "SELECT 
                     id, title, avdate, string_agg(DISTINCT description, '.') as description, acdhid
                 from gui.root_views_func( :lang ) 
                 where title is not null
                 group by id, title, avdate, acdhid
-                order by ".$this->order." limit ".$this->limit." offset ".$this->offset."
+                order by " . $this->order . " limit " . $this->limit . " offset " . $this->offset . "
                  ; ",
-                array(
-                    ':lang' => $this->siteLang
-                )
+                    array(
+                        ':lang' => $this->siteLang
+                    )
             );
-            
+
             $this->sqlResult = $query->fetchAll();
-           
+
             $this->changeBackDBConnection();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -86,13 +77,12 @@ class RootViewModel extends ArcheModel
         }
         return $this->sqlResult;
     }
-    
+
     /**
      * Count the actual root resources
      * @return int
      */
-    public function countRoots(): int
-    {
+    public function countRoots(): int {
         $result = array();
         try {
             $this->setSqlTimeout();
@@ -100,7 +90,7 @@ class RootViewModel extends ArcheModel
             $this->sqlResult = $query->fetch();
             $this->changeBackDBConnection();
             if (isset($this->sqlResult->id)) {
-                return (int)$this->sqlResult->id;
+                return (int) $this->sqlResult->id;
             }
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -111,4 +101,5 @@ class RootViewModel extends ArcheModel
         }
         return 0;
     }
+    
 }

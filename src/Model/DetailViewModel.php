@@ -9,25 +9,23 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class DetailViewModel extends ArcheModel
-{
+class DetailViewModel extends ArcheModel {
+
     protected $repodb;
     protected $siteLang;
-    
-    public function __construct()
-    {
+
+    public function __construct() {
         parent::__construct();
-        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
+        (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
-    
+
     /**
      * Get the detail view data from DB
      *
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = ""): array
-    {
+    public function getViewData(string $identifier = ""): array {
         if (empty($identifier)) {
             return array();
         }
@@ -44,23 +42,22 @@ class DetailViewModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         }
-        
+
         $this->changeBackDBConnection();
         return $result;
     }
-    
+
     /**
      * Get the breadcrumb data for the detail view
      *
      * @param string $identifier
      * @return array
      */
-    public function getBreadCrumbData(string $identifier = ''): array
-    {
+    public function getBreadCrumbData(string $identifier = ''): array {
         if (empty($identifier)) {
             return array();
         }
-        
+
         $result = array();
         try {
             $this->setSqlTimeout();
@@ -77,15 +74,14 @@ class DetailViewModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
-    
+
     /**
      * Get the ontology for the tooltip
      * @return array
      */
-    public function getTooltipOntology(): array
-    {
+    public function getTooltipOntology(): array {
         $result = array();
-        
+
         try {
             $this->setSqlTimeout();
             //run the actual query
@@ -101,4 +97,6 @@ class DetailViewModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+
+    
 }

@@ -137,4 +137,5 @@ class BlocksModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+    
 }

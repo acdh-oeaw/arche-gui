@@ -85,7 +85,7 @@ class ArcheApiModel extends ArcheModel
             );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -115,7 +115,7 @@ class ArcheApiModel extends ArcheModel
             );
             
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -141,7 +141,7 @@ class ArcheApiModel extends ArcheModel
                 "SELECT * from gui.count_binaries_collection_func();"
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -197,7 +197,6 @@ class ArcheApiModel extends ArcheModel
             //'vocabs'            => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
             //'altLabel'          => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
-        
        
         $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
         
@@ -396,4 +395,8 @@ class ArcheApiModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+    
+    
+    
+    
 }
