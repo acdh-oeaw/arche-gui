@@ -9,8 +9,8 @@ use acdhOeaw\acdhRepoLib\Repo;
  *
  * @author nczirjak
  */
-abstract class ArcheModel {
-
+abstract class ArcheModel
+{
     protected $repodb;
     protected $config;
     protected $repo;
@@ -18,7 +18,8 @@ abstract class ArcheModel {
     protected $order;
     protected $offset;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         try {
             $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
@@ -33,12 +34,14 @@ abstract class ArcheModel {
     /**
      * Allow the DB connection
      */
-    protected function setActiveConnection() {
+    protected function setActiveConnection()
+    {
         \Drupal\Core\Database\Database::setActiveConnection('repo');
         $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
     }
 
-    protected function changeBackDBConnection() {
+    protected function changeBackDBConnection()
+    {
         \Drupal\Core\Database\Database::setActiveConnection();
     }
 
@@ -46,13 +49,14 @@ abstract class ArcheModel {
      * Set the sql execution max time
      * @param string $timeout
      */
-    public function setSqlTimeout(string $timeout = '7000') {
+    public function setSqlTimeout(string $timeout = '7000')
+    {
         $this->setActiveConnection();
 
         try {
             $this->repodb->query(
-                    "SET statement_timeout TO :timeout;",
-                    array(':timeout' => $timeout)
+                "SET statement_timeout TO :timeout;",
+                array(':timeout' => $timeout)
             )->fetch();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -70,19 +74,19 @@ abstract class ArcheModel {
      * @param string $direction
      * @return array
      */
-    protected function sortAssociativeArrayByKey(array $array, string $key, string $direction): array {
-
+    protected function sortAssociativeArrayByKey(array $array, string $key, string $direction): array
+    {
         switch ($direction) {
             case "ASC":
                 usort($array, function ($first, $second) use ($key) {
-                    if(isset($first[$key]) && isset($second[$key])){
+                    if (isset($first[$key]) && isset($second[$key])) {
                         return $first[$key] <=> $second[$key];
                     }
                 });
                 break;
             case "DESC":
                 usort($array, function ($first, $second) use ($key) {
-                    if(isset($first[$key]) && isset($second[$key])){
+                    if (isset($first[$key]) && isset($second[$key])) {
                         return $second[$key] <=> $first[$key];
                     }
                 });
@@ -102,8 +106,8 @@ abstract class ArcheModel {
      * @param string $order
      * @return array
      */
-    protected function reOrderResult(array $data, string $order): array {
-
+    protected function reOrderResult(array $data, string $order): array
+    {
         if (count($data) == 0) {
             return array();
         }
