@@ -3,7 +3,7 @@
 namespace Drupal\acdh_repo_gui\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 

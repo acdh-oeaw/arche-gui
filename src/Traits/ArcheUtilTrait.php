@@ -3,7 +3,7 @@
 namespace Drupal\acdh_repo_gui\Traits;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
 /**
@@ -107,7 +107,7 @@ trait ArcheUtilTrait
             //add the language to every resource
             $lang = $this->setLanguage($d);
             
-            // if we have an external type then the repoid will be the value
+            // if we have an external type () then the repoid will be the value
             //because we will use their own id for the  linking
             //and the value will be the relvalue because of the relational data
             $this->setUpRepoIdForExternalType($d);
@@ -166,7 +166,7 @@ trait ArcheUtilTrait
                 $this->setIDTypeUri($d);
                 //add the identifier into the final data
                 $result['acdh:hasIdentifier'][$lang][] = $d;
-            }
+            } 
         }
         
         if ($root == true) {
@@ -195,5 +195,110 @@ trait ArcheUtilTrait
         if (strpos($d->value, 'http') !== false) {
             $d->uri = $d->value;
         }
+    }
+    
+    public function createResourceObject(array $data): array {
+        $arr = array();
+       
+        foreach ($data as $k => $v) {
+            $arr[] = new \Drupal\acdh_repo_gui\Object\ResourceObject($v, $this->repo);
+        }
+        return $arr;
+    }
+    
+     /**
+     * Get the count from the rest api result
+     * @param array $obj
+     * @return int
+     */
+    public function getCount(array &$obj): int {
+        $values = array();
+        $values = array_map(function ($obj) {
+            if (isset($obj['search://count']) && $obj['search://count'] !== null) {
+                return $obj['search://count'];
+            }
+        }, $obj);
+
+        $values = array_filter($values);
+        $keys = array_keys($values);
+        $key = $keys[0];
+       
+        if (isset($values[(int)$key][0]['value'])) {
+            unset($obj[(int)$key]);
+            return $values[(int)$key][0]['value'];
+        }
+        return 0;
+    }
+    
+    /**
+     * Process the easyrdf graph data and create ResourceObject arrays
+     * @param array $obj
+     * @return array
+     */
+    public function processGraph(array $obj): array {
+        
+        $result = array();
+        for ($i = 0; $i <= count($obj); $i++) {
+            if (isset($obj[$i][$this->repo->getSchema()->id])) {
+                $id = $this->getResourceRepoIdentifier($obj[$i][$this->repo->getSchema()->id]);
+                if (!empty($id)) {
+                    foreach ($obj[$i] as $ok => $ov) {
+                        $sc = Helper::createShortcut($ok);
+                        if (!empty($sc)) {
+                            $result[$id][$sc] = $this->getObjectValues($ov);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->createResourceObject($result);
+    }
+
+    private function getObjectValues(array $data): array {
+
+        $res = array();
+
+        foreach ($data as $k => $v) {
+            if (isset($v['type']) && strtolower($v['type']) == 'literal') {
+                $lang = (isset($v['lang'])) ? $v['lang'] : "en";
+                $res[$lang][] = $this->getLiteralValues($v);
+            } else {
+                $res[$this->siteLang][] = $this->getUriValues($v);
+            }
+        }
+        return $res;
+    }
+
+    private function getLiteralValues(array $v): object {
+        if (isset($v['value']) && !empty($v['value'])) {
+            return
+                    (object) array(
+                        'value' => $v['value'],
+                        'title' => $v['value']
+            );
+        }
+        return (object) array();
+    }
+
+    private function getUriValues(array $v): object {
+        if (isset($v['value']) && !empty($v['value'])) {
+            return
+                    (object) array(
+                        'value' => $v['value'],
+                        'title' => $v['value']
+            );
+        }
+        return (object) array();
+    }
+
+    private function getResourceRepoIdentifier($id): string {
+        foreach ($id as $i) {
+            $rid = $this->generalFunctions->getRepoIdFromApiUrl($i['value']);
+            if (!empty($rid)) {
+                return $rid;
+            }
+        }
+        return "";
     }
 }

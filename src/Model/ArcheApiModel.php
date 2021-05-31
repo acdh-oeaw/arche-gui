@@ -173,7 +173,7 @@ class ArcheApiModel extends ArcheModel
             'vocabs'            => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
             'altLabel'          => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
-        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        $ontology = new \acdhOeaw\arche\lib\schema\Ontology($conn, $cfg);
         return (array)$ontology->getClass($this->properties->type);
     }
     
@@ -198,7 +198,7 @@ class ArcheApiModel extends ArcheModel
             //'altLabel'          => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
        
-        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        $ontology = new \acdhOeaw\arche\lib\schema\Ontology($conn, $cfg);
         
         $collectionProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties;
         $projectProp = $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties;
@@ -227,7 +227,8 @@ class ArcheApiModel extends ArcheModel
             'vocabs'            => 'https://vocabs.acdh.oeaw.ac.at/schema#vocabs',
             'label'             => 'http://www.w3.org/2004/02/skos/core#altLabel'
         ];
-        $ontology = new \acdhOeaw\arche\Ontology($conn, $cfg);
+        
+        $ontology = new \acdhOeaw\arche\lib\schema\Ontology($conn, $cfg);
         
         //check the properties
         $project = (isset($ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Project')->properties))?
@@ -235,6 +236,9 @@ class ArcheApiModel extends ArcheModel
         
         $collection = (isset($ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties))?
             $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Collection')->properties : "" ;
+        
+        $topCollection = (isset($ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#TopCollection')->properties))?
+            $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#TopCollection')->properties : "" ;
                 
         $resource = (isset($ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties))?
             $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Resource')->properties : "" ;
@@ -258,8 +262,9 @@ class ArcheApiModel extends ArcheModel
         
         $person = (isset($ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Person')->properties))?
             $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Person')->properties : "" ;
-        
+      
         return array(
+            'topcollection' => $topCollection,
             'project' => $project, 'collection' => $collection,
             'resource' => $resource, 'metadata' => $metadata,
             'image' => $image, 'publication' => $publication,

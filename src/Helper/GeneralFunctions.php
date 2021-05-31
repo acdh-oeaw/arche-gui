@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 
 /**
  * Description of GeneralFunctions
@@ -17,7 +17,7 @@ class GeneralFunctions
     public function __construct($cfg = null)
     {
         ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
+        $this->repo = \acdhOeaw\arche\lib\Repo::factory($this->config);
     }
     
     /**
@@ -208,8 +208,8 @@ class GeneralFunctions
     {
         $result = array();
         //internal id
-        $repodb = \acdhOeaw\acdhRepoLib\RepoDb::factory($this->config);
-        $repDiss = new \acdhOeaw\arche\disserv\RepoResourceDb($this->repo->getBaseUrl().$id, $repodb);
+        $repodb = \acdhOeaw\arche\lib\RepoDb::factory($this->config);
+        $repDiss = new \acdhOeaw\arche\lib\disserv\RepoResourceDb($this->repo->getBaseUrl().$id, $repodb);
         try {
             $dissServ = array();
             $dissServ = $repDiss->getDissServices();
@@ -242,7 +242,7 @@ class GeneralFunctions
             return array();
         } catch (\GuzzleHttp\Exception\ServerException $ex) {
             return array();
-        } catch (\acdhOeaw\acdhRepoLib\exception\RepoLibException $ex) {
+        } catch (\acdhOeaw\arche\lib\exception\RepoLibException $ex) {
             return array();
         }
     }

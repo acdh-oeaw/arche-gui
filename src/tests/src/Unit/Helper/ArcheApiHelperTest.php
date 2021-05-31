@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\acdh_repo_gui\Unit;
 
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Helper;
 
 /**

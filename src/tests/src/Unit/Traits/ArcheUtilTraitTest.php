@@ -27,7 +27,7 @@ class ArcheUtilTraitTest extends \PHPUnit\Framework\TestCase
         require_once dirname(__DIR__, 5) . '/vendor/autoload.php';
         $cfgFile = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file(dirname(__DIR__, 1) . '/testconfig.yaml')));
-        self::$repo = \acdhOeaw\acdhRepoLib\Repo::factory(dirname(__DIR__, 1) . '/testconfig.yaml');
+        self::$repo = \acdhOeaw\arche\lib\Repo::factory(dirname(__DIR__, 1) . '/testconfig.yaml');
     }
     
     /*

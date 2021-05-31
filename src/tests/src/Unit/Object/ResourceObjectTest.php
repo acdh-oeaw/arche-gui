@@ -6,7 +6,7 @@ require_once dirname(__DIR__, 1) . '/ExampleData.php';
    
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use DateTime;
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Object as RO;
 
 /**
@@ -20,7 +20,7 @@ class ResourceObjectTest extends \PHPUnit\Framework\TestCase
 {
     /**
      *
-     * @var \acdhOeaw\acdhRepoLib\Repo
+     * @var \acdhOeaw\arche\lib\Repo
      */
     protected static $repo;
     protected static $config;

@@ -3,9 +3,9 @@
 namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Model\ArcheApiModel;
-use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoResource;
-use acdhOeaw\acdhRepoLib\RepoDb;
+use acdhOeaw\arche\lib\Repo;
+use acdhOeaw\arche\lib\RepoResource;
+use acdhOeaw\arche\lib\RepoDb;
 use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
 
 /**

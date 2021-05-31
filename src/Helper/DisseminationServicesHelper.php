@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 use EasyRdf\Graph;
@@ -475,11 +475,12 @@ class DisseminationServicesHelper
         ini_set('xdebug.max_nesting_level', 2000);
         //if we have files in the directory
         $dirFiles = scandir($this->collectionTmpDir . $this->collectionDate);
+        
         if (count($dirFiles) > 0) {
             chmod($this->collectionTmpDir . $this->collectionDate, 0777);
             $archiveFile = $this->collectionTmpDir . $this->collectionDate . '/collection.tar';
-            fopen($archiveFile, "w");
-            fclose($archiveFile);
+            $file = fopen($archiveFile, "w");
+            fclose($file);
             chmod($archiveFile, 0777);
             try {
                 $tar = new \Drupal\Core\Archiver\Tar($archiveFile);

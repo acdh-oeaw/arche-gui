@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Model;
 
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 
 /**
  * Description of ArcheModel
@@ -22,7 +22,7 @@ abstract class ArcheModel
     {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         try {
-            $this->repo = \acdhOeaw\acdhRepoLib\Repo::factory($this->config);
+            $this->repo = \acdhOeaw\arche\lib\Repo::factory($this->config);
         } catch (\Exception $ex) {
             \Drupal::messenger()->addWarning($this->t('Error during the BaseController initialization!').' '.$ex->getMessage());
             return array();

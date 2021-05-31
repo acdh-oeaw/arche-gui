@@ -3,7 +3,7 @@
 namespace Drupal\acdh_repo_gui\Model;
 
 use Drupal\acdh_repo_gui\Model\ArcheModel;
-use acdhOeaw\acdhRepoLib\Repo;
+use acdhOeaw\arche\lib\Repo;
 
 /**
  * Description of SearchViewModel
@@ -39,8 +39,8 @@ class SearchViewModel extends ArcheModel
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->repo = Repo::factory($this->config);
         
-        $this->searchCfg = new \acdhOeaw\acdhRepoLib\SearchConfig();
-        $this->repolibDB = \acdhOeaw\acdhRepoLib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
+        $this->searchCfg = new \acdhOeaw\arche\lib\SearchConfig();
+        $this->repolibDB = \acdhOeaw\arche\lib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
         $this->metaObj = new \stdClass();
         $this->log = new \zozlak\logging\Log(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
         (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
