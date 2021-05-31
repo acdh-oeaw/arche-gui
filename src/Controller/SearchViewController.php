@@ -14,11 +14,12 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  *
  * @author nczirjak
  */
-class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $pagingHelper;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new SearchViewModel();
         $this->helper = new SearchViewHelper();
@@ -33,7 +34,8 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $order
      * @return array
      */
-    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
+    public function generateView(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
+    {
         $data = array();
         $guiData = array();
         $guiData['data'] = array();
@@ -47,7 +49,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
 
             $pagination = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => $numPage, 'sum' => $data['count']
                     )
@@ -57,7 +59,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => 1, 'sum' => 0
                     )
@@ -86,7 +88,8 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $order
      * @return array
      */
-    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array {
+    public function fulltext_search(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
+    {
         $data = array();
         $guiData = array();
         $metaobj = new \stdClass();
@@ -102,7 +105,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
             $pagination = '';
             $pagination = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => $numPage, 'sum' => $data['count']
                     )
@@ -112,7 +115,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
-                    array(
+                array(
                         'limit' => $limit, 'page' => $page, 'order' => $order,
                         'numPage' => 1, 'sum' => 0
                     )
@@ -131,5 +134,4 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             '#cache' => ['max-age' => 0]
         ];
     }
-
 }

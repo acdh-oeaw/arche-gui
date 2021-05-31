@@ -13,28 +13,31 @@ use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;
  *
  * @author nczirjak
  */
-class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $basicViewData;
     private $repoUrl;
     private $repoid;
     private $generalFunctions;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new DetailViewModel();
         $this->helper = new DetailViewHelper($this->config);
         $this->generalFunctions = new GF();
     }
 
-    private function checkAjaxRequestIsOn(string $identifier): bool {
+    private function checkAjaxRequestIsOn(string $identifier): bool
+    {
         if (strpos($identifier, '&ajax') !== false) {
             return true;
         }
         return false;
     }
 
-    private function getIdentifierFromAjax(string $identifier): string {
+    private function getIdentifierFromAjax(string $identifier): string
+    {
         if (strpos($identifier, '&ajax') !== false) {
             $identifier = explode('&', $identifier);
             return $identifier[0];
@@ -48,7 +51,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $identifier
      * @return type
      */
-    public function detailViewMainMethod(string $identifier) {
+    public function detailViewMainMethod(string $identifier)
+    {
         $ajax = $this->checkAjaxRequestIsOn($identifier);
         if ($ajax) {
             $identifier = $this->getIdentifierFromAjax($identifier);
@@ -91,7 +95,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $id
      * @return bool
      */
-    private function checkVersions(string $id): string {
+    private function checkVersions(string $id): string
+    {
         $blockModel = new \Drupal\acdh_repo_gui\Model\BlocksModel();
         $params = array('identifier' => $id, 'lang' => $this->siteLang);
         $data = $blockModel->getViewData("versions", $params);
@@ -108,7 +113,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * set up the breadcrumb data
      * @return void
      */
-    private function setBreadcrumb(): void {
+    private function setBreadcrumb(): void
+    {
         $breadcrumb = $this->model->getBreadCrumbData($this->repoid);
 
         //add the breadcrumb to the final results
@@ -124,7 +130,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $identifier
      * @return type
      */
-    private function generateDetailView(string $identifier): object {
+    private function generateDetailView(string $identifier): object
+    {
         $this->repoUrl = $identifier;
         //remove the url from the identifier just to have the repoid
         $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
@@ -169,7 +176,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * Set up tooltip data
      * @return void
      */
-    private function setToolTip(): void {
+    private function setToolTip(): void
+    {
         //get the tooltip
         $tooltip = $this->model->getTooltipOntology();
         if (count($tooltip) > 0) {
@@ -183,7 +191,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $identifier -> full repoUrl
      * @return object
      */
-    public function generateObjDataForDissService(string $identifier): object {
+    public function generateObjDataForDissService(string $identifier): object
+    {
         $dv = array();
         $dv = $this->model->getViewData($identifier);
 
@@ -204,9 +213,9 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * Get the child view data
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function getChildData(): \Symfony\Component\HttpFoundation\Response {
+    private function getChildData(): \Symfony\Component\HttpFoundation\Response
+    {
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
         return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
-
 }
