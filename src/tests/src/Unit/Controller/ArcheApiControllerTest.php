@@ -43,9 +43,8 @@ class ArcheApiControllerTest extends \PHPUnit\Framework\TestCase
     /*
     * @dataProvider provider
     */
-    public function repo_personsTest(string $searchStr) {
-         $this->assertInstanceOf(Response);
+    public function repo_personsTest(string $searchStr)
+    {
+        $this->assertInstanceOf(Response);
     }
-    
-    
 }

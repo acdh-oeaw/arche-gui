@@ -166,7 +166,7 @@ trait ArcheUtilTrait
                 $this->setIDTypeUri($d);
                 //add the identifier into the final data
                 $result['acdh:hasIdentifier'][$lang][] = $d;
-            } 
+            }
         }
         
         if ($root == true) {
@@ -197,7 +197,8 @@ trait ArcheUtilTrait
         }
     }
     
-    public function createResourceObject(array $data): array {
+    public function createResourceObject(array $data): array
+    {
         $arr = array();
        
         foreach ($data as $k => $v) {
@@ -206,12 +207,13 @@ trait ArcheUtilTrait
         return $arr;
     }
     
-     /**
-     * Get the count from the rest api result
-     * @param array $obj
-     * @return int
-     */
-    public function getCount(array &$obj): int {
+    /**
+    * Get the count from the rest api result
+    * @param array $obj
+    * @return int
+    */
+    public function getCount(array &$obj): int
+    {
         $values = array();
         $values = array_map(function ($obj) {
             if (isset($obj['search://count']) && $obj['search://count'] !== null) {
@@ -235,8 +237,8 @@ trait ArcheUtilTrait
      * @param array $obj
      * @return array
      */
-    public function processGraph(array $obj): array {
-        
+    public function processGraph(array $obj): array
+    {
         $result = array();
         for ($i = 0; $i <= count($obj); $i++) {
             if (isset($obj[$i][$this->repo->getSchema()->id])) {
@@ -255,8 +257,8 @@ trait ArcheUtilTrait
         return $this->createResourceObject($result);
     }
 
-    private function getObjectValues(array $data): array {
-
+    private function getObjectValues(array $data): array
+    {
         $res = array();
 
         foreach ($data as $k => $v) {
@@ -270,7 +272,8 @@ trait ArcheUtilTrait
         return $res;
     }
 
-    private function getLiteralValues(array $v): object {
+    private function getLiteralValues(array $v): object
+    {
         if (isset($v['value']) && !empty($v['value'])) {
             return
                     (object) array(
@@ -281,7 +284,8 @@ trait ArcheUtilTrait
         return (object) array();
     }
 
-    private function getUriValues(array $v): object {
+    private function getUriValues(array $v): object
+    {
         if (isset($v['value']) && !empty($v['value'])) {
             return
                     (object) array(
@@ -292,7 +296,8 @@ trait ArcheUtilTrait
         return (object) array();
     }
 
-    private function getResourceRepoIdentifier($id): string {
+    private function getResourceRepoIdentifier($id): string
+    {
         foreach ($id as $i) {
             $rid = $this->generalFunctions->getRepoIdFromApiUrl($i['value']);
             if (!empty($rid)) {

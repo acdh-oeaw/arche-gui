@@ -7,8 +7,8 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class BreadcrumbObject {
-    
+class BreadcrumbObject
+{
     private $siteLang;
     private $repo;
     private $obj;
@@ -16,7 +16,8 @@ class BreadcrumbObject {
     private $data;
     private $id;
     
-    public function __construct(array $obj, string $id) {
+    public function __construct(array $obj, string $id)
+    {
         $config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         $this->repo = \acdhOeaw\arche\lib\Repo::factory($config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
@@ -29,13 +30,14 @@ class BreadcrumbObject {
      * return with the breadcrumb result array
      * @return array
      */
-    public function getData(): array {
-        if(count($this->obj) == 0){
+    public function getData(): array
+    {
+        if (count($this->obj) == 0) {
             return $this->result;
         }
         $this->process();
         //remove the actual resource, we will not display it on the gui
-        if(isset($this->result[0])) {
+        if (isset($this->result[0])) {
             unset($this->result[0]);
         }
         return array_reverse($this->result);
@@ -44,8 +46,9 @@ class BreadcrumbObject {
     /**
      * start the obj process
      */
-    private function process() {
-        if($this->getMainresource() === true) {
+    private function process()
+    {
+        if ($this->getMainresource() === true) {
             $this->getParents();
         }
     }
@@ -54,8 +57,9 @@ class BreadcrumbObject {
      * Get the actual resource to we can start to discover the parents
      * @return bool
      */
-    private function getMainresource(): bool {
-        if(isset($this->obj[$this->repo->getBaseUrl().$this->id])) {
+    private function getMainresource(): bool
+    {
+        if (isset($this->obj[$this->repo->getBaseUrl().$this->id])) {
             $this->getParent();
             unset($this->obj[$this->repo->getBaseUrl().$this->id]);
             return true;
@@ -66,7 +70,8 @@ class BreadcrumbObject {
     /**
      * get the first parent for our actual resource
      */
-    private function getParent() {
+    private function getParent()
+    {
         $obj = new \stdClass();
         $obj->mainid = $this->id;
         $obj->parentid = $this->getParentId($this->id);
@@ -79,9 +84,10 @@ class BreadcrumbObject {
      * @param string $parentid
      * @return string
      */
-    private function getParentId(string $parentid): string {
-        if(isset($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->parent])) {
-            foreach($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->parent] as $id) {
+    private function getParentId(string $parentid): string
+    {
+        if (isset($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->parent])) {
+            foreach ($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->parent] as $id) {
                 if (strpos($id['value'], $this->repo->getBaseUrl()) !== false) {
                     return str_replace($this->repo->getBaseUrl(), '', $id['value']);
                 }
@@ -95,8 +101,9 @@ class BreadcrumbObject {
      * @param string $parentid
      * @return string
      */
-    private function getParentLabel(string $parentid): string {
-        if(isset($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->label])) {
+    private function getParentLabel(string $parentid): string
+    {
+        if (isset($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->label])) {
             return $this->getValueTitle($this->obj[$this->repo->getBaseUrl().$parentid][$this->repo->getSchema()->label]);
         }
         return '';
@@ -107,7 +114,8 @@ class BreadcrumbObject {
      * @param array $titleArr
      * @return string
      */
-    private function getValueTitle(array $titleArr): string {
+    private function getValueTitle(array $titleArr): string
+    {
         //if we have the site actual language as a title then we return with
         //that one, if not then we will use the first value from the array
         foreach ($titleArr as $v) {
@@ -121,7 +129,8 @@ class BreadcrumbObject {
     /**
      * Get all of the other parents with recursion
      */
-    private function getParents() {
+    private function getParents()
+    {
         $this->searchForParents($this->result[0]->parentid);
     }
     
@@ -129,16 +138,17 @@ class BreadcrumbObject {
      * Recursive search for the parents
      * @param type $parentid
      */
-    private function searchForParents($parentid) {
-        foreach($this->obj as $k => $v){
-            if($k == $this->repo->getBaseUrl().$parentid) {
+    private function searchForParents($parentid)
+    {
+        foreach ($this->obj as $k => $v) {
+            if ($k == $this->repo->getBaseUrl().$parentid) {
                 $res = new \stdClass();
                 $res->parentid = $parentid;
                 $res->mainid = $this->getParentId($parentid);
                 $res->parenttitle = $this->getParentLabel($parentid);
                 unset($this->obj[$parentid]);
                 $this->result[] = $res;
-                if(isset($this->obj[$this->repo->getBaseUrl().$res->mainid])) {
+                if (isset($this->obj[$this->repo->getBaseUrl().$res->mainid])) {
                     $this->searchForParents($res->mainid);
                 }
             }
