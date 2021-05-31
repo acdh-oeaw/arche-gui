@@ -24,7 +24,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         require_once dirname(__DIR__, 5) . '/vendor/autoload.php';
         $cfgFile = dirname(__DIR__, 1) . '/testconfig.yaml';
         self::$config = json_decode(json_encode(yaml_parse_file($cfgFile)));
-        self::$repo = Repo::factory($cfgFile);
+        self::$repo = \acdhOeaw\arche\lib\Repo::factory($cfgFile);
     }
 
     public function setUp(): void
