@@ -89,8 +89,8 @@ jobs:
         #phpunit --version
        
         echo "run test"
-        XDEBUG_MODE=coverage ./drupal/vendor/phpunit/phpunit/phpunit --coverage-clover ./build/logs/clover.xml --configuration ./drupal/web/modules/arche-gui/phpunit.xml            
-      
+        ./drupal/web/modules/arche-gui/vendor/bin/phpunit            
+    
         echo "check  clover xml"
         cat ./build/logs/clover.xml
       
