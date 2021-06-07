@@ -372,12 +372,11 @@ class MetadataGuiHelper
             $html .= "<thead >";
             $html .= '<tr>';
             $html .= '<th><b>Property</b></th>';
-            $html .= '<th><b>TopCollection</b></th>';
             $html .= '<th><b>Project</b></th>';
+            $html .= '<th><b>TopCollection</b></th>';
             $html .= '<th><b>Collection</b></th>';
             $html .= '<th><b>Resource</b></th>';
             $html .= '<th><b>Metadata</b></th>';
-            $html .= '<th><b>Image</b></th>';
             $html .= '<th><b>Publication</b></th>';
             $html .= '<th><b>Place</b></th>';
             $html .= '<th><b>Organisation</b></th>';
@@ -448,7 +447,7 @@ class MetadataGuiHelper
      */
     private function getRtTypeValues(array $type): string
     {
-        $types = array('topcollection', 'project', 'collection', 'resource', 'metadata', 'image', 'publication', 'place', 'organisation', 'person');
+        $types = array('project', 'topcollection', 'collection', 'resource', 'metadata', 'publication', 'place', 'organisation', 'person');
         $html = '';
         foreach ($types as $t) {
             if (isset($type[$t]['value'])) {
@@ -467,7 +466,7 @@ class MetadataGuiHelper
      */
     private function getRtTypeDomain(array $type): string
     {
-        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $types = array('project' => 'p', 'topcollection' => 'tc', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
             if (isset($type[$t]['domain'])) {
@@ -484,7 +483,7 @@ class MetadataGuiHelper
      */
     private function getRtTypeRecommended(array $type): string
     {
-        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $types = array('project' => 'p', 'topcollection' => 'tc', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         foreach ($types as $t => $v) {
             if (isset($t) && isset($type[$t]['recommended']) && $type[$t]['recommended'] == true) {
@@ -501,7 +500,7 @@ class MetadataGuiHelper
      */
     private function getRtTypeRange(array $type): string
     {
-        $types = array('project' => 'p', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'image' => 'i', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
+        $types = array('project' => 'p', 'topcollection' => 'tc', 'collection' => 'c', 'resource' => 'r', 'metadata' => 'm', 'publication' => 'pub', 'place' => 'pl', 'organisation' => 'o', 'person' => 'pe');
         $html = '';
         $values = array();
         foreach ($types as $t => $v) {

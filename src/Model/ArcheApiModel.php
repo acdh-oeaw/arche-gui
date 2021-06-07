@@ -264,10 +264,10 @@ class ArcheApiModel extends ArcheModel
             $ontology->getClass('https://vocabs.acdh.oeaw.ac.at/schema#Person')->properties : "" ;
       
         return array(
-            'topcollection' => $topCollection,
-            'project' => $project, 'collection' => $collection,
+            'project' => $project, 
+            'topcollection' => $topCollection, 'collection' => $collection,
             'resource' => $resource, 'metadata' => $metadata,
-            'image' => $image, 'publication' => $publication,
+            'publication' => $publication,
             'place' => $place, 'organisation' => $organisation,
             'person' => $person
         );
