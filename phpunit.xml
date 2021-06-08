@@ -29,40 +29,21 @@
             <directory suffix=".php">src/Helper</directory>
             <directory suffix=".php">src/Model</directory>
             <directory suffix=".php">src/Object</directory>
-            <exclude>
-                <directory>src/tests/*</directory>
-                <directory>src/Controller/*</directory>
-                <directory>src/EventSubscriber/*</directory>
-                <directory>src/Form/*</directory>
-                <directory>src/PathProcessor/*</directory>
-                <directory>src/Plugin/*</directory>
-                <directory>src/TwigExtension/*</directory>
-            </exclude>
+            
         </include>
+        <exclude>
+            <directory>src/tests/*</directory>
+            <directory>src/Controller/*</directory>
+            <directory>src/EventSubscriber/*</directory>
+            <directory>src/Form/*</directory>
+            <directory>src/PathProcessor/*</directory>
+            <directory>src/Plugin/*</directory>
+            <directory>src/TwigExtension/*</directory>
+        </exclude>
         <report>
             <clover outputFile="build/logs/clover.xml"/>
         </report>
     </coverage>
     
-    <filter>
-        <whitelist >
-            <directory suffix=".php">src/Helper</directory>
-            <directory suffix=".php">src/Model</directory>
-            <directory suffix=".php">src/Object</directory>
-            <exclude>
-                <directory>src/tests/*</directory>
-                <directory>src/Controller/*</directory>
-                <directory>src/EventSubscriber/*</directory>
-                <directory>src/Form/*</directory>
-                <directory>src/PathProcessor/*</directory>
-                <directory>src/Plugin/*</directory>
-                <directory>src/TwigExtension/*</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-
-    <php>
-        <env name="APP_ENV" value="testing"/>
-    </php>
 
 </phpunit>

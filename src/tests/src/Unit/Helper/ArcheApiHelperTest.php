@@ -2,9 +2,6 @@
 
 namespace Drupal\Tests\acdh_repo_gui\Unit;
 
-use acdhOeaw\arche\lib\Repo;
-use Drupal\acdh_repo_gui\Helper;
-
 /**
  * Tests ArcheApiHelper
  *
