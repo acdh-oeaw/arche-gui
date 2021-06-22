@@ -2,7 +2,7 @@
 
 jQuery(function ($) {
     const Cite = require('citation-js');
-    
+
     "use strict";
     /** Handle the child button click  END **/
 
@@ -13,6 +13,21 @@ jQuery(function ($) {
         $('#child-div-content').hide();
         $(".loader-div").hide();
     });
+
+
+    function checkAudioPlayer() {
+        var audio = document.getElementById('arche-audio-player');
+        audio.addEventListener('error', function (e) {
+            var noSourcesLoaded = (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
+            if (noSourcesLoaded) {
+                console.log("could not load audio source");
+                $('#arche-audio-player').hide();
+                 $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
+            }
+                
+        }, true);
+    }
+
 
     function createNewUrlForInsideClick(id) {
         var newurl = window.location.protocol + "//" + window.location.host + '/browser/oeaw_detail/' + id;
@@ -78,7 +93,7 @@ jQuery(function ($) {
                 $('#cite-content-div').removeClass('hidden');
                 $('#cite-loader').addClass('hidden');
 
-                
+
                 let cite = new Cite(data);
 
                 var apa_loaded = true;
@@ -135,7 +150,7 @@ jQuery(function ($) {
                 $('#cite-content-figure').hide();
                 $('.bd-clipboard').hide();
                 //stop spinner
-                $('#cite-content-div').append('<div class="messages messages--warning">'+Drupal.t("The Resource does not have CITE data.")+'</>');
+                $('#cite-content-div').append('<div class="messages messages--warning">' + Drupal.t("The Resource does not have CITE data.") + '</>');
             });
         }
     }
@@ -158,6 +173,9 @@ jQuery(function ($) {
     $(document).ready(function () {
         /** add hasTitle value for the document title in every detail view **/
         changeTitle();
+
+        //check the audio player can load the audio file or not
+        checkAudioPlayer();
 
         //CITE Block
         showCiteBlock();
@@ -196,7 +214,7 @@ jQuery(function ($) {
                             $(".loader-div").hide();
                         },
                         error: function (message) {
-                            $('#block-mainpagecontent').html("Resource does not exists!");
+                            $('#block-mainpagecontent').html(Drupal.t("Resource does not exists!"));
                             $(".loader-div").hide();
                         }
                     });
@@ -241,26 +259,26 @@ jQuery(function ($) {
             $(this).removeClass('basic');
             $(this).addClass('tree');
             $(this).children('span').text(Drupal.t('Switch to List-View'));
-           
+
             //get the data
             var url = $('#insideUri').val();
-            
+
             if (url) {
-               
+
                 $('#child-tree').jstree({
                     'core': {
                         'data': {
                             'url': function (node) {
                                 var acdhid = $('#insideUri').val();
-                                
-                                if(node.id != "#") {
-                                   acdhid = node.id; 
+
+                                if (node.id != "#") {
+                                    acdhid = node.id;
                                 }
-                                
-                                return '/browser/get_collection_data_lazy/'+acdhid;
+
+                                return '/browser/get_collection_data_lazy/' + acdhid;
                             },
                             'data': function (node) {
-                                return { 'id' : node.id }; 
+                                return {'id': node.id};
                             },
                             'success': function (nodes) {
                             }
@@ -271,12 +289,12 @@ jQuery(function ($) {
                         },
                         search: {
                             "ajax": {
-                                "url": '/browser/get_collection_data_lazy/'+$('#insideUri').val(),
-                                "data" : function (str) {
-                                    return { 
-                                        "operation" : "search", 
-                                        "q" : str 
-                                    }; 
+                                "url": '/browser/get_collection_data_lazy/' + $('#insideUri').val(),
+                                "data": function (str) {
+                                    return {
+                                        "operation": "search",
+                                        "q": str
+                                    };
                                 }
                             },
                             case_sensitive: false
@@ -289,7 +307,7 @@ jQuery(function ($) {
                     var searchString = $(this).val();
                     $('#child-tree').jstree('search', searchString);
                 });
-                
+
                 $('#child-tree').bind("click.jstree", function (node, data) {
                     if (node.originalEvent.target.id) {
                         var node = $('#child-tree').jstree(true).get_node(node.originalEvent.target.id);
