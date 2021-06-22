@@ -539,7 +539,8 @@ class ResourceObject
      * Check the resource has an audio, to display the audio player
      * @return bool
      */
-    public function isAudio(): bool {
+    public function isAudio(): bool
+    {
         $cat = false;
         //check the ctaegory is speechRecording https://id.acdh.oeaw.ac.at/SpeechRecording
         if (isset($this->properties["acdh:hasCategory"])) {
@@ -551,7 +552,7 @@ class ResourceObject
         }
         //check the binarysize
         if ($cat) {
-            if (isset($this->properties["acdh:hasBinarySize"][0]->value) && 
+            if (isset($this->properties["acdh:hasBinarySize"][0]->value) &&
                     (int)$this->properties["acdh:hasBinarySize"][0]->value > 0) {
                 return true;
             }
