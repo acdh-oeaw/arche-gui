@@ -534,4 +534,29 @@ class ResourceObject
         }
         return "";
     }
+    
+    /**
+     * Check the resource has an audio, to display the audio player
+     * @return bool
+     */
+    public function isAudio(): bool {
+        $cat = false;
+        //check the ctaegory is speechRecording https://id.acdh.oeaw.ac.at/SpeechRecording
+        if (isset($this->properties["acdh:hasCategory"])) {
+            foreach ($this->properties["acdh:hasCategory"] as $category) {
+                if ($category->value == 'SpeechRecording') {
+                    $cat = true;
+                }
+            }
+        }
+        //check the binarysize
+        if ($cat) {
+            if (isset($this->properties["acdh:hasBinarySize"][0]->value) && 
+                    (int)$this->properties["acdh:hasBinarySize"][0]->value > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

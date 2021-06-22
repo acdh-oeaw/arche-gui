@@ -172,4 +172,14 @@ div.version-warning i.material-icons{
     padding-right: 2px;
 }
 
-
+/* AUDIO PLAYER */
+.arche-audio-player-container {
+    width: 95%;
+    margin: 0 auto;
+}
+.audio {
+    width: 100%; 
+    box-shadow: 5px 5px 20px rgba(0,0, 0, 0.4);
+    border-radius: 90px;
+    transform: scale(1.05);
+}

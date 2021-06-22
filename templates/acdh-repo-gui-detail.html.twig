@@ -53,7 +53,7 @@
         </div>
     {% endif %}
 </h3> 
-    
+
 {% if extra.old_version %}
     <div class="version-warning"><i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;{{  "A"|trans}} <a href="/browser/oeaw_detail/{{ extra.old_version }}">{{  "newer version"|trans }}</a> {{  "of this resource is available."|trans }}</div>
 {% endif%}  
@@ -102,38 +102,45 @@
 {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' 
         or basic.getAcdhType()|lower == 'project' or basic.getAcdhType()|lower == 'publication' %}
 <!-- Related Publication(s) and Resource(s) VIEW -->
-    <div id="rel-public-div">
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
-    </div>
+<div id="rel-public-div">
+    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
+</div>
 {% endif%}
 
-<!-- CITE BLOCK -->
-{% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
+    <!-- CITE BLOCK -->
+    {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  
         basic.getAcdhType()|lower == 'resource' or  basic.getAcdhType()|lower == 'metadata'  %}
 
-    <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
-    
-    <div id="cite-div">
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig') }}
-    </div>
+        <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
 
-{% endif%}    
+        <div id="cite-div">
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig') }}
+        </div>
 
-{% if  basic.getAcdhType()|lower == 'topcollection' or
-    basic.getAcdhType()|lower == 'collection' or  
-    basic.getAcdhType()|lower == 'organisation'  or  
-    basic.getAcdhType()|lower == 'project'  or 
-    basic.getAcdhType()|lower == 'publication' or 
-    basic.getAcdhType()|lower == 'place' or 
-    basic.getAcdhType()|lower == 'person' or 
-    basic.getAcdhType()|lower == 'concept' or
-    basic.getSkosType()|lower == 'conceptscheme'
-%}
+    {% endif%} 
 
-    <div id="child-div-content">
-        {{ extra.childData.getContent()|raw }}
-    </div>
+    <!-- AUDIO PLAYER -->
+    {% if basic.isAudio() %}
+        <div id="audio-player-div">
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-audio-player.html.twig', {'audio_url':  basic.getRepoUrl() }) }}
+        </div>
+    {% endif%} 
 
-{% endif%}
+    {% if  basic.getAcdhType()|lower == 'topcollection' or
+        basic.getAcdhType()|lower == 'collection' or  
+        basic.getAcdhType()|lower == 'organisation'  or  
+        basic.getAcdhType()|lower == 'project'  or 
+        basic.getAcdhType()|lower == 'publication' or 
+        basic.getAcdhType()|lower == 'place' or 
+        basic.getAcdhType()|lower == 'person' or 
+        basic.getAcdhType()|lower == 'concept' or
+        basic.getSkosType()|lower == 'conceptscheme'
+        %}
+
+        <div id="child-div-content">
+            {{ extra.childData.getContent()|raw }}
+        </div>
+
+    {% endif%}
 <br>
 

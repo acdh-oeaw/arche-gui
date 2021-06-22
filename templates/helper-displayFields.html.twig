@@ -34,20 +34,17 @@ Field extra type:
         {% if icon %}
             <i class="material-icons">{{ icon }}</i>
         {% endif%}
-        
+
         {% if label %}
             <span class="res-prop-label">{{ label|trans }}:</span>
         {% endif%}
-        
-         <span class="res-prop-value">
-             
+
+        <span class="res-prop-value">
+
             {% if data is iterable %}
-                
                 {% for value in data %}
-                    
                     <!-- The identifiers will open in the same window -->
                     {% if (value.type == 'ID') %}
-                        
                         {% if(type == 'shortCut') %}  
                             {% if (value.shortCut)  %}
                                 <a href="{{ value.value }}" target="_blank">{{ value.shortCut|nl2br }}</a>
@@ -91,6 +88,25 @@ Field extra type:
                         {% elseif (value.relvalue)  %}
                             <a href="{{ value.relvalue }}" target="_blank">{{ value.relvalue|nl2br }}</a>
                         {% endif %}
+                    {% elseif(type == 'binary') %}
+                        <!-- the binary -->
+                        {% if(value.value == 0) %}
+                            {{ value.value }} KB
+                        {% else %}
+                            {% set bytes =  value.value %}
+                            {% set kiloBytes = (bytes / 1024)|round(2) %}
+                            {% set megaBytes = (kiloBytes / 1024)|round(2) %}
+                            {% set gigaBytes = (megaBytes / 1024)|round(2) %}
+
+                            {% if (gigaBytes) > 0  %}
+                                {{ gigaBytes }} GB
+                            {% elseif (megaBytes) > 0  %}
+                                {{ megaBytes }} MB
+                            {% elseif (kiloBytes) > 0  %}                            
+                                {{ kiloBytes }} KB
+                            {% endif%}    
+                        {% endif%}
+
                     {% elseif(value.type == 'http://www.w3.org/2001/XMLSchema#string') %}
                         {% if(type == 'email') %}
                             {% if (value.title) %} 
@@ -111,7 +127,6 @@ Field extra type:
                             {% endif %}
                         {% endif %}
                     {% elseif(type == 'date' and dateformat) %}
-                        
                         {% if value.value|first|lower == "-" %}
                             <!-- remove the minus from the beginning -->
                             {% set nd = value.value|split('-', 2) %}
@@ -125,28 +140,8 @@ Field extra type:
                             {% endif %}
                         {% else %}
                             {{ value.value|archeTranslateDateFilter(dateformat) }}
-                        {% endif %}                    
-                    {% elseif(type == 'binary') %}
-                        <!-- the binary -->
-                        {% if(value.value == 0) %}
-                            {{ value.value }} KB
-                        {% else %}
-                            {% set bytes =  value.value %}
-                            {% set kiloBytes = (bytes / 1024)|round(2) %}
-                            {% set megaBytes = (kiloBytes / 1024)|round(2) %}
-                            {% set gigaBytes = (megaBytes / 1024)|round(2) %}
-
-                            {% if (gigaBytes) > 0  %}
-                                {{ gigaBytes }} GB
-                            {% elseif (megaBytes) > 0  %}
-                                {{ megaBytes }} MB
-                            {% elseif (kiloBytes) > 0  %}                            
-                                {{ kiloBytes }} KB
-                            {% endif%}    
-                        {% endif%}
-                    
+                        {% endif %}
                     {% else %}
-                        
                         <!-- if there is no type defined then simply display the title -->
                         {% if (value.value) is not empty %} 
                             {{ value.value|nl2br }}
@@ -156,13 +151,13 @@ Field extra type:
                             {{ value.relvalue|nl2br }}    
                         {% endif %}
                     {% endif %}   
-                    
+
                     <!-- if there are more than 1 value then we will display the delimiter -->
                     {% if not loop.last %} {{ limiter|raw }} {% endif %}
                 {% endfor %}
             {% else %}
                 <!-- if the data is not an array then we will just simply display the value -->
-                 {{ data }}
+                {{ data }}
             {% endif %}
         </span>
     </div>
