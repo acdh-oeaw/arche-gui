@@ -561,7 +561,7 @@ class ResourceObject
         return false;
     }
     
-    public function isPDF(): bool 
+    public function isPDF(): bool
     {
         $result = false;
         if (isset($this->properties["acdh:hasFormat"])) {
@@ -574,7 +574,7 @@ class ResourceObject
         
         if (isset($this->properties["acdh:hasBinarySize"])) {
             foreach ($this->properties["acdh:hasBinarySize"] as $binary) {
-                if((int)$binary->value < 1) {
+                if ((int)$binary->value < 1) {
                     return false;
                 } else {
                     $result = true;
@@ -583,5 +583,4 @@ class ResourceObject
         }
         return $result;
     }
-        
 }
