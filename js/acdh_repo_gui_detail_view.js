@@ -15,17 +15,20 @@ jQuery(function ($) {
     });
 
 
+    //check the audio player in the detail view
     function checkAudioPlayer() {
         var audio = document.getElementById('arche-audio-player');
-        audio.addEventListener('error', function (e) {
-            var noSourcesLoaded = (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
-            if (noSourcesLoaded) {
-                console.log("could not load audio source");
-                $('#arche-audio-player').hide();
-                 $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
-            }
-                
-        }, true);
+        if(audio) {
+            audio.addEventListener('error', function (e) {
+                var noSourcesLoaded = (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
+                if (noSourcesLoaded) {
+                    console.log("could not load audio source");
+                    $('#arche-audio-player').hide();
+                     $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
+                }
+
+            }, true);
+        }
     }
 
 

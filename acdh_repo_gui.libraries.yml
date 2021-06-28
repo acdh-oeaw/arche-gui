@@ -77,3 +77,15 @@ repo-collection-dl:
         - core/drupal
         - core/drupal.form    
         
+ds-pdf-styles:  
+    version: 1.0.1
+    css:
+        base:
+            css/arche-pdf-view.css: {}
+    js:
+        js/pdf/pdfjs-dist/build/pdf.js: {}
+        js/pdf/pdfviewer.js: {}
+        js/pdf/arche-ds-pdf.js: {}
+    dependencies:
+        - core/drupal
+        - core/jquery

@@ -28,6 +28,15 @@
                     </a>
                 </div>
             {% endfor %} 
+            
+            {% if isPDF %}
+                <div class="res-act-button">
+                    <a href="/browser/oeaw_pdf_viewer/{{ repoid }}" title="{{ pdf }}" class="dissServAhref" >
+                        <span>{{ 'PDF Viewer'|trans }}</span>
+                    </a>
+                </div>
+            {% endif %}
+
         </div>
 
         <div id="shibboleth_login_info" class="shibboleth_login_info" style="display:none"></div>
@@ -51,5 +60,8 @@
             </div>
         </div>
         <!-- DISS LOGIN FORM END  -->
-    {% endif %}    	
+    {% endif %}  
+
+
+
 </div>

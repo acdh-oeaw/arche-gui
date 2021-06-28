@@ -89,8 +89,9 @@
 <!-- DISSEMINATION BLOCK -->
 {% if dissemination %}
     <div id="dissemination-view-div">
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basic.getAccessRestriction() } ) }}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basic.getAccessRestriction(), 'isPDF': basic.isPDF()  } ) }}
     </div>
+      
 {% endif %}
 
 <!-- SUMMARY BLOCK -->

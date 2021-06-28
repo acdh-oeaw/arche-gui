@@ -67,6 +67,14 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         'acdh-repo-ds-3d-viewer' => [
             'variables' => ['ObjectUrl' => NULL, 'basic' => NULL]
         ],
+        'acdh-repo-ds-pdf-viewer' => [
+            'variables' => ['ObjectUrl' => NULL, 'basic' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/ds-pdf-styles', //include our custom library for this response
+                ]
+            ]
+        ],
         'acdh-repo-ds-iiif-viewer' => [
             'variables' => ['basic' => NULL, 'lorisUrl' => NULL]
         ],

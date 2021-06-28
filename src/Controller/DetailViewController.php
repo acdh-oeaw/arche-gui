@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Model\DetailViewModel;
 use Drupal\acdh_repo_gui\Helper\DetailViewHelper;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions as GF;

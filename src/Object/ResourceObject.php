@@ -560,4 +560,28 @@ class ResourceObject
 
         return false;
     }
+    
+    public function isPDF(): bool 
+    {
+        $result = false;
+        if (isset($this->properties["acdh:hasFormat"])) {
+            foreach ($this->properties["acdh:hasFormat"] as $format) {
+                if ($format->value == 'application/pdf') {
+                    $result = true;
+                }
+            }
+        }
+        
+        if (isset($this->properties["acdh:hasBinarySize"])) {
+            foreach ($this->properties["acdh:hasBinarySize"] as $binary) {
+                if((int)$binary->value < 1) {
+                    return false;
+                } else {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
+        
 }

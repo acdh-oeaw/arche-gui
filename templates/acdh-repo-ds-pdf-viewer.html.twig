@@ -1,0 +1,16 @@
+<link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
+<div>
+    {%  if basic.getRepoId() %}
+        <div>
+            <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}"><span>{{ "Back to the resource"|trans }}</span></a>
+            <br/><br/>
+        </div>
+    {% endif %}
+    <h3 class="single-res-heading">{{ "PDF Viewer"|trans }}</h3>    
+    {%  if basic.getTitle() %}
+        <h2>{{ basic.getTitle() }} </h2>
+    {% endif %}
+
+</div>
+
+<div class="pdf-container" data-href="{{  ObjectUrl|raw  }}"></div>

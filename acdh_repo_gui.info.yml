@@ -8,6 +8,7 @@ configure: acdh_repo_gui.settings_form
 libraries:
     - acdh_repo_gui/repo-styles
     - acdh_repo_gui/repo-root-view
+    - acdh_repo_gui/ds-pdf-styles
 'interface translation project': acdh_repo_gui
 'interface translation server pattern': modules/contrib/arche-gui/translations/acdh_repo_gui-%language.po    
 
