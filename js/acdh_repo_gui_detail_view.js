@@ -15,16 +15,42 @@ jQuery(function ($) {
     });
 
 
+    $(document).delegate("#getClarinVCR", "click", function (e) {
+        e.preventDefault();
+        console.log('click');
+        console.log($(this).data("title"));
+        console.log($(this).data("resourceuri"));
+        let resourceuri = $(this).data("resourceuri");
+        //jquery post
+        $.ajax({
+            url: '/browser/api/vcr/' + resourceuri,
+            type: "POST",
+            success: function (data, status) {
+                console.log('success');
+                console.log(data);
+                console.log(status);
+                window.open(data, '_blank');
+            },
+            error: function (message) {
+                console.log('error');
+                console.log(message);
+               $('#vcr-div > div.res-act-button').removeClass('res-act-button').addClass('messages messages--error').html(Drupal.t('Error happened during the API call! Please try it later!'));
+            }
+        });
+
+    });
+
+
     //check the audio player in the detail view
     function checkAudioPlayer() {
         var audio = document.getElementById('arche-audio-player');
-        if(audio) {
+        if (audio) {
             audio.addEventListener('error', function (e) {
                 var noSourcesLoaded = (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
                 if (noSourcesLoaded) {
                     console.log("could not load audio source");
                     $('#arche-audio-player').hide();
-                     $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
+                    $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
                 }
 
             }, true);

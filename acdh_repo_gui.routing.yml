@@ -229,6 +229,14 @@ repo_getRootTable:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'      
+ 
+repo_vcr:    
+    path: '/api/vcr/{urls}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_vcr'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE'         
         
 repo_search:    
   path: '/search_old/{metavalue}/{order}/{limit}/{page}'

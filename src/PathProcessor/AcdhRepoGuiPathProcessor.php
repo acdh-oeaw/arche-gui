@@ -14,6 +14,11 @@ class AcdhRepoGuiPathProcessor implements InboundPathProcessorInterface
             $names = str_replace('/', ':', $names);
             return "/oeaw_detail/$names";
         }
+        if (strpos($path, '/api/vcr/') === 0) {
+            $names = preg_replace('|^\/api/vcr\/|', '', $path);
+            $names = str_replace('/', ':', $names);
+            return "/api/vcr/$names";
+        }
         
         return $path;
     }
