@@ -231,6 +231,11 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         );
     }
 
+    /**
+     * Display PDF in viewer
+     * @param string $repoid
+     * @return array
+     */
     public function repo_pdf_viewer(string $repoid): array {
         $basic = array();
         $repoUrl = "";
