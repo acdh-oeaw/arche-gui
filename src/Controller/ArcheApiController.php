@@ -12,18 +12,20 @@ use Drupal\acdh_repo_gui\Helper\ArcheApiHelper;
  *
  * @author norbertczirjak
  */
-class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController {
-
+class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
+{
     private $modelData = array();
     private $result = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->model = new ArcheApiModel();
         $this->helper = new ArcheApiHelper();
     }
 
-    private function createDbHelperObject(array $args): object {
+    private function createDbHelperObject(array $args): object
+    {
         $obj = new \stdClass();
         foreach ($args as $k => $v) {
             $obj->$k = $v;
@@ -36,7 +38,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_persons(string $searchStr): Response {
+    public function repo_persons(string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/persons/MYVALUE?_format=json
@@ -67,7 +70,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_places(string $searchStr): Response {
+    public function repo_places(string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/places/MYVALUE?_format=json
@@ -98,7 +102,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_publications(string $searchStr): Response {
+    public function repo_publications(string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/publications/MYVALUE?_format=json
@@ -130,7 +135,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_concepts(string $searchStr): Response {
+    public function repo_concepts(string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/concepts/MYVALUE?_format=json
@@ -162,7 +168,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_organisations(string $searchStr): Response {
+    public function repo_organisations(string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/organisations/MYVALUE?_format=json
@@ -194,7 +201,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $searchStr
      * @return Response
      */
-    public function repo_getData(string $type, string $searchStr): Response {
+    public function repo_getData(string $type, string $searchStr): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getData/Person/MYVALUE?_format=json
@@ -226,7 +234,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $lng
      * @return Response
      */
-    public function repo_getMetadata(string $type, string $lng): Response {
+    public function repo_getMetadata(string $type, string $lng): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getMetadata/TYPE/en?_format=json
@@ -255,7 +264,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * The pure basic ontology for checking
      * @return Response
      */
-    public function repo_baseOntology(string $lng = 'en'): Response {
+    public function repo_baseOntology(string $lng = 'en'): Response
+    {
         $response = new Response();
 
         $obj = new \stdClass();
@@ -281,7 +291,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $lng
      * @return Response
      */
-    public function repo_getMetadataGui(string $lng = 'en'): Response {
+    public function repo_getMetadataGui(string $lng = 'en'): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getMetadataGui/en?_format=json
@@ -314,7 +325,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * Where the id is available, but not identifier, pid or ispartof
      * @return Response
      */
-    public function repo_getInverseData(string $repoid): Response {
+    public function repo_getInverseData(string $repoid): Response
+    {
         if (empty($repoid)) {
             return new JsonResponse(array("Please provide a search string"), 404, ['Content-Type' => 'application/json']);
         }
@@ -341,7 +353,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $repoid
      * @return Response
      */
-    public function repo_checkIdentifier(string $repoid): Response {
+    public function repo_checkIdentifier(string $repoid): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getData/checkIdentifier/MYVALUE?_format=json
@@ -374,7 +387,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * The gnd file generation API endpoint
      * @return Response
      */
-    public function repo_gndPerson(): Response {
+    public function repo_gndPerson(): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/gnd?_format=json
@@ -406,7 +420,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $lng
      * @return Response
      */
-    public function repo_getOntologyJSPluginData(string $lng = 'en'): Response {
+    public function repo_getOntologyJSPluginData(string $lng = 'en'): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getOntologyJSPluginData/Language?_format=json
@@ -432,7 +447,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $repoid
      * @return Response
      */
-    public function repo_getMembers(string $repoid): Response {
+    public function repo_getMembers(string $repoid): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser//api/getMembers/{repoid}?_format=json
@@ -462,7 +478,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $repoid
      * @return Response
      */
-    public function repo_getRelatedPublicationsResources(string $repoid, string $lng = 'en'): Response {
+    public function repo_getRelatedPublicationsResources(string $repoid, string $lng = 'en'): Response
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getRPR/{repoid}?_format=json
@@ -492,7 +509,8 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
      * @param string $lng
      * @return Response
      */
-    public function repo_getRootTable(string $lng = 'en') {
+    public function repo_getRootTable(string $lng = 'en')
+    {
         /*
          * Usage:
          *  https://domain.com/browser/api/getRootTable/en?_format=json
@@ -525,11 +543,12 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
     }
 
     /**
-     * 
+     *
      * @param string $urls
      * @return Response
      */
-    public function repo_vcr(string $urls): Response {
+    public function repo_vcr(string $urls): Response
+    {
         $code = 404;
         $result = "";
         if (empty($urls)) {
@@ -547,7 +566,4 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $response->setStatusCode($code);
         return $response;
     }
-    
-    
-
 }
