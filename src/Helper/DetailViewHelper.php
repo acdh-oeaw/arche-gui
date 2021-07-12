@@ -2,11 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
-use acdhOeaw\acdhRepoLib\Repo;
-use acdhOeaw\acdhRepoLib\RepoDb;
-use acdhOeaw\acdhRepoDisserv\RepoResource;
 
 /**
  * Description of DetailViewHelper
@@ -42,17 +38,5 @@ class DetailViewHelper
         return $this->detailViewObjectArray;
     }
     
-    /**
-     * Format the sql result for the gui
-     * @param type $tooltip
-     * @return array
-     */
-    public function formatTooltip($tooltip): array
-    {
-        $result = array();
-        foreach ($tooltip as $t) {
-            $result[$t->type] = $t;
-        }
-        return $result;
-    }
+   
 }

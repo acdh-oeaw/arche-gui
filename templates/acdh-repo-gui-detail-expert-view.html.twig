@@ -63,12 +63,12 @@
 
                 <tr>
                     <td width='40%'>
-                        {% if extra[key].description %}
+                        {% if extra.getData(key).description %}
                             <div style='float:left;'>
                                 {{ key }}
                             </div>
                             <div style='float:right;'>
-                                <a  class="" data-toggle="tooltip" data-placement="right" data-html="true" title="{{ extra[key].description}}">
+                                <a  class="" data-toggle="tooltip" data-placement="right" data-html="true" title="{{ extra.getData(key).description}}">
                                     <i class="material-icons" style='font-size:17px; color: #88DBDF;'>&#xE88F;</i>
                                 </a>
                             </div>

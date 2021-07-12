@@ -180,7 +180,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         //get the tooltip
         $tooltip = $this->model->getTooltipOntology();
         if (count($tooltip) > 0) {
-            $this->basicViewData->extra->tooltip = $this->helper->formatTooltip($tooltip);
+            $this->basicViewData->extra->tooltip = new \Drupal\acdh_repo_gui\Object\ToolTipObject($tooltip);
         }
     }
 

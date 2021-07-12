@@ -2,12 +2,6 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use acdhOeaw\arche\lib\Repo;
-use acdhOeaw\acdhRepoDisserv\RepoResource;
-use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use EasyRdf\Graph;
-use EasyRdf\Resource;
-
 /**
  * Description of DisseminationServicesHelper
  *
