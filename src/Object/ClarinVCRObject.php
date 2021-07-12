@@ -7,8 +7,8 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class ClarinVCRObject {
-
+class ClarinVCRObject
+{
     private $urls;
     private $url;
     private $clarinUrl;
@@ -17,14 +17,16 @@ class ClarinVCRObject {
     private $header = array();
     private $form_params;
 
-    public function __construct(string $urls) {
+    public function __construct(string $urls)
+    {
         $this->urls = $urls;
         $this->processUrls();
         $this->createHeader();
         $this->createFormParams();
     }
 
-    private function processUrls() {
+    private function processUrls()
+    {
         $urls = explode(":", $this->urls);
         $url = "";
 
@@ -42,14 +44,16 @@ class ClarinVCRObject {
         $this->url = $url;
     }
 
-    private function createHeader(): void {
+    private function createHeader(): void
+    {
         $this->header = [
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Referer' => 'https://arche.acdh.oeaw.ac.at'
         ];
     }
 
-    private function createFormParams(): void {
+    private function createFormParams(): void
+    {
         $this->form_params = [
             "name" => $this->collectionName,
             "description" => $this->collectionName,
@@ -58,7 +62,8 @@ class ClarinVCRObject {
         ];
     }
 
-    public function makeTheApiCall(bool $isTest = false): string {
+    public function makeTheApiCall(bool $isTest = false): string
+    {
         $this->setTheUrl($isTest);
         $this->setupTheClient();
         
@@ -74,7 +79,6 @@ class ClarinVCRObject {
                 ]
             ]);
             return $this->checkHeaderRedirect($request);
-            
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
             error_log($ex->getMessage());
             return "";
@@ -85,17 +89,20 @@ class ClarinVCRObject {
         return "";
     }
 
-    private function setTheUrl(bool $isTest = false): void {
+    private function setTheUrl(bool $isTest = false): void
+    {
         ($isTest) ? $this->clarinUrl = "https://collections.clarin-dev.eu/submit/extensional" : $this->clarinUrl = "https://collections.clarin.eu/submit/extensional";
     }
 
-    private function setupTheClient(): void {
+    private function setupTheClient(): void
+    {
         $this->client = new \GuzzleHttp\Client(
-                ['verify' => false]
+            ['verify' => false]
         );
     }
 
-    private function checkHeaderRedirect(\GuzzleHttp\Psr7\Response &$request): string {
+    private function checkHeaderRedirect(\GuzzleHttp\Psr7\Response &$request): string
+    {
         if ($request->getStatusCode() == 200) {
             if ($request->getHeaderLine('X-Guzzle-Redirect-History') !== null && !empty($request->getHeaderLine('X-Guzzle-Redirect-History'))) {
                 return (string)$request->getHeaderLine('X-Guzzle-Redirect-History');
@@ -103,5 +110,4 @@ class ClarinVCRObject {
         }
         return "";
     }
-
 }
