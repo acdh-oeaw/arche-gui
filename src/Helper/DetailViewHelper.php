@@ -37,6 +37,4 @@ class DetailViewHelper
         
         return $this->detailViewObjectArray;
     }
-    
-   
 }
