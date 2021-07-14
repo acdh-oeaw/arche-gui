@@ -13,6 +13,8 @@ class ResourceObject
     private $language = 'en';
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
+    private $audioCategories = array('Audio', 'Sound', 'SpeechRecording');
+    private $publicAccessValue = 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public';
 
     public function __construct(array $data, $config, string $language = 'en')
     {
@@ -542,45 +544,71 @@ class ResourceObject
     public function isAudio(): bool
     {
         $cat = false;
-        //check the ctaegory is speechRecording https://id.acdh.oeaw.ac.at/SpeechRecording
+        if(!$this->isPublic()) {
+           return false;
+        }
+        //check the sound categories
         if (isset($this->properties["acdh:hasCategory"])) {
             foreach ($this->properties["acdh:hasCategory"] as $category) {
-                if ($category->value == 'SpeechRecording') {
+                if (in_array($category->value, $this->audioCategories)) {
                     $cat = true;
                 }
             }
         }
         //check the binarysize
-        if ($cat) {
-            if (isset($this->properties["acdh:hasBinarySize"][0]->value) &&
-                    (int)$this->properties["acdh:hasBinarySize"][0]->value > 0) {
-                return true;
-            }
+        if (isset($this->properties["acdh:hasBinarySize"][0]->value) &&
+                (int)$this->properties["acdh:hasBinarySize"][0]->value > 0 &&
+                $cat) {
+            return true;
         }
 
         return false;
     }
     
+    /**
+     * Check if the resource is a pdf file
+     * @return bool
+     */
     public function isPDF(): bool
     {
-        $result = false;
+        $isPDF = false;
+        if(!$this->isPublic()) {
+           return false;
+        }
+        
         if (isset($this->properties["acdh:hasFormat"])) {
             foreach ($this->properties["acdh:hasFormat"] as $format) {
                 if ($format->value == 'application/pdf') {
-                    $result = true;
+                    $isPDF = true;
                 }
             }
         }
         
         if (isset($this->properties["acdh:hasBinarySize"])) {
             foreach ($this->properties["acdh:hasBinarySize"] as $binary) {
-                if ((int)$binary->value < 1) {
-                    return false;
-                } else {
-                    $result = true;
+                if ((int)$binary->value > 1 && $isPDF) {
+                    return true;
                 }
             }
         }
+        return false;
+    }
+    
+    /**
+     * Check the resource is public or not
+     * @return bool
+     */
+    public function isPublic(): bool 
+    {
+        $result = false;
+        $access = $this->getAccessRestriction();
+        if(
+                count((array)$access) > 0 && 
+                isset($access['vocabsid']) && 
+                $access['vocabsid'] = $this->publicAccessValue) {
+            $result = true;
+        }
+        
         return $result;
     }
 }

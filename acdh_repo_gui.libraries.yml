@@ -89,3 +89,43 @@ ds-pdf-styles:
     dependencies:
         - core/drupal
         - core/jquery
+
+ds-3d-viewer-styles:  
+    version: 1.0.1
+    css:
+        base:
+            css/arche-pdf-view.css: {}
+    js:
+        js/pdf/pdfjs-dist/build/pdf.js: {}
+        js/pdf/pdfviewer.js: {}
+        js/pdf/arche-ds-pdf.js: {}
+    dependencies:
+        - core/drupal
+        - core/jquery
+        
+ds-iiif-viewer-styles:  
+    version: 1.0.1
+    css:
+        base:
+            css/arche-pdf-view.css: {}
+    js:
+        js/pdf/pdfjs-dist/build/pdf.js: {}
+        js/pdf/pdfviewer.js: {}
+        js/pdf/arche-ds-pdf.js: {}
+    dependencies:
+        - core/drupal
+        - core/jquery     
+        
+ds-pdf-modal-styles:  
+    version: 1.0.1
+    css:
+        base:
+            css/arche-pdf-view.css: {}
+    js:
+        js/pdf/pdfjs-dist/build/pdf.js: {}
+        js/pdf/pdfviewer.js: {}
+        js/pdf/arche-ds-pdf-modal.js: {}
+    dependencies:
+        - core/drupal
+        - core/jquery
+        

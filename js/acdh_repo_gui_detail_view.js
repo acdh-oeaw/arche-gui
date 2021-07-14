@@ -15,32 +15,6 @@ jQuery(function ($) {
     });
 
 
-    $(document).delegate("#getClarinVCR", "click", function (e) {
-        e.preventDefault();
-        console.log('click');
-        console.log($(this).data("title"));
-        console.log($(this).data("resourceuri"));
-        let resourceuri = $(this).data("resourceuri");
-        //jquery post
-        $.ajax({
-            url: '/browser/api/vcr/' + resourceuri,
-            type: "POST",
-            success: function (data, status) {
-                console.log('success');
-                console.log(data);
-                console.log(status);
-                window.open(data, '_blank');
-            },
-            error: function (message) {
-                console.log('error');
-                console.log(message);
-               $('#vcr-div > div.res-act-button').removeClass('res-act-button').addClass('messages messages--error').html(Drupal.t('Error happened during the API call! Please try it later!'));
-            }
-        });
-
-    });
-
-
     //check the audio player in the detail view
     function checkAudioPlayer() {
         var audio = document.getElementById('arche-audio-player');
@@ -208,6 +182,14 @@ jQuery(function ($) {
 
         //CITE Block
         showCiteBlock();
+
+        $(document).delegate("#audioPlayerBtn", "click", function (e) {
+            e.preventDefault();
+            $('#audio-player-div').show();
+            $('html, body').animate({
+                scrollTop: $("#audio-player-div").offset().top
+            }, 2000);
+        });
 
         $(document).delegate(".cite-style", "click", function (e) {
             e.preventDefault();

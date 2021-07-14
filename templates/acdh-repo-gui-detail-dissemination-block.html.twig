@@ -31,8 +31,16 @@
             
             {% if isPDF %}
                 <div class="res-act-button">
-                    <a href="/browser/oeaw_pdf_viewer/{{ repoid }}" title="{{ pdf }}" class="dissServAhref" >
+                    <a href="#" title="{{ pdf }}" id="pdfViewerBtn" data-toggle="modal" data-target="#pdfModal">
                         <span>{{ 'PDF Viewer'|trans }}</span>
+                    </a>
+                </div>
+            {% endif %}
+            
+            {% if isAudio %}
+                <div class="res-act-button">
+                    <a href="#" title="{{ 'Audio Player'|trans }}" id="audioPlayerBtn" >
+                        <span>{{ 'Audio Player'|trans }}</span>
                     </a>
                 </div>
             {% endif %}
@@ -61,7 +69,5 @@
         </div>
         <!-- DISS LOGIN FORM END  -->
     {% endif %}  
-
-
 
 </div>
