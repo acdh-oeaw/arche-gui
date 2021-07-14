@@ -7,11 +7,12 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class ToolTipObject {
-    
+class ToolTipObject
+{
     private $data;
     private $td = array();
-    public function __construct(array $data) {
+    public function __construct(array $data)
+    {
         $this->data = $data;
         $this->formatTooltip();
     }
@@ -27,8 +28,8 @@ class ToolTipObject {
         }
     }
     
-    public function getData(string $property): object {
+    public function getData(string $property): object
+    {
         return (isset($this->td[$property])) ? $this->td[$property] : new \stdClass();
     }
-    
 }
