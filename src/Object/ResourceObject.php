@@ -544,8 +544,8 @@ class ResourceObject
     public function isAudio(): bool
     {
         $cat = false;
-        if(!$this->isPublic()) {
-           return false;
+        if (!$this->isPublic()) {
+            return false;
         }
         //check the sound categories
         if (isset($this->properties["acdh:hasCategory"])) {
@@ -572,8 +572,8 @@ class ResourceObject
     public function isPDF(): bool
     {
         $isPDF = false;
-        if(!$this->isPublic()) {
-           return false;
+        if (!$this->isPublic()) {
+            return false;
         }
         
         if (isset($this->properties["acdh:hasFormat"])) {
@@ -598,13 +598,13 @@ class ResourceObject
      * Check the resource is public or not
      * @return bool
      */
-    public function isPublic(): bool 
+    public function isPublic(): bool
     {
         $result = false;
         $access = $this->getAccessRestriction();
-        if(
-                count((array)$access) > 0 && 
-                isset($access['vocabsid']) && 
+        if (
+                count((array)$access) > 0 &&
+                isset($access['vocabsid']) &&
                 $access['vocabsid'] = $this->publicAccessValue) {
             $result = true;
         }
