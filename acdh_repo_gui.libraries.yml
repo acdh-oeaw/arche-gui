@@ -75,8 +75,8 @@ repo-collection-dl:
         js/dl_collection.js: {}
     dependencies:
         - core/drupal
-        - core/drupal.form    
-        
+        - core/drupal.form
+
 ds-pdf-styles:  
     version: 1.0.1
     css:
@@ -90,32 +90,6 @@ ds-pdf-styles:
         - core/drupal
         - core/jquery
 
-ds-3d-viewer-styles:  
-    version: 1.0.1
-    css:
-        base:
-            css/arche-pdf-view.css: {}
-    js:
-        js/pdf/pdfjs-dist/build/pdf.js: {}
-        js/pdf/pdfviewer.js: {}
-        js/pdf/arche-ds-pdf.js: {}
-    dependencies:
-        - core/drupal
-        - core/jquery
-        
-ds-iiif-viewer-styles:  
-    version: 1.0.1
-    css:
-        base:
-            css/arche-pdf-view.css: {}
-    js:
-        js/pdf/pdfjs-dist/build/pdf.js: {}
-        js/pdf/pdfviewer.js: {}
-        js/pdf/arche-ds-pdf.js: {}
-    dependencies:
-        - core/drupal
-        - core/jquery     
-        
 ds-pdf-modal-styles:  
     version: 1.0.1
     css:

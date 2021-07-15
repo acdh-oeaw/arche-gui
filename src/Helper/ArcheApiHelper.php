@@ -13,23 +13,22 @@ use Drupal\acdh_repo_gui\Helper\MetadataGuiHelper;
  *
  * @author norbertczirjak
  */
-class ArcheApiHelper
-{
+class ArcheApiHelper {
+
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
-    
+
     private $data = array();
     private $apiType = '';
     private $result = array();
     private $properties;
     private $requiredClasses = array();
-    
-    public function createView(array $data = array(), string $apiType = '', string $lng ='en'): array
-    {
-        (!empty($lng)) ? $this->siteLang = strtolower($lng)  : $this->siteLang = "en";
-        if (count($data) == 0  && !empty($apiType)) {
+
+    public function createView(array $data = array(), string $apiType = '', string $lng = 'en'): array {
+        (!empty($lng)) ? $this->siteLang = strtolower($lng) : $this->siteLang = "en";
+        if (count($data) == 0 && !empty($apiType)) {
             return array();
         }
-        
+
         switch ($apiType) {
             case 'metadata':
                 $this->setupMetadataType($data);
@@ -72,15 +71,14 @@ class ArcheApiHelper
                 $this->formatView();
                 break;
         }
-        
+
         return $this->result;
     }
-    
+
     /**
      * Create the inverse result for the datatable
      */
-    private function formatInverseData()
-    {
+    private function formatInverseData() {
         $this->result = array();
         foreach ($this->data as $id => $obj) {
             foreach ($obj as $o) {
@@ -92,23 +90,21 @@ class ArcheApiHelper
             }
         }
     }
-    
+
     /**
      * Format the sql result to the getMembers api endpoint
      */
-    private function formatMembersData()
-    {
+    private function formatMembersData() {
         $this->result = array();
         foreach ($this->data as $obj) {
             $this->result[] = array("<a id='archeHref' href='/browser/oeaw_detail/$obj->id'>$obj->title</a>");
         }
     }
-    
+
     /**
      * Format the sql result to the Related Publications and Resources api endpoint
      */
-    private function formatRPRData()
-    {
+    private function formatRPRData() {
         $this->result = array();
         foreach ($this->data as $obj) {
             $this->result[] = array(
@@ -118,38 +114,36 @@ class ArcheApiHelper
             );
         }
     }
-    
+
     /**
      * Create the reponse header
      * @param array $data
      */
-    private function setupMetadataType(array $data = array())
-    {
+    private function setupMetadataType(array $data = array()) {
         $this->creatMetadataObj($data);
         if (count($data['properties']) > 0) {
             $this->data = $data['properties'];
         }
-            
+
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
         $this->result['id'] = $data['class'];
         $this->result['type'] = "object";
         $this->result['title'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $data['class']);
         $this->formatMetadataView();
     }
-    
+
     /**
      * format the collections and binaries count response
      */
-    private function formatCollsBinsCount()
-    {
+    private function formatCollsBinsCount() {
         $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
         $collections = "0";
         $files = "0";
         if (isset($this->data[0]->collections) && !empty($this->data[0]->collections)) {
-            $collections = $this->data[0]->collections." ".t("Collections", array(), array('langcode' => $this->siteLang));
+            $collections = $this->data[0]->collections . " " . t("Collections", array(), array('langcode' => $this->siteLang));
         }
         if (isset($this->data[0]->binaries) && !empty($this->data[0]->binaries)) {
-            $files = $this->data[0]->binaries." ".t("Files", array(), array('langcode' => $this->siteLang));
+            $files = $this->data[0]->binaries . " " . t("Files", array(), array('langcode' => $this->siteLang));
         }
 
         if (empty($files)) {
@@ -158,18 +152,16 @@ class ArcheApiHelper
         if (empty($collections)) {
             $collections = "0";
         }
-        $this->result['text'] = $collections. " ".t("with", array(), array('langcode' => $this->siteLang))." ".$files;
+        $this->result['text'] = $collections . " " . t("with", array(), array('langcode' => $this->siteLang)) . " " . $files;
     }
-    
-    
+
     /**
      * Format the data for the metadata api request
      */
-    private function formatMetadataView()
-    {
+    private function formatMetadataView() {
         foreach ($this->data as $v) {
             $prop = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $v->property);
-            
+
             if (isset($v->label)) {
                 $this->result['properties'][$prop]['title'] = $v->label[$this->siteLang];
             }
@@ -188,12 +180,12 @@ class ArcheApiHelper
                     $this->result['properties'][$prop]['type'] = "array";
                 }
             }
-           
+
             $this->checkCardinality($prop, $v);
-           
+
             //order missing!
             if (isset($v->order) && $v->order) {
-                $this->result['properties'][$prop]['order'] = (int)$v->order;
+                $this->result['properties'][$prop]['order'] = (int) $v->order;
             } else {
                 $this->result['properties'][$prop]['order'] = 0;
             }
@@ -206,17 +198,16 @@ class ArcheApiHelper
             $this->result['required'] = $this->requiredClasses;
         }
     }
-    
+
     /**
      * Check the property cardinalities
      *
      * @param array $data
      * @return string
      */
-    private function checkCardinality(string $prop, object $obj)
-    {
+    private function checkCardinality(string $prop, object $obj) {
         if (isset($obj->min)) {
-            $this->result['properties'][$prop]['minItems'] = (int)$obj->min;
+            $this->result['properties'][$prop]['minItems'] = (int) $obj->min;
             if ($obj->min >= 1) {
                 $this->result['properties'][$prop]['type'] = "array";
             }
@@ -228,7 +219,7 @@ class ArcheApiHelper
         }
 
         if (isset($obj->max)) {
-            $this->result['properties'][$prop]['maxItems'] = (int)$obj->max;
+            $this->result['properties'][$prop]['maxItems'] = (int) $obj->max;
             if ($obj->max > 1) {
                 $this->result['properties'][$prop]['type'] = "array";
             }
@@ -239,19 +230,18 @@ class ArcheApiHelper
 
         if (isset($obj->cardinality)) {
             $this->result['properties'][$prop]['cardinality'] = $obj->cardinality;
-            $this->result['properties'][$prop]['minItems'] = (int)$obj->cardinality;
-            $this->result['properties'][$prop]['maxItems'] = (int)$obj->cardinality;
+            $this->result['properties'][$prop]['minItems'] = (int) $obj->cardinality;
+            $this->result['properties'][$prop]['maxItems'] = (int) $obj->cardinality;
         }
     }
-    
+
     /**
      * Create properties obj with values from the metadata api request
      * @param array $data
      */
-    private function creatMetadataObj(array $data)
-    {
+    private function creatMetadataObj(array $data) {
         $this->properties = new \stdClass();
-        
+
         if (isset($data['class'])) {
             $this->properties->class = $data['class'];
         }
@@ -262,12 +252,11 @@ class ArcheApiHelper
             $this->properties->comment = $data['comment'];
         }
     }
-    
+
     /**
      * Format the basic APi views
      */
-    private function formatView()
-    {
+    private function formatView() {
         $this->result = array();
         foreach ($this->data as $k => $val) {
             foreach ($val as $v) {
@@ -279,7 +268,7 @@ class ArcheApiHelper
                         $altTitle = $v->value;
                     }
                     $this->result[$k]->title[$lang] = $title;
-                    $this->result[$k]->uri = $this->repo->getBaseUrl().$k;
+                    $this->result[$k]->uri = $this->repo->getBaseUrl() . $k;
                     $this->result[$k]->identifier = $k;
                     $this->result[$k]->altTitle = $altTitle;
                 }
@@ -287,12 +276,11 @@ class ArcheApiHelper
         }
         $this->result = array_values($this->result);
     }
-    
+
     /**
      * Format the checkIdentifier api call result
      */
-    private function formatCheckIdentifierData()
-    {
+    private function formatCheckIdentifierData() {
         $this->result = array();
         foreach ($this->data as $val) {
             if ($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
@@ -306,26 +294,25 @@ class ArcheApiHelper
             }
         }
     }
-    
+
     /**
      * create the GNDfile for the GND API
      */
-    private function createGNDFile()
-    {
-        $host = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost().'/browser/oeaw_detail/');
-        $fileLocation = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/beacon.txt';
-        
+    private function createGNDFile() {
+        $host = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost() . '/browser/oeaw_detail/');
+        $fileLocation = \Drupal::request()->getSchemeAndHttpHost() . '/browser/sites/default/files/beacon.txt';
+
         $this->result = array();
-        
+
         if (count($this->data) > 0) {
             $resTxt = "";
             foreach ($this->data as $val) {
-                $resTxt .= $val->gnd."|".$host.$val->repoid." \n";
+                $resTxt .= $val->gnd . "|" . $host . $val->repoid . " \n";
             }
 
             if (!empty($resTxt)) {
-                $resTxt = "#FORMAT: BEACON \n".$resTxt;
-                file_save_data($resTxt, "public://beacon.txt", FILE_EXISTS_REPLACE);
+                $resTxt = "#FORMAT: BEACON \n" . $resTxt;
+                file_save_data($resTxt, "public://beacon.txt", \FILE_EXISTS_REPLACE);
                 $this->result = array('fileLocation' => $fileLocation);
             } else {
                 $this->result = array('fileLocation' => '');

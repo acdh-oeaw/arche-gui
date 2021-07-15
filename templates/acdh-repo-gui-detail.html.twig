@@ -122,9 +122,7 @@
   
     <!-- AUDIO PLAYER -->
     {% if basic.isAudio() %}
-        <div id="audio-player-div" style="display: none;">
-            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-audio-player.html.twig', {'audio_url':  basic.getRepoUrl() }) }}
-        </div>
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-audio-player.html.twig', {'audio_url':  basic.getRepoUrl() }) }}
     {% endif%} 
     
     {% if basic.isPDF() %}

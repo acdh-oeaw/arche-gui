@@ -1,9 +1,24 @@
+<div class="modal fade" id="audioModal" role="dialog">
+    <div class="modal-dialog modal-lg">
 
-<h3 class="single-res-heading">{{ "Audio Player"|trans }}</h3>
-<div class="arche-audio-player-container">
-    <audio class="audio" id="arche-audio-player" controls="controls" preload="auto">
-        <source type="audio/mpeg" src="{{ audio_url }}">
-    </audio>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3 class="single-res-heading">{{ "Audio Player"|trans }}</h3>
+                <div class="arche-audio-player-container">
+                    <audio class="audio" id="arche-audio-player" controls="controls" preload="auto">
+                        <source type="audio/mpeg" src="{{ audio_url }}">
+                    </audio>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
-    
-    

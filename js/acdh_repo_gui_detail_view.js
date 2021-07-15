@@ -183,14 +183,6 @@ jQuery(function ($) {
         //CITE Block
         showCiteBlock();
 
-        $(document).delegate("#audioPlayerBtn", "click", function (e) {
-            e.preventDefault();
-            $('#audio-player-div').show();
-            $('html, body').animate({
-                scrollTop: $("#audio-player-div").offset().top
-            }, 2000);
-        });
-
         $(document).delegate(".cite-style", "click", function (e) {
             e.preventDefault();
             handleCiteTabEvents($(this), $("#cite-selector-div").find(".selected").attr('id'));
