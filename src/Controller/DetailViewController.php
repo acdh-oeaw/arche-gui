@@ -114,13 +114,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      */
     private function setBreadcrumb(): void
     {
-        $breadcrumb = $this->model->getBreadCrumbData($this->repoid);
-
-        //add the breadcrumb to the final results
-        if (count((array) $breadcrumb) > 0) {
-            $this->basicViewData->extra->breadcrumb = array();
-            $this->basicViewData->extra->breadcrumb = $breadcrumb;
-        }
+        $this->basicViewData->extra->breadcrumb = new \Drupal\acdh_repo_gui\Object\BreadCrumbObject($this->model->getBreadCrumbData($this->repoid));
     }
 
     /**
@@ -154,12 +148,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         if (isset($dv[0]->id) && !is_null($dv[0]->id)) {
             $this->basicViewData->dissemination = $this->generalFunctions->getDissServices($dv[0]->id);
         }
-
-        $parent = "";
-        if (isset($this->basicViewData->extra->breadcrumb[0]->parentid)) {
-            $parent = $this->repo->getBaseUrl() . $this->basicViewData->extra->breadcrumb[0]->parentid;
-        }
-
+        
         $this->setToolTip();
         
         //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
