@@ -70,7 +70,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
 
         \Drupal::service('page_cache_kill_switch')->trigger();
-        
+       
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,
@@ -161,7 +161,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
 
         $this->setToolTip();
-
+        
         //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
         $path = \Drupal::request()->getpathInfo();
         if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {

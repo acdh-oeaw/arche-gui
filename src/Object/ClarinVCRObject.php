@@ -9,39 +9,18 @@ namespace Drupal\acdh_repo_gui\Object;
  */
 class ClarinVCRObject
 {
-    private $urls;
-    private $url;
+    private $data;
     private $clarinUrl;
     private $client;
     private $collectionName = "ArcheCollection";
     private $header = array();
     private $form_params;
 
-    public function __construct(string $urls)
-    {
-        $this->urls = $urls;
-        $this->processUrls();
+    public function __construct(string $data)
+    {   
+        $this->data = $data;
         $this->createHeader();
         $this->createFormParams();
-    }
-
-    private function processUrls()
-    {
-        $urls = explode(":", $this->urls);
-        $url = "";
-
-        foreach ($urls as $ra) {
-            if (strpos($ra, '&') !== false) {
-                $pos = strpos($ra, '&');
-                $ra = substr($ra, 0, $pos);
-                $url .= $ra . "/";
-            } else {
-                $url .= $ra . "/";
-            }
-        }
-        $url = str_replace('http//', 'http://', $url);
-        $url = str_replace('https//', 'https://', $url);
-        $this->url = $url;
     }
 
     private function createHeader(): void
@@ -57,8 +36,8 @@ class ClarinVCRObject
         $this->form_params = [
             "name" => $this->collectionName,
             "description" => $this->collectionName,
-            "resourceUri" => $this->url,
-            "metadataUri" => $this->url
+            "resourceUri" => (string)$this->data,
+            "metadataUri" => (string)$this->data
         ];
     }
 

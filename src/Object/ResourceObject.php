@@ -550,7 +550,7 @@ class ResourceObject
         //check the sound categories
         if (isset($this->properties["acdh:hasCategory"])) {
             foreach ($this->properties["acdh:hasCategory"] as $category) {
-                if (in_array($category->value, $this->audioCategories)) {
+                if (in_array($category->value, (array)$this->audioCategories)) {
                     $cat = true;
                 }
             }
@@ -611,4 +611,50 @@ class ResourceObject
         
         return $result;
     }
+    
+    /**
+     * Create the VCR data json string
+     * @return string
+     */
+    public function getVCRData(): string {
+        //#19076
+        $res = array();
+        if(!empty($this->getPid())) {
+            $res['uri'] = $this->getPid();
+        }else {
+            $res['uri'] = $this->getAcdhID();
+        }
+        
+        $res['label'] = $this->getTitle();
+        $res['name'] = $this->getTitle();
+        
+        if(!empty($this->getDataString('acdh:hasDescription'))) {
+            $res['description'] = $this->getDataString('acdh:hasDescription');
+        } else {
+            if($this->getAcdhType() == "Resource") {
+                $res['description'] = $this->getDataString('acdh:hasCategory').", ".$this->getDataString('acdh:hasBinarySize');
+            }elseif($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
+                $res['description'] = $this->getAcdhType().", ".$this->getDataString('acdh:hasNumberOfItems'). ' items';
+            } else {
+                $res['description'] = "";
+            }
+        }
+        return \GuzzleHttp\json_encode($res);
+    }
+    
+    /**
+     * Get the defined property String values
+     * @param string $property
+     * @return string
+     */
+    public function getDataString(string $property): string
+    {
+        if (isset($this->properties[$property][0]->title) && !empty($this->properties[$property][0]->title)) {
+            return $this->properties[$property][0]->title;
+        }else if (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
+            return $this->properties[$property][0]->value;
+        }
+        return "";
+    }
+    
 }

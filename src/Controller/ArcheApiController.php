@@ -544,20 +544,25 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
 
     /**
      *
-     * @param string $urls
+     * @param string $data
      * @return Response
      */
-    public function repo_vcr(string $urls): Response
+    public function repo_vcr(string $data): Response
     {
+        //data json string
         $code = 404;
         $result = "";
-        if (empty($urls)) {
+        error_log('a vcr callban');
+        error_log(print_r($data, true));
+        
+        if (empty($data)) {
             goto end;
         } else {
-            $obj = new \Drupal\acdh_repo_gui\Object\ClarinVCRObject($urls);
+            $obj = new \Drupal\acdh_repo_gui\Object\ClarinVCRObject($data);
             $result = $obj->makeTheApiCall(true);
-            (!empty($result)) ? $code = 200 : $result = 404;
+            $code = (!empty($result)) ? 200 : 404;
         }
+        
         
         end:
         $response = new Response();

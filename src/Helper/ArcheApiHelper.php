@@ -25,7 +25,7 @@ class ArcheApiHelper {
 
     public function createView(array $data = array(), string $apiType = '', string $lng = 'en'): array {
         (!empty($lng)) ? $this->siteLang = strtolower($lng) : $this->siteLang = "en";
-        if (count($data) == 0 && !empty($apiType)) {
+        if (count((array)$data) == 0 && !empty($apiType)) {
             return array();
         }
 
@@ -121,7 +121,7 @@ class ArcheApiHelper {
      */
     private function setupMetadataType(array $data = array()) {
         $this->creatMetadataObj($data);
-        if (count($data['properties']) > 0) {
+        if (count((array)$data['properties']) > 0) {
             $this->data = $data['properties'];
         }
 
@@ -194,7 +194,7 @@ class ArcheApiHelper {
                 $this->result['properties'][$prop]['recommendedClass'] = $v->recommendedClass;
             }
         }
-        if (count($this->requiredClasses) > 0) {
+        if (count((array)$this->requiredClasses) > 0) {
             $this->result['required'] = $this->requiredClasses;
         }
     }
@@ -267,6 +267,8 @@ class ArcheApiHelper {
                     if ($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
                         $altTitle = $v->value;
                     }
+                    
+                    $this->result[$k] = new \stdClass();
                     $this->result[$k]->title[$lang] = $title;
                     $this->result[$k]->uri = $this->repo->getBaseUrl() . $k;
                     $this->result[$k]->identifier = $k;
@@ -304,7 +306,7 @@ class ArcheApiHelper {
 
         $this->result = array();
 
-        if (count($this->data) > 0) {
+        if (count((array)$this->data) > 0) {
             $resTxt = "";
             foreach ($this->data as $val) {
                 $resTxt .= $val->gnd . "|" . $host . $val->repoid . " \n";

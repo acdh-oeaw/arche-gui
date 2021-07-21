@@ -50,7 +50,7 @@ class ComplexSearchForm extends FormBase
 
         //the entity box section
         $this->entityData = $this->model->getViewData("entity");
-        if (count($this->entityData) > 0) {
+        if (count((array)$this->entityData) > 0) {
             $this->entityData = $this->helper->formatEntityTypes($this->entityData);
             $resData["title"] = t('Type of Entity')->__toString();
             $resData["type"] = "searchbox_types";
@@ -60,7 +60,7 @@ class ComplexSearchForm extends FormBase
 
         //the years box section
         $this->yearsData = $this->model->getViewData("years");
-        if (count($this->yearsData) > 0) {
+        if (count((array)$this->yearsData) > 0) {
             $this->yearsData = $this->helper->formatEntityYears($this->yearsData, true);
             $dateData["title"] = t('Entities by Year')->__toString();
             $dateData["type"] = "datebox_years";
@@ -81,16 +81,16 @@ class ComplexSearchForm extends FormBase
     {
         $metavalue = $form_state->getValue('metavalue');
         $types = $form_state->getValue('searchbox_types');
-        if (count($types) > 0) {
+        if (count((array)$types) > 0) {
             $types = array_filter($types);
         }
 
         $formats = $form_state->getValue('searchbox_format');
-        if (count($formats) > 0) {
+        if (count((array)$formats) > 0) {
             $formats = array_filter($formats);
         }
 
-        if ((empty($metavalue)) && (count($types) <= 0) && (count($formats) <= 0) && empty($form_state->getValue('date_start_date')) && empty($form_state->getValue('date_end_date'))) {
+        if ((empty($metavalue)) && (count((array)$types) <= 0) && (count((array)$formats) <= 0) && empty($form_state->getValue('date_start_date')) && empty($form_state->getValue('date_end_date'))) {
             $form_state->setErrorByName('metavalue', $this->t('Missing')->__toString() . ': ' . t('Keyword')->__toString() . ' ' . t('or')->__toString() . ' ' . t('Type')->__toString());
         }
     }
@@ -116,13 +116,13 @@ class ComplexSearchForm extends FormBase
         $startDate = $form_state->getValue('date_start_date');
         $endDate = $form_state->getValue('date_end_date');
 
-        if (count($types) > 0) {
+        if (count((array)$types) > 0) {
             foreach ($types as $t) {
                 $extras["type"][] = strtolower($t);
             }
         }
 
-        if (count($formats) > 0) {
+        if (count((array)$formats) > 0) {
             foreach ($formats as $f) {
                 $extras["formats"][] = strtolower($f);
             }

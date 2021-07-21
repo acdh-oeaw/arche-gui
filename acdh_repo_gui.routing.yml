@@ -231,7 +231,7 @@ repo_getRootTable:
         _access: 'TRUE'      
  
 repo_vcr:    
-    path: '/api/vcr/{urls}'
+    path: '/api/vcr/{data}'
     defaults:
         _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_vcr'
     requirements:
