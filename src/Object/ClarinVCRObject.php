@@ -17,7 +17,7 @@ class ClarinVCRObject
     private $form_params;
 
     public function __construct(string $data)
-    {   
+    {
         $this->data = $data;
         $this->createHeader();
         $this->createFormParams();

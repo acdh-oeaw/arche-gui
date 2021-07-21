@@ -616,24 +616,25 @@ class ResourceObject
      * Create the VCR data json string
      * @return string
      */
-    public function getVCRData(): string {
+    public function getVCRData(): string
+    {
         //#19076
         $res = array();
-        if(!empty($this->getPid())) {
+        if (!empty($this->getPid())) {
             $res['uri'] = $this->getPid();
-        }else {
+        } else {
             $res['uri'] = $this->getAcdhID();
         }
         
         $res['label'] = $this->getTitle();
         $res['name'] = $this->getTitle();
         
-        if(!empty($this->getDataString('acdh:hasDescription'))) {
+        if (!empty($this->getDataString('acdh:hasDescription'))) {
             $res['description'] = $this->getDataString('acdh:hasDescription');
         } else {
-            if($this->getAcdhType() == "Resource") {
+            if ($this->getAcdhType() == "Resource") {
                 $res['description'] = $this->getDataString('acdh:hasCategory').", ".$this->getDataString('acdh:hasBinarySize');
-            }elseif($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
+            } elseif ($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
                 $res['description'] = $this->getAcdhType().", ".$this->getDataString('acdh:hasNumberOfItems'). ' items';
             } else {
                 $res['description'] = "";
@@ -651,10 +652,9 @@ class ResourceObject
     {
         if (isset($this->properties[$property][0]->title) && !empty($this->properties[$property][0]->title)) {
             return $this->properties[$property][0]->title;
-        }else if (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
+        } elseif (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
             return $this->properties[$property][0]->value;
         }
         return "";
     }
-    
 }
