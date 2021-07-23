@@ -14,31 +14,10 @@ jQuery(function ($) {
         $(".loader-div").hide();
     });
 
-
     $(document).delegate("#getClarinVCR", "click", function (e) {
         e.preventDefault();
-        console.log('click');
-        console.log(JSON.stringify($(this).data("vcrdata")));
-       
-        //jquery post
-        $.ajax({
-            url: '/browser/api/vcr/' + JSON.stringify($(this).data("vcrdata")),
-            type: "POST",
-            success: function (data, status) {
-                console.log('success');
-                console.log(data);
-                console.log(status);
-                window.open(data, '_blank');
-            },
-            error: function (message) {
-                console.log('error');
-                console.log(message);
-               $('#vcr-div > div.res-act-button').removeClass('res-act-button').addClass('messages messages--error').html(Drupal.t('Error happened during the API call! Please try it later!'));
-            }
-        });
-
+        $('#vcr-div > div > form').submit();
     });
-
 
     //check the audio player in the detail view
     function checkAudioPlayer() {
@@ -55,7 +34,6 @@ jQuery(function ($) {
             }, true);
         }
     }
-
 
     function createNewUrlForInsideClick(id) {
         var newurl = window.location.protocol + "//" + window.location.host + '/browser/oeaw_detail/' + id;
