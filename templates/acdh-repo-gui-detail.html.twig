@@ -116,9 +116,7 @@
         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-pdf-viewer-modal.html.twig', {'basic':  basic }) }}
     {% endif%} 
   
-    {%  if 'arche-dev.acdh-dev.oeaw.ac.at' in  basic.getRepoUrl() %}
-        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-vcr.html.twig', {'data':  basic.getVCRData(), 'url': basic.getRepoUrl() }) }}
-    {% endif%} 
+    
 
     {% if  basic.getAcdhType()|lower == 'topcollection' or
         basic.getAcdhType()|lower == 'collection' or  

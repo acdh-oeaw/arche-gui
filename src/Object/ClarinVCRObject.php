@@ -17,7 +17,7 @@ class ClarinVCRObject
     private $form_params;
 
     public function __construct(string $data)
-    {
+    {   
         $this->data = $data;
         $this->createHeader();
         $this->createFormParams();
@@ -27,17 +27,16 @@ class ClarinVCRObject
     {
         $this->header = [
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'Referer' => 'https://arche.acdh.oeaw.ac.at'
+            'Referer' => 'https://arche.acdh.oeaw.ac.at',
         ];
     }
 
     private function createFormParams(): void
     {
         $this->form_params = [
-            "name" => $this->collectionName,
-            "description" => $this->collectionName,
+            "name" => (string)$this->collectionName,
+            //"description" => (string)$this->collectionName,
             "resourceUri" => (string)$this->data,
-            "metadataUri" => (string)$this->data
         ];
     }
 
@@ -57,6 +56,7 @@ class ClarinVCRObject
                     'track_redirects' => true
                 ]
             ]);
+            error_log(print_r($this->form_params, true));;
             return $this->checkHeaderRedirect($request);
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
             error_log($ex->getMessage());
@@ -70,7 +70,7 @@ class ClarinVCRObject
 
     private function setTheUrl(bool $isTest = false): void
     {
-        ($isTest) ? $this->clarinUrl = "https://collections.clarin-dev.eu/submit/extensional" : $this->clarinUrl = "https://collections.clarin.eu/submit/extensional";
+        ($isTest) ? $this->clarinUrl = "https://beta-collections.clarin.eu/submit/extensional" : $this->clarinUrl = "https://collections.clarin.eu/submit/extensional";
     }
 
     private function setupTheClient(): void

@@ -59,4 +59,23 @@ class FormHelper
         $result['fields'] = $fields;
         return $result;
     }
+    
+    public function formatCategoryTypes(array $data): array
+    {
+        $result = array();
+        $fields = array();
+        if (count($data) > 0) {
+            foreach ($data as $k => $v) {
+                $result['data'][$k] = new \stdClass();
+                $result['data'][$k]->count = $v->count;
+                $title = ltrim(str_replace($this->schema, "", $v->value));
+                $result['data'][$k]->title = $title;
+                $result['data'][$k]->uri = $v->value;
+                $result['data'][$k]->id = $v->id;
+                $fields[$v->id] =  $v->value." (".$v->count.")";
+            }
+        }
+        $result['fields'] = $fields;
+        return $result;
+    }
 }

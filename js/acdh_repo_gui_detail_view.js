@@ -16,7 +16,7 @@ jQuery(function ($) {
 
     $(document).delegate("#getClarinVCR", "click", function (e) {
         e.preventDefault();
-        $('#vcr-div > div > form').submit();
+        $('#vcr-div > form').submit();
     });
 
     //check the audio player in the detail view

@@ -13,6 +13,7 @@ class ComplexSearchForm extends FormBase
     private $helper;
     private $entityData = array();
     private $yearsData = array();
+    private $categoryData = array();
 
     /**
      * Set up necessary properties
@@ -55,6 +56,15 @@ class ComplexSearchForm extends FormBase
             $resData["title"] = t('Type of Entity')->__toString();
             $resData["type"] = "searchbox_types";
             $resData["fields"] = $this->entityData['fields'];
+            $this->createBox($form, $resData);
+        }
+        
+        $this->categoryData = $this->model->getViewData("category");
+        if (count((array)$this->categoryData) > 0) {
+            $this->categoryData = $this->helper->formatCategoryTypes($this->categoryData);
+            $resData["title"] = t('Category')->__toString();
+            $resData["type"] = "searchbox_category";
+            $resData["fields"] = $this->categoryData['fields'];
             $this->createBox($form, $resData);
         }
 
@@ -152,9 +162,13 @@ class ComplexSearchForm extends FormBase
             '#title' => $this->t($data["title"]),
             '#attributes' => array(
                 'class' => array('checkbox-custom', $data["type"]),
+                'id' => 'my-checkbox'
             ),
             '#options' =>
-            $data["fields"]
+            $data["fields"],
+            '#options_attributes' => array(
+                
+            )
         );
     }
 
