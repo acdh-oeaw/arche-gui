@@ -17,7 +17,7 @@ class ClarinVCRObject
     private $form_params;
 
     public function __construct(string $data)
-    {   
+    {
         $this->data = $data;
         $this->createHeader();
         $this->createFormParams();
@@ -56,7 +56,8 @@ class ClarinVCRObject
                     'track_redirects' => true
                 ]
             ]);
-            error_log(print_r($this->form_params, true));;
+            error_log(print_r($this->form_params, true));
+            ;
             return $this->checkHeaderRedirect($request);
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
             error_log($ex->getMessage());

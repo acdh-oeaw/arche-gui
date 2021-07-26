@@ -9,12 +9,13 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class BlocksModel extends ArcheModel {
-
+class BlocksModel extends ArcheModel
+{
     protected $repodb;
     protected $siteLang;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
@@ -25,7 +26,8 @@ class BlocksModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "entity", array $params = array()): array {
+    public function getViewData(string $identifier = "entity", array $params = array()): array
+    {
         switch ($identifier) {
             case "entity":
                 return $this->getEntityData();
@@ -50,13 +52,14 @@ class BlocksModel extends ArcheModel {
      *
      * @return array
      */
-    private function getEntityData(): array {
+    private function getEntityData(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "
+                "
                 select count(value), value
                 from metadata 
                 where property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
@@ -65,7 +68,6 @@ class BlocksModel extends ArcheModel {
                 order by value asc"
             );
             $result = $query->fetchAll();
-            
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
@@ -83,13 +85,14 @@ class BlocksModel extends ArcheModel {
      *
      * @return array
      */
-    private function getYearsData(): array {
+    private function getYearsData(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "
+                "
                 select
                     count(EXTRACT(YEAR FROM to_date(value,'YYYY'))), 
                     EXTRACT(YEAR FROM to_date(value,'YYYY')) as year
@@ -116,14 +119,15 @@ class BlocksModel extends ArcheModel {
      * @param array $params
      * @return array
      */
-    private function getVersionsData(array $params): array {
+    private function getVersionsData(array $params): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "select * from gui.getResourceVersion(:id, :lang) ",
-                    array(':id' => $params['identifier'], ':lang' => $params['lang'])
+                "select * from gui.getResourceVersion(:id, :lang) ",
+                array(':id' => $params['identifier'], ':lang' => $params['lang'])
             );
             $result = $query->fetchAll();
         } catch (Exception $ex) {
@@ -138,7 +142,8 @@ class BlocksModel extends ArcheModel {
         return $result;
     }
 
-    private function getCategoryData(): array {
+    private function getCategoryData(): array
+    {
         $result = array();
         try {
             $this->setSqlTimeout();
@@ -151,14 +156,13 @@ class BlocksModel extends ArcheModel {
                 and mv2.lang = :lang
                 group by mv2.value, mv2.id
                 order by mv2.value asc",
-                array( 
-                    ':category' => $this->repo->getSchema()->__get('namespaces')->ontology.'hasCategory', 
-                    ':title' => $this->repo->getSchema()->__get('label'), 
+                array(
+                    ':category' => $this->repo->getSchema()->__get('namespaces')->ontology.'hasCategory',
+                    ':title' => $this->repo->getSchema()->__get('label'),
                     ':lang' => $this->siteLang
                     )
             );
             $result = $query->fetchAll();
-           
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
@@ -170,5 +174,4 @@ class BlocksModel extends ArcheModel {
         $this->changeBackDBConnection();
         return $result;
     }
-
 }
