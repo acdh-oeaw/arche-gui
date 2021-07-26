@@ -164,6 +164,8 @@ class SearchViewHelper
         $this->searchObj = new \stdClass();
         $this->metadata = $metavalue;
         $this->setUpMetadata();
+        
+        error_log(print_r($this->searchObj, true));
         return $this->searchObj;
     }
 
@@ -182,7 +184,7 @@ class SearchViewHelper
      */
     public function explodeSearchString(): void
     {
-        $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "payload");
+        $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "payload", "category");
         $strArr = explode('&', $this->metadata);
 
         foreach ($filters as $f) {
@@ -190,7 +192,7 @@ class SearchViewHelper
                 if (strpos($arr, $f) !== false) {
                     $arr = str_replace($f . '=', '', $arr);
                     
-                    if (($f == "mindate") || ($f == "maxdate") || ($f == "words") || ($f == "years")) {
+                    if (($f == "mindate") || ($f == "maxdate") || ($f == "words") || ($f == "years") || ($f == "category")) {
                         $arr = $this->explodeSearchStringValues($arr);
                     }
                     if ($f == "type") {

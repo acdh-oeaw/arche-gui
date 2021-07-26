@@ -61,6 +61,7 @@ class SearchViewModel extends ArcheModel
         $this->initPaging($limit, $page, $order);
         $sqlYears = $this->formatYearsFilter_V2();
         $sqlTypes = $this->formatTypeFilter_V2();
+        $sqlCategory = $this->formatTypeFilter_V2("category");
         if (isset($this->metaObj->words) && (count((array)$this->metaObj->words) > 0)) {
             $sqlWords = implode(" & ", (array)$this->metaObj->words);
         } else {
@@ -73,7 +74,7 @@ class SearchViewModel extends ArcheModel
             $this->setSqlTimeout('60000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
             $query = $this->repodb->query(
-                "select * from gui.search_full_v3_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch);",
+                "select * from gui.search_full_v3_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch, ".$sqlCategory.");",
                 array(
                     ':wordStr' => (string)$sqlWords,
                     ':yearStr' => (string)$sqlYears,
@@ -162,15 +163,15 @@ class SearchViewModel extends ArcheModel
         return $yearsStr;
     }
     
-    private function formatTypeFilter_V2(): string
+    private function formatTypeFilter_V2(string $key = "type"): string
     {
         $typeStr = "ARRAY[]::text[]";
-        if (isset($this->metaObj->type)) {
-            $count = count($this->metaObj->type);
+        if (isset($this->metaObj->$key)) {
+            $count = count($this->metaObj->$key);
             if ($count > 0) {
                 $typeStr = 'ARRAY [ ';
                 $i = 0;
-                foreach ($this->metaObj->type as $t) {
+                foreach ($this->metaObj->$key as $t) {
                     $typeStr .= "'$t'";
                     if ($count - 1 != $i) {
                         $typeStr .= ', ';

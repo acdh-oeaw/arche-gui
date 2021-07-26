@@ -1000,13 +1000,13 @@ LANGUAGE 'plpgsql';
 
 /** New search test sql **/
 /**
-** select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
+** select * from  gui.search_full_v3_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 *
 * New search version  - for the new full_text_search DB without properties
-* select * from  gui.search_full_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
+* select * from  gui.search_full_v3_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 **/
 DROP FUNCTION gui.search_full_v3_func(text, text[], text, text, text, text, text, text, bool);
-CREATE FUNCTION gui.search_full_v3_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE )
+CREATE FUNCTION gui.search_full_v3_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE, _category text[] DEFAULT '{}' )
     RETURNS table (acdhid bigint, title text, description text, acdhtype text, headline_text text, headline_desc text, headline_binary text, avdate timestamp, accessres text, titleimage text, ids text, cnt bigint)
 AS $func$
 DECLARE	
@@ -1019,6 +1019,7 @@ BEGIN
 --remove the tables if they are exists
 DROP TABLE IF EXISTS title_data;
 DROP TABLE IF EXISTS type_data;
+DROP TABLE IF EXISTS category_data;
 DROP TABLE IF EXISTS years_data;
 DROP TABLE IF EXISTS collection_data;
 
@@ -1112,6 +1113,64 @@ CASE
                             fts.raw  = ANY (_acdhtype)
                         ) limit 10000
                     )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data_temp as td;
+        END CASE;	
+    END CASE;
+END CASE;
+
+--check the categories
+CASE 
+    WHEN _category  = '{}' THEN
+        --we dont have type definied so all type will be searchable.
+        RAISE NOTICE USING MESSAGE =  '_category query skipped';
+    WHEN _category  != '{}' THEN
+        -- we have type definied
+        RAISE NOTICE USING MESSAGE =  '_category query ';
+        CASE 
+            WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
+                DROP TABLE IF EXISTS category_data;
+                CREATE TEMPORARY TABLE category_data AS (
+                    WITH category_data as (
+                        SELECT 
+                            DISTINCT(cd.acdhid) as id,                            
+                            cd.headline_title,
+                            cd.headline_desc,
+                            cd.headline_binary
+                        FROM collection_data as cd
+                        LEFT JOIN metadata_view as mv on mv.id = cd.acdhid			
+                        WHERE
+                        (
+                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
+                            and 
+                            mv.value = ANY (_category)
+                        ) limit 10000
+                    ) select * from category_data
+                );
+		--remove the data which is not in the 
+                DELETE FROM collection_data cd
+                WHERE NOT EXISTS
+                ( SELECT 1 FROM category_data td WHERE td.id = cd.acdhid );
+			
+            ELSE
+                RAISE NOTICE USING MESSAGE =  'category query insert to collection data';
+                CASE WHEN (_searchstr <> '' ) IS TRUE THEN
+                    RAISE NOTICE USING MESSAGE =  'category query SKIPPED because we have search string but we dont have value!';
+                ELSE
+                    RAISE NOTICE USING MESSAGE =  'category query insert to collection data we dont have search string';
+			
+                    WITH category_data_temp as (
+                        SELECT 
+                            DISTINCT(mv.id),
+                            '' as headline_title,
+                            '' as headline_desc,
+                            '' as headline_binary
+                        from metadata_view as mv 
+                        where
+                        (
+                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
+                            and 
+                            mv.value = ANY (_category)
+                        ) limit 10000
+                    )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from category_data_temp as td;
         END CASE;	
     END CASE;
 END CASE;
