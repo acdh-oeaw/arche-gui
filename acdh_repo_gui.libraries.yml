@@ -40,28 +40,6 @@ repo-root-view:
     dependencies:
         - core/drupal
         - core/drupal.form           
-        
-repo-3d-page:
-    version: 1.0.1
-    css:
-        base:
-            css/3d/3dhop.css: {}
-    js:
-        js/3d/init.js: {}
-        js/jquery-1.12.3.min.js: {}
-        js/3d/meshcoder_worker.js: {}
-        js/3d/nexus.js: {}
-        js/3d/ply.js: {}
-        js/3d/presenter.js: {}
-        js/3d/spidergl.js: {}
-        js/3d/trackball_pantilt.js: {}
-        js/3d/trackball_rail.js: {}
-        js/3d/trackball_sphere.js: {}
-        js/3d/trackball_turntable.js: {}
-        js/3d/trackball_turntable_pan.js: {}
-    dependencies:
-        - core/drupal
-        - core/drupal.form   
 
 repo-collection-dl:
     version: 1.0.1
@@ -102,4 +80,3 @@ ds-pdf-modal-styles:
     dependencies:
         - core/drupal
         - core/jquery
-        
