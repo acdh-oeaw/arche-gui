@@ -198,7 +198,8 @@ class ResourceObject
     {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
-                if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false) {
+                if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false && 
+                        strpos($v->value, '/id.acdh.oeaw.ac.at/cmdi/') === false) {
                     return $v->value;
                 }
             }
@@ -291,9 +292,8 @@ class ResourceObject
         $imgBinary = '';
         $width = str_replace('px', '', $width);
         //check the thumbnail service first
-        if ($acdhid = $this->getAcdhID()) {
-            $acdhid = str_replace('http://', '', $acdhid);
-            $acdhid = str_replace('https://', '', $acdhid);
+        if ($this->getAcdhID()) {
+            $acdhid = str_replace('https://', '', str_replace('http://', '', $this->getAcdhID()));
             if ($file = @fopen($this->thumbUrl . $acdhid, "r")) {
                 $type = fgets($file, 40);
                 if (!empty($type)) {
@@ -616,30 +616,31 @@ class ResourceObject
      * Create the VCR data json string
      * @return string
      */
-    public function getVCRData(): string
-    {
+    public function getVCRData(): string {
         //#19076
-        $res = array();
-        if (!empty($this->getPid())) {
-            $res['uri'] = $this->getPid();
-        } else {
-            $res['uri'] = $this->getAcdhID();
-        }
+        $res = new \stdClass();
         
-        $res['label'] = $this->getTitle();
-        $res['name'] = $this->getTitle();
-        
-        if (!empty($this->getDataString('acdh:hasDescription'))) {
-            $res['description'] = $this->getDataString('acdh:hasDescription');
+        if(!empty($this->getDataString('acdh:hasDescription'))) {
+            $res->description = $this->getDataString('acdh:hasDescription');
         } else {
-            if ($this->getAcdhType() == "Resource") {
-                $res['description'] = $this->getDataString('acdh:hasCategory').", ".$this->getDataString('acdh:hasBinarySize');
-            } elseif ($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
-                $res['description'] = $this->getAcdhType().", ".$this->getDataString('acdh:hasNumberOfItems'). ' items';
+            if($this->getAcdhType() == "Resource") {
+                $res->description = $this->getDataString('acdh:hasCategory').", ".$this->getDataString('acdh:hasBinarySize');
+            }elseif($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
+                $res->description = $this->getAcdhType().", ".$this->getDataString('acdh:hasNumberOfItems'). ' items';
             } else {
-                $res['description'] = "";
+                $res->description = "";
             }
         }
+        
+        if(!empty($this->getPid())) {
+            $res->uri = $this->getPid();
+        }else {
+            $res->uri = $this->getAcdhID();
+        }
+        
+        $res->label = $this->getTitle();
+        
+        
         return \GuzzleHttp\json_encode($res);
     }
     
@@ -652,9 +653,10 @@ class ResourceObject
     {
         if (isset($this->properties[$property][0]->title) && !empty($this->properties[$property][0]->title)) {
             return $this->properties[$property][0]->title;
-        } elseif (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
+        }else if (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
             return $this->properties[$property][0]->value;
         }
         return "";
     }
+    
 }
