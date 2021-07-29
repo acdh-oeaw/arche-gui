@@ -92,14 +92,14 @@ class DisseminationServicesHelper
      *
      * @return type
      */
-    private function threeDDissService() 
+    private function threeDDissService()
     {
         $obj = new \Drupal\acdh_repo_gui\Object\ThreeDObject();
-        $this->result = $obj->downloadFile($this->repoUrl, $this->tmpDir );
+        $this->result = $obj->downloadFile($this->repoUrl, $this->tmpDir);
     }
     
     /**
-     * COllection lazydataStructure formatting to js 
+     * COllection lazydataStructure formatting to js
      */
     private function formatCollectionLazyDataStructure()
     {
@@ -505,10 +505,10 @@ class DisseminationServicesHelper
         return true;
     }
 
-    private function setTmpDir() {
-        if(empty($this->tmpDir)) {
+    private function setTmpDir()
+    {
+        if (empty($this->tmpDir)) {
             $this->tmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
         }
     }
-
 }

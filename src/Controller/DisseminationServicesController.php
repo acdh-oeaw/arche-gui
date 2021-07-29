@@ -238,7 +238,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
                     '#ObjectUrl' => $result['result'],
                     '#error' => $result['error'],
                     '#cache' => ['max-age' => 0],
-                    '#basic' => $basic                    
+                    '#basic' => $basic
         );
     }
 
