@@ -207,7 +207,12 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
                     '#theme' => 'acdh-repo-ds-iiif-viewer',
                     '#basic' => $basic,
                     '#cache' => ['max-age' => 0],
-                    '#lorisUrl' => $lorisUrl
+                    '#lorisUrl' => $lorisUrl,
+                    '#attached' => [
+                        'library' => [
+                            'acdh_repo_gui/ds-iiif-viewer-styles',
+                        ]
+                    ]
         );
     }
 
@@ -225,18 +230,15 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
             $repoUrl = $this->repo->getBaseUrl() . $repoid;
             $result = $this->generateView($repoid, '3d');
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
-
-            if (count($result) > 0 && isset($result['result'])) {
-                $result = str_replace('/api/', '/browser', $this->repo->getBaseUrl()) . $result['result'];
-            }
         }
-
+        
         return
                 array(
                     '#theme' => 'acdh-repo-ds-3d-viewer',
-                    '#ObjectUrl' => $result,
+                    '#ObjectUrl' => $result['result'],
+                    '#error' => $result['error'],
                     '#cache' => ['max-age' => 0],
-                    '#basic' => $basic
+                    '#basic' => $basic                    
         );
     }
 

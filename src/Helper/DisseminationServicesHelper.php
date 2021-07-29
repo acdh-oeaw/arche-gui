@@ -18,7 +18,7 @@ class DisseminationServicesHelper
     private $collectionDate;
     private $collectionTmpDir;
     private $additionalData = array();
-
+    private $tmpDir;
     /**
      *
      * @param array $additionalData we pass here the additional data for the resources
@@ -47,6 +47,7 @@ class DisseminationServicesHelper
     {
         $this->setRepoUrlId($identifier);
         $this->setAdditionalData($additionalData);
+        $this->setTmpDir();
 
         switch ($dissemination) {
             case 'collection':
@@ -91,71 +92,15 @@ class DisseminationServicesHelper
      *
      * @return type
      */
-    private function threeDDissService()
+    private function threeDDissService() 
     {
-        $client = new \GuzzleHttp\Client(['verify' => false]);
-        $this->result = array();
-        try {
-            $request = new \GuzzleHttp\Psr7\Request('GET', $this->repoUrl);
-            //send async request
-            $promise = $client->sendAsync($request)->then(function ($response) {
-                if ($response->getStatusCode() == 200) {
-                    //get the filename
-                    if (count($response->getHeader('Content-Disposition')) > 0) {
-                        $txt = explode(";", $response->getHeader('Content-Disposition')[0]);
-                        $filename = "";
-                        $extension = "";
-
-                        foreach ($txt as $t) {
-                            if (strpos($t, 'filename') !== false) {
-                                $filename = str_replace("filename=", "", $t);
-                                $filename = str_replace('"', "", $filename);
-                                $filename = ltrim($filename);
-                                $extension = explode(".", $filename);
-                                $extension = end($extension);
-                                continue;
-                            }
-                        }
-
-                        if ($extension == "nxs" || $extension == "ply") {
-                            if (!empty($filename)) {
-                                $dir = str_replace(".", "_", $filename);
-                                $tmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/" . $dir . "/";
-                                //if the file dir is not exists then we will create it
-                                // and we will download the file
-                                if (!file_exists($tmpDir) || !file_exists($tmpDir . '/' . $filename)) {
-                                    mkdir($tmpDir, 0777);
-                                    $file = fopen($tmpDir . '/' . $filename, "w");
-                                    fwrite($file, $response->getBody());
-                                    fclose($file);
-                                } else {
-                                    //if the file is not exists
-                                    if (!file_exists($tmpDir . '/' . $filename)) {
-                                        $file = fopen($tmpDir . '/' . $filename, "w");
-                                        fwrite($file, $response->getBody());
-                                        fclose($file);
-                                    }
-                                }
-                                $url = '/sites/default/files/' . $dir . '/' . $filename;
-                                $this->result['result'] = $url;
-                                $this->result['error'] = "";
-                            }
-                        } else {
-                            $this->result['error'] = t('File extension') . ' ' . t('Error');
-                            $this->result['result'] = "";
-                        }
-                    }
-                } else {
-                    $this->result['error'] = t('No files available.');
-                    $this->result['result'] = "";
-                }
-            });
-            $promise->wait();
-        } catch (\GuzzleHttp\Exception\ClientException $ex) {
-            $this->result['error'] = $ex->getMessage();
-        }
+        $obj = new \Drupal\acdh_repo_gui\Object\ThreeDObject();
+        $this->result = $obj->downloadFile($this->repoUrl, $this->tmpDir );
     }
-
+    
+    /**
+     * COllection lazydataStructure formatting to js 
+     */
     private function formatCollectionLazyDataStructure()
     {
         if (count($this->data) > 0) {
@@ -538,7 +483,7 @@ class DisseminationServicesHelper
     {
         $this->collectionDate = date("Ymd_his");
         //the main dir
-        $this->collectionTmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/collections/";
+        $this->collectionTmpDir = $this->tmpDir . "/collections/";
         
         //if the main directory is not exists
         if (!file_exists($this->collectionTmpDir)) {
@@ -559,4 +504,11 @@ class DisseminationServicesHelper
         }
         return true;
     }
+
+    private function setTmpDir() {
+        if(empty($this->tmpDir)) {
+            $this->tmpDir = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
+        }
+    }
+
 }
