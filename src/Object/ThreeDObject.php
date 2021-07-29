@@ -7,23 +7,26 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class ThreeDObject {
-
+class ThreeDObject
+{
     private $client;
     private $tmpDir;
     private $allowedExtension = array("ply", "nxs");
     private $result = array();
 
     // tmpDir =  \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://") . "/"
-    public function __construct() {
+    public function __construct()
+    {
         $this->client = new \GuzzleHttp\Client(['verify' => false]);
     }
 
-    private function setTmpDir(string $tmpDir): void {
+    private function setTmpDir(string $tmpDir): void
+    {
         $this->tmpDir = $tmpDir;
     }
 
-    public function downloadFile(string $repoUrl, string $tmpDir): array {
+    public function downloadFile(string $repoUrl, string $tmpDir): array
+    {
         $this->setTmpDir($tmpDir);
         try {
             $this->doTheRequest($repoUrl);
@@ -38,7 +41,8 @@ class ThreeDObject {
         return $this->result;
     }
 
-    private function doTheRequest(string $repoUrl) {
+    private function doTheRequest(string $repoUrl)
+    {
         $request = new \GuzzleHttp\Psr7\Request('GET', $repoUrl);
         //send async request
         
@@ -49,8 +53,8 @@ class ThreeDObject {
                     $header = $this->getHeaderData($response->getHeader('Content-Disposition'));
                     $this->createFileTmpDir($header['filename']);
                     $this->writeFileContent($response->getBody(), $header['filename']);
-                    $url = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost()) . '/browser/sites/default/files/tmp_files/' . 
-                            str_replace(".", "_", $header['filename']) . '/' . $header['filename'];                    
+                    $url = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost()) . '/browser/sites/default/files/tmp_files/' .
+                            str_replace(".", "_", $header['filename']) . '/' . $header['filename'];
                     $this->result = array('result' => $url, 'error' => '');
                 }
             } else {
@@ -66,7 +70,8 @@ class ThreeDObject {
      * @return array
      * @throws \Exception
      */
-    private function getHeaderData(array $cd): array {
+    private function getHeaderData(array $cd): array
+    {
         if (!isset($cd[0])) {
             return array();
         }
@@ -81,7 +86,7 @@ class ThreeDObject {
 
                 if (empty($filename) || empty($extension)) {
                     throw new \Exception(t('No header data available.'));
-                } else if (!in_array($extension, $this->allowedExtension)) {
+                } elseif (!in_array($extension, $this->allowedExtension)) {
                     throw new \Exception(t('File extension') . ' ' . t('Error'));
                 }
                 return array('filename' => $filename, 'extension' => $extension);
@@ -95,7 +100,8 @@ class ThreeDObject {
      * @param string $filename
      * @throws \Exception
      */
-    private function createFileTmpDir(string $filename) {
+    private function createFileTmpDir(string $filename)
+    {
         $this->checkTmpDirExists();
         $this->setTmpDir($this->tmpDir . "/tmp_files/" . str_replace(".", "_", $filename) . "/");
         if (!file_exists($this->tmpDir.$filename)) {
@@ -110,10 +116,11 @@ class ThreeDObject {
      * @param type $body
      * @param string $filename
      */
-    private function writeFileContent($body, string $filename) {
+    private function writeFileContent($body, string $filename)
+    {
         if (!file_exists($this->tmpDir.$filename)) {
             $file = fopen($this->tmpDir . '/' . $filename, "w");
-            if(!$file) {
+            if (!$file) {
                 throw new \Exception(t('File open failed'));
             }
             fwrite($file, $body);
@@ -125,12 +132,12 @@ class ThreeDObject {
      * Create the main dir if not exists
      * @throws \Exception
      */
-    private function checkTmpDirExists() {
+    private function checkTmpDirExists()
+    {
         if (!file_exists($this->tmpDir)) {
             if (!mkdir($this->tmpDir, 0777)) {
                 throw new \Exception(\error_get_last());
             }
         }
     }
-
 }
