@@ -198,7 +198,7 @@ class ResourceObject
     {
         if (isset($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $v) {
-                if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false && 
+                if (strpos($v->value, '/id.acdh.oeaw.ac.at/') !== false &&
                         strpos($v->value, '/id.acdh.oeaw.ac.at/cmdi/') === false) {
                     return $v->value;
                 }
@@ -616,25 +616,26 @@ class ResourceObject
      * Create the VCR data json string
      * @return string
      */
-    public function getVCRData(): string {
+    public function getVCRData(): string
+    {
         //#19076
         $res = new \stdClass();
         
-        if(!empty($this->getDataString('acdh:hasDescription'))) {
+        if (!empty($this->getDataString('acdh:hasDescription'))) {
             $res->description = $this->getDataString('acdh:hasDescription');
         } else {
-            if($this->getAcdhType() == "Resource") {
+            if ($this->getAcdhType() == "Resource") {
                 $res->description = $this->getDataString('acdh:hasCategory').", ".$this->getDataString('acdh:hasBinarySize');
-            }elseif($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
+            } elseif ($this->getAcdhType() == "Collection" || $this->getAcdhType() == "TopCollection") {
                 $res->description = $this->getAcdhType().", ".$this->getDataString('acdh:hasNumberOfItems'). ' items';
             } else {
                 $res->description = "";
             }
         }
         
-        if(!empty($this->getPid())) {
+        if (!empty($this->getPid())) {
             $res->uri = $this->getPid();
-        }else {
+        } else {
             $res->uri = $this->getAcdhID();
         }
         
@@ -653,10 +654,9 @@ class ResourceObject
     {
         if (isset($this->properties[$property][0]->title) && !empty($this->properties[$property][0]->title)) {
             return $this->properties[$property][0]->title;
-        }else if (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
+        } elseif (isset($this->properties[$property][0]->value) && !empty($this->properties[$property][0]->value)) {
             return $this->properties[$property][0]->value;
         }
         return "";
     }
-    
 }
