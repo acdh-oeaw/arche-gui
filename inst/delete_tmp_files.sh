@@ -4,7 +4,7 @@ echo "delete gui tmp files"
 if [ -d "/home/www-data/gui/web/sites/default/files/collections/" ]; then
     if [ "$(ls -A /home/www-data/gui/web/sites/default/files/collections/)" ]; then
         echo "collection tmp files deleted"
-        find /home/www-data/gui/web/sites/default/files/collections/* -mtime +5 -delete
+        find /home/www-data/gui/web/sites/default/files/collections/* -mtime +3 -delete
     fi
 fi
 
@@ -12,7 +12,7 @@ fi
 if [ -d "/home/www-data/gui/web/sites/default/files/tmp_files/" ]; then
     if [ "$(ls -A /home/www-data/gui/web/sites/default/files/collections/)" ]; then
         echo "tmp files deleted"
-        find /home/www-data/gui/web/sites/default/files/tmp_files/* -mtime +5 -delete
+        find /home/www-data/gui/web/sites/default/files/tmp_files/* -mtime +3 -delete
     fi
 fi
 
