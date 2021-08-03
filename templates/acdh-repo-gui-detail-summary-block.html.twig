@@ -1,5 +1,4 @@
 {% if (basic.getData('acdh:hasDescription') or basic.getData('acdh:hasSpatialCoverage') or basic.getData('acdh:hasNote')) %}
-    <br>
     <h3 class="single-res-heading">{{ "Summary"|trans }}</h3>
 
     {% if basic.getData('acdh:hasRelatedDiscipline')[0] %}

@@ -43,18 +43,15 @@
             <span class="results-info-bar">
                 <h3>{{ childTitle|trans }}</h3>
             </span>
-        </div>
-    </div>
-    {% if data.acdhType|lower == "collection" or data.acdhType|lower == "topcollection" %}
-        <div class="res-el res-info col-block col-lg-12">
-            <div class="result-basic-info" >
+            {% if data.acdhType|lower == "collection" or data.acdhType|lower == "topcollection" %}
                 <div class="res-act-button res-act-button-reverse res-act-button-treeview basic" style="text-align:left; margin-bottom:5px;">
                     <i class="material-icons">&#xE335;</i>
                     <span>{{ "Switch to Tree-View"|trans }}</span>
                 </div>
-            </div>
+            {% endif %}   
         </div>
-    {% endif %}   
+    </div>
+
 
     <div class="children-overview children-overview-basic">
         {{ include('/modules/contrib/arche-gui/templates/helper-paging-child.html.twig', {'data': data.pagination } ) }}
