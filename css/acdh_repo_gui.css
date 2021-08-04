@@ -183,3 +183,7 @@ div.version-warning i.material-icons{
     border-radius: 90px;
     transform: scale(1.05);
 }
+
+.arche_detail_view_main {
+    margin-left: -10px !important;
+}

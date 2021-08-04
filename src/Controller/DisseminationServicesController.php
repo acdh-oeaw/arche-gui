@@ -232,6 +232,10 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         }
         
+        if(!isset($result['result'])) {
+            $result['result'] = "";
+        }
+        
         return
                 array(
                     '#theme' => 'acdh-repo-ds-3d-viewer',

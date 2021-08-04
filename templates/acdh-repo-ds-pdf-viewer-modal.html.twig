@@ -13,13 +13,13 @@
                 <div>
                     {%  if basic.getTitle() %}
                         <center><h2>{{ basic.getTitle() }} </h2></center>
-                        {% endif %}
+                    {% endif %}
                 </div>    
                 <div id="pdf-viewer-div">
                     <div id="pdf-viewer-modal-div">
                         <div class="pdf-viewer-content">
                             <link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
-
+                           
                             <div class="pdf-container" data-href="{{  basic.getRepoUrl()|raw  }}"></div>
                         </div>
                     </div>

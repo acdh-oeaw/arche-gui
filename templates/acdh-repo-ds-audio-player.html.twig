@@ -9,6 +9,11 @@
             </div>
             <div class="modal-body">
                 <h3 class="single-res-heading">{{ "Audio Player"|trans }}</h3>
+                <div>
+                    {%  if basic.getTitle() %}
+                        <center><h2>{{ basic.getTitle() }} </h2></center>
+                    {% endif %}
+                </div>    
                 <div class="arche-audio-player-container">
                     <audio class="audio" id="arche-audio-player" controls="controls" preload="auto">
                         <source type="audio/mpeg" src="{{ audio_url }}">

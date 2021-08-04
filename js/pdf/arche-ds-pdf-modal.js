@@ -5,8 +5,10 @@
  */
 
 jQuery(function ($) {
-
-    function displayPdfViewer() {
+    var actualScale;
+    
+    function displayPdfViewer(scale) {
+        actualScale = scale;
         //handle the promise
         window.addEventListener("unhandledrejection", function (promiseRejectionEvent) {
             // handle error here, for example log   
@@ -17,11 +19,11 @@ jQuery(function ($) {
 
 
         $(".pdf-container").pdfviewer({
-            scale: 2,
+            scale: 1,
             stopAtErrors: true,
             toolbar_template: '<div class="pdf-toolbar">' +
                     '<button id="pdf-prev" class="button button--primary js-form-submit form-submit">Previous</button>' +
-                    '<span class="pdf-pager">Page:<span id="pdf-page-num"></span>/<span id="pdf-page-count"></span></span>' +
+                    '<span class="pdf-pager">Page: <span id="pdf-page-num"></span>/<span id="pdf-page-count"></span></span>' +
                     '<button id="pdf-next" class="button button--primary js-form-submit form-submit">Next</button>' +
                     '</div>',
             viewer_template: '<div class="pdf-canvas"> <div class="pdf-content-loading"> <div class="pdf-loader"></div> </div><canvas id="pdf-the-canvas"></canvas></div>',
@@ -58,7 +60,16 @@ jQuery(function ($) {
     $(document).delegate("#pdfViewerBtn", "click", function (e) {
         e.preventDefault();
         $('#pdf-viewer-div').show();
-        displayPdfViewer();
+        displayPdfViewer(2);
     });
+    
+    
+    $(document).delegate("#zoominbutton", "click", function (e) {
+        e.preventDefault();
+        console.log('zoomin button pressed');
+        displayPdfViewer(actualScale + 0.25);
+    });
+
+   
 
 });
