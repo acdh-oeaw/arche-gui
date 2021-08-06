@@ -75,7 +75,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         ($_POST['password']) ? $password = $_POST['password'] : $password = '';
 
         $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
-        if(empty($fileLocation)) {
+        if (empty($fileLocation)) {
             $response->setStatusCode(400);
         }
         $response->setContent(json_encode($fileLocation));
