@@ -274,6 +274,9 @@ class DisseminationServicesHelper
      */
     public function collectionDownload(array $binaries, string $repoid, string $username = '', string $password = ''): string
     {
+        if(empty($this->tmpDir)) {
+            $this->setTmpDir();
+        }
         $this->repoUrl = $this->repo->getBaseUrl() . $repoid;
         //1. setup tmp dir
         if ($this->collectionCreateDlDirectory() === false) {
@@ -329,6 +332,10 @@ class DisseminationServicesHelper
      */
     private function createCollectionDir(string $path): string
     {
+        if(empty($this->tmpDir)) {
+            $this->setTmpDir();
+        }
+        
         $dir = "";
 
         if (!file_exists($this->collectionTmpDir . $this->collectionDate)) {
@@ -481,10 +488,12 @@ class DisseminationServicesHelper
      */
     private function collectionCreateDlDirectory(): bool
     {
+        if(empty($this->tmpDir)) {
+            $this->setTmpDir();
+        }
         $this->collectionDate = date("Ymd_his");
         //the main dir
         $this->collectionTmpDir = $this->tmpDir . "/collections/";
-        
         //if the main directory is not exists
         if (!file_exists($this->collectionTmpDir)) {
             if (!@mkdir($this->collectionTmpDir, 0777)) {

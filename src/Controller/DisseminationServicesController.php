@@ -66,7 +66,6 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
 
         //the binary files
         $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
-
         if (count($binaries) == 0) {
             $response->setContent(json_encode(""));
             return $response;
@@ -76,7 +75,9 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         ($_POST['password']) ? $password = $_POST['password'] : $password = '';
 
         $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
-
+        if(empty($fileLocation)) {
+            $response->setStatusCode(400);
+        }
         $response->setContent(json_encode($fileLocation));
         return $response;
     }
