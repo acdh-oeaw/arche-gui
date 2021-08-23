@@ -601,13 +601,15 @@ CREATE TEMP TABLE inverseIds AS (
 );
 RETURN QUERY
     select 
-        DISTINCT(iv.id), iv.property, mv.value 
+        DISTINCT(iv.id), iv.property, 
+        COALESCE(
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'en' LIMIT 1),	
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'de' LIMIT 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' LIMIT 1)
+        )
     from inverseIds as iv
-    left join metadata_view as mv on mv.id = iv.id
     left join resources as rs on rs.id = iv.id
-    where
-        mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' 
-        and rs.state = 'active';
+    where rs.state = 'active';
 END
 $func$
 LANGUAGE 'plpgsql';
