@@ -30,6 +30,8 @@ class ResourceObject
                     $this->setData($k, $v['de']);
                 } elseif (($language == 'de') && isset($v['en'])) {
                     $this->setData($k, $v['en']);
+                } else {
+                    $this->setData($k, reset($v));
                 }
             }
         }
