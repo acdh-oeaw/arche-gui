@@ -38,7 +38,8 @@
             "file-mapping": {
                 "[web-root]/.htaccess": "inst/htaccess",
                 "[web-root]/sites/default/default.services.yml": "inst/sites/default/default.services.yml",
-                "[web-root]/sites/default/default.settings.php": "inst/sites/default/default.settings.php",
+                "[web-root]/sites/default/services.yml": "inst/sites/default/services.yml",
+		"[web-root]/sites/default/default.settings.php": "inst/sites/default/default.settings.php",
                 "[web-root]/sites/default/settings.local.php": "inst/sites/default/settings.local.php",
                 "[web-root]/sites/default/settings.php": "inst/sites/default/settings.php",
                 "[web-root]/sites/default/development.services.yml": "inst/sites/default/development.services.yml",
