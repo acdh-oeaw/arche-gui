@@ -9,7 +9,7 @@ use Drupal\acdh_repo_gui\Model\OntologyTwigExtensionModel;
  *
  * @author nczirjak
  */
-class OntologyTwigExtension extends \Twig_Extension 
+class OntologyTwigExtension extends \Twig_Extension
 {
     private $model;
     private $str = "";
@@ -39,7 +39,7 @@ class OntologyTwigExtension extends \Twig_Extension
         $this->createModel();
         $importDate = $this->model->getViewData();
         
-        if(isset($importDate['value'])) {
+        if (isset($importDate['value'])) {
             $date = new \DateTime($importDate['value']);
             $this->str = "Ontology import date: ".$date->format('Y-m-d H:i:s');
         }
@@ -47,7 +47,8 @@ class OntologyTwigExtension extends \Twig_Extension
         return $this->str;
     }
     
-    private function createModel() {
+    private function createModel()
+    {
         $this->model = new \Drupal\acdh_repo_gui\Model\OntologyTwigExtensionModel();
     }
 }

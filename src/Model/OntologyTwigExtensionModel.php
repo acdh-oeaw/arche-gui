@@ -7,19 +7,19 @@ namespace Drupal\acdh_repo_gui\Model;
  *
  * @author nczirjak
  */
-class OntologyTwigExtensionModel extends ArcheModel 
+class OntologyTwigExtensionModel extends ArcheModel
 {
     protected $repodb;
     protected $siteLang;
     private $dbResult = array();
 
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
 
-    public function getViewData(): array 
+    public function getViewData(): array
     {
         return $this->getImportDate();
     }
@@ -28,7 +28,7 @@ class OntologyTwigExtensionModel extends ArcheModel
      * Get the latest owl file import from the DB
      * @return array
      */
-    private function getImportDate(): array 
+    private function getImportDate(): array
     {
         try {
             $this->setSqlTimeout();
@@ -39,7 +39,7 @@ class OntologyTwigExtensionModel extends ArcheModel
                 where 
                 i.ids = 'https://vocabs.acdh.oeaw.ac.at/schema' limit 1
                 ",
-                    array(
+                array(
                         ':avdate' => $this->repo->getSchema()->creationDate
                     )
             );
@@ -52,5 +52,4 @@ class OntologyTwigExtensionModel extends ArcheModel
         $this->changeBackDBConnection();
         return $this->dbResult;
     }
-
 }
