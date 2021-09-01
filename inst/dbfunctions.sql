@@ -727,10 +727,15 @@ WITH query_data as (
     left join resources as rs on rs.id = mv.id 
     where 
     mv.property in (
-        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
         'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
-        'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
+        'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf',
+        'https://vocabs.acdh.oeaw.ac.at/schema#hasDerivedPublication',
+        'https://vocabs.acdh.oeaw.ac.at/schema#relation',
+        'https://vocabs.acdh.oeaw.ac.at/schema#continues',
+        'https://vocabs.acdh.oeaw.ac.at/schema#documents',
+        'https://vocabs.acdh.oeaw.ac.at/schema#hasSource'
     ) 
     and mv.value = _identifier
     and rs.state = 'active'
@@ -751,7 +756,11 @@ WITH query_data as (
         'https://vocabs.acdh.oeaw.ac.at/schema#relation',
         'https://vocabs.acdh.oeaw.ac.at/schema#continues',
         'https://vocabs.acdh.oeaw.ac.at/schema#documents',
-        'https://vocabs.acdh.oeaw.ac.at/schema#hasSource'
+        'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
+        'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
         )
     and mv.id = CAST(_identifier as bigint)
     order by title

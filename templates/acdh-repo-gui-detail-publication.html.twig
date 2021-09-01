@@ -1,5 +1,9 @@
 
 {% set properties = {
+    'acdh:hasNonLinkedIdentifier': {
+	'icon': 'label',
+        'label': 'NonLinked Identifier'
+    },
     'acdh:hasAuthor': {
         'icon': 'people',
         'label': 'Author(s)'
@@ -12,15 +16,19 @@
         'icon': 'info',
         'label': 'Series Information'
     },
+    'acdh:hasExtent': {
+        'icon': 'dehaze',
+        'label': 'Extent'
+    },
     'acdh:hasPages': {
         'icon': 'wallpaper',
         'label': 'Pages'
     },
-    'acdh:hasAvailableDate': {
+    'acdh:acdh:hasIssuedDate': {
         'icon': 'today',
-        'label': 'Available Date',
+        'label': 'Issued Date',
         'type': 'date',
-        'dateformat': 'd M Y'
+        'dateformat': 'Y'
     },
     'acdh:hasCity': {
         'icon': 'subtitles',
@@ -34,13 +42,13 @@
 	'icon': 'person_add',
         'label': 'Publisher(s)'
     },
-    'acdh:hasNonLinkedIdentifier': {
-	'icon': 'label',
-        'label': 'NonLinked Identifier'
-    },
     'acdh:hasUrl': {
         'icon': 'web',
         'label': 'Url'
+    },
+    'acdh:hasLanguage': {
+        'icon': 'flag',
+        'label': 'Language'
     },
     'acdh:hasEditorialPractice': {
         'icon': 'person_add',
@@ -49,10 +57,6 @@
     'acdh:hasNote': {
         'icon': 'info_outline',
         'label': 'Note'
-    },
-    'acdh:hasLanguage': {
-        'icon': 'flag',
-        'label': 'Language'
     }
 }
 %}

@@ -127,7 +127,8 @@
         {% endif%}
 
         <!-- CITE BLOCK -->
-        {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or  basic.getAcdhType()|lower == 'metadata'  %}
+        {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or  basic.getAcdhType()|lower == 'metadata'
+         or  basic.getAcdhType()|lower == 'publication' %}
             <div class="row mt-4">
                 <div class="col-lg-12"> 
                     <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
