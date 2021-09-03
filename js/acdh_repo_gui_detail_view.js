@@ -99,9 +99,12 @@ jQuery(function ($) {
                 $('#cite-content-div').removeClass('hidden');
                 $('#cite-loader').addClass('hidden');
 
-
-                let cite = new Cite(data);
-
+                try {
+                    let cite = new Cite(data);
+                } catch (error) {
+                    createCiteErrorResponse(error);
+                    return false;
+                }
                 var apa_loaded = true;
 
                 let templateName = 'apa-6th';
@@ -149,16 +152,20 @@ jQuery(function ($) {
                 });
 
             }).error(function (data) {
-                $('#cite-content-div').addClass('show');
-                $('#cite-content-div').removeClass('hidden');
-                $('#cite-loader').addClass('hidden');
-                $('#cite-selector-div').hide();
-                $('#cite-content-figure').hide();
-                $('.bd-clipboard').hide();
-                //stop spinner
-                $('#cite-content-div').append('<div class="messages messages--warning">' + Drupal.t("The Resource does not have CITE data.") + '</>');
+                createCiteErrorResponse("The Resource does not have CITE data.");
             });
         }
+    }
+
+    function createCiteErrorResponse(errorText) {
+        $('#cite-content-div').addClass('show');
+        $('#cite-content-div').removeClass('hidden');
+        $('#cite-loader').addClass('hidden');
+        $('#cite-selector-div').hide();
+        $('#cite-content-figure').hide();
+        $('.bd-clipboard').hide();
+        //stop spinner
+        $('#cite-content-div').append('<div class="messages messages--warning">' + Drupal.t(errorText) + '</>');
     }
 
     function url_csl_content(url) {
