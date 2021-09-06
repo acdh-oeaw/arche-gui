@@ -115,9 +115,7 @@ trait ArcheUtilTrait
             if (is_null($d->property) === false) {
                 //create the shortcut
                 $this->setTitle($d);
-                
                 $this->setAcdhId($d);
-                
                 $d->shortcut = Helper::createShortcut($d->property);
                 
                 //if we have vocabsid then it will be the uri, to forward the users to the vocabs website
@@ -125,7 +123,8 @@ trait ArcheUtilTrait
                 
                 //check and remove the duplicated values from the results
                 if (!isset($result[$d->shortcut][$lang])) {
-                    $result[$d->shortcut][$lang][] = $d;
+                    $d->language = $this->siteLang;
+                    $result[$d->shortcut][$this->siteLang][] = $d;
                 } elseif (isset($result[$d->shortcut][$lang]) && (count($result[$d->shortcut][$lang]) > 0)) {
                     //if we already have a shortcut in the results then we need to check if it id a relation
                     //or any other type
