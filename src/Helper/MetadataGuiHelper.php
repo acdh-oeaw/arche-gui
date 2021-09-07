@@ -392,10 +392,10 @@ class MetadataGuiHelper
     }
     
     
-    private function createRootTableTd(string $value = null): string
+    private function createRootTableTd(array $value, string $key = null): string
     {
-        if (isset($value)) {
-            return '<td>' . $value . '</td>';
+        if (isset($value[$key])) {
+            return '<td>' . $value[$key] . '</td>';
         } else {
             return '<td></td>';
         }
@@ -427,15 +427,15 @@ class MetadataGuiHelper
                 //create the type values
                 $html .= $this->getRtTypeValues($type);
 
-                $html .= $this->createRootTableTd($type['main']['order']);
+                $html .= $this->createRootTableTd($type['main'], 'order');
                 $html .= '<td>' . $this->getRtTypeDomain($type) . '</td>';
                 $html .= '<td>' . $this->getRtTypeRange($type) . '</td>';
-                $html .= $this->createRootTableTd($type['main']['vocabs']);
+                $html .= $this->createRootTableTd($type['main'], 'vocabs');
                 $html .= '<td>' . $this->getRtTypeRecommended($type) . '</td>';
                 
-                $html .= $this->createRootTableTd($type['main']['automatedFill']);
-                $html .= $this->createRootTableTd($type['main']['defaultValue']);
-                $html .= $this->createRootTableTd($type['main']['langTag']);
+                $html .= $this->createRootTableTd($type['main'], 'automatedFill');
+                $html .= $this->createRootTableTd($type['main'], 'defaultValue');
+                $html .= $this->createRootTableTd($type['main'], 'langTag');
                 
                 $html .= '</tr>';
             }
@@ -555,7 +555,7 @@ class MetadataGuiHelper
      * @param array $data
      */
     private function reorderRootTable(array $data)
-    {
+    { 
         $uris = array();
         foreach ($data as $kt => $kv) {
             $domain = '';
@@ -563,16 +563,24 @@ class MetadataGuiHelper
             
             if (is_array($kv)) {
                 foreach ($kv as $v) {
-                    if (isset($v->ordering) && isset($v->uri) && !in_array($v->uri, $uris)) {
-                        
-                        //collect uris because of duplication
-                        array_push($uris, $v->uri);
+                    if (isset($v->ordering) && isset($v->uri)) {
+                       
+                        //handle the duplicated idss
+                        if($v->ordering == 99999) {
+                            if(count($uris) == 0) {
+                                $uris[$v->uri] = $v->ordering;  
+                            } else if(count($uris) > 0)  {
+                                if(key_exists($v->uri, $uris)) {
+                                    $v->ordering = $uris[$v->uri];
+                                } else {
+                                    $uris[$v->uri] = (int)max(array_keys($this->data)) + 1;
+                                    $v->ordering = $uris[$v->uri];
+                                }
+                            }
+                        }
                         
                         //if we have already an undefined value with id 99999 then we have to change the
                         //orderid, because we use the order to generate the table
-                        if($v->ordering == 99999 && count($this->data) > 0) {
-                            $v->ordering = (int)max(array_keys($this->data)) + 1;
-                        }
                         
                         $this->createRootTablePropertyTitle($v, $kt);
                         $this->createRootTablePropertyMinMax($v, $kt);
