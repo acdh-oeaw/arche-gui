@@ -101,55 +101,56 @@ jQuery(function ($) {
 
                 try {
                     let cite = new Cite(data);
+                
+                    var apa_loaded = true;
+
+                    let templateName = 'apa-6th';
+                    var template = "";
+                    url_csl_content("/browser/modules/contrib/arche-gui/csl/apa-6th-edition.csl").success(function (data) {
+
+                        template = data;
+                        Cite.CSL.register.addTemplate(templateName, template);
+
+                        var opt = {
+                            format: 'string'
+                        };
+                        opt.type = 'html';
+                        opt.style = 'citation-' + templateName;
+                        opt.lang = 'en-US';
+                        createCiteTab('apa 6th', true, 'apa-6th');
+                        createCiteContent(cite.get(opt), 'apa-6th', true);
+                        apa_loaded = false;
+                    }).then(function (d) {
+
+                        //harvard
+                        var opt = {
+                            format: 'string'
+                        };
+                        opt.type = 'html';
+                        opt.style = 'citation-harvard1';
+                        opt.lang = 'en-US';
+
+                        createCiteTab('harvard', apa_loaded, 'harvard');
+                        createCiteContent(cite.get(opt), 'harvard', apa_loaded);
+
+                        //Vancouver
+                        var opt = {
+                            format: 'string'
+                        };
+                        opt.type = 'html';
+                        opt.style = 'citation-vancouver';
+                        opt.lang = 'en-US';
+
+                        createCiteTab('vancouver', false, 'vancouver');
+                        createCiteContent(cite.get(opt), 'vancouver', false);
+
+                        createCiteTab('BiblaTex', false, 'biblatex');
+                        createCiteContent(data, 'BiblaTex', false);
+                    });
                 } catch (error) {
                     createCiteErrorResponse(error);
                     return false;
                 }
-                var apa_loaded = true;
-
-                let templateName = 'apa-6th';
-                var template = "";
-                url_csl_content("/browser/modules/contrib/arche-gui/csl/apa-6th-edition.csl").success(function (data) {
-
-                    template = data;
-                    Cite.CSL.register.addTemplate(templateName, template);
-
-                    var opt = {
-                        format: 'string'
-                    };
-                    opt.type = 'html';
-                    opt.style = 'citation-' + templateName;
-                    opt.lang = 'en-US';
-                    createCiteTab('apa 6th', true, 'apa-6th');
-                    createCiteContent(cite.get(opt), 'apa-6th', true);
-                    apa_loaded = false;
-                }).then(function (d) {
-
-                    //harvard
-                    var opt = {
-                        format: 'string'
-                    };
-                    opt.type = 'html';
-                    opt.style = 'citation-harvard1';
-                    opt.lang = 'en-US';
-
-                    createCiteTab('harvard', apa_loaded, 'harvard');
-                    createCiteContent(cite.get(opt), 'harvard', apa_loaded);
-
-                    //Vancouver
-                    var opt = {
-                        format: 'string'
-                    };
-                    opt.type = 'html';
-                    opt.style = 'citation-vancouver';
-                    opt.lang = 'en-US';
-
-                    createCiteTab('vancouver', false, 'vancouver');
-                    createCiteContent(cite.get(opt), 'vancouver', false);
-
-                    createCiteTab('BiblaTex', false, 'biblatex');
-                    createCiteContent(data, 'BiblaTex', false);
-                });
 
             }).error(function (data) {
                 createCiteErrorResponse("The Resource does not have CITE data.");
