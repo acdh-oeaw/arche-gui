@@ -554,7 +554,7 @@ class MetadataGuiHelper
      * @param array $data
      */
     private function reorderRootTable(array $data)
-    { 
+    {
         $uris = array();
         foreach ($data as $kt => $kv) {
             $domain = '';
@@ -565,11 +565,11 @@ class MetadataGuiHelper
                     if (isset($v->ordering) && isset($v->uri)) {
                        
                         //handle the duplicated ids
-                        if($v->ordering == 99999) {
-                            if(count($uris) == 0) {
-                                $uris[$v->uri] = $v->ordering;  
-                            } else if(count($uris) > 0)  {
-                                if(key_exists($v->uri, $uris)) {
+                        if ($v->ordering == 99999) {
+                            if (count($uris) == 0) {
+                                $uris[$v->uri] = $v->ordering;
+                            } elseif (count($uris) > 0) {
+                                if (key_exists($v->uri, $uris)) {
                                     $v->ordering = $uris[$v->uri];
                                 } else {
                                     $uris[$v->uri] = (int)max(array_keys($this->data)) + 1;
