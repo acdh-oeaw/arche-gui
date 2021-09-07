@@ -341,7 +341,6 @@ class MetadataGuiHelper
      */
     private function createRootTableHeader(): string
     {
-        
         $html = "<style>
                 table thead tr th {
                     position: sticky;
@@ -364,31 +363,31 @@ class MetadataGuiHelper
                 tr:nth-child(even) {background-color: #f2f2f2;}
                 .sticky {position: sticky; z.index: 100; left: 0; background-color: #4CAF50; color:white;}
                 </style>";
-            $html .= "<table >";
-            $html .= "<thead >";
-            $html .= '<tr>';
-            $html .= '<th><b>Property</b></th>';
-            $html .= '<th><b>Project</b></th>';
-            $html .= '<th><b>TopCollection</b></th>';
-            $html .= '<th><b>Collection</b></th>';
-            $html .= '<th><b>Resource</b></th>';
-            $html .= '<th><b>Metadata</b></th>';
-            $html .= '<th><b>Publication</b></th>';
-            $html .= '<th><b>Place</b></th>';
-            $html .= '<th><b>Organisation</b></th>';
-            $html .= '<th><b>Person</b></th>';
-            $html .= '<th><b>Order</b></th>';
-            $html .= '<th><b>domain</b></th>';
-            $html .= '<th><b>Range</b></th>';
-            $html .= '<th><b>Vocabulary</b></th>';
-            $html .= '<th><b>Recommended Class</b></th>';
-            $html .= '<th><b>Automated Fill</b></th>';
-            $html .= '<th><b>Default Value</b></th>';
-            $html .= '<th><b>LangTag</b></th>';
-            $html .= "</thead >";
-            $html .= '</tr>';
+        $html .= "<table >";
+        $html .= "<thead >";
+        $html .= '<tr>';
+        $html .= '<th><b>Property</b></th>';
+        $html .= '<th><b>Project</b></th>';
+        $html .= '<th><b>TopCollection</b></th>';
+        $html .= '<th><b>Collection</b></th>';
+        $html .= '<th><b>Resource</b></th>';
+        $html .= '<th><b>Metadata</b></th>';
+        $html .= '<th><b>Publication</b></th>';
+        $html .= '<th><b>Place</b></th>';
+        $html .= '<th><b>Organisation</b></th>';
+        $html .= '<th><b>Person</b></th>';
+        $html .= '<th><b>Order</b></th>';
+        $html .= '<th><b>domain</b></th>';
+        $html .= '<th><b>Range</b></th>';
+        $html .= '<th><b>Vocabulary</b></th>';
+        $html .= '<th><b>Recommended Class</b></th>';
+        $html .= '<th><b>Automated Fill</b></th>';
+        $html .= '<th><b>Default Value</b></th>';
+        $html .= '<th><b>LangTag</b></th>';
+        $html .= "</thead >";
+        $html .= '</tr>';
             
-            return $html;
+        return $html;
     }
     
     
@@ -565,7 +564,7 @@ class MetadataGuiHelper
                 foreach ($kv as $v) {
                     if (isset($v->ordering) && isset($v->uri)) {
                        
-                        //handle the duplicated idss
+                        //handle the duplicated ids
                         if($v->ordering == 99999) {
                             if(count($uris) == 0) {
                                 $uris[$v->uri] = $v->ordering;  
@@ -612,7 +611,8 @@ class MetadataGuiHelper
      * @param string $vKey
      * @return void
      */
-    private function getOntologyObjData(object &$v, string &$kt, string $dKey, string $vKey): void {
+    private function getOntologyObjData(object &$v, string &$kt, string $dKey, string $vKey): void
+    {
         if (isset($v->$vKey)) {
             $this->data[$v->ordering]['main'][$dKey] = $v->$vKey;
             $this->data[$v->ordering][$kt][$dKey] = $v->$vKey;
@@ -625,7 +625,8 @@ class MetadataGuiHelper
      * @param string $kt
      * @return void
      */
-    private function createRootTablePropertyTitle(object &$v, string &$kt): void {
+    private function createRootTablePropertyTitle(object &$v, string &$kt): void
+    {
         $this->data[$v->ordering]['main']['title'] = preg_replace('|^.*[/#]|', '', $v->uri);
         if (isset($v->label['en'])) {
             $this->data[$v->ordering][$kt]['title'] = $v->label['en'];
@@ -640,18 +641,16 @@ class MetadataGuiHelper
      * @param string $kt
      * @return void
      */
-    private function createRootTablePropertyMinMax(object &$v, string &$kt): void {
-         if (isset($v->min) || isset($v->max)) {
+    private function createRootTablePropertyMinMax(object &$v, string &$kt): void
+    {
+        if (isset($v->min) || isset($v->max)) {
             $this->data[$v->ordering][$kt]['value'] = $this->rtCardinality($v->min, $v->max);
             $this->data[$v->ordering]['main']['min'] = $v->min;
             $this->data[$v->ordering]['main']['max'] = $v->max;
             $this->data[$v->ordering][$kt]['min'] = $v->min;
-            $this->data[$v->ordering][$kt]['max'] = $v->max;   
+            $this->data[$v->ordering][$kt]['max'] = $v->max;
         } elseif ((is_null($v->min) && is_null($v->max))) {
             $this->data[$v->ordering][$kt]['value'] = '0-n';
-        }     
+        }
     }
-    
 }
-
-
