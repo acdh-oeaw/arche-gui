@@ -554,7 +554,7 @@ class MetadataGuiHelper
      * @param array $data
      */
     private function reorderRootTable(array $data)
-    { 
+    {
         $uris = array();
         foreach ($data as $kt => $kv) {
             $domain = '';
