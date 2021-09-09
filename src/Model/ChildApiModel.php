@@ -138,40 +138,6 @@ class ChildApiModel extends ArcheModel
     }
 
     /**
-     * Create the order values for the sql
-     *
-     * @param string $orderby
-     * @return object
-     */
-    private function ordering(string $orderby = "titleasc"): object
-    {
-        $result = new \stdClass();
-        $result->property = $this->repo->getSchema()->label;
-        $result->order = 'asc';
-
-        if ($orderby == "titleasc") {
-            $result->property = $this->repo->getSchema()->label;
-            $result->order = 'asc';
-        } elseif ($orderby == "titledesc") {
-            $result->property = $this->repo->getSchema()->label;
-            $result->order = 'desc';
-        } elseif ($orderby == "dateasc") {
-            $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
-            $result->order = 'asc';
-        } elseif ($orderby == "datedesc") {
-            $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
-            $result->order = 'desc';
-        } elseif ($orderby == "typeasc") {
-            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
-            $result->order = 'asc';
-        } elseif ($orderby == "typedesc") {
-            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
-            $result->order = 'desc';
-        }
-        return $result;
-    }
-
-    /**
      * Get the number of the child resources for the pagination
      *
      * @param string $identifier
