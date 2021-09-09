@@ -121,6 +121,69 @@ abstract class ArcheModel
 
         return $this->sortAssociativeArrayByKey($data, $order, $orderBy);
     }
+    
+    /**
+     * Create the order values for the sql
+     *
+     * @param string $orderby
+     * @return object
+     */
+    protected function ordering(string $orderby = "titleasc"): object
+    {
+        $result = new \stdClass();
+        $result->property = $this->repo->getSchema()->label;
+        $result->order = 'asc';
+
+        if ($orderby == "titleasc") {
+            $result->property = $this->repo->getSchema()->label;
+            $result->order = 'asc';
+        } elseif ($orderby == "titledesc") {
+            $result->property = $this->repo->getSchema()->label;
+            $result->order = 'desc';
+        } elseif ($orderby == "dateasc") {
+            $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
+            $result->order = 'asc';
+        } elseif ($orderby == "datedesc") {
+            $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
+            $result->order = 'desc';
+        } elseif ($orderby == "typeasc") {
+            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
+            $result->order = 'asc';
+        } elseif ($orderby == "typedesc") {
+            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
+            $result->order = 'desc';
+        }
+        return $result;
+    }
+    
+    
+    protected function orderingByFields(array $valuesAndFields, string $orderby = "titleasc"): object
+    {
+        $result = new \stdClass();
+        $result->property = 'title';
+        $result->order = 'asc';
+        
+        if ($orderby == "titleasc") {
+            $result->property = $valuesAndFields['titleasc'];
+            $result->order = 'asc';
+        } elseif ($orderby == "titledesc") {
+            $result->property = $valuesAndFields['titledesc'];
+            $result->order = 'desc';
+        } elseif ($orderby == "dateasc") {
+            $result->property = $valuesAndFields['dateasc'];
+            $result->order = 'asc';
+        } elseif ($orderby == "datedesc") {
+            $result->property = $valuesAndFields['datedesc'];
+            $result->order = 'desc';
+        } elseif ($orderby == "typeasc") {
+            $result->property = $valuesAndFields['typeasc'];
+            $result->order = 'asc';
+        } elseif ($orderby == "typedesc") {
+            $result->property = $valuesAndFields['typedesc'];
+            $result->order = 'desc';
+        }
+        return $result;
+    }
 
     /**
      * get the views data

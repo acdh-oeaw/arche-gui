@@ -28,7 +28,7 @@ class ArcheApiModel extends ArcheModel
      */
     public function getViewData(string $identifier = "metadata", object $properties = null): array
     {
-        $this->properties = $properties;
+        $this->setUpProperties($properties);
         
         switch ($identifier) {
             case 'metadata':
@@ -54,6 +54,9 @@ class ArcheApiModel extends ArcheModel
                 break;
             case 'getRPR':
                 return $this->getRPR();
+                break;
+            case 'getRPRAjax':
+                return $this->getRPRAjax();
                 break;
             case 'rootTable':
                 return $this->getRootTableOntology();
@@ -373,7 +376,7 @@ class ArcheApiModel extends ArcheModel
     }
     
     /**
-     * Check the repoid in the DB
+     * Related Publications and resources table data
      * @return array
      */
     private function getRPR(): array
@@ -389,6 +392,7 @@ class ArcheApiModel extends ArcheModel
                     ':lang' => $this->properties->lang
                 )
             );
+            
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -400,4 +404,56 @@ class ArcheApiModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+
+    /**
+     * Related Publications and resources table data - Ajax version endpoint
+     * @return array
+     */
+    private function getRPRAjax(): array
+    {
+        $result = array();
+        //run the actual query
+        try {
+            $this->setSqlTimeout();
+            $query = $this->repodb->query(
+                "select * from gui.related_publications_resources_views_func(:repoid, :lang)"
+                    . " ORDER BY ".$this->properties->property." ".$this->properties->order." LIMIT :limit OFFSET :page ",
+                array(
+                    ':repoid' => $this->properties->repoid,
+                    ':lang' => $this->properties->lang,
+                    ':limit' => $this->properties->limit,
+                    ':page' => $this->properties->page
+                )
+            );
+            $result = $query->fetchAll(\PDO::FETCH_CLASS);
+        } catch (\Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = array();
+        }
+        $this->changeBackDBConnection();
+        return $result;
+    }
+    
+    /**
+     * Setup the SQL properties
+     * @param type $properties
+     * @return void
+     */
+    private function setUpProperties($properties): void {
+        $this->properties = $properties;
+        if(isset($this->properties->fieldOrder)) {
+            $obj = $this->orderingByFields($this->properties->fields, $this->properties->order);
+            $this->properties->order = $obj->order;
+            $this->properties->property = $obj->property;
+        }else if(isset($this->properties->order)) {
+            $obj = $this->ordering($this->properties->order);
+            $this->properties->order = $obj->order;
+            $this->properties->property = $obj->property;
+            
+        }
+    }
+
 }

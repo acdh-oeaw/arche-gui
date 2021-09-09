@@ -90,11 +90,9 @@ class SearchViewModel extends ArcheModel
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
         } catch (\Exception $ex) {
-            error_log($ex->getMessage());
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
-            error_log($ex->getMessage());
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }

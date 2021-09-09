@@ -233,6 +233,7 @@ class GeneralFunctions
                             $shown[$hash] = true;
                         } catch (\Exception $ex) {
                             error_log(print_r($ex->getMessage(), true));
+                            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
                         }
                     }
                 }

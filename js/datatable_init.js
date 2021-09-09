@@ -158,31 +158,6 @@ jq2(function( $ ) {
         });
     });
     
-    
-    //the JS for the Related Publication(s) and Resource(s) table
-    jq2( "#showRPR" ).click(function(e) {
-        e.preventDefault();
-        //if we are on the detail view
-        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-            jq2('#rprTableDiv').show("slow");
-            jq2('#showRPR').parent().hide("slow");
-            let id = jq2('#insideUri').val();
-
-            if(id !== undefined){
-                jq2('table.rprTable').DataTable({
-                    "ajax": {
-                        "url": "/browser/api/getRPR/"+id+"/en",
-                        "data": function ( d ) {
-                            d.limit = d.draw;
-                        }
-                    },
-                    "deferRender": true,
-                    "errMode": 'throw'
-                });
-            }
-        }
-    });
-    
     jq2(document ).delegate( ".res-act-button-expertview", "click", function(e) {
         if (jq2(this).hasClass('basic')) {
             jq2('.single-res-overview-basic').hide();
@@ -200,5 +175,38 @@ jq2(function( $ ) {
             jq2(this).addClass('basic');
             jq2(this).children('span').text(Drupal.t('Switch to Expert-View'));
         }
+    });
+    
+    //get related publications and resources table
+    function getRPRData() {
+        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
+            
+            jq2('#rprTableDiv').show("slow");
+            jq2('#showRPR').parent().hide("slow");
+            let id = jq2('#insideUri').val();
+
+            if(id !== undefined){
+                jq2('table.rprTable').DataTable({
+                    "ajax": {
+                        "url": "/browser/api/getRPR/"+id+"/en",
+                        "data": function ( d ) {
+                            d.limit = d.draw;
+                        },
+                        error: function (xhr, error, code)
+                        {
+                            const resp = xhr.responseJSON;
+                            jq2('#rprTableDiv').html();
+                            jq2('#rprTableDiv').html("<div class='messages messages--error'>"+resp.data+"</div>");
+                        }
+                    },
+                    "deferRender": true,
+                    "errMode": 'throw'
+                });
+            }
+        }
+    }
+    
+    $(document).ready(function () {
+        getRPRData();
     });
 });

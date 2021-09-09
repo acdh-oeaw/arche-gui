@@ -43,7 +43,7 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $this->childNum = $this->model->getCount($this->identifier);
 
         if ($this->childNum < 1) {
-            $this->data->errorMSG = $this->t('There are no Child resources');
+            //$this->data->errorMSG = $this->t('There are no Child resources');
             goto end;
         }
 
@@ -54,7 +54,7 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
 
         $this->data->data = $this->helper->createView($data);
         if (count((array) $this->data->data) <= 0) {
-            $this->data->errorMSG = $this->t('There are no Child resources');
+            //$this->data->errorMSG = $this->t('There are no Child resources');
         }
 
         end:

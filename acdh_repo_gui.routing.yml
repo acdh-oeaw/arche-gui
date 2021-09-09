@@ -221,6 +221,14 @@ repo_getRPR:
     requirements:
         _permission: 'access content'
         _access: 'TRUE'         
+
+repo_getRPRAjax:    
+    path: '/api/getRPRdata/{repoid}/{limit}/{page}/{order}/{lng}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRelatedPublicationsResourcesAjax'
+    requirements:
+        _permission: 'access content'
+        _access: 'TRUE' 
         
 repo_getRootTable:    
     path: '/api/getRootTable/{lng}'

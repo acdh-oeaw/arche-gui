@@ -489,7 +489,46 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         $obj = $this->createDbHelperObject(array('repoid' => $repoid, 'lang' => $lng));
 
         //get the data
-        $this->modelData = $this->model->getViewData('getRPR', $obj);
+        try {
+            $this->modelData = $this->model->getViewData('getRPR', $obj);
+            if (count($this->modelData) == 0) {
+                $this->result = array(array("There is no data", "", ""));
+                goto end;
+            }
+
+            $this->result = $this->helper->createView($this->modelData, 'getRPR', $this->siteLang);
+            $response->setStatusCode(200);
+            
+        } catch(\Exception $ex) {
+            $response->setStatusCode(400);
+            $this->result = $ex->getMessage();
+        }
+        
+        end:
+        $response->setContent(json_encode(array('data' => $this->result)));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+    
+    public function repo_getRelatedPublicationsResourcesAjax(string $repoid, string $limit, string $page, string $order, string $lng = 'en'): Response
+    {
+        /*
+         * Usage:
+         *  https://domain.com/browser/api/getRPR/{repoid}?_format=json
+         */
+        
+        $response = new Response();
+        $obj = $this->createDbHelperObject(
+                array('fieldOrder' => true, 'repoid' => $repoid, 
+            'lang' => $lng, 'limit' => $limit, 'page' => $page, 'order' => $order,
+            'fields' => array('titleasc' => 'title', 'titledesc' => 'title', 
+                'typeasc' => 'acdhtype', 'typedesc' => 'acdhtype')
+                )
+        );
+
+        //get the data
+        $this->modelData = $this->model->getViewData('getRPRAjax', $obj);
 
         if (count($this->modelData) == 0) {
             $this->result = array(array("There is no data", "", ""));

@@ -56,14 +56,13 @@ class ClarinVCRObject
                     'track_redirects' => true
                 ]
             ]);
-            error_log(print_r($this->form_params, true));
-            ;
+            
             return $this->checkHeaderRedirect($request);
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
-            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return "";
         } catch (\Exception $ex) {
-            error_log($ex->getMessage());
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return "";
         }
         return "";

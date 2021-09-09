@@ -165,7 +165,6 @@ class SearchViewHelper
         $this->metadata = $metavalue;
         $this->setUpMetadata();
         
-        error_log(print_r($this->searchObj, true));
         return $this->searchObj;
     }
 

@@ -31,10 +31,10 @@ class ThreeDObject
         try {
             $this->doTheRequest($repoUrl);
         } catch (\GuzzleHttp\Exception\ClientException $ex) {
-            error_log(print_r($ex->getMessage(), true));
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->result = array('error' => $ex->getMessage());
         } catch (\Exception $ex) {
-            error_log(print_r($ex->getMessage(), true));
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->result = array('error' => $ex->getMessage());
         }
         

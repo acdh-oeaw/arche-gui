@@ -570,10 +570,10 @@ class MetadataGuiHelper
                                 $uris[$v->uri] = $v->ordering;  
                             } else if(count($uris) > 0)  {
                                 if(key_exists($v->uri, $uris)) {
-                                    $v->ordering = $uris[$v->uri];
+                                    $v->ordering = (int)$uris[$v->uri];
                                 } else {
                                     $uris[$v->uri] = (int)max(array_keys($this->data)) + 1;
-                                    $v->ordering = $uris[$v->uri];
+                                    $v->ordering = (int)$uris[$v->uri];
                                 }
                             }
                         }

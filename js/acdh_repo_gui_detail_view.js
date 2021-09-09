@@ -190,7 +190,7 @@ jQuery(function ($) {
 
         //check the audio player can load the audio file or not
         checkAudioPlayer();
-
+      
         //CITE Block
         showCiteBlock();
 

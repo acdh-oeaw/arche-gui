@@ -120,6 +120,7 @@
             <div class="row mt-4">
                 <div class="col-lg-12"> 
                     <div id="rel-public-div">
+                        {{ extra.relPubResData.getContent()|raw }}
                         {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
                     </div>
                 </div>
