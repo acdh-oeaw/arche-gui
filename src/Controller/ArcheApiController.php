@@ -498,8 +498,7 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
 
             $this->result = $this->helper->createView($this->modelData, 'getRPR', $this->siteLang);
             $response->setStatusCode(200);
-            
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $response->setStatusCode(400);
             $this->result = $ex->getMessage();
         }
@@ -520,9 +519,9 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
         
         $response = new Response();
         $obj = $this->createDbHelperObject(
-                array('fieldOrder' => true, 'repoid' => $repoid, 
+            array('fieldOrder' => true, 'repoid' => $repoid,
             'lang' => $lng, 'limit' => $limit, 'page' => $page, 'order' => $order,
-            'fields' => array('titleasc' => 'title', 'titledesc' => 'title', 
+            'fields' => array('titleasc' => 'title', 'titledesc' => 'title',
                 'typeasc' => 'acdhtype', 'typedesc' => 'acdhtype')
                 )
         );
