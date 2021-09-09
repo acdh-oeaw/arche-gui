@@ -442,18 +442,17 @@ class ArcheApiModel extends ArcheModel
      * @param type $properties
      * @return void
      */
-    private function setUpProperties($properties): void {
+    private function setUpProperties($properties): void
+    {
         $this->properties = $properties;
-        if(isset($this->properties->fieldOrder)) {
+        if (isset($this->properties->fieldOrder)) {
             $obj = $this->orderingByFields($this->properties->fields, $this->properties->order);
             $this->properties->order = $obj->order;
             $this->properties->property = $obj->property;
-        }else if(isset($this->properties->order)) {
+        } elseif (isset($this->properties->order)) {
             $obj = $this->ordering($this->properties->order);
             $this->properties->order = $obj->order;
             $this->properties->property = $obj->property;
-            
         }
     }
-
 }
