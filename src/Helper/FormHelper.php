@@ -60,6 +60,11 @@ class FormHelper
         return $result;
     }
     
+    /**
+     * Format the category data for the form checkboxes
+     * @param array $data
+     * @return array
+     */
     public function formatCategoryTypes(array $data): array
     {
         $result = array();
@@ -72,10 +77,18 @@ class FormHelper
                 $result['data'][$k]->title = $title;
                 $result['data'][$k]->uri = $v->value;
                 $result['data'][$k]->id = $v->id;
-                $fields[$v->id] =  $v->value." (".$v->count.")";
+                $fields[$this->formatCategoryTitleForValue($title).':'.$v->id] =  $v->value." (".$v->count.")";
             }
         }
         $result['fields'] = $fields;
         return $result;
+    }
+    
+    /*
+     * Transform the string to remove special chars
+     */
+    private function formatCategoryTitleForValue(string $string): string {
+        $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+        return preg_replace('/[^A-Za-z0-9\-]/', '-', $string);  
     }
 }

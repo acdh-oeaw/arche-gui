@@ -238,18 +238,6 @@ repo_getRootTable:
         _permission: 'access content'
         _access: 'TRUE'      
         
-repo_search:    
-  path: '/search_old/{metavalue}/{order}/{limit}/{page}'
-  defaults:
-    _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::fulltext_search'
-    metavalue: ""
-    order: "datedesc"
-    limit: "10"
-    page: "1"
-  requirements:
-    _permission: 'access content'
-    _access: 'TRUE'  
-
 repo_search_v2:    
   path: '/search/{metavalue}/{order}/{limit}/{page}'
   defaults:

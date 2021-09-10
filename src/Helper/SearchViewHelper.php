@@ -185,24 +185,56 @@ class SearchViewHelper
     {
         $filters = array("type", "dates", "words", "mindate", "maxdate", "years", "payload", "category");
         $strArr = explode('&', $this->metadata);
-
+        
         foreach ($filters as $f) {
             foreach ($strArr as $arr) {
-                if (strpos($arr, $f) !== false) {
-                    $arr = str_replace($f . '=', '', $arr);
-                    
-                    if (($f == "mindate") || ($f == "maxdate") || ($f == "words") || ($f == "years") || ($f == "category")) {
-                        $arr = $this->explodeSearchStringValues($arr);
-                    }
-                    if ($f == "type") {
-                        $arr =$this->explodeTypes($arr);
-                    }
-                    
-                    $this->searchObj->$f = $arr;
-                }
+                $this->checkSearchStringValues($arr, $f);
             }
         }
     }
+    
+    private function checkSearchStringValues(string $arr, string $f) {
+        if (strpos($arr, $f) !== false) {
+            $arr = str_replace($f . '=', '', $arr);
+                    
+            switch ($f) {
+                case "mindate":
+                case "maxdate":
+                case "words":
+                case "years":
+                    $arr = $this->explodeSearchStringValues($arr);
+                    break;
+                case "category":
+                    $arr = $this->explodeCategorySearchStrValues($arr);
+                    break;
+                case "type":
+                    $arr = $this->explodeTypes($arr);
+                    break;
+            }
+            $this->searchObj->$f = $arr;
+        }
+    }
+    
+    
+    /**
+     * Explode the categories url string to get the ID
+     * @param string $data
+     * @return array
+     */
+    private function explodeCategorySearchStrValues(string $data): array 
+    {
+        $result = array();
+        $values = explode('+', $data);
+        if (($key = array_search('or', $values)) !== false) {
+            unset($values[$key]);
+        }
+        
+        foreach($values as $v) {
+            $result[] = ltrim(strstr($v, ':'), ':');
+        }
+        return $result;
+    }
+    
     
     /**
      * explode the search string  values
@@ -374,4 +406,7 @@ class SearchViewHelper
         }
         $this->objLang = 'en';
     }
+
+    
+
 }
