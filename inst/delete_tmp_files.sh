@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "delete gui tmp files"
 
 ##delete the old collections
