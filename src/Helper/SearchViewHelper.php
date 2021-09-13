@@ -193,7 +193,8 @@ class SearchViewHelper
         }
     }
     
-    private function checkSearchStringValues(string $arr, string $f) {
+    private function checkSearchStringValues(string $arr, string $f)
+    {
         if (strpos($arr, $f) !== false) {
             $arr = str_replace($f . '=', '', $arr);
                     
@@ -221,7 +222,7 @@ class SearchViewHelper
      * @param string $data
      * @return array
      */
-    private function explodeCategorySearchStrValues(string $data): array 
+    private function explodeCategorySearchStrValues(string $data): array
     {
         $result = array();
         $values = explode('+', $data);
@@ -229,7 +230,7 @@ class SearchViewHelper
             unset($values[$key]);
         }
         
-        foreach($values as $v) {
+        foreach ($values as $v) {
             $result[] = ltrim(strstr($v, ':'), ':');
         }
         return $result;
@@ -406,7 +407,4 @@ class SearchViewHelper
         }
         $this->objLang = 'en';
     }
-
-    
-
 }
