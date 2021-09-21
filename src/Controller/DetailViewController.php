@@ -156,7 +156,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
             $this->basicViewData->extra->childData = $this->getChildData();
         }
-  
+        
         return $this->basicViewData;
     }
 

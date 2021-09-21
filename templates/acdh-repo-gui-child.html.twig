@@ -1,13 +1,5 @@
-{% if data|length < 1   %}
+{% if data.errorMSG %}  
     <br>
-    <div class='messages messages--error'>
-        <b>There are no child elements.</b>
-    </div>
-{% elseif data.errorMSG %}  
-    <br>
-    <div class='messages messages--error'>
-        {{ data.errorMSG }}
-    </div>
 {% else %}
 
 

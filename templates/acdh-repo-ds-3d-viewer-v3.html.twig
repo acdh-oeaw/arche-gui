@@ -1,0 +1,60 @@
+<div>
+    {%  if basic.getRepoId() %}
+        <div>
+            <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}"><span>{{ "Back to the resource"|trans }}</span></a>
+            <br/><br/>
+        </div>
+    {% endif %}    
+    {%  if basic.getTitle() %}
+        <h2>{{ basic.getTitle() }} </h2>
+    {% endif %}
+
+</div>
+
+<script>
+
+    ara.view({url: '{{ ObjectUrl }}',
+        object: {
+            scale: 0.1,
+            rotation: {x: 0},
+            position: {y: 0}},
+        plane:
+                {show: false},
+        showGui: true,
+        showStats: false
+
+    });
+
+    var can = document.querySelector('canvas');
+    can.style.width = "100%";
+    can.style.height = "100%";
+    can.id = "id-test";
+    jQuery(function ($) {
+        "use strict";
+        $(document).ready(function () {
+            console.log("ready!");
+            $('.vert-divider').remove();
+            $('#block-mainpagecontent').removeClass('col-block col-lg-9 col-md-8 col-sm-12');
+            $('#block-mainpagecontent').addClass('col-block col-lg-12 col-md-12 col-sm-12');
+            $('#block-mainpagecontent').css('border-left', 'none');
+            $('#id-test').appendTo('#viewer-3d');
+            $('.dg.ac').appendTo('#menu-3d');
+            $('.dg.ac').css('float', 'none');
+            $('.dg.ac').css('position', 'absolute');
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-3" id="menu-3d" style="height: 100%">
+        </div>
+        <div class="col-lg-9 col-md-9" id="viewer-3d">            
+        </div>
+    </div>
+</div>
+
+
+
+
+

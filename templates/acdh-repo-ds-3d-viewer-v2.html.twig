@@ -1,0 +1,29 @@
+<div>
+    {%  if basic.getRepoId() %}
+        <div>
+            <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}"><span>{{ "Back to the resource"|trans }}</span></a>
+            <br/><br/>
+        </div>
+    {% endif %}    
+    {%  if basic.getTitle() %}
+        <h2>{{ basic.getTitle() }} </h2>
+    {% endif %}
+
+</div>
+
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('.vert-divider').remove();
+        $('#block-mainpagecontent').removeClass('col-block col-lg-9 col-md-8 col-sm-12');
+        $('#block-mainpagecontent').addClass('col-block col-lg-12 col-md-12 col-sm-12');
+        $('#block-mainpagecontent').css('border-left', 'none');
+
+        OV.Init3DViewerElements();
+    });
+</script>
+
+<div class="online_3d_viewer"
+     style="width: 100%; min-height: 600px;"
+     model="{{ ObjectUrl }}">
+</div>
+

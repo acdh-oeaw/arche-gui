@@ -80,3 +80,25 @@ ds-pdf-modal-styles:
     dependencies:
         - core/drupal
         - core/jquery
+
+ds-3d-viewer-kovacs-styles:
+    version: 1.0
+    header: true
+    css:
+        base:
+            css/3dviewer_kovacs/pickr.monolith.min-1.8.2.css: {}
+    js:
+        js/3dviewer_kovacs/jquery-3.5.1.min.js: {}
+        js/3dviewer_kovacs/pickr.es5.min-1.8.2.js: {}
+        js/3dviewer_kovacs/three.min-129.js: {}
+        js/3dviewer_kovacs/o3dv/o3dv.min.js: {}
+        js/3dviewer_kovacs/o3dv/o3dv.website.min.js: {}
+        
+ds-3d-viewer-v3-styles:
+    version: 1.0
+    header: true
+    js:
+        js/ara3d/ara3d-viewer.js: {}
+    dependencies:
+        - core/drupal
+        - core/jquery    

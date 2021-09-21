@@ -326,7 +326,7 @@ class ArcheApiHelper
 
             if (!empty($resTxt)) {
                 $resTxt = "#FORMAT: BEACON \n" . $resTxt;
-                file_save_data($resTxt, "public://beacon.txt", \FILE_EXISTS_REPLACE);
+                file_save_data($resTxt, "public://beacon.txt", \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
                 $this->result = array('fileLocation' => $fileLocation);
             } else {
                 $this->result = array('fileLocation' => '');
