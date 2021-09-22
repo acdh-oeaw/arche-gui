@@ -59,7 +59,6 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             $guiData['extra']['baseUrl'] = $this->repo->getBaseUrl();
             $ge = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
             $guiData['extra']['clarinUrl'] = $ge->initClarinVcrUrl();
-           
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
