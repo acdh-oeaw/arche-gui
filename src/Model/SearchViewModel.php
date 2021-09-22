@@ -53,6 +53,56 @@ class SearchViewModel extends ArcheModel
         }
     }
     
+    public function getVcr(object $metavalue = null): array {
+        $this->metaObj = $metavalue;
+        $sqlYears = $this->formatYearsFilter_V2();
+        $sqlTypes = $this->formatTypeFilter_V2();
+        $sqlCategory = $this->formatTypeFilter_V2("category");
+        if (isset($this->metaObj->words) && (count((array)$this->metaObj->words) > 0)) {
+            $sqlWords = implode(" & ", (array)$this->metaObj->words);
+        } else {
+            $sqlWords = (string)"*";
+        }
+        $this->setUpPayload();
+        
+        try {
+            $this->setSqlTimeout('60000');
+            //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
+            $query = $this->repodb->query(
+                "SELECT 
+                    json_agg(
+                        json_build_object(
+                            'uri', fs.pid,
+                            'label', fs.title,
+                            'description', fs.description                            
+                        )
+                    )
+                from gui.search_full_v3_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch, ".$sqlCategory.") as fs;",
+                array(
+                    ':wordStr' => (string)$sqlWords,
+                    ':yearStr' => (string)$sqlYears,
+                    ':lang' => $this->siteLang,
+                    ':limit' => $this->limit,
+                    ':offset' => $this->offset,
+                    ':order' => $this->orderby,
+                    ':order_prop' => $this->orderby_column,
+                    ':binarySearch' => $this->binarySearch
+                ),
+                ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
+            );
+            $this->sqlResult = $query->fetchAll();
+            $this->changeBackDBConnection();
+        } catch (\Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return array();
+        }
+        
+        return $this->sqlResult;
+    }
+    
     public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
     {
         $result = array();

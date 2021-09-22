@@ -48,7 +48,7 @@
             {% endif %}
             
             {%  if 'arche-dev.acdh-dev.oeaw.ac.at' in  basic.getRepoUrl() %}
-                {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-vcr.html.twig', {'data':  basic.getVCRData(), 'url': basic.getRepoUrl() }) }}
+                {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-vcr.html.twig', {'data':  basic.getVCRData(), 'url': clarinVCRUrl }) }}
             {% endif%} 
 
         </div>

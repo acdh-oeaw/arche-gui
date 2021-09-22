@@ -99,7 +99,10 @@
             <div class="row mt-4">
                 <div class="col-lg-12">   
                     <div id="dissemination-view-div">
-                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 'accessRestriction': basic.getAccessRestriction(), 'isPDF': basic.isPDF(), 'isAudio': basic.isAudio()  } ) }}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', 
+                            {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 
+                                'accessRestriction': basic.getAccessRestriction(), 'isPDF': basic.isPDF(), 'isAudio': basic.isAudio(), 'clarinVCRUrl': extra.clarinVCRUrl  } 
+                        ) }}
                     </div>
                 </div>
             </div>

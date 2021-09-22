@@ -267,7 +267,16 @@ repo_search_v2:
   requirements:
     _permission: 'access content'
     _access: 'TRUE'      
-        
+
+repo_search_vcr:    
+  path: '/search_vcr/{metavalue}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::search_vcr'
+    metavalue: ""
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'
+    
 repo_shibboleth_login:
     path: '/federated_login'
     defaults:

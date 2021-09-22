@@ -1,6 +1,8 @@
 <h2>SEARCH</h2>
 {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': paging } ) }}
-        
+<div class="res-el col-block col-lg-12">
+    <div  id="submit-search-vcr" class="res-act-button res-btn-submit-vcr"><span>Add Search Result Set to CLARIN Virtual Collection</span></div>
+</div>        
 {% for item in data %}
     {% if item.getTitle() %}
         <div class="res-el col-block col-lg-12">

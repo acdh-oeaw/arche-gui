@@ -71,6 +71,8 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
 
         \Drupal::service('page_cache_kill_switch')->trigger();
        
+        $dv->extra->clarinVCRUrl = $this->initClarinVcrUrl();
+        
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,
@@ -206,4 +208,13 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
         return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
+
+    public function initClarinVcrUrl(): string {
+        $yaml = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($this->config));
+        if(isset($yaml['clarinVcrUrl'])) {
+            return $yaml['clarinVcrUrl'];
+        }
+        return "";
+    }
+
 }
