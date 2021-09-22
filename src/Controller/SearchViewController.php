@@ -56,6 +56,10 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             );
 
             $guiData = array('data' => $this->helper->createView($data['data'], 2), 'pagination' => $pagination);
+            $guiData['extra']['baseUrl'] = $this->repo->getBaseUrl();
+            $ge = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
+            $guiData['extra']['clarinUrl'] = $ge->initClarinVcrUrl();
+           
         } else {
             $guiData['data'] = array();
             $guiData['pagination'] = $this->pagingHelper->createView(
@@ -69,6 +73,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         return [
             '#theme' => 'acdh-repo-gui-search-full',
             '#data' => $guiData['data'],
+            '#extra' => $guiData['extra'],
             '#paging' => $guiData['pagination'][0],
             '#attached' => [
                 'library' => [

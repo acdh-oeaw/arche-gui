@@ -1014,7 +1014,7 @@ LANGUAGE 'plpgsql';
 **/
 DROP FUNCTION gui.search_full_v3_func(text, text[], text, text, text, text, text, text, bool);
 CREATE FUNCTION gui.search_full_v3_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE, _category text[] DEFAULT '{}' )
-    RETURNS table (acdhid bigint, title text, description text, acdhtype text, headline_text text, headline_desc text, headline_binary text, avdate timestamp, accessres text, titleimage text, ids text, cnt bigint)
+    RETURNS table (acdhid bigint, title text, description text, acdhtype text, headline_text text, headline_desc text, headline_binary text, avdate timestamp, accessres text, titleimage text, ids text, cnt bigint, pid text)
 AS $func$
 DECLARE	
     _lang2 text := 'de';
@@ -1288,7 +1288,12 @@ CREATE TEMPORARY TABLE count_data AS (
 
 RETURN QUERY 
   select 
-        fd.acdhid,  fd.title, fd.description, fd.acdhtype,  fd.headline_title, fd.headline_desc, fd.headline_binary,  CAST(fd.avdate as timestamp) as avdate, fd.accessres, fd.titleimage, fd.ids, (select cd.cnt from count_data as cd) as cnt
+        fd.acdhid,  fd.title, fd.description, fd.acdhtype,  fd.headline_title, fd.headline_desc, fd.headline_binary,  CAST(fd.avdate as timestamp) as avdate, fd.accessres, fd.titleimage, fd.ids, (select cd.cnt from count_data as cd) as cnt,
+        CASE WHEN (SELECT EXISTS (SELECT 1 FROM final_result WHERE lower(fd.ids) = '%hdl.handle%')) then
+            (select mv.value from metadata_view as mv where mv.id = fd.acdhid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasPid' limit 1)
+        ELSE
+            (select i.ids from identifiers as i  where i.id = fd.acdhid and i.ids like '%/id.acdh.oeaw.ac.at/%' limit 1)
+        END as pid
     from final_result as fd
     left join resources as rs on rs.id = fd.acdhid
     where 

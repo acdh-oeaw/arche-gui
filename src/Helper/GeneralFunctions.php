@@ -370,4 +370,12 @@ class GeneralFunctions
         }
         return '';
     }
+    
+    public function initClarinVcrUrl(): string {
+        $yaml = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($this->config));
+        if(isset($yaml['clarinVcrUrl'])) {
+            return $yaml['clarinVcrUrl'];
+        }
+        return "";
+    }
 }
