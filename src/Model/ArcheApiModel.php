@@ -60,7 +60,7 @@ class ArcheApiModel extends ArcheModel
                 break;
             case 'rootTable':
                 return $this->getRootTableOntology();
-                break;            
+                break;
             default:
                 return $this->getData();
                 break;

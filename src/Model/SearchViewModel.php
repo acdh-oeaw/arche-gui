@@ -53,7 +53,8 @@ class SearchViewModel extends ArcheModel
         }
     }
     
-    public function getVcr(object $metavalue = null): array {
+    public function getVcr(object $metavalue = null): array
+    {
         $this->metaObj = $metavalue;
         $sqlYears = $this->formatYearsFilter_V2();
         $sqlTypes = $this->formatTypeFilter_V2();
