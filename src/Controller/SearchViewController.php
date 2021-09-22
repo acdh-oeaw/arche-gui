@@ -88,8 +88,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
     {
         $this->modelData = $this->model->getVcr($this->helper->createMetaObj($metavalue));
         
-        if(count($this->modelData) > 0 && isset($this->modelData[0]->json_agg)) {
-            
+        if (count($this->modelData) > 0 && isset($this->modelData[0]->json_agg)) {
             return new \Symfony\Component\HttpFoundation\Response($this->modelData[0]->json_agg, 200, ['Content-Type' => 'application/json']);
         }
         return new JsonResponse(array("There is no data"), 404, ['Content-Type' => 'application/json']);

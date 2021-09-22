@@ -209,12 +209,12 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
 
-    public function initClarinVcrUrl(): string {
+    public function initClarinVcrUrl(): string
+    {
         $yaml = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($this->config));
-        if(isset($yaml['clarinVcrUrl'])) {
+        if (isset($yaml['clarinVcrUrl'])) {
             return $yaml['clarinVcrUrl'];
         }
         return "";
     }
-
 }
