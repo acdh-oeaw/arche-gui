@@ -322,7 +322,7 @@ AS $func$
     WITH t1 AS (
         SELECT id, row_number() OVER () AS orderid
         FROM (
-            SELECT id, ordervalue, CASE _orderprop WHEN 'desc' THEN -row_number() OVER () ELSE row_number() OVER () END AS orderid
+            SELECT id, CASE _orderby WHEN 'desc' THEN -row_number() OVER (ORDER BY ordervalue) ELSE row_number() OVER () END AS ord, ordervalue
             FROM (
                 SELECT
                     r1.id, 
@@ -335,7 +335,7 @@ AS $func$
                 GROUP BY 1
                 ORDER BY 2
             ) t
-            ORDER BY orderid
+            ORDER BY ord
         ) t
         LIMIT _limit
         OFFSET _page
@@ -378,6 +378,7 @@ AS $func$
             JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
         GROUP BY 1, 2, 3, 4, 5, 6, 7
     ) t
+    ORDER BY orderid
 $func$
 LANGUAGE 'sql';
 
