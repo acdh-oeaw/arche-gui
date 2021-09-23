@@ -39,6 +39,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $data = array();
         $guiData = array();
         $guiData['data'] = array();
+        $guiData['extra'] = array();
         //for the DB we need a 0
         ((int) $page == 1) ? (int) $page = 0 : $page = (int) $page;
         $data = $this->model->getViewData($limit, $page, $order, $this->helper->createMetaObj($metavalue));
@@ -88,12 +89,12 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      * @param string $metavalue
      * @return Response
      */
-    public function search_vcr(string $metavalue = "root"): \Symfony\Component\HttpFoundation\Response
+    public function search_vcr(string $metavalue = "root"): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->modelData = $this->model->getVcr($this->helper->createMetaObj($metavalue));
         
         if (count($this->modelData) > 0 && isset($this->modelData[0]->json_agg)) {
-            return new \Symfony\Component\HttpFoundation\Response($this->modelData[0]->json_agg, 200, ['Content-Type' => 'application/json']);
+            return new \Symfony\Component\HttpFoundation\JsonResponse($this->modelData[0]->json_agg, 200, ['Content-Type' => 'application/json']);
         }
         return new JsonResponse(array("There is no data"), 404, ['Content-Type' => 'application/json']);
     }
