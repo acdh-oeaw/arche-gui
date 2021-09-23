@@ -314,7 +314,7 @@ LANGUAGE 'plpgsql';
 * _lang = 'en' or 'de'
 * select * from gui.child_views_func('https://arche-dev.acdh-dev.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
-DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
+--DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
 DROP FUNCTION gui.child_views_func(text, int, int, text, text, text, text[] );
 CREATE FUNCTION gui.child_views_func(_parentid text, _limit int, _page int, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, orderid integer)
