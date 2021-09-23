@@ -315,106 +315,71 @@ LANGUAGE 'plpgsql';
 * select * from gui.child_views_func('https://arche-dev.acdh-dev.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
 DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
-CREATE FUNCTION gui.child_views_func(_parentid text, _limit text, _page text, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
+DROP FUNCTION gui.child_views_func(text, int, int, text, text, text, text[] );
+CREATE FUNCTION gui.child_views_func(_parentid text, _limit int, _page int, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, orderid integer)
 AS $func$    
-    DECLARE _lang2 text := 'de';
-    DECLARE _lang3 text := 'und';
-    /* we can just send string from the php so we need to cast the paging values to bigint */
-    DECLARE limitint bigint := cast ( _limit as bigint);
-    DECLARE pageint bigint := cast ( _page as bigint);
-BEGIN
-RAISE NOTICE USING MESSAGE = _orderby;
-    /* set up the secondary language */
-    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-DROP TABLE IF EXISTS child_ids;
-CASE WHEN _orderby = 'asc' then 
-    CREATE TEMP TABLE child_ids AS(
-    WITH ids AS (
-        select 
-            DISTINCT(r.id),
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop limit 1)
-            ) ordervalue,
-            /* handle the language for title */
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
-            ) as title,
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
-            /* handle the language for the description */
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'  limit 1)
-            ) description,
-            (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
-        from relations as r
-        left join identifiers as i on i.id = r.target_id 
-        where r.property = ANY (_rdftype)
-            and i.ids = _parentid
-        order by 
-            ordervalue asc
-            limit limitint
-            offset pageint
-    ) select * from ids		
-);
-
-ELSE
-    CREATE TEMP TABLE child_ids AS(
-    WITH ids AS (
-        select 
-            DISTINCT(r.id),
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = _orderprop limit 1)
-            ) ordervalue,
-            /* handle the language for title */
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
-            ) as title,
-            (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' limit 1) as avdate,
-            /* handle the language for the description */
-            COALESCE(
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
-                (select mv.value from metadata_view as mv where mv.id = r.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
-            ) description,
-            (select mv.value from relations as r2 left join metadata_view as mv on r2.target_id = mv.id where r.id = r2.id and r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' and
-            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang) as accessres,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitleImage' limit 1) as titleimage,
-            (select mv.value from metadata_view as mv where r.id = mv.id and mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.value like '%vocabs.%'  limit 1) as acdhtype
-        from relations as r
-        left join identifiers as i on i.id = r.target_id 
-        where r.property = ANY (_rdftype)
-            and i.ids = _parentid
-        order by 
-            ordervalue desc
-            limit limitint
-            offset pageint
-    ) select * from ids		
-);
-END CASE;
-alter table child_ids add orderid serial;
-	
-RETURN QUERY
-    select DISTINCT(ci.id), ci.title, CAST(ci.avdate as timestamp), ci.description, ci.accessres, ci.titleimage, ci.acdhtype, ci.orderid
-    from child_ids as ci 
-    left join resources as rs on rs.id = ci.id 
-    where rs.state = 'active'
-    order by ci.orderid;
-END
+    WITH t1 AS (
+        SELECT id, row_number() OVER () AS orderid
+        FROM (
+            SELECT id, ordervalue, CASE _orderprop WHEN 'desc' THEN -row_number() OVER () ELSE row_number() OVER () END AS orderid
+            FROM (
+                SELECT
+                    r1.id, 
+                    (array_agg(m1.value ORDER BY CASE m1.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS ordervalue
+                FROM
+                    identifiers i
+                    JOIN relations r1 ON r1.target_id = i.id AND r1.property = ANY (_rdftype)
+                    JOIN metadata m1 ON r1.id = m1.id AND m1.property = _orderprop
+                WHERE i.ids = _parentid
+                GROUP BY 1
+                ORDER BY 2
+            ) t
+            ORDER BY orderid
+        ) t
+        LIMIT _limit
+        OFFSET _page
+    )
+    SELECT id, title, avdate, description, accesres, titleimage, acdhtype, orderid::int
+    FROM (
+        SELECT
+            t4.id, orderid, title, description, acdhtype,
+            m5.value_t AS avdate,
+            '' AS titleimage, -- left for return type compatibility - the old code was always returning null as wrong property was in use,
+            (array_agg(mr2.value ORDER BY CASE mr2.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS accesres
+        FROM
+            (
+                SELECT
+                    t3.id, orderid, title, description,
+                    (array_agg(m4.value))[1] AS acdhtype
+                FROM
+                    (
+                        SELECT
+                            t2.id, orderid, title,
+                            (array_agg(m3.value ORDER BY CASE m3.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS description
+                        FROM
+                            (
+                                SELECT 
+                                    t1.id, orderid,
+                                    (array_agg(m2.value ORDER BY CASE m2.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS title
+                                FROM
+                                    t1
+                                    JOIN metadata m2 ON t1.id = m2.id AND m2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+                                GROUP BY 1, 2    
+                            ) t2
+                            LEFT JOIN metadata m3 ON t2.id = m3.id AND m3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription'
+                        GROUP BY 1, 2, 3
+                    ) t3
+                    JOIN metadata m4 ON t3.id = m4.id AND m4.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' AND m4.value LIKE 'https://vocabs.acdh.%'
+                GROUP BY 1, 2, 3, 4
+            ) t4
+            JOIN metadata m5 ON t4.id = m5.id AND m5.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'
+            JOIN relations r2 ON t4.id = r2.id AND r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+            JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+        GROUP BY 1, 2, 3, 4, 5, 6, 7
+    ) t
 $func$
-LANGUAGE 'plpgsql';
+LANGUAGE 'sql';
 
 /*
 * get the sum of the child gui view resources for the pager
@@ -453,56 +418,31 @@ LANGUAGE 'plpgsql';
 * generate the data for the gui BREADCRUMB
 * mainid -> simple int as text -> '207984'
 */
-DROP FUNCTION gui.breadcrumb_view_func(text, text );
-CREATE FUNCTION gui.breadcrumb_view_func(_pid text, _lang text DEFAULT 'en' )
+DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(text, text );
+DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(bigint, text );
+CREATE FUNCTION gui.breadcrumb_view_func(_pid bigint, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer)
 AS $func$
-    DECLARE _lang2 text := 'de';
-    DECLARE _lang3 text := 'und';
-BEGIN
-    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-	
-    DROP TABLE IF EXISTS breadcrumbdata;
-    CREATE TEMPORARY TABLE breadcrumbdata(mainid bigint, parentid bigint, depth integer);
-	INSERT INTO breadcrumbdata( 
-            WITH RECURSIVE subordinates AS (
-                SELECT
-                    mv.id as mainid,
-                    CAST(mv.value as bigint) as parentid,
-                    1 as depthval
-                FROM
-                    metadata_view as mv
-                WHERE
-                    mv.id = CAST(_pid as bigint)
-                    and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
-                UNION
-                SELECT
-                    mv2.id,
-                    CAST(mv2.value as bigint) as m2val,
-                    depthval + 1 
-                FROM
-                    metadata_view as mv2
-                INNER JOIN subordinates s ON s.parentid = mv2.id and  mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' 
-            ) select * from subordinates
-	);
-
-RETURN QUERY
+    with parents as (
+        select *
+        from get_relatives(_pid, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 0)
+        where n < 0
+    )
     select 
-        DISTINCT(bd.mainid), bd.parentid, 
-        COALESCE(
-            (select mv.value from metadata_view as mv where mv.id = bd.parentid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
-            (select mv.value from metadata_view as mv where mv.id = bd.parentid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
-            (select mv.value from metadata_view as mv where mv.id = bd.parentid and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang3 limit 1)
-        ) as title,
-        bd.depth 
+        _pid as mainid, 
+        p.id as parentid, 
+        (array_agg(mv.value order by case mv.lang when _lang then 0 when 'en' then 1 else 2 end))[1] as parenttitle, 
+        abs(p.n) as depth
     from 
-        breadcrumbdata as bd
-    left join resources as rs on rs.id = bd.mainid 
-    where rs.state = 'active';
-END
+        parents p
+        join resources rs using (id)
+        join metadata mv using (id)
+    where
+        rs.state = 'active'
+        and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+    group by 1, 2, 4
 $func$
-LANGUAGE 'plpgsql';
-
+LANGUAGE 'sql';
 
 /**
 * Get Members API SQL
@@ -623,32 +563,28 @@ DROP FUNCTION gui.ontology_func(text);
 CREATE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, description text, type text)
 AS $func$
-DECLARE 
-
-BEGIN
-    DROP TABLE IF EXISTS  ontologyData;
-    CREATE TEMP TABLE ontologyData AS (
-        select mv.id, 
-        mv2.property, mv2.value, mv2.lang
-        from metadata_view as mv
-        left join metadata_view as mv2 on mv.id = mv2.id and mv.value in ('http://www.w3.org/2002/07/owl#DatatypeProperty', 'http://www.w3.org/2002/07/owl#ObjectProperty')
+        select 
+            mv.id, 
+            (array_agg(distinct mv2.value))[1] as description, 
+            (array_agg(distinct mv3.value))[1] as title,
+            (array_agg(distinct i.ids))[1] as type
+        from
+            metadata_view as mv
+            left join metadata_view as mv2 using (id)
+            left join metadata_view as mv3 using (id)
+            join identifiers as i using (id)
         where 
-        mv2.property in ('http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2004/02/skos/core#altLabel')
-        and mv2.lang = _lang
-        order by mv.id
-    );
-RETURN QUERY	
-    select DISTINCT(od.id), 
-    (select od3.value from ontologyData as od3 where od3.id = od.id and od3.property = 'http://www.w3.org/2004/02/skos/core#altLabel' limit 1) as title,
-            (select od2.value from ontologyData as od2 where od2.id = od.id and od2.property = 'http://www.w3.org/2000/01/rdf-schema#comment' limit 1) as description,
-    REPLACE(mv.value, 'https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:')
-    from ontologyData as od
-    left join metadata_view as mv on mv.id = od.id and mv.type = 'ID' and mv.value like 'https://vocabs.acdh%'
-    left join resources as rs on rs.id = od.id 
-    where rs.state = 'active';
-END
+            mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+            and substring(mv.value, 1, 1000) in ('http://www.w3.org/2002/07/owl#DatatypeProperty', 'http://www.w3.org/2002/07/owl#ObjectProperty')
+            and mv2.property = 'http://www.w3.org/2000/01/rdf-schema#comment'
+            and mv2.lang = _lang
+            and mv3.property = 'http://www.w3.org/2004/02/skos/core#altLabel'
+            and mv3.lang = _lang
+            and i.ids like 'https://vocabs.acdh%'
+        group by 1
+        order by 1
 $func$
-LANGUAGE 'plpgsql';
+LANGUAGE 'sql';
 
 /**
 * COUNT THE binaries and main collections for the Ckeditor plugin
