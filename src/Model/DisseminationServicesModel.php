@@ -46,7 +46,7 @@ class DisseminationServicesModel extends ArcheModel
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
             $this->changeBackDBConnection();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->sqlResult = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -68,7 +68,7 @@ class DisseminationServicesModel extends ArcheModel
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
             
             $this->changeBackDBConnection();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->sqlResult = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

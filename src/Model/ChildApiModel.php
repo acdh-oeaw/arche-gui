@@ -125,7 +125,7 @@ class ChildApiModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->data = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->data = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -163,7 +163,7 @@ class ChildApiModel extends ArcheModel
             if (isset($result->countid)) {
                 return (int) $result->countid;
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -196,7 +196,7 @@ class ChildApiModel extends ArcheModel
             if (isset($result->value)) {
                 return $result->value;
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

@@ -58,7 +58,7 @@ abstract class ArcheModel
                 "SET statement_timeout TO :timeout;",
                 array(':timeout' => $timeout)
             )->fetch();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

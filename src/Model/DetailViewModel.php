@@ -37,7 +37,7 @@ class DetailViewModel extends ArcheModel
             //run the actual query
             $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -67,7 +67,7 @@ class DetailViewModel extends ArcheModel
             //run the actual query
             $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id, :lang) order by depth desc ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -91,7 +91,7 @@ class DetailViewModel extends ArcheModel
             //run the actual query
             $query = $this->repodb->query(" select * from gui.ontology_func(:lang) ", array(':lang' => $this->siteLang));
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

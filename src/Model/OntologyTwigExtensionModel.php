@@ -44,7 +44,7 @@ class OntologyTwigExtensionModel extends ArcheModel
                     )
             );
             $this->dbResult = $query->fetchAssoc();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

@@ -68,7 +68,7 @@ class BlocksModel extends ArcheModel
                 order by value asc"
             );
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -102,7 +102,7 @@ class BlocksModel extends ArcheModel
                 order by year desc"
             );
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -130,7 +130,7 @@ class BlocksModel extends ArcheModel
                 array(':id' => $params['identifier'], ':lang' => $params['lang'])
             );
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -163,7 +163,7 @@ class BlocksModel extends ArcheModel
                     )
             );
             $result = $query->fetchAll();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

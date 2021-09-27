@@ -9,7 +9,7 @@ jQuery(function ($) {
         $('#submit-search-vcr').hide();
         $('#vcr-data-loading').show();
         setInterval(blink_text('vcr-data-loading'), 10000);
-        
+
         let metavalue = vcrMeta();
         let url = "/browser/api/search_vcr/" + metavalue;
         $.get(url).success(function (data) {
@@ -41,8 +41,11 @@ jQuery(function ($) {
 
     function buildAndSubmitVcrForm(clarinUrl, data) {
         $('<form action="' + clarinUrl + '" method="POST" target="_blank" id="dynamicVcr">\n\
-        <input type="hidden" name="name" value="ArcheCollection"/>\n\<input type="hidden" id="vcrResourceUri" name="resourceUri"/></form>').appendTo('#vcr-search-form');//.submit();
-        $('#vcrResourceUri').val(data);
+        <input type="hidden" name="name" value="ArcheCollection"/>\n\</form>').appendTo('#vcr-search-form');
+        let obj = JSON.parse(data);
+        $.each(obj, function (key, value) {
+            $('<input type="hidden" id="vcrResourceUri" name="resourceUri"/>').val(JSON.stringify(value)).appendTo('#dynamicVcr');
+        });
         $('#dynamicVcr').submit();
     }
 

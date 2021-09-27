@@ -54,7 +54,7 @@ class GeneralFunctionsModel extends ArcheModel
             
             $this->sqlResult = $query->fetchAll();
             $this->changeBackDBConnection();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

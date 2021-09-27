@@ -324,7 +324,7 @@ class SearchViewModel extends ArcheModel
                 return (int)$return->id;
             }
             return 0;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -365,7 +365,7 @@ class SearchViewModel extends ArcheModel
                 return (int)$return->id;
             }
             return 0;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -407,7 +407,7 @@ class SearchViewModel extends ArcheModel
                 return (int)$return->id;
             }
             return 0;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -460,7 +460,7 @@ class SearchViewModel extends ArcheModel
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -504,7 +504,7 @@ class SearchViewModel extends ArcheModel
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
             $this->changeBackDBConnection();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

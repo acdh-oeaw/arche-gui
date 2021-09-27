@@ -294,7 +294,7 @@ class ArcheApiModel extends ArcheModel
                 )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS|\PDO::FETCH_GROUP);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -331,7 +331,7 @@ class ArcheApiModel extends ArcheModel
                 )
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -364,7 +364,7 @@ class ArcheApiModel extends ArcheModel
                         and i.ids like '%gnd%';"
             );
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
@@ -394,7 +394,7 @@ class ArcheApiModel extends ArcheModel
             );
             
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {

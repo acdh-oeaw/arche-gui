@@ -322,11 +322,11 @@ AS $func$
     WITH t1 AS (
         SELECT id, row_number() OVER () AS orderid
         FROM (
-            SELECT id, CASE _orderby WHEN 'desc' THEN -row_number() OVER (ORDER BY ordervalue) ELSE row_number() OVER () END AS ord, ordervalue
+            SELECT id, ordervalue, CASE _orderprop WHEN 'desc' THEN -row_number() OVER () ELSE row_number() OVER () END AS orderid
             FROM (
                 SELECT
                     r1.id, 
-                    (array_agg(m1.value ORDER BY CASE m1.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS ordervalue
+                    (array_agg(m1.value ORDER BY CASE m1.lang WHEN _lang THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS ordervalue
                 FROM
                     identifiers i
                     JOIN relations r1 ON r1.target_id = i.id AND r1.property = ANY (_rdftype)
@@ -335,7 +335,7 @@ AS $func$
                 GROUP BY 1
                 ORDER BY 2
             ) t
-            ORDER BY ord
+            ORDER BY orderid
         ) t
         LIMIT _limit
         OFFSET _page
@@ -346,7 +346,7 @@ AS $func$
             t4.id, orderid, title, description, acdhtype,
             m5.value_t AS avdate,
             '' AS titleimage, -- left for return type compatibility - the old code was always returning null as wrong property was in use,
-            (array_agg(mr2.value ORDER BY CASE mr2.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS accesres
+            (array_agg(mr2.value ORDER BY CASE mr2.lang WHEN _lang THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS accesres
         FROM
             (
                 SELECT
@@ -356,12 +356,12 @@ AS $func$
                     (
                         SELECT
                             t2.id, orderid, title,
-                            (array_agg(m3.value ORDER BY CASE m3.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS description
+                            (array_agg(m3.value ORDER BY CASE m3.lang WHEN _lang THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS description
                         FROM
                             (
                                 SELECT 
                                     t1.id, orderid,
-                                    (array_agg(m2.value ORDER BY CASE m2.lang WHEN 'de' THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS title
+                                    (array_agg(m2.value ORDER BY CASE m2.lang WHEN _lang THEN 0 WHEN 'en' THEN 1 ELSE 2 END))[1] AS title
                                 FROM
                                     t1
                                     JOIN metadata m2 ON t1.id = m2.id AND m2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
@@ -378,7 +378,6 @@ AS $func$
             JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
         GROUP BY 1, 2, 3, 4, 5, 6, 7
     ) t
-    ORDER BY orderid
 $func$
 LANGUAGE 'sql';
 
