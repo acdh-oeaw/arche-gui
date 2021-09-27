@@ -322,7 +322,7 @@ AS $func$
     WITH t1 AS (
         SELECT id, row_number() OVER () AS orderid
         FROM (
-            SELECT id, ordervalue, CASE _orderprop WHEN 'desc' THEN -row_number() OVER () ELSE row_number() OVER () END AS orderid
+            SELECT id, ordervalue, CASE _orderby WHEN 'desc' THEN -row_number() OVER () ELSE row_number() OVER () END AS orderid
             FROM (
                 SELECT
                     r1.id, 
@@ -374,8 +374,8 @@ AS $func$
                 GROUP BY 1, 2, 3, 4
             ) t4
             JOIN metadata m5 ON t4.id = m5.id AND m5.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'
-            JOIN relations r2 ON t4.id = r2.id AND r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
-            JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            LEFT JOIN relations r2 ON t4.id = r2.id AND r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
+            LEFT JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
         GROUP BY 1, 2, 3, 4, 5, 6, 7
     ) t
 $func$
