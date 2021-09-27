@@ -269,7 +269,7 @@ repo_search_v2:
     _access: 'TRUE'      
 
 repo_search_vcr:    
-  path: '/search_vcr/{metavalue}'
+  path: '/api/search_vcr/{metavalue}'
   defaults:
     _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::search_vcr'
     metavalue: ""

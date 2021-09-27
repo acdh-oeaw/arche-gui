@@ -11,7 +11,7 @@ jQuery(function ($) {
         setInterval(blink_text('vcr-data-loading'), 10000);
         
         let metavalue = vcrMeta();
-        let url = "/browser/search_vcr/" + metavalue;
+        let url = "/browser/api/search_vcr/" + metavalue;
         $.get(url).success(function (data) {
             buildAndSubmitVcrForm($('#search-clarinurl').val(), data);
             $('#vcr-data-loading').hide();
@@ -30,7 +30,7 @@ jQuery(function ($) {
 
     /**
      * Get the search string values for the vcr data
-     * @returns {unresolved}
+     * @returns string
      */
     function vcrMeta() {
         let test = window.location.href;
@@ -40,9 +40,10 @@ jQuery(function ($) {
 
 
     function buildAndSubmitVcrForm(clarinUrl, data) {
-        $('<form action="' + clarinUrl + '" method="POST" target="_blank">\n\
-        <input type="hidden" name="name" value="ArcheCollection"/>\n\
-        <input type="hidden" name="resourceUri" value=' + data + ' /></form>').appendTo('#vcr-search-form');//.submit();
+        $('<form action="' + clarinUrl + '" method="POST" target="_blank" id="dynamicVcr">\n\
+        <input type="hidden" name="name" value="ArcheCollection"/>\n\<input type="hidden" id="vcrResourceUri" name="resourceUri"/></form>').appendTo('#vcr-search-form');//.submit();
+        $('#vcrResourceUri').val(data);
+        $('#dynamicVcr').submit();
     }
 
 
