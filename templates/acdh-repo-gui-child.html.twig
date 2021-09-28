@@ -78,7 +78,6 @@
                         </div>
                     {% endif%}
 
-                    {{ item.getData('acdh:hasVersion') }}
                     {% if item.getData('acdh:hasAvailableDate')[0].value or item.getData('acdh:hasVersion')[0].value %}
                         <div class="res-property">
                             {% if item.getData('acdh:hasAvailableDate')[0].value %}
