@@ -1,0 +1,14 @@
+{% if value.value|first|lower == "-" %}
+    <!-- remove the minus from the beginning -->
+    {% set nd = value.value|split('-', 2) %}
+    <!-- if we still have content -->
+    {% if nd[1] is not empty %}
+        <!-- do the date formatting -->
+        {% set ndf = nd[1]|archeTranslateDateFilter(dateformat) %}
+        {% if ndf is not empty %}
+            -{{ ndf }}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {{ value.value|archeTranslateDateFilter(dateformat) }}
+{% endif %}

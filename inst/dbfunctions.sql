@@ -376,7 +376,7 @@ AS $func$
             JOIN metadata m5 ON t4.id = m5.id AND m5.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'
             LEFT JOIN relations r2 ON t4.id = r2.id AND r2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction'
             LEFT JOIN metadata mr2 ON r2.target_id = mr2.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            LEFT JOIN metadata mr3 ON r2.target_id = mr3.id AND mr2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion'        
+            LEFT JOIN metadata mr3 ON t4.id = mr3.id AND mr3.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion'      
         GROUP BY 1, 2, 3, 4, 5, 6, 7
     ) t order by orderid
 $func$

@@ -127,20 +127,8 @@ Field extra type:
                             {% endif %}
                         {% endif %}
                     {% elseif(type == 'date' and dateformat) %}
-                        {% if value.value|first|lower == "-" %}
-                            <!-- remove the minus from the beginning -->
-                            {% set nd = value.value|split('-', 2) %}
-                            <!-- if we still have content -->
-                            {% if nd[1] is not empty %}
-                                <!-- do the date formatting -->
-                                {% set ndf = nd[1]|archeTranslateDateFilter(dateformat) %}
-                                {% if ndf is not empty %}
-                                    -{{ ndf }}
-                                {% endif %}
-                            {% endif %}
-                        {% else %}
-                            {{ value.value|archeTranslateDateFilter(dateformat) }}
-                        {% endif %}
+                       {{ include('/modules/contrib/arche-gui/templates/helpers/helper-date.html.twig', 
+                                {'value': value,  'dateformat': dateformat } ) }}
                     {% else %}
                         <!-- if there is no type defined then simply display the title -->
                         {% if (value.value) is not empty %} 

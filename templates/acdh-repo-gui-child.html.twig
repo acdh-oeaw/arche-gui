@@ -78,23 +78,26 @@
                         </div>
                     {% endif%}
 
+                    {{ item.getData('acdh:hasVersion') }}
                     {% if item.getData('acdh:hasAvailableDate')[0].value or item.getData('acdh:hasVersion')[0].value %}
                         <div class="res-property">
                             {% if item.getData('acdh:hasAvailableDate')[0].value %}
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                                {'data': item.getData('acdh:hasAvailableDate'), 'type': "date", 'icon': "today", 'label': "Available Date", 'dateformat': 'd M Y' } ) }}
+                                <i class="material-icons">today</i>
+                                <span class="res-prop-label">{{ "Available Date"|trans }}:</span>
+                                
+                                {{ include('/modules/contrib/arche-gui/templates/helpers/helper-date.html.twig', 
+                                {'value': item.getData('acdh:hasAvailableDate')[0],  'dateformat': 'd M Y' } ) }}
+                                
                             {% endif%}
                             {% if item.getData('acdh:hasAvailableDate')[0].value and item.getData('acdh:hasVersion')[0].value %}
-                                -
+                                <i>&mdash;</i>
                             {% endif%}
                             {% if item.getData('acdh:hasVersion')[0].value %}
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                                {'data': item.getData('acdh:hasVersion'),  'label': "Version" } ) }}
+                                <span class="res-prop-label">{{ "Version"|trans }}:</span>
+                                {{ item.getData('acdh:hasVersion')[0].value }}
                             {% endif%}
                         </div>
                     {% endif%}
-
-
 
                     <div class="res-inside-wrap col-lg-12">
                         <div class="res-actions">

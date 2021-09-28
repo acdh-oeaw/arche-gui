@@ -113,7 +113,7 @@ class ChildApiModel extends ArcheModel
             $this->setSqlTimeout('30000');
             // distinct is removing the ordering
             $query = $this->repodb->query(
-                "select id, title, avdate, description, accesres, titleimage, acdhtype from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
+                "select id, title, avdate, description, accesres, titleimage, acdhtype, version from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
                         ':id' => $identifier,
                         ':limit' => $limit,
