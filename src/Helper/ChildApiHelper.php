@@ -12,8 +12,8 @@ use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
  *
  * @author nczirjak
  */
-class ChildApiHelper {
-
+class ChildApiHelper
+{
     use \Drupal\acdh_repo_gui\Traits\ArcheUtilTrait;
 
     private $childViewObjectArray;
@@ -26,7 +26,8 @@ class ChildApiHelper {
      * @param array $data
      * @return array
      */
-    public function createView(array $data = array()): array {
+    public function createView(array $data = array()): array
+    {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
         $this->setProperties();
         $this->formatResultToGui($data);
@@ -44,7 +45,8 @@ class ChildApiHelper {
     /**
      * Set the properties what we want to process for the child object
      */
-    private function setProperties() {
+    private function setProperties()
+    {
         $this->properties = array(
             'version' => array('shortcut' => 'acdh:hasVersion', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasVersion"),
             'acdhtype' => array('shortcut' => 'rdf:type', 'property' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
@@ -61,7 +63,8 @@ class ChildApiHelper {
      * We need to format the root results for the gui
      * @return array
      */
-    private function formatResultToGui(array $data) {
+    private function formatResultToGui(array $data)
+    {
         if (count((array) $data) > 0) {
             foreach ($data as $k => $v) {
                 $lang = 'en';
@@ -86,11 +89,10 @@ class ChildApiHelper {
      * @param string $lang
      * @return void
      */
-    private function fetchProperties(string $k, object $v, string $lang): void {
-
+    private function fetchProperties(string $k, object $v, string $lang): void
+    {
         foreach ($this->properties as $pk => $pv) {
             if (isset($v->$pk)) {
-
                 $title = $v->$pk;
                 if ($v->$pk == 'accesres') {
                     $title = str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->$pk);
@@ -98,10 +100,10 @@ class ChildApiHelper {
 
                 $this->data[$k][$pv['shortcut']][$lang] = array(
                     $this->createObj(
-                            $v->id,
-                            $pv['property'],
-                            $title,
-                            $v->$pk
+                        $v->id,
+                        $pv['property'],
+                        $title,
+                        $v->$pk
                     )
                 );
             }
@@ -116,7 +118,8 @@ class ChildApiHelper {
      * @param string $value
      * @return object
      */
-    private function createObj(int $id, string $property, string $title, string $value): object {
+    private function createObj(int $id, string $property, string $title, string $value): object
+    {
         $obj = new \stdClass();
         $obj->id = $id;
         $obj->property = $property; //;
@@ -124,5 +127,4 @@ class ChildApiHelper {
         $obj->value = $value;
         return $obj;
     }
-
 }
