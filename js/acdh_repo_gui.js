@@ -16,6 +16,12 @@ jQuery(function ($) {
             buildAndSubmitVcrForm($('#search-clarinurl').val(), data);
             $('#vcr-data-loading').hide();
             $('#vcr-search-result-text').append('VCR Data Submitted');
+            setTimeout(
+                    function ()
+                    {
+                        $('#vcr-search-result-text').hide();
+                        $('#submit-search-vcr').show();
+                    }, 2000);
         }).error(function (data) {
             console.log('error' + data);
             $('#vcr-search-result-text').append('Error: ' + data);

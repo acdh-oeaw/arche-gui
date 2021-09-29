@@ -53,64 +53,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         return $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
     }
 
-    /**
-     * get the collection binaries
-     * @param string $repoid
-     * @return Response
-     */
-    public function repo_dl_collection_binaries(string $repoid): Response
-    {
-        $GLOBALS['resTmpDir'] = "";
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-
-        //the binary files
-        $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
-        if (count($binaries) == 0) {
-            $response->setContent(json_encode(""));
-            return $response;
-        }
-
-        ($_POST['username']) ? $username = $_POST['username'] : $username = '';
-        ($_POST['password']) ? $password = $_POST['password'] : $password = '';
-
-        $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
-        if (empty($fileLocation)) {
-            $response->setStatusCode(400);
-        }
-        $response->setContent(json_encode($fileLocation));
-        return $response;
-    }
-
-    /**
-     * This generates the jstree data for the collection download view
-     *
-     * @param string $repoid
-     * @return Response
-     */
-    public function repo_get_collection_data(string $repoid): Response
-    {
-        $result = array();
-        $repoBaseObj = new \stdClass();
-        $rootTitle = '';
-        if (empty($repoid)) {
-            $errorMSG = t('Missing') . ': Identifier';
-        } else {
-            //get the root collection data
-            $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);
-            $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
-            if ((count((array) $repoBaseObj) > 0) && ($repoBaseObj->getTitle() !== null)) {
-                $rootTitle = $repoBaseObj->getTitle();
-            }
-
-            $result = $this->generateView($repoid, 'collection', array('title' => $rootTitle));
-        }
-
-        $response = new Response();
-        $response->setContent(json_encode($result));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
-    }
+    
 
     public function get_collection_data_lazy(string $id): Response
     {
@@ -123,6 +66,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
             //get the root collection data
             $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($id, 0);
             $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
+           
             if ((count((array) $repoBaseObj) > 0) && ($repoBaseObj->getTitle() !== null)) {
                 $rootTitle = $repoBaseObj->getTitle();
             }
@@ -142,7 +86,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
      * @param string $repoid
      * @return type
      */
-    public function repo_dl_collection_view(string $repoid)
+    public function repo_dl_collection_view(string $repoid): array
     {
         $view = array();
         $repoid = $this->generalFunctions->detailViewUrlDecodeEncode($repoid, 0);

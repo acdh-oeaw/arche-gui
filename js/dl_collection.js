@@ -60,80 +60,9 @@ jQuery(function ($) {
         return actualUserRestriction;
     }
 
-
-    function generateCollection(url, disabledUrls = [], username = "", password = "") {
-
-        var actualUserRestriction = getActualuserRestriction();
-        var loadedData = [];
-        $('#collectionBrowser')
-                .jstree({
-                    core: {
-                        'check_callback': false,
-                        data: {
-                            "url": '/browser/get_collection_data/' + url,
-                            "dataType": "json"
-                        },
-                        themes: {stripes: true},
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            $('#collectionBrowser').html("<h3>Error: </h3><p>" + jqXHR.reason + "</p>");
-                        }
-                    },
-                    checkbox: {
-                        //keep_selected_style : true,
-                        tie_selection: false,
-                        whole_node: false
-                    },
-                    search: {
-                        case_sensitive: false,
-                        show_only_matches: true
-                    },
-                    plugins: ['checkbox', 'search']
-                })//treeview before load the data to the ui
-                .on("loaded.jstree", function (e, d) {
-                    loadedData = d;
-                    var userAllowedToDL = false;
-                    $.each(d.instance._model.data, function (key, value) {
-                        $.each(value.original, function (k, v) {
-                            if (k == 'userAllowedToDL') {
-                                if (v) {
-                                    if (v == true) {
-                                        userAllowedToDL = true;
-                                    }
-                                }
-                            }
-                            if (k == 'accessRestriction' && v != null) {
-                                var result = v.split('/');
-                                var resRestriction = result.slice(-1)[0];
-                                if (!resRestriction) {
-                                    resRestriction = "public";
-                                }
-                                if (((resRestriction != 'public') && resRestriction != actualUserRestriction) && actualUserRestriction != 'admin') {
-                                    userAllowedToDL === false;
-                                    disableChkArray.push(key + '_anchor');
-                                    disableChkUrlArray.push(value.original.uri_dl);
-                                    var obj = {};
-                                    obj = {"id": value.id, "url": value.original.uri_dl, "accessRestriction": resRestriction};
-                                    //get one url for the permission levels
-                                    if (!resourceGroupsData.hasOwnProperty(resRestriction)) {
-                                        resourceGroupsData[resRestriction] = value.original.uri_dl;
-                                    }
-                                    disableChkIDArray.push(obj);
-                                    $("#" + value.id).css('color', 'red');
-                                    $("#collectionBrowser").jstree("uncheck_node", value.id);
-                                    $("#collectionBrowser").jstree().disable_node(value.id);
-                                }
-                            }
-                            userAllowedToDL = false;
-                        });
-                    });
-                });
-    }
-    
-    
     function generateCollectionTreeLazy(url, disabledUrls = [], username = "", password = "") {
 
         var actualUserRestriction = getActualuserRestriction();
-        var loadedData = [];
         $('#collectionBrowser')
             .jstree({
                 core: {
@@ -144,7 +73,8 @@ jQuery(function ($) {
                             if(node.id != "#") {
                                url = node.id; 
                             }
-                            return '/browser/get_collection_data_lazy/'+url;
+                            
+                            return '/browser/api/v2/get_collection_data_lazy/'+url+'/'+drupalSettings.language;
                         },
                         'data': function (node) {
                             return { 'id' : node.id }; 
@@ -169,7 +99,6 @@ jQuery(function ($) {
                 plugins: ['checkbox', 'search']
             })//treeview before load the data to the ui
             .on("loaded.jstree", function (e, d) {
-                loadedData = d;
                 var userAllowedToDL = false;
                 $.each(d.instance._model.data, function (key, value) {
                     $.each(value.original, function (k, v) {
@@ -413,7 +342,6 @@ jQuery(function ($) {
 
         //prepare the zip file
         $('#getCollectionData').on('click', function (e) {
-
             $("#loader-div").show();
 
             //disable the button after the click
@@ -438,14 +366,14 @@ jQuery(function ($) {
             });
             var username = $("input#username").val();
             var password = $("input#password").val();
-            
             // Chrome 1 - 79
             //var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
             //chrome has a problem with async false, this is why we need to
             //add the timeout, otherwise chrome will not display the loader.
             setTimeout(function () {
                 $.ajax({
-                    url: '/browser/repo_dl_collection_binaries/' + repoid,
+                    url: '/browser/api/v2/dl_collection_binaries/' + repoid,
+                    //url: '/browser/repo_dl_collection_binaries/' + repoid,
                     type: "POST",
                     async: false,
                     data: {jsonData: JSON.stringify(myObj), repoid: repoid, username: username, password: password},

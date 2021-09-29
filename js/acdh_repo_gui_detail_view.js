@@ -289,7 +289,7 @@ jQuery(function ($) {
                                     acdhid = node.id;
                                 }
 
-                                return '/browser/get_collection_data_lazy/' + acdhid;
+                                return '/browser/api/v2/get_collection_data_lazy/' + acdhid+'/'+drupalSettings.language;
                             },
                             'data': function (node) {
                                 return {'id': node.id};
@@ -303,7 +303,7 @@ jQuery(function ($) {
                         },
                         search: {
                             "ajax": {
-                                "url": '/browser/get_collection_data_lazy/' + $('#insideUri').val(),
+                                "url": '/browser/api/v2/get_collection_data_lazy/' + $('#insideUri').val()+'/'+drupalSettings.language,
                                 "data": function (str) {
                                     return {
                                         "operation": "search",
