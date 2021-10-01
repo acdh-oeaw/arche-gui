@@ -562,7 +562,7 @@ class ArcheApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
 
         if (count($this->modelData) == 0) {
             $response->setContent('No data!');
-            $response->setStatusCode(200);
+            $response->setStatusCode(400);
         }
 
         $this->result = $this->helper->createView($this->modelData, 'rootTable', $lng);
