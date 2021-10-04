@@ -41,18 +41,6 @@ class ArcheApiHelper {
                 $this->data = $data;
                 $this->formatInverseData();
                 break;
-            case 'checkIdentifier':
-                $this->data = $data;
-                $this->formatCheckIdentifierData();
-                break;
-            case 'gndPerson':
-                $this->data = $data;
-                $this->createGNDFile();
-                break;
-            case 'countCollsBins':
-                $this->data = $data;
-                $this->formatCollsBinsCount();
-                break;
             case 'getMembers':
                 $this->data = $data;
                 $this->formatMembersData();
@@ -65,11 +53,7 @@ class ArcheApiHelper {
                 $mdgh = new \Drupal\acdh_repo_gui\Helper\MetadataGuiHelper();
                 $this->result = array($mdgh->getRootTable($data));
                 break;
-            default:
-                $this->data = $data;
-                $this->apiType = $apiType;
-                $this->formatView();
-                break;
+            
         }
 
         return $this->result;
@@ -130,29 +114,6 @@ class ArcheApiHelper {
         $this->result['type'] = "object";
         $this->result['title'] = str_replace('https://vocabs.acdh.oeaw.ac.at/schema#', '', $data['class']);
         $this->formatMetadataView();
-    }
-
-    /**
-     * format the collections and binaries count response
-     */
-    private function formatCollsBinsCount() {
-        $this->result['$schema'] = "http://json-schema.org/draft-07/schema#";
-        $collections = "0";
-        $files = "0";
-        if (isset($this->data[0]->collections) && !empty($this->data[0]->collections)) {
-            $collections = $this->data[0]->collections . " " . t("Collections", array(), array('langcode' => $this->siteLang));
-        }
-        if (isset($this->data[0]->binaries) && !empty($this->data[0]->binaries)) {
-            $files = $this->data[0]->binaries . " " . t("Files", array(), array('langcode' => $this->siteLang));
-        }
-
-        if (empty($files)) {
-            $files = "0";
-        }
-        if (empty($collections)) {
-            $collections = "0";
-        }
-        $this->result['text'] = $collections . " " . t("with", array(), array('langcode' => $this->siteLang)) . " " . $files;
     }
 
     /**
@@ -271,73 +232,5 @@ class ArcheApiHelper {
         }
     }
 
-    /**
-     * Format the basic APi views
-     */
-    private function formatView() {
-        $this->result = array();
-        foreach ($this->data as $k => $val) {
-            foreach ($val as $v) {
-                if (isset($v->value) && !empty($v->value)) {
-                    $title = $v->value;
-                    $lang = $v->lang;
-                    $altTitle = '';
-                    if ($v->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAlternativeTitle') {
-                        $altTitle = $v->value;
-                    }
-
-                    $this->result[$k] = new \stdClass();
-                    $this->result[$k]->title[$lang] = $title;
-                    $this->result[$k]->uri = $this->repo->getBaseUrl() . $k;
-                    $this->result[$k]->identifier = $k;
-                    $this->result[$k]->altTitle = $altTitle;
-                }
-            }
-        }
-        $this->result = array_values($this->result);
-    }
-
-    /**
-     * Format the checkIdentifier api call result
-     */
-    private function formatCheckIdentifierData() {
-        $this->result = array();
-        foreach ($this->data as $val) {
-            if ($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') {
-                $this->result['hasAvailableDate'] = date('Y-m-d', strtotime($val->value));
-            }
-            if ($val->property == 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle') {
-                $this->result['title'] = $val->value;
-            }
-            if ($val->property == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-                $this->result['rdfType'] = $val->value;
-            }
-        }
-    }
-
-    /**
-     * create the GNDfile for the GND API
-     */
-    private function createGNDFile() {
-        $host = str_replace('http://', 'https://', \Drupal::request()->getSchemeAndHttpHost() . '/browser/oeaw_detail/');
-        $fileLocation = \Drupal::request()->getSchemeAndHttpHost() . '/browser/sites/default/files/beacon.txt';
-
-        $this->result = array();
-
-        if (count((array) $this->data) > 0) {
-            $resTxt = "";
-            foreach ($this->data as $val) {
-                $resTxt .= $val->gnd . "|" . $host . $val->repoid . " \n";
-            }
-
-            if (!empty($resTxt)) {
-                $resTxt = "#FORMAT: BEACON \n" . $resTxt;
-                file_save_data($resTxt, "public://beacon.txt", \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
-                $this->result = array('fileLocation' => $fileLocation);
-            } else {
-                $this->result = array('fileLocation' => '');
-            }
-        }
-    }
 
 }

@@ -49,24 +49,6 @@ oeaw_dl_collection:
     options:
         no_cache: 'TRUE' 
 
-oeaw_get_collection_data:    
-    path: '/get_collection_data/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_get_collection_data'
-    requirements:
-        uri: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
-oeaw_get_collection_data_lazy:    
-    path: '/get_collection_data_lazy/{id}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::get_collection_data_lazy'
-    requirements:
-        uri: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
 repo_3d_viewer:
     path: '/oeaw_3d_viewer/{repoid}'
     defaults:
@@ -129,56 +111,7 @@ oeaw_change_lng:
         _access: 'TRUE'
 
 ##### APIs #######
-
-repo_api_persons:    
-    path: '/api/persons/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_persons'
-    requirements:
-        _access: 'TRUE'
-        
-repo_api_places:    
-    path: '/api/places/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_places'
-    requirements:
-        _access: 'TRUE'        
-
-repo_api_publications:    
-    path: '/api/publications/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_publications'
-    requirements:        
-        _access: 'TRUE'        
-
-repo_api_organisations:    
-    path: '/api/organisations/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_organisations'
-    requirements:        
-        _access: 'TRUE'  
-
-repo_api_concepts:    
-    path: '/api/concepts/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_concepts'
-    requirements:        
-        _access: 'TRUE'  
-
-repo_api_gndPerson:    
-    path: '/api/gnd'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_gndPerson'
-    requirements:        
-        _access: 'TRUE'  
-
-repo_api_getdata:    
-    path: '/api/getData/{type}/{searchStr}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getData'
-    requirements:        
-        _access: 'TRUE'  
-        
+       
 repo_api_getmetadata:    
     path: '/api/getMetadata/{type}/{lng}'
     defaults:
@@ -208,22 +141,6 @@ repo_inverse_result:
         _permission: 'access content'
         _access: 'TRUE'
         
-repo_checkIdentifier:    
-    path: '/api/checkIdentifier/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_checkIdentifier'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE'        
-
-repo_getOntologyJSPluginData:    
-    path: '/api/getOntologyJSPluginData/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getOntologyJSPluginData'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE'           
-
 repo_getIsMember:    
     path: '/api/getMembers/{repoid}'
     defaults:
