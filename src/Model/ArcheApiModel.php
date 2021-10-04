@@ -11,12 +11,13 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class ArcheApiModel extends ArcheModel {
-
+class ArcheApiModel extends ArcheModel
+{
     protected $repodb;
     private $properties;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -26,7 +27,8 @@ class ArcheApiModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = "metadata", object $properties = null): array {
+    public function getViewData(string $identifier = "metadata", object $properties = null): array
+    {
         $this->setUpProperties($properties);
 
         switch ($identifier) {
@@ -38,10 +40,10 @@ class ArcheApiModel extends ArcheModel {
                 break;
             case 'inverse':
                 return $this->getInverseData();
-                break;           
+                break;
             case 'gndPerson':
                 return $this->getGNDPersonData();
-                break;            
+                break;
             case 'getMembers':
                 return $this->getMembers();
                 break;
@@ -53,7 +55,7 @@ class ArcheApiModel extends ArcheModel {
                 break;
             case 'rootTable':
                 return $this->getRootTableOntology();
-                break;            
+                break;
         }
     }
 
@@ -62,7 +64,8 @@ class ArcheApiModel extends ArcheModel {
      *
      * @return array
      */
-    private function getData(): array {
+    private function getData(): array
+    {
         return array();
     }
 
@@ -71,14 +74,15 @@ class ArcheApiModel extends ArcheModel {
      *
      * @return array
      */
-    private function getMembers(): array {
+    private function getMembers(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
-                    "SELECT * from gui.get_members_func(:repoid, :lang)",
-                    array(':repoid' => $this->properties->repoid,
+                "SELECT * from gui.get_members_func(:repoid, :lang)",
+                array(':repoid' => $this->properties->repoid,
                         ':lang' => $this->properties->lang)
             );
 
@@ -100,7 +104,8 @@ class ArcheApiModel extends ArcheModel {
      * get the onotology data based on the acdh type
      * @return array
      */
-    private function getOntology(): array {
+    private function getOntology(): array
+    {
         $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
@@ -123,7 +128,8 @@ class ArcheApiModel extends ArcheModel {
      * get the onotology data for the js plugin
      * @return array
      */
-    private function getOntologyGui(): array {
+    private function getOntologyGui(): array
+    {
         $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml')['dbConnStr']['guest'];
         $conn = new \PDO($dbconnStr);
         $cfg = (object) [
@@ -152,7 +158,8 @@ class ArcheApiModel extends ArcheModel {
      * Get ontology for the roottable
      * @return array
      */
-    private function getRootTableOntology(): array {
+    private function getRootTableOntology(): array
+    {
         $dbconnStr = yaml_parse_file(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml')['dbConnStr']['guest'];
       
         $conn = new \PDO($dbconnStr);
@@ -219,14 +226,15 @@ class ArcheApiModel extends ArcheModel {
      * Inverse is where the value is not identifier, pid or ispartof
      * @return array
      */
-    private function getInverseData(): array {
+    private function getInverseData(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout('10000');
             $query = $this->repodb->query(
-                    "SELECT * from gui.inverse_data_func(:repoid);",
-                    array(
+                "SELECT * from gui.inverse_data_func(:repoid);",
+                array(
                         ':repoid' => $this->properties->repoid
                     )
             );
@@ -246,14 +254,15 @@ class ArcheApiModel extends ArcheModel {
      * Related Publications and resources table data
      * @return array
      */
-    private function getRPR(): array {
+    private function getRPR(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "select * from gui.related_publications_resources_views_func(:repoid, :lang)",
-                    array(
+                "select * from gui.related_publications_resources_views_func(:repoid, :lang)",
+                array(
                         ':repoid' => $this->properties->repoid,
                         ':lang' => $this->properties->lang
                     )
@@ -275,15 +284,16 @@ class ArcheApiModel extends ArcheModel {
      * Related Publications and resources table data - Ajax version endpoint
      * @return array
      */
-    private function getRPRAjax(): array {
+    private function getRPRAjax(): array
+    {
         $result = array();
         //run the actual query
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                    "select * from gui.related_publications_resources_views_func(:repoid, :lang)"
+                "select * from gui.related_publications_resources_views_func(:repoid, :lang)"
                     . " ORDER BY " . $this->properties->property . " " . $this->properties->order . " LIMIT :limit OFFSET :page ",
-                    array(
+                array(
                         ':repoid' => $this->properties->repoid,
                         ':lang' => $this->properties->lang,
                         ':limit' => $this->properties->limit,
@@ -307,7 +317,8 @@ class ArcheApiModel extends ArcheModel {
      * @param type $properties
      * @return void
      */
-    private function setUpProperties($properties): void {
+    private function setUpProperties($properties): void
+    {
         $this->properties = $properties;
         if (isset($this->properties->fieldOrder)) {
             $obj = $this->orderingByFields($this->properties->fields, $this->properties->order);
@@ -319,5 +330,4 @@ class ArcheApiModel extends ArcheModel {
             $this->properties->property = $obj->property;
         }
     }
-
 }

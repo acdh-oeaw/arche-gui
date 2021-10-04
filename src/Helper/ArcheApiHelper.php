@@ -265,6 +265,4 @@ class ArcheApiHelper
             $this->properties->comment = $data['comment'];
         }
     }
-
-
 }
