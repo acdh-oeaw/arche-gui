@@ -53,59 +53,6 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         return $this->basicViewData = $this->helper->createView($vd, $dissemination, $identifier, $additionalData);
     }
 
-    /**
-     * get the collection binaries
-     * @param string $repoid
-     * @return Response
-     */
-    public function repo_dl_collection_binaries(string $repoid): Response
-    {
-        $GLOBALS['resTmpDir'] = "";
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-    
-        //the binary files
-        $binaries = $this->generalFunctions->jsonDecodeData($_POST['jsonData']);
-        if (count($binaries) == 0) {
-            $response->setContent(json_encode(""));
-            return $response;
-        }
-
-        ($_POST['username']) ? $username = $_POST['username'] : $username = '';
-        ($_POST['password']) ? $password = $_POST['password'] : $password = '';
-
-        $fileLocation = $this->helper->collectionDownload($binaries, $repoid, $username, $password);
-        if (empty($fileLocation)) {
-            $response->setStatusCode(400);
-        }
-        $response->setContent(json_encode($fileLocation));
-        return $response;
-    }
-
-    public function get_collection_data_lazy(string $id): Response
-    {
-        $result = array();
-        $repoBaseObj = new \stdClass();
-        $rootTitle = '';
-        if (empty($id)) {
-            $errorMSG = t('Missing') . ': Identifier';
-        } else {
-            //get the root collection data
-            $repourl = $this->generalFunctions->detailViewUrlDecodeEncode($id, 0);
-            $repoBaseObj = $this->detailViewController->generateObjDataForDissService($repourl);
-           
-            if ((count((array) $repoBaseObj) > 0) && ($repoBaseObj->getTitle() !== null)) {
-                $rootTitle = $repoBaseObj->getTitle();
-            }
-            $result = $this->generateView($id, 'collection_lazy', array('title' => $rootTitle));
-        }
-
-
-        $response = new Response();
-        $response->setContent(json_encode($result));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
-    }
 
     /**
      * The collection view GUI view with the metadata and the js treeview

@@ -28,16 +28,6 @@ repo_child_api:
     
 #dissemination services
 
-## the collection download python script
-oeaw_dlc_script:
-    path: '/oeaw_coll_dl_script/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_get_collection_dl_script'
-    requirements:
-        uri: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-        
 oeaw_dl_collection:
     path: '/oeaw_dl_collection/{repoid}'
     defaults:
@@ -85,15 +75,6 @@ repo_pdf_viewer:
         _permission: 'access content'
         _access: 'TRUE'
 
-repo_dl_collection_binaries:
-    path: '/repo_dl_collection_binaries/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_dl_collection_binaries'
-    requirements:
-        uri: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
 repo_iiif_viewer:
     path: '/iiif_viewer/{repoid}'
     defaults:
@@ -111,67 +92,6 @@ oeaw_change_lng:
         _access: 'TRUE'
 
 ##### APIs #######
-       
-repo_api_getmetadata:    
-    path: '/api/getMetadata/{type}/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMetadata'
-    requirements:        
-        _access: 'TRUE'  
-
-repo_api_getmetadatagui:    
-    path: '/api/getMetadataGui/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMetadataGui'
-    requirements:        
-        _access: 'TRUE'   
-        
-repo_api_getbaseontology:    
-    path: '/api/getBaseOntology/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_baseOntology'
-    requirements:        
-        _access: 'TRUE'          
-
-repo_inverse_result:    
-    path: '/api/getInverseData/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getInverseData'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE'
-        
-repo_getIsMember:    
-    path: '/api/getMembers/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getMembers'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE' 
-
-repo_getRPR:    
-    path: '/api/getRPR/{repoid}/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRelatedPublicationsResources'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE'         
-
-repo_getRPRAjax:    
-    path: '/api/getRPRdata/{repoid}/{limit}/{page}/{order}/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRelatedPublicationsResourcesAjax'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE' 
-        
-repo_getRootTable:    
-    path: '/api/getRootTable/{lng}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\ArcheApiController::repo_getRootTable'
-    requirements:
-        _permission: 'access content'
-        _access: 'TRUE'      
         
 repo_search_v2:    
   path: '/search/{metavalue}/{order}/{limit}/{page}'

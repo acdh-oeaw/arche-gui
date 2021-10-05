@@ -74,7 +74,7 @@ jQuery(function ($) {
                                url = node.id; 
                             }
                             
-                            return '/browser/api/v2/get_collection_data_lazy/'+url+'/'+drupalSettings.language;
+                            return '/browser/api/get_collection_data_lazy/'+url+'/'+drupalSettings.language;
                         },
                         'data': function (node) {
                             return { 'id' : node.id }; 
@@ -372,8 +372,7 @@ jQuery(function ($) {
             //add the timeout, otherwise chrome will not display the loader.
             setTimeout(function () {
                 $.ajax({
-                    url: '/browser/api/v2/dl_collection_binaries/' + repoid,
-                    //url: '/browser/repo_dl_collection_binaries/' + repoid,
+                    url: '/browser/api/dl_collection_binaries/' + repoid,
                     type: "POST",
                     async: false,
                     data: {jsonData: JSON.stringify(myObj), repoid: repoid, username: username, password: password},

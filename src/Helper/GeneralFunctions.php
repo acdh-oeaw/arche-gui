@@ -156,47 +156,6 @@ class GeneralFunctions
         return $return;
     }
     
-    /**
-     * Extend the collection download python script with the url
-     *
-     * @param string $fdUrl
-     * @return string
-     */
-    public function changeCollDLScript(string $repoUrl)
-    {
-        $text = "";
-        try {
-            $fileName = \Drupal::request()->getSchemeAndHttpHost().'/browser/sites/default/files/coll_dl_script/collection_download_repo.py';
-            $text = @file_get_contents($fileName);
-            if (empty($text)) {
-                return $text;
-            }
-            
-            if (strpos($text, '{ingest.location}') !== false) {
-                $text = str_replace("{ingest.location}", $this->repo->getSchema()->ingest->location, $text);
-            }
-            
-            if (strpos($text, '{fileName}') !== false) {
-                $text = str_replace("{fileName}", $this->repo->getSchema()->fileName, $text);
-            }
-            
-            if (strpos($text, '{parent}') !== false) {
-                $text = str_replace("{parent}", $this->repo->getSchema()->parent, $text);
-            }
-            if (strpos($text, '{metadataReadMode}') !== false) {
-                $text = str_replace("{metadataReadMode}", 'X-METADATA-READ-MODE', $text);
-            }
-            
-            if (strpos($text, 'args = args.parse_args()') !== false) {
-                $text = str_replace("args = args.parse_args()", "args = args.parse_args(['".$repoUrl."', '--recursive'])", $text);
-            }
-            
-            return $text;
-        } catch (\Exception $e) {
-            return;
-        }
-        return $text;
-    }
     
     /**
     * Get the dissemination services
