@@ -84,12 +84,37 @@ class FormHelper
         return $result;
     }
     
-    /*
+    /**
      * Transform the string to remove special chars
+     * @param string $string
+     * @return string
      */
     private function formatCategoryTitleForValue(string $string): string
     {
         $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
         return preg_replace('/[^A-Za-z0-9\-]/', '-', $string);
     }
+    
+    /**
+     * Do we have to recache the data?!
+     * @param string $type
+     * @param string $modifyDate
+     * @return bool
+     */
+    public function checkCacheData(string $type, string $modifyDate): bool {
+        //get the cache
+        $cache = \Drupal::cache()->get('archeCacheSF_'.$type);
+        //if we have cache then check the last modification date.      
+        if(!$cache) {
+            return true;
+        }else if(isset($cache->tags[0]) && isset($cache->tags[1]) ) {
+            $mdTime = date('Y-m-d H:i:s', strtotime($modifyDate));
+            if($cache->tags[0].' '.$cache->tags[1] < $mdTime) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
 }

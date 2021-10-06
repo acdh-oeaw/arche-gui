@@ -41,6 +41,8 @@ class BlocksModel extends ArcheModel
             case "category":
                 return $this->getCategoryData();
                 break;
+            case "lastModify":
+                return $this->lastModificationDate();
             default:
                 return array();
                 break;
@@ -174,4 +176,32 @@ class BlocksModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+
+    /**
+     * Get the DB last modification date for the cache
+     * @return array
+     */
+    public function lastModificationDate(): object 
+    {
+        $result = array();
+        try {
+            $this->setSqlTimeout();
+            $query = $this->repodb->query(
+                "select max(value_t) from metadata where property  = :prop",
+                array(
+                    ':prop' => $this->repo->getSchema()->__get('creationDate')
+                    )
+            );
+            $result = $query->fetch();
+        } catch (\Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = new \stdClass();
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $result = new \stdClass();
+        }
+        $this->changeBackDBConnection();
+        return $result;
+    }
+
 }

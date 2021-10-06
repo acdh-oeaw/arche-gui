@@ -14,6 +14,8 @@ class ComplexSearchForm extends FormBase
     private $entityData = array();
     private $yearsData = array();
     private $categoryData = array();
+    private $lastModifyDateTime;
+    private $reCache= false;
 
     /**
      * Set up necessary properties
@@ -48,9 +50,13 @@ class ComplexSearchForm extends FormBase
         $binarySearch["type"] = "payloadSearch";
         $binarySearch["fields"] = array('Yes' => 'Yes');
         $this->createBox($form, $binarySearch);
-
-        //the entity box section
-        $this->entityData = $this->model->getViewData("entity");
+        $this->lastModifyDateTime = $this->getCacheLastModificationDate();
+        //do we need to recache the data?
+        $this->reCache = $this->helper->checkCacheData('entity', $this->lastModifyDateTime);
+        
+        //get the data based on the recache and type value
+        $this->entityData = $this->getBoxData('entity');
+        
         if (count((array)$this->entityData) > 0) {
             $this->entityData = $this->helper->formatEntityTypes($this->entityData);
             $resData["title"] = t('Type of Entity')->__toString();
@@ -59,7 +65,7 @@ class ComplexSearchForm extends FormBase
             $this->createBox($form, $resData);
         }
         
-        $this->categoryData = $this->model->getViewData("category");
+        $this->categoryData = $this->getBoxData('category');
         if (count((array)$this->categoryData) > 0) {
             $this->categoryData = $this->helper->formatCategoryTypes($this->categoryData);
             $resData["title"] = t('Category')->__toString();
@@ -69,7 +75,7 @@ class ComplexSearchForm extends FormBase
         }
 
         //the years box section
-        $this->yearsData = $this->model->getViewData("years");
+        $this->yearsData = $this->getBoxData('years');
         if (count((array)$this->yearsData) > 0) {
             $this->yearsData = $this->helper->formatEntityYears($this->yearsData, true);
             $dateData["title"] = t('Entities by Year')->__toString();
@@ -116,13 +122,8 @@ class ComplexSearchForm extends FormBase
         $metavalue = $form_state->getValue('metavalue');
 
         $extras = array();
-
-        $types = $form_state->getValue('searchbox_types');
-        $types = array_filter($types);
-        
-        $formats = $form_state->getValue('searchbox_format');
-        $formats = array_filter($formats);
-
+        $types = array_filter($form_state->getValue('searchbox_types'));
+        $formats = array_filter($form_state->getValue('searchbox_format'));
         $startDate = $form_state->getValue('date_start_date');
         $endDate = $form_state->getValue('date_end_date');
 
@@ -198,4 +199,27 @@ class ComplexSearchForm extends FormBase
             '#button_type' => 'primary',
         );
     }
+
+    private function getCacheLastModificationDate(): string 
+    {
+        $data = $this->model->lastModificationDate();
+        return (isset($data->max)) ? (string)$data->max : "";
+    }
+
+    private function getBoxData(string $type): array {
+        
+        //we need to get the DB
+        if($this->reCache) {
+            error_log('reache van');
+           $data = $this->model->getViewData($type); 
+           $time = strtotime($this->lastModifyDateTime);
+           \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s',$time)));
+           return $data;
+        } else {
+            return \Drupal::cache()->get('archeCacheSF_'.$type)->data;
+        }
+        
+        return array();
+    }
+
 }
