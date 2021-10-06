@@ -59,7 +59,7 @@ class DisseminationServicesHelper
                 break;
             case 'iiif':
                 $this->result['lorisUrl'] = $this->getLorisUrl();
-                break;            
+                break;
             default:
                 break;
         }

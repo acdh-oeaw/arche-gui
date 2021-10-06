@@ -24,7 +24,7 @@ class DisseminationServicesModel extends ArcheModel
         switch ($dissemination) {
             case "collection":
                 $this->getCollectionData($identifier);
-                break;            
+                break;
             default:
                 break;
         }
@@ -51,6 +51,4 @@ class DisseminationServicesModel extends ArcheModel
             $this->sqlResult = array();
         }
     }
-    
-   
 }
