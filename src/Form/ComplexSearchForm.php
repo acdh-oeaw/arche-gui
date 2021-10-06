@@ -200,26 +200,26 @@ class ComplexSearchForm extends FormBase
         );
     }
 
-    private function getCacheLastModificationDate(): string 
+    private function getCacheLastModificationDate(): string
     {
         $data = $this->model->lastModificationDate();
         return (isset($data->max)) ? (string)$data->max : "";
     }
 
-    private function getBoxData(string $type): array {
+    private function getBoxData(string $type): array
+    {
         
         //we need to get the DB
-        if($this->reCache) {
+        if ($this->reCache) {
             error_log('reache van');
-           $data = $this->model->getViewData($type); 
-           $time = strtotime($this->lastModifyDateTime);
-           \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s',$time)));
-           return $data;
+            $data = $this->model->getViewData($type);
+            $time = strtotime($this->lastModifyDateTime);
+            \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s', $time)));
+            return $data;
         } else {
             return \Drupal::cache()->get('archeCacheSF_'.$type)->data;
         }
         
         return array();
     }
-
 }

@@ -101,20 +101,19 @@ class FormHelper
      * @param string $modifyDate
      * @return bool
      */
-    public function checkCacheData(string $type, string $modifyDate): bool {
+    public function checkCacheData(string $type, string $modifyDate): bool
+    {
         //get the cache
         $cache = \Drupal::cache()->get('archeCacheSF_'.$type);
-        //if we have cache then check the last modification date.      
-        if(!$cache) {
+        //if we have cache then check the last modification date.
+        if (!$cache) {
             return true;
-        }else if(isset($cache->tags[0]) && isset($cache->tags[1]) ) {
+        } elseif (isset($cache->tags[0]) && isset($cache->tags[1])) {
             $mdTime = date('Y-m-d H:i:s', strtotime($modifyDate));
-            if($cache->tags[0].' '.$cache->tags[1] < $mdTime) {
+            if ($cache->tags[0].' '.$cache->tags[1] < $mdTime) {
                 return true;
             }
         }
         return false;
     }
-    
-    
 }
