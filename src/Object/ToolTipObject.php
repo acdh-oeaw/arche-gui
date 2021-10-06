@@ -11,9 +11,12 @@ class ToolTipObject
 {
     private $data;
     private $td = array();
+    private $helper;
+    
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->helper = new \Drupal\acdh_repo_gui\Helper\ArcheHelper();
         $this->formatTooltip();
     }
     
@@ -24,7 +27,8 @@ class ToolTipObject
     private function formatTooltip()
     {
         foreach ($this->data as $t) {
-            $this->td[$t->type] = $t;
+            $sc = (!empty(\Drupal\acdh_repo_gui\Helper\ArcheHelper::createShortcut($t->type)))? \Drupal\acdh_repo_gui\Helper\ArcheHelper::createShortcut($t->type) : $t->type;
+            $this->td[$sc] = $t;
         }
     }
     

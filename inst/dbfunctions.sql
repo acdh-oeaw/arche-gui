@@ -566,8 +566,8 @@ CREATE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
 AS $func$
         select 
             mv.id, 
-            (array_agg(distinct mv2.value))[1] as description, 
             (array_agg(distinct mv3.value))[1] as title,
+            (array_agg(distinct mv2.value))[1] as description, 
             (array_agg(distinct i.ids))[1] as type
         from
             metadata_view as mv
