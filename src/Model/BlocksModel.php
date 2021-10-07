@@ -189,7 +189,7 @@ class BlocksModel extends ArcheModel
             $query = $this->repodb->query(
                 "select max(value_t) from metadata where property  = :prop",
                 array(
-                    ':prop' => $this->repo->getSchema()->__get('creationDate')
+                    ':prop' => $this->repo->getSchema()->__get('modificationDate')
                     )
             );
             $result = $query->fetch();
