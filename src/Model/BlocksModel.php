@@ -181,7 +181,7 @@ class BlocksModel extends ArcheModel
      * Get the DB last modification date for the cache
      * @return array
      */
-    public function lastModificationDate(): object 
+    public function lastModificationDate(): object
     {
         $result = array();
         try {
@@ -203,5 +203,4 @@ class BlocksModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
-
 }
