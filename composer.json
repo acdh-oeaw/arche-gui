@@ -11,11 +11,11 @@
         }
     ],
     "require": {
-        "acdh-oeaw/arche-lib": "*",
-        "acdh-oeaw/arche-lib-disserv": "*",
-        "acdh-oeaw/arche-lib-schema": "*",
+        "acdh-oeaw/arche-lib": "2.0.4",
+        "acdh-oeaw/arche-lib-disserv": "3.0.0",
+        "acdh-oeaw/arche-lib-schema": "6.0.2",
         "zozlak/logging": "*",
-        "acdh-oeaw/easyrdf": "*",
+        "acdh-oeaw/easyrdf": "0.15.1",
         "twig/extensions": "^1.5",
         "phpunit/phpunit": "^9",
         "phpspec/prophecy-phpunit": "*"
