@@ -56,7 +56,7 @@ WITH root_data as (
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang3 limit 1)
         ) as description,
         CAST((select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate,
-        (select mv.value from metadata_view as mv where mv.id = m.id and mv.type = 'ID' and mv.value LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar)  LIMIT 1) as acdhid
+        (select mv.value from metadata_view as mv where mv.id = m.id and mv.type = 'ID' and mv.value LIKE CAST('%/id.acdh.oeaw.ac.at/%' as varchar) and mv.value NOT LIKE CAST('%/id.acdh.oeaw.ac.at/cmdi/%' as varchar) LIMIT 1) as acdhid
     from metadata_view as m
     left join resources as rs on rs.id = m.id
     where 
