@@ -215,7 +215,7 @@ class ComplexSearchForm extends FormBase
             $time = strtotime($this->lastModifyDateTime);
             \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s', $time)));
             return $data;
-        } else {                        
+        } else {
             return (\Drupal::cache()->get('archeCacheSF_'.$type)->data) ? \Drupal::cache()->get('archeCacheSF_'.$type)->data : array();
         }
         
