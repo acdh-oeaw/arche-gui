@@ -211,13 +211,12 @@ class ComplexSearchForm extends FormBase
         
         //we need to get the DB
         if ($this->reCache) {
-            error_log('reache van');
             $data = $this->model->getViewData($type);
             $time = strtotime($this->lastModifyDateTime);
             \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s', $time)));
             return $data;
-        } else {
-            return \Drupal::cache()->get('archeCacheSF_'.$type)->data;
+        } else {                        
+            return (\Drupal::cache()->get('archeCacheSF_'.$type)->data) ? \Drupal::cache()->get('archeCacheSF_'.$type)->data : array();
         }
         
         return array();

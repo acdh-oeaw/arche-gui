@@ -51,16 +51,15 @@
         </div>
     {% endif%} 
 
-    <table class="table table-striped" id='expertTable' cellspacing="0" width="100%">
-        <thead>
+    <table class="table table-striped" id='expertTable' cellspacing="0" width="100%" style="display: block;">
+        <thead style="width: 100%; display: table;">
             <tr>
                 <th>Property</th>
                 <th>Value(s)</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="width: inherit; display: block; word-break: break-all;">
             {% for key,value in basic.getExpertTableData() %}
-
                 <tr>
                     <td width='40%'>
                         {% if extra.getData(key).description %}
