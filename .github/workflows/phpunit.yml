@@ -119,5 +119,5 @@ jobs:
         #composer fund
         export COVERALLS_RUN_LOCALLY=1
         export COVERALLS_REPO_TOKEN=${{ secrets.coverallsLocalToken }}
-        composer require php-coveralls/php-coveralls
+        composer require php-coveralls/php-coveralls --with-all-dependencies
         php vendor/bin/php-coveralls -v    
