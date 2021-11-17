@@ -33,7 +33,7 @@ class DetailViewModel extends ArcheModel {
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) where language = :lang2 ", array(':id' => $identifier, ':lang' => $this->siteLang, ':lang2' => $this->siteLang));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
