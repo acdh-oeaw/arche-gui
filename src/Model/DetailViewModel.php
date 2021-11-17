@@ -9,12 +9,13 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class DetailViewModel extends ArcheModel {
-
+class DetailViewModel extends ArcheModel
+{
     protected $repodb;
     protected $siteLang;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
@@ -25,7 +26,8 @@ class DetailViewModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = ""): array {
+    public function getViewData(string $identifier = ""): array
+    {
         if (empty($identifier)) {
             return array();
         }
@@ -47,14 +49,15 @@ class DetailViewModel extends ArcheModel {
         return $result;
     }
 
-    public function getViewDataLib(string $identifier = ""): object {
+    public function getViewDataLib(string $identifier = ""): object
+    {
         if (empty($identifier)) {
             return array();
         }
         
         try {
             $res = new \acdhOeaw\arche\lib\RepoResource($identifier, $this->repo);
-            $res->loadMetadata(true, \acdhOeaw\arche\lib\RepoResource::META_RELATIVES);        
+            $res->loadMetadata(true, \acdhOeaw\arche\lib\RepoResource::META_RELATIVES);
             return $res->getGraph();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -68,7 +71,8 @@ class DetailViewModel extends ArcheModel {
      * @param string $identifier
      * @return array
      */
-    public function getBreadCrumbData(string $identifier = ''): array {
+    public function getBreadCrumbData(string $identifier = ''): array
+    {
         if (empty($identifier)) {
             return array();
         }
@@ -94,7 +98,8 @@ class DetailViewModel extends ArcheModel {
      * Get the ontology for the tooltip
      * @return array
      */
-    public function getTooltipOntology(): array {
+    public function getTooltipOntology(): array
+    {
         $result = array();
 
         try {
@@ -112,5 +117,4 @@ class DetailViewModel extends ArcheModel {
         $this->changeBackDBConnection();
         return $result;
     }
-
 }
