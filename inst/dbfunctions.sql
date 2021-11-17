@@ -86,7 +86,7 @@ CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
 AS $func$
 DECLARE
     _lang2 text := 'de';
-	_lang3 text := 'und';
+    _lang3 text := 'und';
     /* get the arche gui identifier */
     _main_id bigint := (select i.id from identifiers as i where i.ids =_identifier);
 BEGIN
@@ -213,7 +213,7 @@ BEGIN
 	CASE WHEN dm.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' THEN dmr.value
 	ELSE ''
 	END,
-	( CASE WHEN dm.lang IS NULL OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
+	( CASE WHEN (dm.lang <> '') IS NOT TRUE OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
     from detail_meta as dm
     left join reldata as dmr on dmr.id = dm.value
     left join resources as rs on rs.id = dm.id 
