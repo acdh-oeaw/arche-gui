@@ -101,6 +101,16 @@ BEGIN
         )
         select * from dmeta
     );
+
+    DROP TABLE IF EXISTS resource_properties;
+    CREATE TEMPORARY TABLE resource_properties AS (
+        WITH rsp as (
+            select  DISTINCT(mv.property), mv.type
+            from metadata_view as mv
+            where mv.id = _main_id 
+        )
+        select * from rsp order by property
+    );  
     --get the english values
     DROP TABLE IF EXISTS detail_meta_main_lng_en;
     CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
@@ -203,6 +213,20 @@ BEGIN
             select * from dmeta
         );
     END IF;
+
+    DROP TABLE IF EXISTS missing_lang_data;
+    CREATE TEMPORARY TABLE missing_lang_data AS (
+        WITH langdata as (
+            select mv2.id, rsp.property, mv2.type, (select mv.value from metadata_view as mv where mv.id = _main_id and mv.property = rsp.property limit 1) as value,
+            '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessres, 'en' as lang
+            from resource_properties as rsp 
+            left join metadata_view as mv2 on mv2.id = _main_id and mv2.property = rsp.property
+            where 
+            not exists (
+                    select 1 from detail_meta as dm where dm.property = rsp.property )
+        )
+        select * from langdata
+    );
 	
     RETURN QUERY
     select dm.id, dm.property, dm.type, 
@@ -216,8 +240,9 @@ BEGIN
 	( CASE WHEN (dm.lang <> '') IS NOT TRUE OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
     from detail_meta as dm
     left join reldata as dmr on dmr.id = dm.value
-    left join resources as rs on rs.id = dm.id 
-    where rs.state = 'active'      
+    left join resources as rs on rs.id = dm.id 	and rs.state = 'active'
+    union 
+    select *  from missing_lang_data as mld 
     order by property; 
 END
 $func$
