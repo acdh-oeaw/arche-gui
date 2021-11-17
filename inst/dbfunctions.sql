@@ -97,7 +97,7 @@ BEGIN
         WITH dmeta as (
             select mv.id, mv.property, mv.type, mv.value, mv.lang
             from metadata_view as mv 
-            where mv.id = _main_id
+            where mv.id = _main_id and ((mv.lang <> '') IS NOT TRUE OR mv.lang = _lang)
         )
         select * from dmeta
     );
