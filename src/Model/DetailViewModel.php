@@ -9,13 +9,12 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  *
  * @author nczirjak
  */
-class DetailViewModel extends ArcheModel
-{
+class DetailViewModel extends ArcheModel {
+
     protected $repodb;
     protected $siteLang;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language']) : $this->siteLang = "en";
     }
@@ -26,8 +25,7 @@ class DetailViewModel extends ArcheModel
      * @param string $identifier
      * @return array
      */
-    public function getViewData(string $identifier = ""): array
-    {
+    public function getViewData(string $identifier = ""): array {
         if (empty($identifier)) {
             return array();
         }
@@ -35,7 +33,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) ", array(':id' => $identifier, ':lang' => $this->siteLang));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) where language = :lang2 ", array(':id' => $identifier, ':lang' => $this->siteLang, ':lang2' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -49,19 +47,33 @@ class DetailViewModel extends ArcheModel
         return $result;
     }
 
+    public function getViewDataLib(string $identifier = ""): object {
+        if (empty($identifier)) {
+            return array();
+        }
+        
+        try {
+            $res = new \acdhOeaw\arche\lib\RepoResource($identifier, $this->repo);
+            $res->loadMetadata(true, \acdhOeaw\arche\lib\RepoResource::META_RELATIVES);        
+            return $res->getGraph();
+        } catch (\Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            return new \stdClass();
+        }
+    }
+
     /**
      * Get the breadcrumb data for the detail view
      *
      * @param string $identifier
      * @return array
      */
-    public function getBreadCrumbData(string $identifier = ''): array
-    {
+    public function getBreadCrumbData(string $identifier = ''): array {
         if (empty($identifier)) {
             return array();
         }
 
-        $result = array();
+        $result = [];
         try {
             $this->setSqlTimeout();
             //run the actual query
@@ -82,8 +94,7 @@ class DetailViewModel extends ArcheModel
      * Get the ontology for the tooltip
      * @return array
      */
-    public function getTooltipOntology(): array
-    {
+    public function getTooltipOntology(): array {
         $result = array();
 
         try {
@@ -101,4 +112,5 @@ class DetailViewModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+
 }
