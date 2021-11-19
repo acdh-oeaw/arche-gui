@@ -81,168 +81,81 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION IF EXISTS gui.detail_view_func(text, text);
 CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
-    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )
-    
+    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )    
 AS $func$
 DECLARE
-    _lang2 text := 'de';
-    _lang3 text := 'und';
     /* get the arche gui identifier */
     _main_id bigint := (select i.id from identifiers as i where i.ids =_identifier);
 BEGIN
-    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
-    /* get the basic metadata values */
-    DROP TABLE IF EXISTS detail_meta;
-    CREATE TEMPORARY TABLE detail_meta AS (
-        WITH dmeta as (
-            select mv.id, mv.property, mv.type, mv.value, mv.lang
-            from metadata_view as mv 
-            where mv.id = _main_id and ((mv.lang <> '') IS NOT TRUE OR mv.lang = _lang)
-        )
-        select * from dmeta
-    );
-
-    DROP TABLE IF EXISTS resource_properties;
-    CREATE TEMPORARY TABLE resource_properties AS (
-        WITH rsp as (
-            select  DISTINCT(mv.property), mv.type
-            from metadata_view as mv
-            where mv.id = _main_id 
-        )
-        select * from rsp order by property
-    );  
-    --get the english values
-    DROP TABLE IF EXISTS detail_meta_main_lng_en;
-    CREATE TEMPORARY TABLE detail_meta_main_lng_en AS (
-        WITH dmeta as (
-            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
+RETURN QUERY
+    WITH dmetaRel as (
+        Select 
+            (CAST(main.id as INT)), main.property, main.type, main.value, '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessrestriction, _lang as lang
+        from (
+            select 
+                m.mid, m.id, m.property, m.type, _lang as lang, m.value
             from metadata as m
-            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-            where dm.type = 'REL' and m.lang='en'
-        )
-        select * from dmeta
-    );
-    --get the german values
-    DROP TABLE IF EXISTS detail_meta_main_lng_de;
-    CREATE TEMPORARY TABLE detail_meta_main_lng_de AS (
-        WITH dmeta as (
-            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-            from metadata as m
-            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-            where dm.type = 'REL' and m.lang='de'
-        )
-        select * from dmeta
-    );
-	
-    DROP TABLE IF EXISTS detail_meta_main_lng_und;
-    CREATE TEMPORARY TABLE detail_meta_main_lng_und AS (
-        WITH dmeta as (
-            select DISTINCT(CAST(m.id as VARCHAR)), m.value, i.ids as acdhId, i2.ids as vocabsid, m.lang
-            from metadata as m
-            left join detail_meta as dm on CAST(dm.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-            where dm.type = 'REL' and m.lang='und'
-        )
-        select * from dmeta
-    );
-	
-    -- compare the missing values and extend the missing labels
-    IF _lang = 'en'
-    THEN
-        DROP TABLE IF EXISTS reldata;
-        CREATE TEMPORARY TABLE reldata AS (
-            WITH dmeta as (
-                select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  
-                from detail_meta_main_lng_en as t3
-                UNION
-                select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
-                from detail_meta_main_lng_de as t1 
-                where 
-                NOT EXISTS( 
-                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
-                    from detail_meta_main_lng_en as t2 
-                    where t1.id = t2.id
-                )
-                UNION
-                select und.id, und.value, und.acdhid, und.vocabsid, 'en' as lang
-                from detail_meta_main_lng_und as und
-                where				
-                NOT EXISTS( 
-                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'en' as lang
-                    from detail_meta_main_lng_en as t2 
-                    where und.id = t2.id
-                )
-                order by id
-            )
-            select * from dmeta
-        );
-    END IF;
-
-    IF _lang = 'de'
-    THEN
-        DROP TABLE IF EXISTS reldata;
-        CREATE TEMPORARY TABLE reldata AS (
-            WITH dmeta as (
-                select t3.id, t3.value, t3.acdhid, t3.vocabsid, t3.lang  
-                from detail_meta_main_lng_de as t3
-                UNION
-                select t1.id, t1.value, t1.acdhid, t1.vocabsid, _lang as lang
-                from detail_meta_main_lng_en as t1
-                where 
-                NOT EXISTS( 
-                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, _lang as lang
-                    from detail_meta_main_lng_de as t2 
-                    where t1.id = t2.id
-                )
-                UNION
-                select und.id, und.value, und.acdhid, und.vocabsid, 'de' as lang
-                from detail_meta_main_lng_und as und
-                where	
-                NOT EXISTS( 
-                    select t2.id, t2.value, t2.acdhid, t2.vocabsid, 'de' as lang
-                    from detail_meta_main_lng_de as t2 
-                    where und.id = t2.id
-                )
-                order by id
-            )
-            select * from dmeta
-        );
-    END IF;
-
-    DROP TABLE IF EXISTS missing_lang_data;
-    CREATE TEMPORARY TABLE missing_lang_data AS (
-        WITH langdata as (
-            select mv2.id, rsp.property, mv2.type, (select mv.value from metadata_view as mv where mv.id = _main_id and mv.property = rsp.property limit 1) as value,
-            '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessres, 'en' as lang
-            from resource_properties as rsp 
-            left join metadata_view as mv2 on mv2.id = _main_id and mv2.property = rsp.property
             where 
-            not exists (
-                    select 1 from detail_meta as dm where dm.property = rsp.property )
-        )
-        select * from langdata
-    );
-	
-    RETURN QUERY
-    select dm.id, dm.property, dm.type, 
-	dm.value, 
-	dmr.value as relvalue, 
+                m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang = _lang)
+            UNION
+            select 
+                m3.mid, m3.id, m3.property, m3.type, m3.lang, m3.value
+            from metadata as m3 
+            where
+                m3.id = _main_id and ( (m3.lang <> '') IS TRUE and m3.lang != _lang) 
+                and not exists (
+                    select *
+                    from metadata as m
+                    where m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang = _lang) and m.property = m3.property
+                )
+            order by property
+        ) as main
+        UNION
+        select 
+            (CAST(rel.id as INT)) ,  rel.property, 'REL' as type, (CAST(rel.relid as VARCHAR)) as value, rel.value as relvalue, rel.acdhid, rel.vocabsid, '' as accessrestriction, _lang as lang
+        FROM (
+            select 
+                DISTINCT(CAST(m.id as VARCHAR)) as relid, m.value, mv.property,  i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id 
+            from metadata_view as mv 
+            left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where 
+                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang = _lang)
+            UNION
+            select 
+                DISTINCT(CAST(m.id as VARCHAR)) as relid, m.value, mv.property, i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id
+            from metadata_view as mv 
+            left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
+            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where 
+                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang != _lang)
+                and not exists (
+                    select 
+                        DISTINCT(CAST(m2.id as VARCHAR)), m2.value, mv2.property, m2.lang, '' as acdhId, '' as vocabsid, m2.lang
+                    from metadata_view as mv2 
+                    left join metadata as m2 on CAST(mv2.value as INT) = m2.id and m2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'			
+                    where 
+                        mv2.id = _main_id and mv2.type = 'REL' and ((m2.lang <> '') IS NOT TRUE or m2.lang = _lang) and mv.property = mv2.property
+                )
+            order by value
+        ) as rel
+    )
+    select 
+	dmr.id, dmr.property, dmr.type, 
+	dmr.value, 
+	dmr.relvalue, 
 	dmr.acdhid,
 	dmr.vocabsid,
-	CASE WHEN dm.property ='https://vocabs.acdh.oeaw.ac.at/schema#hasAccessRestriction' THEN dmr.value
-	ELSE ''
-	END,
-	( CASE WHEN (dm.lang <> '') IS NOT TRUE OR dm.lang = 'und' THEN _lang ELSE dm.lang end ) as language
-    from detail_meta as dm
-    left join reldata as dmr on dmr.id = dm.value
-    left join resources as rs on rs.id = dm.id 	and rs.state = 'active'
-    union 
-    select *  from missing_lang_data as mld 
+	dmr.accessrestriction,
+	dmr.lang
+    from dmetaRel as dmr
+    left join resources as rs on rs.id = dmr.id and rs.state = 'active'
+    UNION
+    Select 
+        mv.id, mv.property, mv.type, mv.value, '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessrestriction, mv.lang
+    from metadata_view as mv where mv.type = 'ID' and mv.id = _main_id
     order by property; 
 END
 $func$
