@@ -359,7 +359,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(bigint, text );
 CREATE FUNCTION gui.breadcrumb_view_func(_pid bigint, _lang text DEFAULT 'en' )
-    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer, bigint direct_parent)
+    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer, direct_parent bigint)
 AS $func$
     with parents as (
         select *
