@@ -7,15 +7,15 @@ namespace Drupal\acdh_repo_gui\Object;
  *
  * @author nczirjak
  */
-class BreadCrumbObject {
-
+class BreadCrumbObject
+{
     private $data = array();
     private $length = 0;
     private $str = "";
     private $i = 0;
 
-    public function __construct(array $data) {
-
+    public function __construct(array $data)
+    {
         $this->data = $data;
         $this->length = count((array) $data);
     }
@@ -24,7 +24,7 @@ class BreadCrumbObject {
      * Generate the breadcrumb navigation to the gui
      * @return string
      */
-    public function getBreadCrumb(): string 
+    public function getBreadCrumb(): string
     {
         $multiple = $this->checkMultipleBreadCrumb();
         
@@ -43,7 +43,7 @@ class BreadCrumbObject {
      * @param object $v
      * @return string
      */
-    private function createTitle(int $k, object $v): string 
+    private function createTitle(int $k, object $v): string
     {
         if ((int)$this->length > 3 && (int)$k > 0 && (int)$k < (int)$this->length - 1) {
             return "...";
@@ -56,9 +56,9 @@ class BreadCrumbObject {
      * We can have resources with multiple parents
      * @return array
      */
-    private function checkMultipleBreadCrumb(): array 
+    private function checkMultipleBreadCrumb(): array
     {
-        return array_filter($this->data, function($item) {
+        return array_filter($this->data, function ($item) {
             return ((int)$item->depth === 1);
         });
     }
@@ -66,10 +66,10 @@ class BreadCrumbObject {
     /**
      * Single one parent breadcrumb
      */
-    private function createSingleBreadcrumb() 
+    private function createSingleBreadcrumb()
     {
         foreach ($this->data as $k => $v) {
-            if ($v->parenttitle) {                
+            if ($v->parenttitle) {
                 $this->str .= "<a id='archeHref' href='/browser/oeaw_detail/" . $v->parentid . "' title='" . $v->parenttitle . "'>" . $this->createTitle($k, $v) . "</a> ";
                 if ((int)$this->length - 1 >= (int) $k) {
                     $this->str .= "/";
@@ -82,8 +82,8 @@ class BreadCrumbObject {
      * Create the string from the multiple breadcrumbs
      * @param array $multiple
      */
-    private function createMultiBreadcrumb(array $multiple) 
-    {        
+    private function createMultiBreadcrumb(array $multiple)
+    {
         $breadCrumbLevel = 1;
         foreach ($multiple as $k => $m) {
             $this->i = 0;
@@ -100,7 +100,7 @@ class BreadCrumbObject {
      * @param type $parentId
      * @return array
      */
-    private function buildTree(array $elements, $parentId = 0) 
+    private function buildTree(array $elements, $parentId = 0)
     {
         $branch = array();
         foreach ($elements as $element) {
@@ -113,5 +113,4 @@ class BreadCrumbObject {
 
         return $branch;
     }
-
 }
