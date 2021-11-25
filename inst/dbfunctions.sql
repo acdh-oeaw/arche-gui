@@ -371,7 +371,8 @@ AS $func$
         _pid as mainid, 
         p.id as parentid, 
         (array_agg(mv.value order by case mv.lang when _lang then 0 when 'en' then 1 else 2 end))[1] as parenttitle, 
-        abs(p.n) as depth
+        abs(p.n) as depth,
+        (select r.target_id from relations as r where r.id = p.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' limit 1) as direct_parent
     from 
         parents p
         join resources rs using (id)
