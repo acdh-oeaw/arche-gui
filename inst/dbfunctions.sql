@@ -357,10 +357,9 @@ LANGUAGE 'plpgsql';
 * generate the data for the gui BREADCRUMB
 * mainid -> simple int as text -> '207984'
 */
-DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(text, text );
 DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(bigint, text );
 CREATE FUNCTION gui.breadcrumb_view_func(_pid bigint, _lang text DEFAULT 'en' )
-    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer)
+    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer, bigint direct_parent)
 AS $func$
     with parents as (
         select *
