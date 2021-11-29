@@ -187,3 +187,9 @@ div.version-warning i.material-icons{
 .arche_detail_view_main {
     margin-left: -10px !important;
 }
+
+i.material-icons.breadcrumb-icon {
+    font-size: 12px !important;
+    padding-top: 4px !important;
+    padding-right: 5px !important;
+}

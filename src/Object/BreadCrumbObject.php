@@ -84,13 +84,11 @@ class BreadCrumbObject {
      */
     private function createMultiBreadcrumb(array $multiple) 
     {        
-        $breadCrumbLevel = 1;
-        foreach ($multiple as $k => $m) {
+        foreach ($multiple as $m) {
             $this->i = 0;
-            $this->str .= ($breadCrumbLevel).': ';
+            $this->str .= '<i class="material-icons breadcrumb-icon">label</i>';
             $this->buildTree($this->data, $m->parentid);
             $this->str .= "<br>";
-            $breadCrumbLevel++;
         }
     }
 
