@@ -46,7 +46,7 @@ class ResourceObject
      */
     public function getBiblatexUrl(): string
     {
-        return $this->biblatexUrl . '?id=' . $this->getAcdhID() . '&lang=' . $this->language;
+        return $this->biblatexUrl . '?id=' . $this->getRepoUrl() . '&lang=' . $this->language;
     }
 
     /**
