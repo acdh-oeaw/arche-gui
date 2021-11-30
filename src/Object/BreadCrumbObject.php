@@ -82,8 +82,8 @@ class BreadCrumbObject
      * Create the string from the multiple breadcrumbs
      * @param array $multiple
      */
-    private function createMultiBreadcrumb(array $multiple) 
-    {        
+    private function createMultiBreadcrumb(array $multiple)
+    {
         foreach ($multiple as $m) {
             $this->i = 0;
             $this->str .= '<i class="material-icons breadcrumb-icon">label</i>';
