@@ -75,7 +75,7 @@ LANGUAGE 'plpgsql';
 /*
 * DETAIL VIEW FUNCTION 
 * get the detail view resource data by the resource identifier
-* _identifier => full repo api url, f.e.: https://repo.hephaistos.arz.oeaw.ac.at/api/201064
+* _identifier => full repo api url, f.e.: https://arche-dev.acdh-dev.oeaw.ac.at/api/76704
 * Because we supporting the 3rd party identifiers too, like vicav, etc
 * execution time between: 140-171ms
 */
@@ -96,17 +96,17 @@ RETURN QUERY
                 m.mid, m.id, m.property, m.type, _lang as lang, m.value
             from metadata as m
             where 
-                m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang = _lang)
+                m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang IN (_lang, 'und')  )
             UNION
             select 
                 m3.mid, m3.id, m3.property, m3.type, m3.lang, m3.value
             from metadata as m3 
             where
-                m3.id = _main_id and ( (m3.lang <> '') IS TRUE and m3.lang != _lang) 
+                m3.id = _main_id and ( (m3.lang <> '') IS TRUE and m3.lang NOT IN (_lang, 'und')) 
                 and not exists (
                     select *
                     from metadata as m
-                    where m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang = _lang) and m.property = m3.property
+                    where m.id = _main_id and ((m.lang <> '') IS NOT TRUE or m.lang IN (_lang, 'und')) and m.property = m3.property
                 )
             order by property
         ) as main
@@ -121,7 +121,7 @@ RETURN QUERY
             left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
             left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
             where 
-                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang = _lang)
+                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang IN (_lang, 'und'))
             UNION
             select 
                 DISTINCT(CAST(m.id as VARCHAR)) as relid, m.value, mv.property, i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id
@@ -130,14 +130,14 @@ RETURN QUERY
             left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
             left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
             where 
-                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang != _lang)
+                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang NOT IN (_lang, 'und'))
                 and not exists (
                     select 
                         DISTINCT(CAST(m2.id as VARCHAR)), m2.value, mv2.property, m2.lang, '' as acdhId, '' as vocabsid, m2.lang
                     from metadata_view as mv2 
                     left join metadata as m2 on CAST(mv2.value as INT) = m2.id and m2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'			
                     where 
-                        mv2.id = _main_id and mv2.type = 'REL' and ((m2.lang <> '') IS NOT TRUE or m2.lang = _lang) and mv.property = mv2.property
+                        mv2.id = _main_id and mv2.type = 'REL' and ((m2.lang <> '') IS NOT TRUE or m2.lang IN (_lang, 'und')) and mv.property = mv2.property
                 )
             order by value
         ) as rel
