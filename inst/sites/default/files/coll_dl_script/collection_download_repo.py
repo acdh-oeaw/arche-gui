@@ -2,6 +2,8 @@ import argparse
 import os
 import re
 import requests
+from rdflib import Graph
+from rdflib.term import URIRef
 
 args = argparse.ArgumentParser()
 args.add_argument('--user', help='User name (for downloading restricted-access resources')
@@ -17,18 +19,13 @@ args.add_argument('url', nargs='+', help='Resource URLs to be downloaded')
 args = args.parse_args()
 
 def getFilename(url):
-    locationProp = '<{ingest.location}>'
-    filenameProp = '<{fileName}>'
+    id = re.sub('^.*/', '', url)
     resp = requests.get(url + '/metadata', headers={'Accept': 'application/n-triples', '{metadataReadMode}': 'resource'})
-    filename = None
-    location = ''
-    for l in resp.text.splitlines():
-        l = l[(len(url) + 3):]
-        if l.startswith(locationProp):
-            location = l[(len(locationProp) + 2):-3]
-        if l.startswith(filenameProp):
-            filename = l[(len(filenameProp) + 2):-3]
-    return (filename, location)
+    graph = Graph()
+    graph.parse(data=resp.text, format='nt')
+    location = graph.value(URIRef(url), URIRef('{ingest.location}'), None, default='repo_resource_' + id, any=True)
+    filename = graph.value(URIRef(url), URIRef('{fileName}'), None, default=None, any=True)
+    return (filename, os.path.dirname(location))
 
 def getChildren(url):
     searchUrl = re.sub('/[0-9]+$', '/search', url)
@@ -38,10 +35,11 @@ def getChildren(url):
         'sqlParam[1]': re.sub('^.*/', '', url)
     }
     resp = requests.post(searchUrl, data=data, headers={'Accept': 'application/n-triples', '{metadataReadMode}': 'resource'})
+    graph = Graph()
+    graph.parse(data=resp.text, format='nt')
     children = []
-    for l in resp.text.splitlines():
-        if re.search(' <search://match> ', l):
-            children.append(l[1:l.find('>')])
+    for s, p, o in graph.triples((None, URIRef('{searchMatch}'), None)):
+        children.append(str(s))
     return children
 
 def readInput(msg):
@@ -89,8 +87,11 @@ stack = []
 for i in args.url:
     stack.append({'url': i, 'path': args.targetDir, 'depth': 0})
 
+downloaded = set()
 while len(stack) > 0:
     res = stack.pop()
+    if res['url'] in downloaded:
+        continue
     if len(args.matchUrl) > 0 and res['url'] not in args.matchUrl:
         continue
     if len(args.skipUrl) > 0 and res['url'] in args.skipUrl:
@@ -98,4 +99,5 @@ while len(stack) > 0:
     if args.maxDepth >= 0 and res['depth'] > args.maxDepth:
         continue
     stack += download(res, args)
+    downloaded.add(res['url'])
 
