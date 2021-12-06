@@ -81,28 +81,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         ];
     }
 
-    /**
-     * Download Whole Collection python script
-     *
-     * @param string $url
-     * @return Response
-     */
-    public function repo_get_collection_dl_script(string $repoid): Response
-    {
-        if (empty($repoid)) {
-            $result = '';
-        } else {
-            $repoid = $this->repo->getBaseUrl() . $repoid;
-            $result = $this->generalFunctions->changeCollDLScript($repoid);
-        }
-
-        $response = new Response();
-        $response->setContent($result);
-        $response->headers->set('Content-Type', 'application/x-python-code');
-        $response->headers->set('Content-Disposition', 'attachment; filename=collection_download_script.py');
-        return $response;
-    }
-
+   
     /**
      * Generate loris url based on the repoid and passing it back to the iiif template
      *

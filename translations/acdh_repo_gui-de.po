@@ -358,3 +358,6 @@ msgstr "Österreichische Akademie der Wissenschaften"
 
 msgid "Vienna"
 msgstr "Wien"
+
+msgid "Search results are limited to 10 000. Please use filters to refine your search."
+msgstr "Suchergebnisse sind auf 10 000 begrenzt. Bitte verwenden Sie Filter, um die Suche zu präzisieren."

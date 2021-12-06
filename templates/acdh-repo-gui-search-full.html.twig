@@ -1,6 +1,8 @@
 <h2>SEARCH</h2>
 {{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': paging } ) }}
 
+{{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-search-limit-block.html.twig', {'data': paging.sum } ) }}
+
 {% if extra.baseUrl == "https://arche-dev.acdh-dev.oeaw.ac.at/api/" %}
     <div class="res-el col-block col-lg-12">
         <input type="hidden" id="search-clarinurl" name="search-clarinurl" value="{{ extra.clarinUrl }}"/>
