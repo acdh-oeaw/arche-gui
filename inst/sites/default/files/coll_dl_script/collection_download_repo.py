@@ -1,21 +1,28 @@
 import argparse
 import os
 import re
-import requests
-from rdflib import Graph
-from rdflib.term import URIRef
+try:
+    import requests
+except ModuleNotFoundError:
+    print("Your Python installation lacks the 'requests' library.\nYou should be able to install it with `pip install requests` or from your operating system package (e.g. python3-requests under debian/ubuntu)")
+    quit()
+try:
+    from rdflib import Graph
+    from rdflib.term import URIRef
+except ModuleNotFoundError:
+    print("Your Python installation lacks the RDFlib library.\nYou should be able to install it with `pip install rdflib` or from your operating system packages (e.g. python3-rdflib under debian/ubuntu)")
+    quit()
 
 args = argparse.ArgumentParser()
 args.add_argument('--user', help='User name (for downloading restricted-access resources')
 args.add_argument('--pswd', help='User password (for downloading restricted-access resources')
-args.add_argument('--recursive', action='store_const', const=True, help='Enable recursive download of child resources')
 args.add_argument('--maxDepth', default=-1, type=int, help='Maximum recursion depth (-1 means do not limit the recursion depth)')
 args.add_argument('--flat', action='store_const', const=True, help='Do not create directory structure (download all resources to the `tagetDir`)')
 args.add_argument('--batch', action='store_const', const=True, help='Do not ask for user input (e.g. for the user name and password)')
 args.add_argument('--targetDir', default='.', help='Directory to store downloaded resources')
 args.add_argument('--matchUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
 args.add_argument('--skipUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
-args.add_argument('url', nargs='+', help='Resource URLs to be downloaded')
+args.add_argument('url', nargs='*', help='Resource URLs to be downloaded', default=['{resourceUrl}'])
 args = args.parse_args()
 
 def getFilename(url):
@@ -25,7 +32,7 @@ def getFilename(url):
     graph.parse(data=resp.text, format='nt')
     location = graph.value(URIRef(url), URIRef('{ingest.location}'), None, default='repo_resource_' + id, any=True)
     filename = graph.value(URIRef(url), URIRef('{fileName}'), None, default=None, any=True)
-    return (filename, os.path.dirname(location))
+    return (filename, os.path.basename(location))
 
 def getChildren(url):
     searchUrl = re.sub('/[0-9]+$', '/search', url)
@@ -64,14 +71,16 @@ def download(res, args):
                 for chunk in req.iter_content(chunk_size=8192):
                     if chunk:
                         of.write(chunk)
-        elif args.recursive and (res['depth'] < args.maxDepth or args.maxDepth == -1):
-            print('Going into %s %s' % (res['url'], dirname))
-            if args.flat:
-                path = res['path']
-            else:
-                path = os.path.join(res['path'], dirname)
-            toDwnld = getChildren(res['url'])
-            toDwnld = [{'url': x, 'path': path, 'depth': res['depth'] + 1} for x in toDwnld]
+        else:
+            os.makedirs(os.path.join(res['path'], dirname))
+            if res['depth'] < args.maxDepth or args.maxDepth == -1:
+                print('Going into %s %s' % (res['url'], dirname))
+                if args.flat is None:
+                    path = os.path.join(res['path'], dirname)
+                else:
+                    path = res['path']
+                toDwnld = getChildren(res['url'])
+                toDwnld = [{'url': x, 'path': path, 'depth': res['depth'] + 1} for x in toDwnld]
     elif req.status_code == 401 and args.user is None and not args.batch:
         # get login and password and try again
         args.user = readInput('A restricted access resource encountered, please provide a username: ')
