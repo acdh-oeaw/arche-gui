@@ -30,8 +30,6 @@ if len(lacking) > 0:
     else:
         for i in lacking:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', i])
-        import requests
-        from rdflib import Graph, URIRef
         print("\nInstallation successful - please run the script again")
         quit()
 
