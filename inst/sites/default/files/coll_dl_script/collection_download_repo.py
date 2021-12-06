@@ -32,7 +32,8 @@ if len(lacking) > 0:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', i])
         import requests
         from rdflib import Graph, URIRef
-        print("\nInstallation successful - progressing to the download\n")
+        print("\nInstallation successful - please run the script again")
+        quit()
 
 args = argparse.ArgumentParser()
 args.add_argument('--user', help='User name (for downloading restricted-access resources')
