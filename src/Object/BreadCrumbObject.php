@@ -25,11 +25,11 @@ class BreadCrumbObject
      * @return string
      */
     public function getBreadCrumb(): string
-    {
+    {        
         $multiple = $this->checkMultipleBreadCrumb();
-        
+       
         if (count($multiple) > 1) {
-            $this->createMultiBreadcrumb($multiple);
+            $this->createMultiBreadcrumb($this->reOrderBreadCrumbByDate($multiple));
         } else {
             $this->createSingleBreadcrumb();
         }
@@ -82,8 +82,8 @@ class BreadCrumbObject
      * Create the string from the multiple breadcrumbs
      * @param array $multiple
      */
-    private function createMultiBreadcrumb(array $multiple)
-    {
+    private function createMultiBreadcrumb(array $multiple) 
+    {  
         foreach ($multiple as $m) {
             $this->i = 0;
             $this->str .= '<i class="material-icons breadcrumb-icon">label</i>';
@@ -108,7 +108,17 @@ class BreadCrumbObject
                 $this->i++;
             }
         }
-
         return $branch;
     }
+
+    /**
+     * We have to reorder the actual roots by the avilable date
+     */
+    private function reOrderBreadCrumbByDate(array $roots): array {
+        uasort($roots,function($a,$b){
+            return strcmp($a->avdate,$b->avdate);
+        });        
+        return $roots;
+    }
+    
 }

@@ -193,3 +193,12 @@ i.material-icons.breadcrumb-icon {
     padding-top: 4px !important;
     padding-right: 5px !important;
 }
+
+div.search-result-warning {
+    background-color: #faeb90;
+    margin: 0 0 5px;
+    padding: 4px 0 2px 0;
+    border-radius: 0px;
+    font-weight: normal;
+    text-align: center;
+}

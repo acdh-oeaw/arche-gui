@@ -359,7 +359,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION IF EXISTS gui.breadcrumb_view_func(bigint, text );
 CREATE FUNCTION gui.breadcrumb_view_func(_pid bigint, _lang text DEFAULT 'en' )
-    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer, direct_parent bigint)
+    RETURNS table (mainid bigint, parentid bigint, parentTitle text, depth integer, direct_parent bigint, avdate date)
 AS $func$
     with parents as (
         select *
@@ -371,7 +371,8 @@ AS $func$
         p.id as parentid, 
         (array_agg(mv.value order by case mv.lang when _lang then 0 when 'en' then 1 else 2 end))[1] as parenttitle, 
         abs(p.n) as depth,
-        (select r.target_id from relations as r where r.id = p.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' limit 1) as direct_parent
+        (select r.target_id from relations as r where r.id = p.id and r.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' limit 1) as direct_parent,
+        (select CAST(avd.value as DATE) from metadata_view as avd where avd.id = p.id and avd.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate') as avdate
     from 
         parents p
         join resources rs using (id)
