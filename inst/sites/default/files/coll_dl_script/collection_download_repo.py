@@ -1,17 +1,37 @@
 import argparse
 import os
+import pip
 import re
+import subprocess
+import sys
+
+lacking = []
 try:
     import requests
 except ModuleNotFoundError:
-    print("Your Python installation lacks the 'requests' library.\nYou should be able to install it with `pip install requests` or from your operating system package (e.g. python3-requests under debian/ubuntu)")
-    quit()
+    lacking.append('requests')
 try:
-    from rdflib import Graph
-    from rdflib.term import URIRef
+    from rdflib import Graph, URIRef
 except ModuleNotFoundError:
-    print("Your Python installation lacks the RDFlib library.\nYou should be able to install it with `pip install rdflib` or from your operating system packages (e.g. python3-rdflib under debian/ubuntu)")
-    quit()
+    lacking.append('rdflib')
+
+if len(lacking) > 0:
+    choice = ''
+    while choice != '1' and choice != '2':
+        print("\nYour python installation lacks some dependencies (" + ", ".join(lacking) + ").")
+        print("You can install them on your own or we can try to install them for you. which option do you prefer?\n")
+        print("1. Install manually")
+        print("2. Try to install automatically")
+        choice = input().strip()
+    print("\n")
+    if choice == '1':
+        for i in lacking:
+            print("You are missing the '%s' library. You should be able to install it with `pip install %s` or from your operating system package (e.g. python3-%s under debian/ubuntu or python-%s under fedora/redhat/centos)\n" % (i, i, i, i))
+    else:
+        for i in lacking:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', i])
+        print("\nInstallation successful - please run the script again")
+        quit()
 
 args = argparse.ArgumentParser()
 args.add_argument('--user', help='User name (for downloading restricted-access resources')
