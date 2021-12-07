@@ -17,10 +17,10 @@
             {%  if value == 'public' or value == 'öffentlich' %}
                 <span class="green-dot" title="public"></span>
                 {% set break = true %}
-            {%  elseif value == 'academic' %}
+            {%  elseif value == 'academic' or value == 'akademisch' %}
                 <span class="orange-dot" title="academic"></span>
                 {% set break = true %}
-            {%  elseif value == 'restricted' %}
+            {%  elseif value == 'restricted' or value == 'eingeschränkt' %}
                 <span class="red-dot" title="restricted"></span>
                 {% set break = true %}
             {% endif%} 
