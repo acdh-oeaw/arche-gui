@@ -16,6 +16,7 @@ class ComplexSearchForm extends FormBase
     private $categoryData = array();
     private $lastModifyDateTime;
     private $reCache= false;
+    private $searchStr = "";
 
     /**
      * Set up necessary properties
@@ -119,37 +120,99 @@ class ComplexSearchForm extends FormBase
      */
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-        $metavalue = $form_state->getValue('metavalue');
-
-        $extras = array();
-        $types = array_filter($form_state->getValue('searchbox_types'));
-        $formats = array_filter($form_state->getValue('searchbox_format'));
-        $startDate = $form_state->getValue('date_start_date');
-        $endDate = $form_state->getValue('date_end_date');
-
-        if (count((array)$types) > 0) {
-            foreach ($types as $t) {
-                $extras["type"][] = strtolower($t);
-            }
-        }
-
-        if (count((array)$formats) > 0) {
-            foreach ($formats as $f) {
-                $extras["formats"][] = strtolower($f);
-            }
-        }
-
-        $metaVal = urlencode($metavalue);
+        $this->generateMetaUrlString($form_state);
         $form_state->setRedirect(
-            'repo_complexsearch',
+            'repo_search_v2',
             [
-                    "metavalue" => $metaVal,
+                    "metavalue" => $this->searchStr,
                     "order" => "datedesc",
                     "limit" => "10",
                     "page" => "1"]
         );
     }
-
+    
+    private function generateMetaUrlString(FormStateInterface &$form_state) 
+    {
+        $this->addSearchText($form_state->getValue('metavalue'));       
+        $this->addSearchType($form_state->getValue('searchbox_types'));
+        $this->addSearchCategory($form_state->getValue('searchbox_category'));
+        $this->addSearchDate($form_state->getValue('datebox_years') );
+        $this->addPayload($form_state->getValue('payloadSearch'));
+    }
+    
+    private function addPayload($payload = "") {
+        
+        if(is_array($payload)) {
+            $this->searchStr .= "&payload=false";
+            foreach($payload as $p) {
+                if(strtolower($p) === "yes") {
+                    $this->searchStr .= "&payload=true";
+                }
+            }
+        }
+    }
+    
+    private function addSearchText($text = "") 
+    {        
+        if(!empty($text)) {
+            $this->searchStr .= "words=".str_replace(" ", "+", $text);
+        }
+    }
+    
+    private function addSearchType(mixed $types = "")
+    {
+        $types = array_filter($types);
+        if(count((array)$types) > 0) {            
+            if(!empty($this->searchStr)) {
+                $this->searchStr .= "&";
+            }
+            $this->searchStr .= "type=";
+            $lastElement = end($types);
+            foreach ($types as $t) { 
+                $this->searchStr .=$t;
+                if($t !== $lastElement) {
+                    $this->searchStr .= '+';
+                }
+            }
+        }
+    }
+    
+    private function addSearchCategory(mixed $category = "")
+    {
+        $category = array_filter($category);
+        if(count((array)$category) > 0) {            
+            if(!empty($this->searchStr)) {
+                $this->searchStr .= "&";
+            }
+            $this->searchStr .= "category=";
+            $lastElement = end($category);
+            foreach ($category as $c) { 
+                $this->searchStr .=$c;
+                if($c !== $lastElement) {
+                    $this->searchStr .= '+';
+                }
+            }
+        }
+    }
+    
+    private function addSearchDate(mixed $years)
+    {
+        $years = array_filter($years);
+        if(count((array)$years) > 0) {            
+            if(!empty($this->searchStr)) {
+                $this->searchStr .= "&";
+            }
+            $this->searchStr .= "years=";
+            $lastElement = end($years);
+            foreach ($years as $y) { 
+                $this->searchStr .= $y;
+                if($y !== $lastElement) {
+                    $this->searchStr .= '+';
+                }
+            }
+        }
+    }
+    
     /**
      * Create the checkbox templates
      *
@@ -221,4 +284,7 @@ class ComplexSearchForm extends FormBase
         
         return array();
     }
+
+    
+
 }
