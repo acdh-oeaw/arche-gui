@@ -68,8 +68,8 @@
                     </div>
                 {% endif%}
 
-                {%  if basic.getNonAcdhIdentifiers() %}
-                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
+                {%  if basic.getNonAcdhApiIdentifiers() %}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhApiIdentifiers(), 'icon': "label", 'label': "Identifier(s)"} ) }}
                 {% endif%}
 
                 {% for key, value in properties %}

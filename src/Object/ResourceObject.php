@@ -124,6 +124,25 @@ class ResourceObject
         }
         return $result;
     }
+    
+    /**
+     * Get all identifiers which are not acdh api related
+     *
+     * @return type
+     */
+    public function getNonAcdhApiIdentifiers(): array
+    {
+        $result = array();
+        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
+            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
+                //filter out the baseurl related identifiers 
+                if ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
+                    $result[] = $v;
+                }
+            }
+        }
+        return $result;
+    }
 
     /**
      * PID
@@ -291,7 +310,6 @@ class ResourceObject
     public function getTitleImage(string $width = '200px'): string
     {
         $img = '';
-        $imgBinary = '';
         $width = str_replace('px', '', $width);
         //check the thumbnail service first
         if ($this->getAcdhID()) {
@@ -430,29 +448,23 @@ class ResourceObject
 
     /**
      * Select the identifier for the Copy resource link
+     * Order : PID , ID.acdh.oeaw.ac.at, arche api id
+     * REDMINE ID: #19888
      * @return string
      */
     public function getCopyResourceLink(): string
     {
-        //check the pid
         if (!empty($this->getPid())) {
             return $this->getPid();
         }
-        $id = '';
-        $otherid = '';
-        //check the non acdh identifiers
-        if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
-            foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
-                //if we have acdh id then we pass that
-                if ((strpos($v->value, "/id.acdh.oeaw.ac.at/") !== false)) {
-                    return $id = $v->value;
-                } elseif ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
-                    //if we dont have then we pass everything except the repourl based id
-                    return $otherid = $v->value;
-                }
-            }
+        
+        if(!empty($this->getAcdhID())) {
+            return $this->getAcdhID();
         }
-
+        if(!empty($this->getRepoUrl())) {
+            return $this->getRepoUrl();
+        }
+        
         return "";
     }
 
@@ -616,11 +628,11 @@ class ResourceObject
     
     /**
      * Create the VCR data json string
+     * REDMINE ID: #19076
      * @return string
      */
     public function getVCRData(): string
     {
-        //#19076
         $res = new \stdClass();
         
         if (!empty($this->getDataString('acdh:hasDescription'))) {
@@ -641,8 +653,7 @@ class ResourceObject
             $res->uri = $this->getAcdhID();
         }
         
-        $res->label = $this->getTitle();
-        
+        $res->label = $this->getTitle();       
         
         return \GuzzleHttp\json_encode($res);
     }
