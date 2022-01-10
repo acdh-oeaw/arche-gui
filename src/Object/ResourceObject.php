@@ -135,7 +135,7 @@ class ResourceObject
         $result = array();
         if (isset($this->properties["acdh:hasIdentifier"]) && !empty($this->properties["acdh:hasIdentifier"])) {
             foreach ($this->properties["acdh:hasIdentifier"] as $k => $v) {
-                //filter out the baseurl related identifiers 
+                //filter out the baseurl related identifiers
                 if ((strpos($v->value, $this->config->getBaseUrl()) === false)) {
                     $result[] = $v;
                 }
@@ -458,10 +458,10 @@ class ResourceObject
             return $this->getPid();
         }
         
-        if(!empty($this->getAcdhID())) {
+        if (!empty($this->getAcdhID())) {
             return $this->getAcdhID();
         }
-        if(!empty($this->getRepoUrl())) {
+        if (!empty($this->getRepoUrl())) {
             return $this->getRepoUrl();
         }
         
@@ -653,7 +653,7 @@ class ResourceObject
             $res->uri = $this->getAcdhID();
         }
         
-        $res->label = $this->getTitle();       
+        $res->label = $this->getTitle();
         
         return \GuzzleHttp\json_encode($res);
     }
