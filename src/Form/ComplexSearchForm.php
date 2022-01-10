@@ -131,30 +131,30 @@ class ComplexSearchForm extends FormBase
         );
     }
     
-    private function generateMetaUrlString(FormStateInterface &$form_state) 
+    private function generateMetaUrlString(FormStateInterface &$form_state)
     {
-        $this->addSearchText($form_state->getValue('metavalue'));       
+        $this->addSearchText($form_state->getValue('metavalue'));
         $this->addSearchType($form_state->getValue('searchbox_types'));
         $this->addSearchCategory($form_state->getValue('searchbox_category'));
-        $this->addSearchDate($form_state->getValue('datebox_years') );
+        $this->addSearchDate($form_state->getValue('datebox_years'));
         $this->addPayload($form_state->getValue('payloadSearch'));
     }
     
-    private function addPayload($payload = "") {
-        
-        if(is_array($payload)) {
+    private function addPayload($payload = "")
+    {
+        if (is_array($payload)) {
             $this->searchStr .= "&payload=false";
-            foreach($payload as $p) {
-                if(strtolower($p) === "yes") {
+            foreach ($payload as $p) {
+                if (strtolower($p) === "yes") {
                     $this->searchStr .= "&payload=true";
                 }
             }
         }
     }
     
-    private function addSearchText($text = "") 
-    {        
-        if(!empty($text)) {
+    private function addSearchText($text = "")
+    {
+        if (!empty($text)) {
             $this->searchStr .= "words=".str_replace(" ", "+", $text);
         }
     }
@@ -162,15 +162,15 @@ class ComplexSearchForm extends FormBase
     private function addSearchType(mixed $types = "")
     {
         $types = array_filter($types);
-        if(count((array)$types) > 0) {            
-            if(!empty($this->searchStr)) {
+        if (count((array)$types) > 0) {
+            if (!empty($this->searchStr)) {
                 $this->searchStr .= "&";
             }
             $this->searchStr .= "type=";
             $lastElement = end($types);
-            foreach ($types as $t) { 
+            foreach ($types as $t) {
                 $this->searchStr .=$t;
-                if($t !== $lastElement) {
+                if ($t !== $lastElement) {
                     $this->searchStr .= '+';
                 }
             }
@@ -180,15 +180,15 @@ class ComplexSearchForm extends FormBase
     private function addSearchCategory(mixed $category = "")
     {
         $category = array_filter($category);
-        if(count((array)$category) > 0) {            
-            if(!empty($this->searchStr)) {
+        if (count((array)$category) > 0) {
+            if (!empty($this->searchStr)) {
                 $this->searchStr .= "&";
             }
             $this->searchStr .= "category=";
             $lastElement = end($category);
-            foreach ($category as $c) { 
+            foreach ($category as $c) {
                 $this->searchStr .=$c;
-                if($c !== $lastElement) {
+                if ($c !== $lastElement) {
                     $this->searchStr .= '+';
                 }
             }
@@ -198,15 +198,15 @@ class ComplexSearchForm extends FormBase
     private function addSearchDate(mixed $years)
     {
         $years = array_filter($years);
-        if(count((array)$years) > 0) {            
-            if(!empty($this->searchStr)) {
+        if (count((array)$years) > 0) {
+            if (!empty($this->searchStr)) {
                 $this->searchStr .= "&";
             }
             $this->searchStr .= "years=";
             $lastElement = end($years);
-            foreach ($years as $y) { 
+            foreach ($years as $y) {
                 $this->searchStr .= $y;
-                if($y !== $lastElement) {
+                if ($y !== $lastElement) {
                     $this->searchStr .= '+';
                 }
             }
@@ -284,7 +284,4 @@ class ComplexSearchForm extends FormBase
         
         return array();
     }
-
-    
-
 }
