@@ -27,6 +27,21 @@ repo-styles:
         - core/drupal
         - core/drupal.form 
 
+repo-search:
+    version: 1.0.1
+    css:
+        base:
+            css/acdh_repo_gui.css: {}
+            css/font-awesome/css/font-awesome.min.css: {}
+            css/lightbox.css: {}
+    js:        
+        js/acdh_repo_gui.js: {}
+        js/acdh_repo_gui_pager.js: {}
+        js/lightbox.js: {}
+    dependencies:
+        - core/drupal
+        - core/drupal.form 
+
 repo-root-view:
     version: 1.0.1
     css:

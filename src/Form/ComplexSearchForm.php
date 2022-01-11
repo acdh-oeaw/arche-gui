@@ -44,6 +44,7 @@ class ComplexSearchForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
+        $form['#prefix'] = '<div class="sks-form">';
         //the input field
         $this->createSearchInput($form);
 
@@ -84,7 +85,11 @@ class ComplexSearchForm extends FormBase
             $dateData["fields"] = $this->yearsData['fields'];
             $this->createBox($form, $dateData);
         }
-
+        
+      
+        $this->addSubmitButton($form);
+       
+        $form['#suffix'] = '</div>';
         return $form;
     }
 
@@ -102,12 +107,17 @@ class ComplexSearchForm extends FormBase
             $types = array_filter($types);
         }
 
-        $formats = $form_state->getValue('searchbox_format');
-        if (count((array)$formats) > 0) {
-            $formats = array_filter($formats);
+        $categories = $form_state->getValue('searchbox_category');
+        if (count((array)$categories) > 0) {
+            $categories = array_filter($categories);
+        }
+        
+        $years = $form_state->getValue('datebox_years');
+        if (count((array)$years) > 0) {
+            $years = array_filter($years);
         }
 
-        if ((empty($metavalue)) && (count((array)$types) <= 0) && (count((array)$formats) <= 0) && empty($form_state->getValue('date_start_date')) && empty($form_state->getValue('date_end_date'))) {
+        if ((empty($metavalue)) && (count((array)$types) <= 0) && (count((array)$categories) <= 0) && (count((array)$years) <= 0)) {
             $form_state->setErrorByName('metavalue', $this->t('Missing')->__toString() . ': ' . t('Keyword')->__toString() . ' ' . t('or')->__toString() . ' ' . t('Type')->__toString());
         }
     }
@@ -252,6 +262,11 @@ class ComplexSearchForm extends FormBase
                 #'#required' => TRUE,
         );
 
+        
+    }
+    
+    private function addSubmitButton(array &$form)
+    {
         $form['actions']['#type'] = 'actions';
         $form['actions']['submit'] = array(
             '#type' => 'submit',
