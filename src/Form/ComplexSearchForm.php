@@ -84,7 +84,7 @@ class ComplexSearchForm extends FormBase
             $dateData["type"] = "datebox_years";
             $dateData["fields"] = $this->yearsData['fields'];
             $this->createBox($form, $dateData);
-        }        
+        }
       
         $this->addSubmitButton($form);
        
@@ -282,7 +282,7 @@ class ComplexSearchForm extends FormBase
     }
 
     private function getBoxData(string $type): array
-    {        
+    {
         //we need to get the DB
         if ($this->reCache) {
             $data = $this->model->getViewData($type);
@@ -291,7 +291,7 @@ class ComplexSearchForm extends FormBase
             return $data;
         } else {
             return (\Drupal::cache()->get('archeCacheSF_'.$type)->data) ? \Drupal::cache()->get('archeCacheSF_'.$type)->data : array();
-        }        
+        }
         return array();
     }
 }
