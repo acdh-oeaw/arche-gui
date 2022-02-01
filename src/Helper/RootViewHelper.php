@@ -26,12 +26,11 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
      */
     private function setProperties()
     {
-        
         $this->properties = array(
             'acdhid' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repo->getSchema()->__get('id')),
             'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription"),
             'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repo->getSchema()->creationDate),
-            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->label)            
+            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->label)
         );
     }
     
@@ -43,12 +42,10 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
      * @return void
      */
     private function fetchProperties(string $k, object $v, string $lang): void
-    {        
-        
+    {
         foreach ($this->properties as $pk => $pv) {
-            
-            if (isset($v->$pk)) { 
-                $title = $v->$pk;    
+            if (isset($v->$pk)) {
+                $title = $v->$pk;
                 
                 if ($v->$pk == 'accesres') {
                     $title = str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->$pk);
@@ -91,7 +88,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
                 return $v->language;
             }
         }
-        return $this->siteLang;        
+        return $this->siteLang;
     }
     
     private function addTopCollectionProperty(string $lang, int $k, object &$v): void
@@ -107,7 +104,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     }
     
     private function formatResultToGui(array $data)
-    {   
+    {
         if (count((array) $data) > 0) {
             foreach ($data as $k => $v) {
                 $lang = $this->setLanguage($v);
@@ -117,7 +114,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
                     $this->addTopCollectionProperty($lang, $k, $v);
                 }
             }
-        }        
+        }
     }
     
     /**
@@ -139,7 +136,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     }
     
     public function createViewApi(array $data): array
-    {        
+    {
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         
         $this->formatValuesToObject($data);
@@ -154,19 +151,19 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
      * Format the Db result to  ResourceObject values
      * @param array $data
      */
-    protected function formatValuesToObject(array $data) 
+    protected function formatValuesToObject(array $data)
     {
         $this->setViewProperties();
         $this->propData = $data;
         $this->fetchProperties();
-       
     }
  
     
-     /**
-     * Set the properties what we need for this view, we will fetch them from the results array
-     */
-    private function setViewProperties() {        
+    /**
+    * Set the properties what we need for this view, we will fetch them from the results array
+    */
+    private function setViewProperties()
+    {
         $this->viewProperties = [
             
             'acdh:hasIdentifier' => $this->repo->getSchema()->__get('id'),
@@ -176,5 +173,4 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
             'rdf:type' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
         ];
     }
-    
 }
