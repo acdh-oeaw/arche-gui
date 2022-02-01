@@ -55,7 +55,7 @@ class ComplexSearchForm extends FormBase
         $this->lastModifyDateTime = $this->getCacheLastModificationDate();
         //do we need to recache the data?
         $this->reCache = $this->helper->checkCacheData('entity', $this->lastModifyDateTime);
-        
+  
         //get the data based on the recache and type value
         $this->entityData = $this->getBoxData('entity');
         
@@ -244,6 +244,8 @@ class ComplexSearchForm extends FormBase
             )
         );
     }
+    
+   
 
     /**
      * this function creates the search input field
@@ -290,7 +292,7 @@ class ComplexSearchForm extends FormBase
             \Drupal::cache()->set('archeCacheSF_'.$type, $data, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, array(date('Y-m-d H:i:s', $time)));
             return $data;
         } else {
-            return (\Drupal::cache()->get('archeCacheSF_'.$type)->data) ? \Drupal::cache()->get('archeCacheSF_'.$type)->data : array();
+            return (isset(\Drupal::cache()->get('archeCacheSF_'.$type)->data)) ? \Drupal::cache()->get('archeCacheSF_'.$type)->data : array();
         }
         return array();
     }

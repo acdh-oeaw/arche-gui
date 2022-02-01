@@ -23,9 +23,11 @@ repo-styles:
         js/leaflet.js: {}
         js/wicket.js: {}
         js/wicket-leaflet.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
-        - core/drupal.form 
+        - core/drupal.form
+        
 
 repo-search:
     version: 1.0.1
@@ -38,9 +40,11 @@ repo-search:
         js/acdh_repo_gui.js: {}
         js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
-        - core/drupal.form 
+        - core/drupal.form
+        - core/jquery    
 
 repo-root-view:
     version: 1.0.1
@@ -52,9 +56,10 @@ repo-root-view:
         js/jquery-1.12.3.min.js: {}
         js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
-        - core/drupal.form           
+        - core/drupal.form  
 
 repo-collection-dl:
     version: 1.0.1
@@ -66,9 +71,11 @@ repo-collection-dl:
         js/jquery-1.12.3.min.js: {}        
         js/jstree.min.js: {}
         js/dl_collection.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
+        - core/jquery    
 
 ds-pdf-styles:  
     version: 1.0.1
@@ -79,6 +86,7 @@ ds-pdf-styles:
         js/pdf/pdfjs-dist/build/pdf.js: {}
         js/pdf/pdfviewer.js: {}
         js/pdf/arche-ds-pdf.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
         - core/jquery
@@ -92,6 +100,7 @@ ds-pdf-modal-styles:
         js/pdf/pdfjs-dist/build/pdf.js: {}
         js/pdf/pdfviewer.js: {}
         js/pdf/arche-ds-pdf-modal.js: {}
+        js/vcrSubmit.js: {}
     dependencies:
         - core/drupal
         - core/jquery

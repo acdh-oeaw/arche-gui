@@ -603,7 +603,7 @@ WITH query_data as (
     left join resources as rs on rs.id = mv.id 
     where 
     mv.property in (
-        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
         'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf',
@@ -633,7 +633,7 @@ WITH query_data as (
         'https://vocabs.acdh.oeaw.ac.at/schema#continues',
         'https://vocabs.acdh.oeaw.ac.at/schema#documents',
         'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
-        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
         'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'

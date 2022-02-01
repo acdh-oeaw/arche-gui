@@ -3,16 +3,6 @@
 
 {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-search-limit-block.html.twig', {'data': paging.sum } ) }}
 
-{% if extra.baseUrl == "https://arche-dev.acdh-dev.oeaw.ac.at/api/" %}
-    <div class="res-el col-block col-lg-12">
-        <input type="hidden" id="search-clarinurl" name="search-clarinurl" value="{{ extra.clarinUrl }}"/>
-        <div  id="submit-search-vcr" class="res-act-button res-btn-submit-vcr"><span>Add Search Result Set to CLARIN Virtual Collection</span></div>
-        <div id="vcr-search-form"></div>
-        <div id="vcr-search-result"><span class="res-title" id="vcr-search-result-text"></span></div>
-        <div id="vcr-data-loading" style="display:none"><span class="res-title">{{ "VCR Data Loading..."|trans }}</span></div>
-    </div>        
-{% endif%}
-
 {% for item in data %}
     {% if item.getTitle() %}
         <div class="res-el col-block col-lg-12">

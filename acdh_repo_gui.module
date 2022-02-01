@@ -56,6 +56,9 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         'acdh-repo-gui-detail-versions-block' => [
             'variables' => ['result' => NULL]
         ],
+        'acdh-repo-gui-vcr-block' => [
+            'variables' => ['vcrUrl' => NULL]
+        ],
         'acdh-repo-ds-dl-collection' => [
             'variables' => ['basic' => NULL, 'extra' => NULL],
             '#attached' => [
@@ -96,7 +99,13 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['language' => NULL]
         ],
         'acdh-repo-gui-search-full' => [
-            'variables' => ['data' => NULL, 'paging' => NULL],
+            'variables' => ['data' => NULL, 'paging' => NULL, 'extra' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-search', //include our custom library for this response
+                ]
+            ]
+            
         ],
         'acdh-repo-gui-shibboleth-login' => [
             'variables' => []
