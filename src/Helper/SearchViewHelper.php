@@ -63,7 +63,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasTitle'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitle",
+                                $this->repo->getSchema()->label,
                                 $v->title,
                                 $v->title
                             )
@@ -73,7 +73,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAvailableDate'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAvailableDate",
+                                $this->repo->getSchema()->creationDate,
                                 $v->avdate,
                                 $v->avdate
                             )
@@ -83,7 +83,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasDescription'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasDescription",
+                                $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription",
                                 $v->description,
                                 $v->description
                             )
@@ -93,28 +93,19 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAccessRestriction'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAccessRestriction",
+                                $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres),
                                 $v->accesres
                             )
                         );
                     }
-                    if (isset($v->titleimage)) {
-                        $this->data[$k]['acdh:hasTitleImage'][$this->objLang] = array(
-                            $this->createObj(
-                                $v->id,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitleImage",
-                                $v->titleimage,
-                                $v->titleimage
-                            )
-                        );
-                    }
+                   
                     //get the acdh type
                     if (isset($v->acdhtype)) {
                         $this->data[$k]['rdf:type'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('namespaces')->rdfs . "type",
+                                $this->repo->getSchema()->namespaces->rdfs.'type',
                                 $v->acdhtype,
                                 $v->acdhtype
                             )
@@ -148,7 +139,7 @@ class SearchViewHelper
     {
         $obj = new \stdClass();
         $obj->id = $id;
-        $obj->property = $property; //;
+        $obj->property = $property; 
         $obj->title = $title;
         $obj->value = $value;
         return $obj;
@@ -300,7 +291,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasTitle'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitle",
+                                $this->repo->getSchema()->label,
                                 $v->title,
                                 $v->title
                             )
@@ -310,7 +301,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAvailableDate'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAvailableDate",
+                                $this->repo->getSchema()->creationDate,
                                 $v->avdate,
                                 $v->avdate
                             )
@@ -320,7 +311,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasDescription'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasDescription",
+                                $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription",
                                 $v->description,
                                 $v->description
                             )
@@ -330,22 +321,13 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAccessRestriction'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAccessRestriction",
+                                $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accessres),
                                 $v->accessres
                             )
                         );
                     }
-                    if (isset($v->titleimage)) {
-                        $this->data[$k]['acdh:hasTitleImage'][$this->objLang] = array(
-                            $this->createObj(
-                                $v->acdhid,
-                                $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitleImage",
-                                $v->titleimage,
-                                $v->titleimage
-                            )
-                        );
-                    }
+                    
                     //get the acdh type
                     if (isset($v->acdhtype)) {
                         $this->data[$k]['rdf:type'][$this->objLang] = array(

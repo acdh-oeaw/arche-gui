@@ -48,13 +48,12 @@ class ChildApiHelper
     private function setProperties()
     {
         $this->properties = array(
-            'version' => array('shortcut' => 'acdh:hasVersion', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasVersion"),
-            'acdhtype' => array('shortcut' => 'rdf:type', 'property' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-            'titleimage' => array('shortcut' => 'acdh:hasTitleImage', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitleImage"),
-            'accesres' => array('shortcut' => 'acdh:hasAccessRestriction', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAccessRestriction"),
-            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasDescription"),
-            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasAvailableDate"),
-            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->__get('drupal')->vocabsNamespace . "hasTitle"),
+            'version' => array('shortcut' => 'acdh:hasVersion', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology. "hasVersion"),
+            'acdhtype' => array('shortcut' => 'rdf:type', 'property' => $this->repo->getSchema()->__get('namespaces')->rdfs . "type"),
+            'accesres' => array('shortcut' => 'acdh:hasAccessRestriction', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction"),
+            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription"),
+            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repo->getSchema()->creationDate),
+            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->label),
             'id' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repo->getSchema()->__get('id')),
         );
     }
