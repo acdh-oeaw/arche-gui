@@ -11,8 +11,8 @@ namespace Drupal\acdh_repo_gui\Plugin\Block;
  *   category = @Translation("ARCHE Clarin VRC Submit Block")
  * )
  */
-class VcrSubmitBlock extends \Drupal\Core\Block\BlockBase {
-    
+class VcrSubmitBlock extends \Drupal\Core\Block\BlockBase
+{
     public function build()
     {
         \Drupal::service('page_cache_kill_switch')->trigger();
@@ -30,6 +30,3 @@ class VcrSubmitBlock extends \Drupal\Core\Block\BlockBase {
         ];
     }
 }
-    
-    
-    
