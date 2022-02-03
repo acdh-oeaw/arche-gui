@@ -139,7 +139,7 @@ class SearchViewHelper
     {
         $obj = new \stdClass();
         $obj->id = $id;
-        $obj->property = $property; 
+        $obj->property = $property;
         $obj->title = $title;
         $obj->value = $value;
         return $obj;
