@@ -6,6 +6,20 @@ jQuery(function ($) {
     "use strict";
     /** Handle the child button click  END **/
 
+    /** CTRL PRess check for the tree view  #19924 **/
+    var cntrlIsPressed = false;
+
+    $(document).keydown(function (event) {
+        if (event.which == "17")
+            cntrlIsPressed = true;
+    });
+
+    $(document).keyup(function () {
+        cntrlIsPressed = false;
+    });
+    /** CTRL PRess check for the tree view   #19924  END **/
+
+
     $(document).delegate(".hideRepoChildView", "click", function (e) {
         e.preventDefault();
         $('.res-act-button.hideChildView').hide();
@@ -101,7 +115,7 @@ jQuery(function ($) {
 
                 try {
                     let cite = new Cite(data);
-                
+
                     var apa_loaded = true;
 
                     let templateName = 'apa-6th';
@@ -190,7 +204,7 @@ jQuery(function ($) {
 
         //check the audio player can load the audio file or not
         checkAudioPlayer();
-      
+
         //CITE Block
         showCiteBlock();
 
@@ -289,7 +303,7 @@ jQuery(function ($) {
                                     acdhid = node.id;
                                 }
 
-                                return '/browser/api/get_collection_data_lazy/' + acdhid+'/'+drupalSettings.language;
+                                return '/browser/api/get_collection_data_lazy/' + acdhid + '/' + drupalSettings.language;
                             },
                             'data': function (node) {
                                 return {'id': node.id};
@@ -303,7 +317,7 @@ jQuery(function ($) {
                         },
                         search: {
                             "ajax": {
-                                "url": '/browser/api/get_collection_data_lazy/' + $('#insideUri').val()+'/'+drupalSettings.language,
+                                "url": '/browser/api/get_collection_data_lazy/' + $('#insideUri').val() + '/' + drupalSettings.language,
                                 "data": function (str) {
                                     return {
                                         "operation": "search",
@@ -326,7 +340,12 @@ jQuery(function ($) {
                     if (node.originalEvent.target.id) {
                         var node = $('#child-tree').jstree(true).get_node(node.originalEvent.target.id);
                         if (node.original.encodedUri) {
-                            window.location.href = "/browser/oeaw_detail/" + node.original.uri;
+                            if(cntrlIsPressed)
+                            {
+                                window.open( "/browser/oeaw_detail/" + node.original.uri, '_blank');
+                            }else {
+                                window.location.href = "/browser/oeaw_detail/" + node.original.uri;
+                            }
                         }
                     }
                 });

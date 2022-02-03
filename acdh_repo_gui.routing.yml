@@ -94,7 +94,7 @@ oeaw_change_lng:
 ##### APIs #######
         
 repo_search_v2:    
-  path: '/search/{metavalue}/{order}/{limit}/{page}'
+  path: '/search/{metavalue}'
   defaults:
     _controller: '\Drupal\acdh_repo_gui\Controller\SearchViewController::generateView'
     metavalue: ""
