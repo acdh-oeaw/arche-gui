@@ -35,7 +35,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) ", array(':id' => $identifier, ':lang' => $this->siteLang));
+            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) order by property, lastname", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

@@ -81,7 +81,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION IF EXISTS gui.detail_view_func(text, text);
 CREATE FUNCTION gui.detail_view_func(_identifier text, _lang text DEFAULT 'en')
-    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text )    
+    RETURNS table (id bigint, property text, type text, value text, relvalue text, acdhid text, vocabsid text, accessRestriction text, language text, lastname text )     
 AS $func$
 DECLARE
     /* get the arche gui identifier */
@@ -149,12 +149,13 @@ RETURN QUERY
 	dmr.acdhid,
 	dmr.vocabsid,
 	dmr.accessrestriction,
-	dmr.lang
+	dmr.lang,
+        (select ln.value from metadata_view as ln where ln.id = CAST(dmr.value as INT) and dmr.type='REL' and ln.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLastName') as lastname
     from dmetaRel as dmr
     left join resources as rs on rs.id = dmr.id and rs.state = 'active'
     UNION
     Select 
-        mv.id, mv.property, mv.type, mv.value, '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessrestriction, mv.lang
+        mv.id, mv.property, mv.type, mv.value, '' as relvalue, '' as acdhid, '' as vocabsid, '' as accessrestriction, mv.lang, ''
     from metadata_view as mv where mv.type = 'ID' and mv.id = _main_id
     order by property; 
 END
@@ -603,7 +604,7 @@ WITH query_data as (
     left join resources as rs on rs.id = mv.id 
     where 
     mv.property in (
-        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
         'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf',
@@ -633,7 +634,7 @@ WITH query_data as (
         'https://vocabs.acdh.oeaw.ac.at/schema#continues',
         'https://vocabs.acdh.oeaw.ac.at/schema#documents',
         'https://vocabs.acdh.oeaw.ac.at/schema#hasSource',
-        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublicationOf',		
+        'https://vocabs.acdh.oeaw.ac.at/schema#isDerivedPublication',		
         'https://vocabs.acdh.oeaw.ac.at/schema#isContinuedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isDocumentedBy',
         'https://vocabs.acdh.oeaw.ac.at/schema#isSourceOf'
