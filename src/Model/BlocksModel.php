@@ -128,7 +128,7 @@ class BlocksModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
-                "select * from gui.getResourceVersion(:id, :lang) ",
+                "select * from gui.getResourceVersion(:id, :lang) order by depth",
                 array(':id' => $params['identifier'], ':lang' => $params['lang'])
             );
             $result = $query->fetchAll();

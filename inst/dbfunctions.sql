@@ -1739,7 +1739,7 @@ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS gui.getResourceVersion( text, text);
 CREATE FUNCTION gui.getResourceVersion(_identifier text, _lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, avDate timestamp)
+  RETURNS table (id bigint, title text, avDate timestamp, depth integer)
 AS $func$
 DECLARE	
     _lang2 text := 'de';
@@ -1749,7 +1749,8 @@ BEGIN
 RETURN QUERY
     WITH RECURSIVE child_subordinates AS (
         SELECT
-            mv.value
+            mv.value,
+            1 as depthval
         FROM
             metadata_view as mv
         WHERE
@@ -1757,7 +1758,8 @@ RETURN QUERY
             and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
         UNION
         SELECT
-            mv2.value
+            mv2.value,
+            depthval + 1
         FROM
             metadata_view mv2
         INNER JOIN child_subordinates s ON CAST(s.value as bigint) = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
@@ -1765,7 +1767,8 @@ RETURN QUERY
     --get the parents
     parent_subordinates AS (
         SELECT
-            mv.id
+            mv.id,
+            -1 as depthval
         FROM
             metadata_view as mv
         WHERE
@@ -1773,9 +1776,10 @@ RETURN QUERY
             and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
         UNION
             SELECT
-                    mv2.id
+                mv2.id,
+                depthval - 1
             FROM
-                    metadata_view mv2
+                metadata_view mv2
             INNER JOIN parent_subordinates s ON s.id = CAST(mv2.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
     ) SELECT
         CAST(c.value as bigint),
@@ -1784,7 +1788,8 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
         ) as title,
-        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
+        c.depthval
     FROM
         child_subordinates as c
     UNION
@@ -1795,7 +1800,8 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
         ) as title,
-        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
+    p.depthval
     from parent_subordinates as p
     UNION
     select
@@ -1806,7 +1812,7 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang3 limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
-    order by avdate desc;
+        0;
 END
 $func$
 LANGUAGE 'plpgsql';
