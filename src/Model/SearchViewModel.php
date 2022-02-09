@@ -11,7 +11,7 @@ use acdhOeaw\arche\lib\Repo;
  * @author nczirjak
  */
 class SearchViewModel extends ArcheModel
-{   
+{
     private $repolibDB;
     private $sqlResult;
     private $siteLang;
@@ -49,7 +49,7 @@ class SearchViewModel extends ArcheModel
     
     public function getVcr(array $params = []): array
     {
-        if(count($params) === 0) {
+        if (count($params) === 0) {
             return array();
         }
         
@@ -102,7 +102,7 @@ class SearchViewModel extends ArcheModel
     //int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null
     public function getViewData(array $params = []): array
     {
-        if(count($params) === 0) {
+        if (count($params) === 0) {
             return array();
         }
         
@@ -154,10 +154,11 @@ class SearchViewModel extends ArcheModel
         return array('count' => $cnt, 'data' => $this->sqlResult);
     }
     
-    private function formatWordsFilter(): string {
+    private function formatWordsFilter(): string
+    {
         if (isset($this->sqlParams['words']) && (count((array)$this->sqlParams['words']) > 0)) {
             return implode(" & ", (array)$this->sqlParams['words']);
-        } 
+        }
         return (string)"*";
     }
     

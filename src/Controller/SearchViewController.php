@@ -37,7 +37,6 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
      */
     public function generateView_old(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
     {
-
         $data = array();
         $guiData = array();
         $guiData['data'] = array();
@@ -151,7 +150,4 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
         return new Response(\json_encode(array("There is no data")), 404, ['Content-Type' => 'application/json']);
     }
-
-   
-
 }

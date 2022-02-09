@@ -394,8 +394,8 @@ class SearchViewHelper
     
     //////////////////////////////////////////////
     
-    public function paramsToSqlParams(string $metavalues): array {
-        
+    public function paramsToSqlParams(string $metavalues): array
+    {
         $this->processMetaValues($metavalues);
       
         //((int) $this->searchParams['page'] == 1) ? (int) $this->searchParams['page'] = 0 : $this->searchParams['page'] = (int)$this->searchParams['page'];
@@ -403,8 +403,9 @@ class SearchViewHelper
         return $this->searchParams;
     }
     
-     private function processMetaValues(string $metavalues) {
-        foreach(explode("&", $metavalues) as $m) {
+    private function processMetaValues(string $metavalues)
+    {
+        foreach (explode("&", $metavalues) as $m) {
             $this->getParams('words', $m);
             $this->getParams('payload', $m);
             $this->getParams('years', $m);
@@ -416,11 +417,12 @@ class SearchViewHelper
         }
     }
 
-    private function getParams(string $prop, string $meta) {
+    private function getParams(string $prop, string $meta)
+    {
         if (strpos($meta, $prop) !== false) {
             $values = str_replace($prop."=", '', $meta);
             
-            if($prop == "words") {
+            if ($prop == "words") {
                 $values = $this->getParamsWords($values);
             }
            
@@ -428,11 +430,11 @@ class SearchViewHelper
         }
     }
     
-    private function getParamsWords(string $values): string {
+    private function getParamsWords(string $values): string
+    {
         $values = str_replace(":", "/", $values);
         $values = str_replace("http//", "http://", $values);
         $values = str_replace("https//", "https://", $values);
-        return $values;        
+        return $values;
     }
-    
 }
