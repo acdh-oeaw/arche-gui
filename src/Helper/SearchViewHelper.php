@@ -19,6 +19,7 @@ class SearchViewHelper
     private $searchObj;
     private $data = array();
     private $objLang = "en";
+    private $searchParams = [];
 
     public function createView(array $data = array(), int $version = 1): array
     {
@@ -389,4 +390,49 @@ class SearchViewHelper
         }
         $this->objLang = 'en';
     }
+    
+    
+    //////////////////////////////////////////////
+    
+    public function paramsToSqlParams(string $metavalues): array {
+        
+        $this->processMetaValues($metavalues);
+      
+        //((int) $this->searchParams['page'] == 1) ? (int) $this->searchParams['page'] = 0 : $this->searchParams['page'] = (int)$this->searchParams['page'];
+        
+        return $this->searchParams;
+    }
+    
+     private function processMetaValues(string $metavalues) {
+        foreach(explode("&", $metavalues) as $m) {
+            $this->getParams('words', $m);
+            $this->getParams('payload', $m);
+            $this->getParams('years', $m);
+            $this->getParams('category', $m);
+            $this->getParams('type', $m);
+            $this->getParams('order', $m);
+            $this->getParams('limit', $m);
+            $this->getParams('page', $m);
+        }
+    }
+
+    private function getParams(string $prop, string $meta) {
+        if (strpos($meta, $prop) !== false) {
+            $values = str_replace($prop."=", '', $meta);
+            
+            if($prop == "words") {
+                $values = $this->getParamsWords($values);
+            }
+           
+            $this->searchParams[$prop] = explode("or", preg_replace('/\s+/', '', $values));
+        }
+    }
+    
+    private function getParamsWords(string $values): string {
+        $values = str_replace(":", "/", $values);
+        $values = str_replace("http//", "http://", $values);
+        $values = str_replace("https//", "https://", $values);
+        return $values;        
+    }
+    
 }

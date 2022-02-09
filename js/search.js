@@ -56,8 +56,8 @@ jQuery(function ($) {
         //Year of resource field
         var selectedYears = getParameterByName('years', window.location.toString());
         if (selectedYears) {
-            if (selectedYears.includes(" ")) {
-                selectedYears = selectedYears.split(" ");
+            if (selectedYears.includes(" or ")) {
+                selectedYears = selectedYears.split(" or ");
                 selectedYears.forEach(function (year) {
                     $('input[value="' + year + '"]').prop('checked', true);
                 });
@@ -263,7 +263,7 @@ jQuery(function ($) {
             if (urlParams) {
                 urlParams += '&';
             }
-            urlParams += 'years=' + selectedYears.join('+');
+            urlParams += 'years=' + selectedYears.join('+or+');
         }
 
 

@@ -11,16 +11,13 @@ use acdhOeaw\arche\lib\Repo;
  * @author nczirjak
  */
 class SearchViewModel extends ArcheModel
-{
-    protected $repodb;
-    protected $config;
-    protected $repo;
+{   
     private $repolibDB;
     private $sqlResult;
     private $siteLang;
     private $searchCfg;
-    private $metaObj;
     private $log;
+    private $sqlParams;
     /* ordering */
     protected $limit;
     protected $offset;
@@ -36,34 +33,32 @@ class SearchViewModel extends ArcheModel
         parent::__construct();
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         
-        $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = Repo::factory($this->config);
-        
         $this->searchCfg = new \acdhOeaw\arche\lib\SearchConfig();
         $this->repolibDB = \acdhOeaw\arche\lib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
-        $this->metaObj = new \stdClass();
+        
         $this->log = new \zozlak\logging\Log(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
         (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     
     private function setUpPayload(): void
     {
-        if (isset($this->metaObj->payload)) {
-            $this->binarySearch = $this->metaObj->payload;
+        if (isset($this->sqlParams['payload'])) {
+            $this->binarySearch = $this->sqlParams['payload'][0];
         }
     }
     
-    public function getVcr(object $metavalue = null): array
+    public function getVcr(array $params = []): array
     {
-        $this->metaObj = $metavalue;
-        $sqlYears = $this->formatYearsFilter_V2();
-        $sqlTypes = $this->formatTypeFilter_V2();
-        $sqlCategory = $this->formatTypeFilter_V2("category");
-        if (isset($this->metaObj->words) && (count((array)$this->metaObj->words) > 0)) {
-            $sqlWords = implode(" & ", (array)$this->metaObj->words);
-        } else {
-            $sqlWords = (string)"*";
+        if(count($params) === 0) {
+            return array();
         }
+        
+        $this->sqlParams = $params;
+        $this->initPaging();
+        $sqlYears = $this->formatYearsFilter();
+        $sqlTypes = $this->formatTypeFilter();
+        $sqlCategory = $this->formatTypeFilter("category");
+        $sqlWords = $this->formatWordsFilter();
         $this->setUpPayload();
         
         try {
@@ -104,21 +99,19 @@ class SearchViewModel extends ArcheModel
         return $this->sqlResult;
     }
     
-    public function getViewData(int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null): array
+    //int $limit = 10, int $page = 0, string $order = "datedesc", object $metavalue = null
+    public function getViewData(array $params = []): array
     {
-        $result = array();
-        $this->metaObj = $metavalue;
-        
-        $this->initPaging($limit, $page, $order);
-        $sqlYears = $this->formatYearsFilter_V2();
-        $sqlTypes = $this->formatTypeFilter_V2();
-        $sqlCategory = $this->formatTypeFilter_V2("category");
-        if (isset($this->metaObj->words) && (count((array)$this->metaObj->words) > 0)) {
-            $sqlWords = implode(" & ", (array)$this->metaObj->words);
-        } else {
-            $sqlWords = (string)"*";
+        if(count($params) === 0) {
+            return array();
         }
         
+        $this->sqlParams = $params;
+        $this->initPaging();
+        $sqlYears = $this->formatYearsFilter();
+        $sqlTypes = $this->formatTypeFilter();
+        $sqlCategory = $this->formatTypeFilter("category");
+        $sqlWords = $this->formatWordsFilter();
         $this->setUpPayload();
         
         try {
@@ -139,6 +132,7 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
+         
             $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -160,22 +154,28 @@ class SearchViewModel extends ArcheModel
         return array('count' => $cnt, 'data' => $this->sqlResult);
     }
     
+    private function formatWordsFilter(): string {
+        if (isset($this->sqlParams['words']) && (count((array)$this->sqlParams['words']) > 0)) {
+            return implode(" & ", (array)$this->sqlParams['words']);
+        } 
+        return (string)"*";
+    }
     
     /**
      * Change the years format for the sql query
      *
      * @return string
      */
-    private function formatYearsFilter_V2(): string
+    private function formatYearsFilter(): string
     {
         //%(2020|1997)%
         $yearsStr = "%";
-        if (isset($this->metaObj->years)) {
+        if (isset($this->sqlParams['years'])) {
             $yearsStr = '%(';
             $i = 0;
-            $len = count($this->metaObj->years);
+            $len = count($this->sqlParams['years']);
             if ($len > 0) {
-                foreach ($this->metaObj->years as $y) {
+                foreach ($this->sqlParams['years'] as $y) {
                     if ($i == $len - 1) {
                         // last
                         $yearsStr .= $y.')%';
@@ -191,36 +191,16 @@ class SearchViewModel extends ArcheModel
         return $yearsStr;
     }
     
-    private function formatYearsFilter(): string
-    {
-        $yearsStr = "";
-        if (isset($this->metaObj->years)) {
-            $count = count($this->metaObj->years);
-            if ($count > 0) {
-                $i = 0;
-                foreach ($this->metaObj->years as $y) {
-                    $yearsStr .= $y;
-                    if ($count - 1 != $i) {
-                        $yearsStr .= ' or ';
-                    }
-                    $i++;
-                }
-            } else {
-                $yearsStr = "";
-            }
-        }
-        return $yearsStr;
-    }
-    
-    private function formatTypeFilter_V2(string $key = "type"): string
+  
+    private function formatTypeFilter(string $key = "type"): string
     {
         $typeStr = "ARRAY[]::text[]";
-        if (isset($this->metaObj->$key)) {
-            $count = count($this->metaObj->$key);
+        if (isset($this->sqlParams[$key])) {
+            $count = count($this->sqlParams[$key]);
             if ($count > 0) {
                 $typeStr = 'ARRAY [ ';
                 $i = 0;
-                foreach ($this->metaObj->$key as $t) {
+                foreach ($this->sqlParams[$key] as $t) {
                     $typeStr .= "'$t'";
                     if ($count - 1 != $i) {
                         $typeStr .= ', ';
@@ -237,29 +217,6 @@ class SearchViewModel extends ArcheModel
         return $typeStr;
     }
     
-    private function formatTypeFilter(): string
-    {
-        $typeStr = "";
-        if (isset($this->metaObj->type)) {
-            $count = count($this->metaObj->type);
-            if ($count > 0) {
-                $typeStr .= 'ARRAY [ ';
-                $i = 0;
-                foreach ($this->metaObj->type as $t) {
-                    $typeStr .= "'https://vocabs.acdh.oeaw.ac.at/schema#$t'";
-                    if ($count - 1 != $i) {
-                        $typeStr .= ', ';
-                    } else {
-                        $typeStr .= ' ]';
-                    }
-                    $i++;
-                }
-            } else {
-                $typeStr = "";
-            }
-        }
-        return $typeStr;
-    }
     
     private function formatYearsArrayFilter(): string
     {
@@ -560,12 +517,12 @@ class SearchViewModel extends ArcheModel
         }
     }
     
-    private function initPaging(int $limit, int $page, string $order)
+    private function initPaging()
     {
-        $this->limit = $limit;
-        ($page == 0 || $page == 1) ? $this->offset = 0 : $this->offset = $limit * ($page -1);
+        $this->limit = $this->sqlParams['limit'][0];
+        ($this->sqlParams['page'][0] == 0 || $this->sqlParams['page'][0]== 1) ? $this->offset = 0 : $this->offset = (int)$this->sqlParams['limit'][0] * ((int)$this->sqlParams['page'][0] -1);
         
-        switch ($order) {
+        switch ($this->sqlParams['order']) {
             case 'dateasc':
                 $this->orderby = "asc";
                 $this->orderby_column = "avdate";
