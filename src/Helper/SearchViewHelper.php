@@ -420,10 +420,21 @@ class SearchViewHelper
         if (strpos($meta, $prop) !== false) {
             $values = str_replace($prop."=", '', $meta);
             
-            if($prop == "words") {
-                $values = $this->getParamsWords($values);
+            switch ($prop) {
+                case "words":
+                    $values = $this->getParamsWords($values);
+                    break;
+                case "type":
+                    $values = $this->getParamsType($values);
+                    break;
+                case "category":
+                    $values = $this->getParamsCategory($values);
+                    break;
+
+                default:
+                    break;
             }
-           
+            
             $this->searchParams[$prop] = explode("or", preg_replace('/\s+/', '', $values));
         }
     }
@@ -433,6 +444,14 @@ class SearchViewHelper
         $values = str_replace("http//", "http://", $values);
         $values = str_replace("https//", "https://", $values);
         return $values;        
+    }
+    
+    private function getParamsType(string $values): string {
+        return ArcheHelper::createFullPropertyFromShortcut($values);
+    }
+    
+    private function getParamsCategory(string $values): string {
+        return ltrim(strstr($values, ':'), ':');
     }
     
 }
