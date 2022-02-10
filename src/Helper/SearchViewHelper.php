@@ -449,11 +449,13 @@ class SearchViewHelper
     }
 
     
-    private function getParamsType(string $values): string {
+    private function getParamsType(string $values): string
+    {
         return ArcheHelper::createFullPropertyFromShortcut($values);
     }
     
-    private function getParamsCategory(string $values): string {
+    private function getParamsCategory(string $values): string
+    {
         return ltrim(strstr($values, ':'), ':');
     }
 }
