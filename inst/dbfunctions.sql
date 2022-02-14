@@ -889,7 +889,7 @@ LANGUAGE 'plpgsql';
 * New search version  - for the new full_text_search DB without properties
 * select * from  gui.search_full_v3_func('*', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Person' ],  '%', 'en',  '10', '0',  'desc', 'title' )
 **/
-DROP FUNCTION gui.search_full_v3_func(text, text[], text, text, text, text, text, text, bool, text[]);
+DROP FUNCTION IF EXISTS gui.search_full_v3_func(text, text[], text, text, text, text, text, text, bool, text[]);
 CREATE FUNCTION gui.search_full_v3_func(_searchstr text DEFAULT '', _acdhtype text[] DEFAULT '{}', _acdhyears text DEFAULT '', _lang text DEFAULT 'en', _limit text DEFAULT '10', _page text DEFAULT '0', _orderby text DEFAULT 'desc', _orderby_prop text DEFAULT 'title', _binarySearch bool DEFAULT FALSE, _category text[] DEFAULT '{}' )
     RETURNS table (acdhid bigint, title text, description text, acdhtype text, headline_text text, headline_desc text, headline_binary text, avdate timestamp, accessres text, titleimage text, ids text, cnt bigint, pid text)
 AS $func$
@@ -901,17 +901,7 @@ DECLARE
     _searchstr text := LOWER(_searchstr);
 BEGIN
 --remove the tables if they are exists
-DROP TABLE IF EXISTS title_data;
-DROP TABLE IF EXISTS type_data;
-DROP TABLE IF EXISTS category_data;
-DROP TABLE IF EXISTS years_data;
 DROP TABLE IF EXISTS collection_data;
-
---create the dataset for the custom filter values
---DROP TYPE IF EXISTS dataset CASCADE;
-IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gui_fulltext_dataset')  THEN 
-    CREATE TYPE gui_fulltext_dataset AS (acdhid bigint, headline_title text, headline_desc text, headline_binary text);
-END IF;
 
 --from php we can pass % so we need to remove then the years filter because then we dont filter years
 CASE WHEN (_acdhyears <> '' and _acdhyears != '%') THEN 
@@ -928,19 +918,17 @@ ELSE
     RAISE NOTICE USING MESSAGE = 'no search string'; 
 END CASE;
 
-CREATE TEMPORARY TABLE collection_data of gui_fulltext_dataset;
+CREATE TEMPORARY TABLE collection_data (acdhid bigint, headline_title text, headline_desc text, headline_binary text);
 
 --check the search strings in title/description and binary content
 CASE 
     WHEN (_searchstr <> '' ) IS TRUE THEN
         RAISE NOTICE USING MESSAGE =  'search string query';
-        CREATE TEMPORARY TABLE title_data of gui_fulltext_dataset;
-        INSERT INTO title_data (acdhid, headline_title, headline_desc, headline_binary) select sd.id, sd.headline_title, sd.headline_desc, sd.headline_binary from gui.searchstrData_v3(_searchstr, _lang, _binarySearch) as sd order by sd.id; 
-        INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.acdhid, td.headline_title, td.headline_desc, td.headline_binary from title_data as td;
+        INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) select sd.id, sd.headline_title, sd.headline_desc, sd.headline_binary from gui.searchstrData_v3(_searchstr, _lang, _binarySearch) as sd order by sd.id;
     ELSE
         RAISE NOTICE USING MESSAGE =  'search string query skipped';
 END CASE;
-
+------------------------------------------------------------------------------- TYPE ----------------------------------------------
 --check the type
 CASE 
     WHEN _acdhtype  = '{}' THEN
@@ -951,57 +939,46 @@ CASE
         RAISE NOTICE USING MESSAGE =  'type query ';
         CASE 
             WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
-                DROP TABLE IF EXISTS type_data;
-                CREATE TEMPORARY TABLE type_data AS (
-                    WITH type_data as (
-                        SELECT 
-                            DISTINCT(cd.acdhid) as id,                            
-                            cd.headline_title,
-                            cd.headline_desc,
-                            cd.headline_binary
-                        FROM collection_data as cd
-                        LEFT JOIN metadata as m on m.id = cd.acdhid
-                        LEFT JOIN full_text_search as fts on m.mid = fts.mid			
-                        WHERE
-                        (
-                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-                            and 
-                            fts.raw  = ANY (_acdhtype)
-                        ) limit 10000
-                    ) select * from type_data
-                );
-		--remove the data which is not in the 
-                DELETE FROM collection_data cd
+				WITH type_data as (
+					SELECT 
+                                            DISTINCT(cd.acdhid) as id,                            
+                                            cd.headline_title,
+                                            cd.headline_desc,
+                                            cd.headline_binary
+					FROM collection_data as cd
+					LEFT JOIN metadata as m on m.id = cd.acdhid
+					LEFT JOIN full_text_search as fts on m.mid = fts.mid			
+					WHERE
+					(
+                                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                                            and 
+                                            fts.raw  = ANY (_acdhtype)
+					) limit 10000
+				) DELETE FROM collection_data cd
                 WHERE NOT EXISTS
                 ( SELECT 1 FROM type_data td WHERE td.id = cd.acdhid );
-			
+			WHEN ( _searchstr <> '' ) THEN
+				RAISE NOTICE USING MESSAGE =  'collection empty but we have search params so we have to skip - type';	
             ELSE
-                RAISE NOTICE USING MESSAGE =  'type query insert to collection data';
-                CASE WHEN (_searchstr <> '' ) IS TRUE THEN
-                    RAISE NOTICE USING MESSAGE =  'type query SKIPPED because we have search string but we dont have value!';
-                ELSE
-                    RAISE NOTICE USING MESSAGE =  'type query insert to collection data we dont have search string';
-			
-                    WITH type_data_temp as (
-                        SELECT 
-                            DISTINCT(m.id),
-                            '' as headline_title,
-                            '' as headline_desc,
-                            '' as headline_binary
-                        from full_text_search as fts
-						LEFT JOIN metadata as m on m.mid = fts.mid
-                        where
-                        (
-                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
-                            and 
-                            fts.raw  = ANY (_acdhtype)
-                        ) limit 10000
-                    )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data_temp as td;
-        END CASE;	
+				RAISE NOTICE USING MESSAGE =  'type query insert to collection data we dont have search string';
+				WITH type_data_temp as (
+					SELECT 
+                                            DISTINCT(m.id),
+                                            '' as headline_title,
+                                            '' as headline_desc,
+                                            '' as headline_binary
+					from full_text_search as fts
+					LEFT JOIN metadata as m on m.mid = fts.mid
+					where
+					(
+                                            m.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+                                            and 
+                                            fts.raw  = ANY (_acdhtype)
+					) limit 10000
+				)INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from type_data_temp as td;
     END CASE;
 END CASE;
-
---check the categories
+------------------------------------------------------------------------------- Categories ----------------------------------------------
 CASE 
     WHEN _category  = '{}' THEN
         --we dont have type definied so all type will be searchable.
@@ -1011,62 +988,51 @@ CASE
         RAISE NOTICE USING MESSAGE =  '_category query ';
         CASE 
             WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
-                DROP TABLE IF EXISTS category_data;
-                CREATE TEMPORARY TABLE category_data AS (
-                    WITH category_data as (
-                        SELECT 
-                            DISTINCT(cd.acdhid) as id,                            
-                            cd.headline_title,
-                            cd.headline_desc,
-                            cd.headline_binary
-                        FROM collection_data as cd
-                        LEFT JOIN metadata_view as mv on mv.id = cd.acdhid			
-                        WHERE
-                        (
-                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
-                            and 
-                            mv.value = ANY (_category)
-                        ) limit 10000
-                    ) select * from category_data
-                );
-		--remove the data which is not in the 
+				WITH category_data as (
+					SELECT 
+                                            DISTINCT(cd.acdhid) as id,                            
+                                            cd.headline_title,
+                                            cd.headline_desc,
+                                            cd.headline_binary
+					FROM collection_data as cd
+					LEFT JOIN metadata_view as mv on mv.id = cd.acdhid			
+					WHERE
+					(
+                                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
+                                            and 
+                                            mv.value = ANY (_category)
+					) limit 10000
+				) 
                 DELETE FROM collection_data cd
                 WHERE NOT EXISTS
                 ( SELECT 1 FROM category_data td WHERE td.id = cd.acdhid );
-			
+			WHEN (_acdhtype  != '{}' or _searchstr <> '' ) THEN
+				RAISE NOTICE USING MESSAGE =  'collection empty but we have search params so we have to skip - category';
             ELSE
-                RAISE NOTICE USING MESSAGE =  'category query insert to collection data';
-                CASE WHEN (_searchstr <> '' ) IS TRUE THEN
-                    RAISE NOTICE USING MESSAGE =  'category query SKIPPED because we have search string but we dont have value!';
-                ELSE
-                    RAISE NOTICE USING MESSAGE =  'category query insert to collection data we dont have search string';
-			
-                    WITH category_data_temp as (
-                        SELECT 
-                            DISTINCT(mv.id),
-                            '' as headline_title,
-                            '' as headline_desc,
-                            '' as headline_binary
-                        from metadata_view as mv 
-                        where
-                        (
-                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
-                            and 
-                            mv.value = ANY (_category)
-                        ) limit 10000
-                    )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from category_data_temp as td;
-        END CASE;	
+				RAISE NOTICE USING MESSAGE =  'category query insert to collection data we dont have search string';
+				WITH category_data_temp as (
+					SELECT 
+                                            DISTINCT(mv.id),
+                                            '' as headline_title,
+                                            '' as headline_desc,
+                                            '' as headline_binary
+					from metadata_view as mv 
+					where
+					(
+                                            mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasCategory' 
+                                            and 
+                                            mv.value = ANY (_category)
+					) limit 10000
+				)INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT td.id, td.headline_title, td.headline_desc, td.headline_binary from category_data_temp as td;
     END CASE;
 END CASE;
-
+------------------------------------------------------------------------------- YEARS ----------------------------------------------
 CASE 
     WHEN (_acdhyears <> '') IS TRUE THEN
         RAISE NOTICE USING MESSAGE =  'years query';
             CASE 
                 WHEN (select exists(select * from collection_data limit 1 ) ) IS TRUE THEN
-                    RAISE NOTICE USING MESSAGE =  'type query with have collection data';
-
-                    CREATE TEMPORARY TABLE years_data AS (
+                    RAISE NOTICE USING MESSAGE =  'years query with have collection data';
                         WITH years_data as (
                             SELECT 
                                 DISTINCT(cd.acdhid) as id,
@@ -1080,40 +1046,33 @@ CASE
                                 (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
                                 TO_CHAR(m.value_t, 'YYYY')  similar to _acdhyears   )
                             )	limit 10000
-                        ) select * from years_data);
-
-                    --delete the differences
+                        ) 
                     DELETE FROM collection_data cd
                     WHERE NOT EXISTS
                     ( SELECT 1 FROM years_data yd WHERE yd.id = cd.acdhid );
-
-		ELSE
-                    RAISE NOTICE USING MESSAGE =  'years query insert to collection data';
-		
-                    CASE 
-                        WHEN _acdhtype  != '{}' AND (_searchstr <> '' ) IS TRUE THEN
-                            --we dont have type definied so all type will be searchable.
-                            RAISE NOTICE USING MESSAGE =  'type query skipped';
-			ELSE
-                            WITH years_data_temp as (
-                                SELECT 
-                                    DISTINCT(m.id) as id,
-                                    '' as headline_title,
-                                    '' as headline_desc,
-                                    '' as headline_binary
-                                FROM metadata as m
-                                WHERE
-                                (
-                                    (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
-                                    TO_CHAR(m.value_t, 'YYYY')  similar to _acdhyears  )
-                                ) limit 10000
-                            )INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT  yd.id, yd.headline_title, yd.headline_desc, yd.headline_binary from years_data_temp as yd;
-
-                END CASE;
+			WHEN (_category  != '{}' or _acdhtype  != '{}' or _searchstr <> '' ) THEN
+                   RAISE NOTICE USING MESSAGE =  'collection empty but we have search params so we have to skip';
+		   	ELSE
+				RAISE NOTICE USING MESSAGE =  'there are no searching string, just years, insert to collection';
+				WITH years_data_temp as (
+					SELECT 
+                                            DISTINCT(m.id) as id,
+                                            '' as headline_title,
+                                            '' as headline_desc,
+                                            '' as headline_binary
+					FROM metadata as m
+					WHERE
+					(
+                                            (m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' and
+                                            TO_CHAR(m.value_t, 'YYYY')  similar to _acdhyears  )
+					) limit 10000
+				)INSERT INTO collection_data (acdhid, headline_title, headline_desc, headline_binary) SELECT  yd.id, yd.headline_title, yd.headline_desc, yd.headline_binary from years_data_temp as yd;
         END CASE;	
     WHEN (_acdhyears <> '') IS NOT TRUE THEN
         RAISE NOTICE USING MESSAGE =  'years query skipped';
 END CASE;
+
+------------------------------------------------------------------------------- ACCESSRES ----------------------------------------------
 
 DROP TABLE IF EXISTS accessres;
 CREATE TEMPORARY TABLE accessres AS (
@@ -1126,6 +1085,7 @@ CREATE TEMPORARY TABLE accessres AS (
     ) select * from accessres order by id
 );
 
+------------------------------------------------------------------------------- FINAL ----------------------------------------------
 DROP TABLE IF EXISTS final_result;
 CREATE TEMPORARY TABLE final_result AS (
     WITH final_result as (
@@ -1206,7 +1166,6 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
-
 
 /** NEW TITLE DESC BINARY SQL  - for the new full_text_search DB without properties**/
 DROP FUNCTION gui.searchstrData_v3( text, text, bool);
