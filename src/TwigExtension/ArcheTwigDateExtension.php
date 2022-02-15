@@ -9,11 +9,10 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
         return [ new \Twig_SimpleFilter('archeTranslateDateFilter', function ($value, $dateformat) {
             (isset($_SESSION['language'])) ? $lang = strtolower($_SESSION['language'])  : $lang = "en";
             
-            if($this->checkYearIsMoreThanFourDigit($value)) {
+            if ($this->checkYearIsMoreThanFourDigit($value)) {
                 return $this->notNormalDate($value, $lang, $dateformat);
-            } 
+            }
             return $this->returnFormattedDate($this->extendDateFormat($dateformat), $value, $lang);
-               
         })
         ];
     }
@@ -40,10 +39,10 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
         return str_replace($search, $replace, $dateFormat);
     }
 
-    private function checkYearIsMoreThanFourDigit($value): bool 
+    private function checkYearIsMoreThanFourDigit($value): bool
     {
         $explode = explode("-", $value);
-        if(strlen($explode[0]) > 4) {
+        if (strlen($explode[0]) > 4) {
             return true;
         }
         return false;
@@ -56,7 +55,7 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      * @param type $lang
      * @return string
      */
-    private function returnFormattedDate($dateformat, $value, $lang): string 
+    private function returnFormattedDate($dateformat, $value, $lang): string
     {
         if ($lang == 'de') {
             setlocale(LC_TIME, 'de_DE.utf8');
@@ -73,7 +72,7 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      * @param type $value
      * @return string
      */
-    private function notNormalDate($value, $lang, $dateformat): string 
+    private function notNormalDate($value, $lang, $dateformat): string
     {
         setlocale(LC_TIME, 'en_US.utf8');
         
@@ -90,15 +89,13 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
             case 'Y':
                 return $y;
             case 'd-m-Y':
-                return $m.'-'.$d.'-'.$y;    
+                return $m.'-'.$d.'-'.$y;
             case 'd M Y':
-                return $d.'-'.date('M', $m).'-'.$y;    
+                return $d.'-'.date('M', $m).'-'.$y;
             case 'Y M d':
-                return $y.'-'.date('M', $m).'-'.$d;        
+                return $y.'-'.date('M', $m).'-'.$d;
             default:
                 return $y.'-'.$m.'-'.$d;
         }
-        
     }
-
 }
