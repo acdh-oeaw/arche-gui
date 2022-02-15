@@ -8,16 +8,12 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
     {
         return [ new \Twig_SimpleFilter('archeTranslateDateFilter', function ($value, $dateformat) {
             (isset($_SESSION['language'])) ? $lang = strtolower($_SESSION['language'])  : $lang = "en";
-                
-            $dateformat = $this->extendDateFormat($dateformat);
-                
-            if ($lang == 'de') {
-                setlocale(LC_TIME, 'de_DE.utf8');
-                return strftime($dateformat, strtotime($value));
-            } else {
-                setlocale(LC_TIME, 'en_US.utf8');
-                return strftime($dateformat, strtotime($value));
-            }
+            
+            if($this->checkYearIsMoreThanFourDigit($value)) {
+                return $this->notNormalDate($value, $lang, $dateformat);
+            } 
+            return $this->returnFormattedDate($this->extendDateFormat($dateformat), $value, $lang);
+               
         })
         ];
     }
@@ -43,4 +39,66 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
 
         return str_replace($search, $replace, $dateFormat);
     }
+
+    private function checkYearIsMoreThanFourDigit($value): bool 
+    {
+        $explode = explode("-", $value);
+        if(strlen($explode[0]) > 4) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return the normal 4 digit year dates
+     * @param type $dateformat
+     * @param type $value
+     * @param type $lang
+     * @return string
+     */
+    private function returnFormattedDate($dateformat, $value, $lang): string 
+    {
+        if ($lang == 'de') {
+            setlocale(LC_TIME, 'de_DE.utf8');
+            return strftime($dateformat, strtotime($value));
+        }
+        
+        setlocale(LC_TIME, 'en_US.utf8');
+        return strftime($dateformat, strtotime($value));
+    }
+
+    
+    /**
+     * Return the befrore christ dates where we have 5 digit years numbers
+     * @param type $value
+     * @return string
+     */
+    private function notNormalDate($value, $lang, $dateformat): string 
+    {
+        setlocale(LC_TIME, 'en_US.utf8');
+        
+        if ($lang == 'de') {
+            setlocale(LC_TIME, 'de_DE.utf8');
+        }
+        $e = explode("-", $value);
+        
+        $y = $e[0];
+        $m = $e[1];
+        $d = $e[2];
+        
+        switch ($dateformat) {
+            case 'Y':
+                return $y;
+            case 'd-m-Y':
+                return $m.'-'.$d.'-'.$y;    
+            case 'd M Y':
+                return $d.'-'.date('M', $m).'-'.$y;    
+            case 'Y M d':
+                return $y.'-'.date('M', $m).'-'.$d;        
+            default:
+                return $y.'-'.$m.'-'.$d;
+        }
+        
+    }
+
 }
