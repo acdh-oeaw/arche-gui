@@ -196,7 +196,7 @@ jq2(function( $ ) {
                         {
                             const resp = xhr.responseJSON;
                             jq2('#rprTableDiv').html();
-                            jq2('#rprTableDiv').html("<div class='messages messages--warning'>"+Drupal.t('The resource has no Related Publicaton and Resource data.')+"</div>");
+                            jq2('#rprTableDiv').html("<div class='messages messages--warning'>"+Drupal.t('The resource has no Related Publication and Resource data.')+"</div>");
                         }
                     },
                     "deferRender": true,
