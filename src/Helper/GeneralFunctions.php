@@ -60,52 +60,34 @@ class GeneralFunctions
             
             switch (true) {
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/uuid/') !== false:
-                    $identifier = str_replace('id.acdh.oeaw.ac.at/uuid/', $this->repo->getSchema()->__get('drupal')->uuidNamespace, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
+                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/uuid/', $this->repo->getSchema()->namespaces->id.'uuid/');
                     break;
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/') !== false:
-                    $identifier = str_replace('id.acdh.oeaw.ac.at/', $this->repo->getSchema()->__get('drupal')->idNamespace, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
+                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/', $this->repo->getSchema()->namespaces->id);
                     break;
                 case strpos($identifier, 'hdl.handle.net') !== false:
-                    $identifier = str_replace('hdl.handle.net/', $this->repo->getSchema()->__get('drupal')->epicResolver, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier, true);
+                    $identifier = $this->replaceIdString($identifier, 'hdl.handle.net/', 'http://hdl.handle.net/', true);
                     break;
                 case strpos($identifier, 'geonames.org') !== false:
-                    $identifier = str_replace('geonames.org/', $this->repo->getSchema()->__get('drupal')->geonamesUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'geonames.org/', 'https://www.geonames.org/', true);
                     break;
                 case strpos($identifier, 'd-nb.info') !== false:
-                    $identifier = str_replace('d-nb.info/', $this->repo->getSchema()->__get('drupal')->dnbUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'd-nb.info/', 'http://d-nb.info/', true);
                     break;
                 case strpos($identifier, 'viaf.org/') !== false:
-                    $identifier = str_replace('viaf.org/', $this->repo->getSchema()->__get('drupal')->viafUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'viaf.org/', 'http://viaf.org/', true);
                     break;
                 case strpos($identifier, 'orcid.org/') !== false:
-                    $identifier = str_replace('orcid.org/', $this->repo->getSchema()->__get('drupal')->orcidUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'orcid.org/', 'https://orcid.org/', true);
                     break;
                 case strpos($identifier, 'pleiades.stoa.org/') !== false:
-                    $identifier = str_replace('pleiades.stoa.org/', $this->repo->getSchema()->__get('drupal')->pelagiosUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'pleiades.stoa.org/', 'https://pleiades.stoa.org/', true);
                     break;
                 case strpos($identifier, 'gazetteer.dainst.org/') !== false:
-                    $identifier = str_replace('gazetteer.dainst.org/', $this->repo->getSchema()->__get('drupal')->gazetteerUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'gazetteer.dainst.org/', 'https://gazetteer.dainst.org/', true);
                     break;
                 case strpos($identifier, 'doi.org/') !== false:
-                    $identifier = str_replace('doi.org/', $this->repo->getSchema()->__get('drupal')->doiUrl, $identifier);
-                    $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-                    $identifier = $this->specialIdentifierToUUID($identifier);
+                    $identifier = $this->replaceIdString($identifier, 'doi.org/', 'https://doi.org/', true);
                     break;
             }
             return $identifier;
@@ -338,4 +320,24 @@ class GeneralFunctions
         }
         return "";
     }
+
+    /**
+     * Format the URL identifier to SQL QUERY acceptable format (adding http/https)
+     * And if it is a special identifier then we query the acdh identifier
+     * @param string $identifier
+     * @param string $prop
+     * @param string $httpProp
+     * @param bool $specialId
+     * @return string
+     */
+    private function replaceIdString(string $identifier, string $prop, string $httpProp, bool $specialId = false): string 
+    {
+        $identifier = str_replace($prop, $httpProp, $identifier);
+        $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
+        if($specialId) {
+            return $this->specialIdentifierToUUID($identifier, true);
+        }
+        return $identifier;
+    }
+
 }
