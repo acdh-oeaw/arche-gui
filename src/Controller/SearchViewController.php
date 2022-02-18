@@ -93,4 +93,4 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
         return new Response(\json_encode(array("There is no data")), 404, ['Content-Type' => 'application/json']);
     }
-        }
+}
