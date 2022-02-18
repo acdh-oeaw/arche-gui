@@ -150,7 +150,7 @@ RETURN QUERY
 	dmr.vocabsid,
 	dmr.accessrestriction,
 	dmr.lang,
-        (select ln.value from metadata_view as ln where ln.id = CAST(dmr.value as INT) and dmr.type='REL' and ln.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLastName') as lastname
+        (select ln.value from metadata_view as ln where ln.id = CAST(dmr.value as INT) and dmr.type='REL' and ln.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLastName' limit 1) as lastname
     from dmetaRel as dmr
     left join resources as rs on rs.id = dmr.id and rs.state = 'active'
     UNION
