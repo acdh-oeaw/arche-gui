@@ -27,67 +27,10 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $this->pagingHelper = new PagingHelper();
     }
 
-    /**
-     * Full text search version 2
-     * @param string $metavalue
-     * @param string $limit
-     * @param string $page
-     * @param string $order
-     * @return array
-     */
-    public function generateView_old(string $metavalue = "root", string $limit = "10", string $page = "0", string $order = "titleasc"): array
-    {
-        $data = array();
-        $guiData = array();
-        $guiData['data'] = array();
-        $guiData['extra'] = array();
-        //for the DB we need a 0
-        ((int) $page == 1) ? (int) $page = 0 : $page = (int) $page;
-        $data = $this->model->getViewData($limit, $page, $order, $this->helper->createMetaObj($metavalue));
-
-        if (isset($data['count']) && $data['count'] > 0) {
-            $numPage = ceil((int) $data['count'] / (int) $limit);
-            /// for the gui pager we need 1 for the first page
-            ((int) $page == 0) ? (int) $page = 1 : $page = (int) $page;
-
-            $pagination = $this->pagingHelper->createView(
-                array(
-                        'limit' => $limit, 'page' => $page, 'order' => $order,
-                        'numPage' => $numPage, 'sum' => $data['count']
-                    )
-            );
-
-            $guiData = array('data' => $this->helper->createView($data['data'], 2), 'pagination' => $pagination);
-            $guiData['extra']['baseUrl'] = $this->repo->getBaseUrl();
-            $ge = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
-            $guiData['extra']['clarinUrl'] = $ge->initClarinVcrUrl();
-        } else {
-            $guiData['data'] = array();
-            $guiData['pagination'] = $this->pagingHelper->createView(
-                array(
-                        'limit' => $limit, 'page' => $page, 'order' => $order,
-                        'numPage' => 1, 'sum' => 0
-                    )
-            );
-        }
-
-        return [
-            '#theme' => 'acdh-repo-gui-search-full',
-            '#data' => $guiData['data'],
-            '#extra' => $guiData['extra'],
-            '#paging' => $guiData['pagination'][0],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles',
-                ]
-            ],
-            '#cache' => ['max-age' => 0]
-        ];
-    }
     public function generateView(string $metavalue): array
     {
         $this->searchParams = $this->helper->paramsToSqlParams($metavalue);
-
+        
         // = "root", string $limit = "10", string $page = "0", string $order = "titleasc"
         $data = array();
         $guiData = array();
@@ -150,4 +93,4 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
         return new Response(\json_encode(array("There is no data")), 404, ['Content-Type' => 'application/json']);
     }
-}
+        }

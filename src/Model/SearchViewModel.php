@@ -132,7 +132,6 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-         
             $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -196,7 +195,7 @@ class SearchViewModel extends ArcheModel
     private function formatTypeFilter(string $key = "type"): string
     {
         $typeStr = "ARRAY[]::text[]";
-        if (isset($this->sqlParams[$key])) {
+        if (isset($this->sqlParams[$key]) && !empty($this->sqlParams[$key][0])) {
             $count = count($this->sqlParams[$key]);
             if ($count > 0) {
                 $typeStr = 'ARRAY [ ';
@@ -523,7 +522,7 @@ class SearchViewModel extends ArcheModel
         $this->limit = $this->sqlParams['limit'][0];
         ($this->sqlParams['page'][0] == 0 || $this->sqlParams['page'][0]== 1) ? $this->offset = 0 : $this->offset = (int)$this->sqlParams['limit'][0] * ((int)$this->sqlParams['page'][0] -1);
         
-        switch ($this->sqlParams['order']) {
+        switch ($this->sqlParams['order'][0]) {
             case 'dateasc':
                 $this->orderby = "asc";
                 $this->orderby_column = "avdate";
@@ -539,6 +538,14 @@ class SearchViewModel extends ArcheModel
             case 'titledesc':
                 $this->orderby = "desc";
                 $this->orderby_column = "title";
+                break;
+            case 'typeasc':
+                $this->orderby = "asc";
+                $this->orderby_column = "type";
+                break;
+            case 'typedesc':
+                $this->orderby = "desc";
+                $this->orderby_column = "type";
                 break;
             default:
                 $this->orderby = "desc";

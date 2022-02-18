@@ -399,8 +399,34 @@ class SearchViewHelper
         $this->processMetaValues($metavalues);
       
         //((int) $this->searchParams['page'] == 1) ? (int) $this->searchParams['page'] = 0 : $this->searchParams['page'] = (int)$this->searchParams['page'];
-        
+        $this->checkSqlBasicParams();
         return $this->searchParams;
+    }
+    
+    private function checkSqlBasicParams() 
+    {
+        $params = array('payload', 'limit', 'order', 'page');
+        foreach($params as $p) {
+            if(!isset($this->searchParams[$p])) {
+                $this->searchParams[$p] = $this->setBasicParamValue($p);
+            }
+        }
+    }
+    
+    private function setBasicParamValue(string $param): array 
+    {
+        switch ($param) {
+            case 'payload':
+                return array(false);
+            case 'limit':
+                return array(10);
+            case 'order':
+                return array('titleasc');
+            case 'page':
+                return array(0);
+            default:
+                return array();
+        }
     }
     
     private function processMetaValues(string $metavalues)

@@ -51,7 +51,12 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             ]
         ],
         'acdh-repo-gui-main-page-left-block' => [
-            'variables' => ['result' => NULL]
+            'variables' => ['result' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-search', //include our custom library for this response
+                ]
+            ]
         ],
         'acdh-repo-gui-detail-versions-block' => [
             'variables' => ['result' => NULL]

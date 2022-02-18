@@ -111,7 +111,7 @@ jQuery(function ($) {
                 urlOrder = 'datedesc';
             }
 
-        } else if (actionPage == 'search') {
+        } else if (actionPage === 'search') {
             let searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/discover/") + 10);
 
             //split the url to get the order limit and page values
@@ -129,17 +129,18 @@ jQuery(function ($) {
             if (searchValues[3]) {
                 urlPage = searchValues[3];
             }
-        } else if (actionPage == 'search_new') {
+        } else if (actionPage === 'search_new') {
             let searchParams = window.location.pathname.substring(window.location.pathname.indexOf("/search/") + 8);
 
             //split the url to get the order limit and page values
             var searchValues = searchParams.split('&');
-
+            searchStr = "";
             $.each(searchValues, function (key, value) {
-                
                 if(value.includes("words=") || value.includes("years=") || value.includes("type=") || 
-                       value.includes("category=") || value.includes("payload=") ) {
-                    searchStr += value+'&';
+                       value.includes("category=") || value.includes("payload=")) {
+                    if(value !== "undefined") {
+                        searchStr += value+'&';
+                    }
                 }
               
                 if(value.includes("order=")) {
@@ -152,10 +153,9 @@ jQuery(function ($) {
                 if(value.includes("page=")) {
                     urlPage = value.replace("page=", "");
                 }
+                
             });
-            
-            searchStr.slice(0,-1);
-
+            searchStr = searchStr.slice(0,-1);
         } else {
             //detail view child paging
             let searchParams = new URLSearchParams(window.location.href);
@@ -194,7 +194,6 @@ jQuery(function ($) {
         //change the gui values
         $('.sortByButton').html(orderTexts[urlOrder]);
         $('.resPerPageButton').html(urlLimit);
-
         var obj = {urlPage: urlPage, urlLimit: urlLimit, urlOrder: urlOrder, searchStr: searchStr};
         return obj;
     }
@@ -335,7 +334,7 @@ jQuery(function ($) {
             window.history.pushState({path: newurl}, '', newurl);
             window.location = newurl;
         } else if (actionPage === 'search') {
-            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/' + searchStr + '/' + orderBy + '/' + limit + '/' + page;
+            newurl = window.location.protocol + "//" + window.location.host + '/browser/discover/' + searchStr + '&order=' + orderBy + '&limit=' + limit + '&page=' + page;
             window.history.pushState({path: newurl}, '', newurl);
             window.location = newurl;
         } else if (actionPage === 'search_new') {

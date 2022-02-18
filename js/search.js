@@ -1,4 +1,5 @@
 jQuery(function ($) {
+    
     "use strict";
     $(document).ready(function () {
         var currentURL = window.location.toString();
@@ -195,7 +196,12 @@ jQuery(function ($) {
     //Complex search-form behaviour
     //front page search
     $("#sks-form-front").submit(function (event) {
-        searchMethod();
+        let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+        if(!metaValueField) {
+            window.location.href = '/browser/discover/root';
+        } else {
+            window.location.href = '/browser/search/words='+metaValueField+'&payload=false&order=titleasc&limit=10&page=1';
+        }
         event.preventDefault();
     });
     //main search block
@@ -220,7 +226,7 @@ jQuery(function ($) {
         }
         var urlParams = "";
         //Metavalue field
-        var metaValueField = $("input[name='metavalue']").val();
+        var metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
         if (metaValueField) {
             //metaValueField = metaValueField.replace(/\s/g, '+');
             if (metaValueField.includes('type=') || metaValueField.includes('words=') || metaValueField.includes('mindate=')
