@@ -330,14 +330,13 @@ class GeneralFunctions
      * @param bool $specialId
      * @return string
      */
-    private function replaceIdString(string $identifier, string $prop, string $httpProp, bool $specialId = false): string 
+    private function replaceIdString(string $identifier, string $prop, string $httpProp, bool $specialId = false): string
     {
         $identifier = str_replace($prop, $httpProp, $identifier);
         $identifier = (substr($identifier, -1) == "/") ? substr_replace($identifier, "", -1) : $identifier;
-        if($specialId) {
+        if ($specialId) {
             return $this->specialIdentifierToUUID($identifier, true);
         }
         return $identifier;
     }
-
 }
