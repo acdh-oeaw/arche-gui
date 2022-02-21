@@ -226,7 +226,7 @@ jQuery(function ($) {
         }
         var urlParams = "";
         //Metavalue field
-        var metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí\s]/gi, '').replace(/[_\s]/g, '-');
+        var metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí:./\s]/gi, '').replace(/[_\s]/g, '-');
         if (metaValueField) {
             //metaValueField = metaValueField.replace(/\s/g, '+');
             if (metaValueField.includes('type=') || metaValueField.includes('words=') || metaValueField.includes('mindate=')
