@@ -1172,7 +1172,9 @@ AS $func$
 DECLARE	
     _lang2 text := 'de';
     _lang3 text := 'und';   
-    --_searchstr text := LOWER(REPLACE(REPLACE(_searchstr, 'https://', ''), 'http://', ''));
+    _searchstrId text := LOWER(REPLACE(REPLACE(_searchstr, 'https://', '/'), 'http://', '/'));
+    _searchstrIdSlash text := CONCAT('/', _searchstrId);
+    _searchStrIdText text := CONCAT(_searchstrId, ' or ', _searchstrIdSlash);
     _searchstr text := LOWER(_searchstr);
     
 BEGIN
@@ -1211,7 +1213,7 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
             FROM full_text_search as fts 
             LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE  
-                 websearch_to_tsquery('simple', _searchstr) @@ fts.segments and fts.raw LIKE 'http%'		
+                 websearch_to_tsquery('simple', _searchStrIdText) @@ fts.segments and fts.raw LIKE 'http%'		
             limit 10000
             			
         ) select * from std_data
