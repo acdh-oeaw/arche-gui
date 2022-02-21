@@ -196,7 +196,7 @@ jQuery(function ($) {
     //Complex search-form behaviour
     //front page search
     $("#sks-form-front").submit(function (event) {
-        let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí\s]/gi, '').replace(/[_\s]/g, '-');
+        let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí:./\s]/gi, '').replace(/[_\s]/g, '-');
         if(!metaValueField) {
             window.location.href = '/browser/discover/root';
         } else {
