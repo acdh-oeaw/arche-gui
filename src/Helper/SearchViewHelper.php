@@ -403,17 +403,17 @@ class SearchViewHelper
         return $this->searchParams;
     }
     
-    private function checkSqlBasicParams() 
+    private function checkSqlBasicParams()
     {
         $params = array('payload', 'limit', 'order', 'page');
-        foreach($params as $p) {
-            if(!isset($this->searchParams[$p])) {
+        foreach ($params as $p) {
+            if (!isset($this->searchParams[$p])) {
                 $this->searchParams[$p] = $this->setBasicParamValue($p);
             }
         }
     }
     
-    private function setBasicParamValue(string $param): array 
+    private function setBasicParamValue(string $param): array
     {
         switch ($param) {
             case 'payload':
