@@ -41,7 +41,7 @@ class ArcheVersionsBlock extends BlockBase
         if (count($this->data) < 1) {
             $this->data = array();
         }
-
+       
         return [
             '#theme' => 'acdh-repo-gui-detail-versions-block',
             '#result' => $this->data,

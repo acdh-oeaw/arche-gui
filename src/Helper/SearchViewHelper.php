@@ -447,7 +447,7 @@ class SearchViewHelper
     {
         if (strpos($meta, $prop) !== false) {
             $values = str_replace($prop."=", '', $meta);
-
+           
             switch ($prop) {
                 case "words":
                     $values = $this->getParamsWords($values);
@@ -462,7 +462,11 @@ class SearchViewHelper
                 default:
                     break;
             }
-            $this->searchParams[$prop] = explode("or", preg_replace('/\s+/', '', $values));
+            if ($prop != "words") {
+                $this->searchParams[$prop] = explode("or", preg_replace('/\s+/', '', $values));
+            } else {
+                $this->searchParams[$prop] = explode(" ", preg_replace('/\s+/', '+', $values));
+            }
         }
     }
     

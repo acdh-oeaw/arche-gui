@@ -1449,7 +1449,7 @@ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS gui.getResourceVersion( text, text);
 CREATE FUNCTION gui.getResourceVersion(_identifier text, _lang text DEFAULT 'en')
-  RETURNS table (id bigint, title text, avDate timestamp, depth integer)
+  RETURNS table (id bigint, title text, avDate timestamp, depth integer, version text)
 AS $func$
 DECLARE	
     _lang2 text := 'de';
@@ -1499,7 +1499,8 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
-        c.depthval
+        c.depthval,
+        (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion' limit 1) as version
     FROM
         child_subordinates as c
     UNION
@@ -1511,7 +1512,8 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
-    p.depthval
+    p.depthval,
+    (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion' limit 1) as version
     from parent_subordinates as p
     UNION
     select
@@ -1521,8 +1523,9 @@ RETURN QUERY
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
-        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate
-        0;
+        (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
+        0,
+        (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion' limit 1) as version;
 END
 $func$
 LANGUAGE 'plpgsql';

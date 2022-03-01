@@ -139,7 +139,6 @@ class BlocksModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         }
-
         $this->changeBackDBConnection();
         return $result;
     }
