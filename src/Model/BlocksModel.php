@@ -72,10 +72,8 @@ class BlocksModel extends ArcheModel
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         }
 
         $this->changeBackDBConnection();
@@ -106,10 +104,8 @@ class BlocksModel extends ArcheModel
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         }
 
         $this->changeBackDBConnection();
@@ -121,7 +117,7 @@ class BlocksModel extends ArcheModel
      * @param array $params
      * @return array
      */
-    private function getVersionsData(array $params): array
+    public function getVersionsData(array $params): array
     {
         $result = array();
         //run the actual query
@@ -134,10 +130,8 @@ class BlocksModel extends ArcheModel
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         }
         $this->changeBackDBConnection();
         return $result;
@@ -166,10 +160,8 @@ class BlocksModel extends ArcheModel
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = array();
         }
 
         $this->changeBackDBConnection();
@@ -182,7 +174,7 @@ class BlocksModel extends ArcheModel
      */
     public function lastModificationDate(): object
     {
-        $result = array();
+        $result = new \stdClass();
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
@@ -194,10 +186,8 @@ class BlocksModel extends ArcheModel
             $result = $query->fetch();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = new \stdClass();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
-            $result = new \stdClass();
         }
         $this->changeBackDBConnection();
         return $result;

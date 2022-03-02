@@ -339,7 +339,7 @@ jQuery(function ($) {
                 $('#child-tree').bind("click.jstree", function (node, data) {
                     if (node.originalEvent.target.id) {
                         var node = $('#child-tree').jstree(true).get_node(node.originalEvent.target.id);
-                        if (node.original.encodedUri) {
+                        if (node.original.uri) {
                             if(cntrlIsPressed)
                             {
                                 window.open( "/browser/oeaw_detail/" + node.original.uri, '_blank');
@@ -360,5 +360,67 @@ jQuery(function ($) {
             $(this).children('span').text(Drupal.t('Switch to Tree-View'));
         }
     });
+    
+    
+    $(document).delegate(".res-act-button-versions-treeview", "click", function (e) {
+        if ($(this).hasClass('basic')) {
+            $('.versions-list-view').hide();
+            $('#versions-tree').fadeIn(200);
+            $(this).removeClass('basic');
+            $(this).addClass('tree');
+            $(this).children('span').text(Drupal.t('Show as List'));
+
+            //get the data
+            var url = $('#insideUri').val();
+
+            if (url) {
+
+                $('#versions-tree').jstree({
+                    'core': {
+                        'data': {
+                            'url': function (node) {
+                                var acdhid = $('#insideUri').val();
+                                return '/browser/api/versions/' + acdhid + '/en';
+                            },
+                            'data': function (node) {
+                                return {'id': node.id};
+                            },
+                            'success': function (nodes) {
+                            }
+                        },
+                        themes: {stripes: true},
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('error');
+                            $('#versions-tree').html("<h3>Error: </h3><p>" + jqXHR.reason + "</p>");
+                        }
+                    }
+                });
+              
+
+                $('#versions-tree').bind("click.jstree", function (node, data) {
+                    if (node.originalEvent.target.id) {
+                        var node = $('#versions-tree').jstree(true).get_node(node.originalEvent.target.id);
+                        if (node.id) {
+                            if(cntrlIsPressed)
+                            {
+                                window.open( "/browser/oeaw_detail/" + node.id, '_blank');
+                            }else {
+                                window.location.href = "/browser/oeaw_detail/" + node.id;
+                            }
+                        }
+                    }
+                });
+
+            }
+        } else {
+            $('#versions-tree').hide();
+            $('.versions-list-view').fadeIn(200);
+            $(this).removeClass('tree');
+            $(this).addClass('basic');
+            $(this).children('span').text(Drupal.t('Show as Tree'));
+        }
+    });
+    
+    
 });
 

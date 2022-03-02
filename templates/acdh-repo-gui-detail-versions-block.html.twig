@@ -1,12 +1,24 @@
 <!--  ARCHE DETAIL VIEW VERSIONS BLOCK TEMPLATE -->
 {% if result|length > 1 %}
-    <div class="">
-        <h3 class="">
-            {{ "Versions"|trans }}
-        </h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <h3 class="">
+                    {{ "Versions"|trans }}
+                </h3>
+            </div>
+            <div class="col-lg-7 versions-text">
+                 <div class="res-act-button res-act-button-reverse res-act-button-versions-treeview basic" style="text-align:left; margin-bottom:5px;">
+                    <i class="material-icons">&#xE335;</i>
+                    <span>{{ "Show as Tree"|trans }}</span>
+                </div>
+            </div>
+        </div>
     </div>
-        
-    <div class="block">
+   
+
+
+    <div class="block versions-list-view">
         {% for key, value in result %}
             {% set versionTxt = '' %}
             {% if key == 0 %}
@@ -19,3 +31,5 @@
     </div>
 {% endif %} 
 
+
+<div id="versions-tree" class="collectionBrowser_css"></div>

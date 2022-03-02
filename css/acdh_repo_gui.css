@@ -202,3 +202,9 @@ div.search-result-warning {
     font-weight: normal;
     text-align: center;
 }
+
+.versions-text {
+    padding-right: 0px !important;
+    margin-right: 0px !important;
+        
+}
