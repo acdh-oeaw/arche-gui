@@ -206,5 +206,9 @@ div.search-result-warning {
 .versions-text {
     padding-right: 0px !important;
     margin-right: 0px !important;
-        
+}
+#versions-tree {
+    overflow-x: auto;
+    overflow-y: hidden;
+    
 }

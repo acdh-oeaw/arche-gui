@@ -1532,7 +1532,7 @@ RETURN QUERY
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
         0,
         (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasVersion' limit 1) as version,
-0;
+        (select mv2.id from metadata_view as mv2 where mv2.value = _identifier and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf' limit 1) as prevId;
 END
 $func$
 LANGUAGE 'plpgsql';
