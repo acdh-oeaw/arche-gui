@@ -871,7 +871,12 @@ WITH query_data as (
         END as title, 
         mv.type, mv.value as key, count(mv.*) as cnt
     FROM public.metadata_view as mv
-    WHERE mv.property = _property
+    WHERE 
+        CASE WHEN _property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier' THEN
+            mv.type = 'ID'
+        ELSE
+            mv.property = _property	
+        END
     GROUP BY mv.value, mv.type, title
     ) select * from query_data order by key;
 END
