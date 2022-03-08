@@ -1180,8 +1180,7 @@ DECLARE
     _searchstrId text := LOWER(REPLACE(REPLACE(_searchstr, 'https://', '/'), 'http://', '/'));
     _searchstrIdSlash text := CONCAT('/', _searchstrId);
     _searchStrIdText text := CONCAT(_searchstrId, ' or ', _searchstrIdSlash);
-    _searchstr text := LOWER(_searchstr);
-    
+    _searchstr text := LOWER(REPLACE(_searchstr, ' ', ','));    
 BEGIN
 
 DROP TABLE IF EXISTS std_data;
