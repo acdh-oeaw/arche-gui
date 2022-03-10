@@ -111,6 +111,49 @@ class BlocksModel extends ArcheModel
         $this->changeBackDBConnection();
         return $result;
     }
+    
+    /**
+     * Get the newest version id, to we can fetch the whole tree
+     * @param string $id
+     * @return string
+     */
+    private function getMainVersionResourceID(string $id): string
+    {
+        try {
+            $this->setSqlTimeout();
+            $query = $this->repodb->query(
+                "WITH RECURSIVE parent_subordinates AS (
+                    SELECT
+                        mv.id,
+                        -1 as depthval
+                    FROM
+                        metadata_view as mv
+                    WHERE
+                        mv.value = :id
+                        and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+                    UNION
+                        SELECT
+                            mv2.id,
+                            depthval - 1
+                        FROM
+                            metadata_view mv2
+                        INNER JOIN parent_subordinates s ON s.id = CAST(mv2.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf'
+                ) select id from parent_subordinates order by depthval asc limit 1 ",
+                array(':id' => $id)
+            );
+            $result = $query->fetch();
+           
+            if(isset($result->id)) {
+                return $result->id;
+            }
+        } catch (\Exception $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+        } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
+            \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+        }
+        $this->changeBackDBConnection();
+        return $id;
+    }
 
     /**
      * Get the Versions block data
@@ -120,12 +163,14 @@ class BlocksModel extends ArcheModel
     public function getVersionsData(array $params): array
     {
         $result = array();
-        //run the actual query
+        //get the main id
+        $id = $this->getMainVersionResourceID($params['identifier']);
+       
         try {
             $this->setSqlTimeout();
             $query = $this->repodb->query(
                 "select * from gui.getResourceVersion(:id, :lang) order by depth",
-                array(':id' => $params['identifier'], ':lang' => $params['lang'])
+                array(':id' => $id, ':lang' => $params['lang'])
             );
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
