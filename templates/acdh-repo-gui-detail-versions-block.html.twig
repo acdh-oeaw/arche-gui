@@ -1,7 +1,7 @@
 <!--  ARCHE DETAIL VIEW VERSIONS BLOCK TEMPLATE -->
 {% if result|length > 1 %}
-    <div class="container">
-        <div class="row">
+    <div class="container" style="padding-top: 20px;">
+        <div class="row" style="border-top: 1px solid #DDDDDD; padding-top: 20px;">
             <div class="col-lg-5">
                 <h3 class="">
                     {{ "Versions"|trans }}
@@ -27,7 +27,7 @@
         {% endfor %}
     </div>
     
-    <div id="versions-tree" class="collectionBrowser_css"></div>
+    <div id="versions-tree" class="collectionBrowser_css" style="display:none;"></div>
 {% endif %} 
 
 

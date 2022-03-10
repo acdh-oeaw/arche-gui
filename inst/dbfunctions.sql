@@ -1180,12 +1180,13 @@ DECLARE
     _searchstrId text := LOWER(REPLACE(REPLACE(_searchstr, 'https://', '/'), 'http://', '/'));
     _searchstrIdSlash text := CONCAT('/', _searchstrId);
     _searchStrIdText text := CONCAT(_searchstrId, ' or ', _searchstrIdSlash);
-    _searchstr text := LOWER(REPLACE(_searchstr, ' ', ','));    
+    _searchstr text := LOWER(REPLACE(_searchstr, ' ', ','));
+    
 BEGIN
 
 DROP TABLE IF EXISTS std_data;
 DROP TABLE IF EXISTS sb_data;
-
+RAISE NOTICE USING MESSAGE =  _searchstr;
 CASE WHEN (_searchstr <> '' ) IS TRUE THEN
     CREATE TEMPORARY TABLE std_data AS (
         WITH std_data as (
@@ -1218,7 +1219,7 @@ CASE WHEN (_searchstr <> '' ) IS TRUE THEN
             LEFT JOIN metadata as m on m.mid = fts.mid
             WHERE  
                  websearch_to_tsquery('simple', _searchStrIdText) @@ fts.segments and fts.raw LIKE 'http%'		
-            limit 10000
+            limit 20000
             			
         ) select * from std_data
     );
