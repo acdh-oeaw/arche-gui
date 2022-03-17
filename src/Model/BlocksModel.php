@@ -143,7 +143,7 @@ class BlocksModel extends ArcheModel
             );
             $result = $query->fetch();
            
-            if(isset($result->id)) {
+            if (isset($result->id)) {
                 return $result->id;
             }
         } catch (\Exception $ex) {
