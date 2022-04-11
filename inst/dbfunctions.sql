@@ -115,7 +115,7 @@ RETURN QUERY
             (CAST(rel.id as INT)) ,  rel.property, 'REL' as type, (CAST(rel.relid as VARCHAR)) as value, rel.value as relvalue, rel.acdhid, rel.vocabsid, '' as accessrestriction, _lang as lang
         FROM (
             select 
-                DISTINCT(CAST(m.id as VARCHAR)) as relid, m.value, mv.property,  i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id 
+                DISTINCT on (CAST(m.id as VARCHAR)) m.id as relid, m.value, mv.property,  i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id 
             from metadata_view as mv 
             left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
             left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
@@ -124,7 +124,7 @@ RETURN QUERY
                 mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang IN (_lang, 'und'))
             UNION
             select 
-                DISTINCT(CAST(m.id as VARCHAR)) as relid, m.value, mv.property, i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id
+                DISTINCT on (CAST(m.id as VARCHAR)) m.id as relid, m.value, mv.property, i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id
             from metadata_view as mv 
             left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
             left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
