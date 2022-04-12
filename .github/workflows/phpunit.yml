@@ -73,8 +73,8 @@ jobs:
   
     - name: start web server
       run: |
-        cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:8080 &
-        until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done  
+        cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:80 &
+        until netstat -an 2>/dev/null | grep '80.*LISTEN'; do true; done  
         
     - name: test
       run: |
