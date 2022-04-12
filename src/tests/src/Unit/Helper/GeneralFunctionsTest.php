@@ -41,6 +41,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
         return $this->object;
     }
 
+    /*
     public function testDetailViewUrlDecodeEncode_Decode_Acdh()
     {
         $this->assertEmpty($this->object->detailViewUrlDecodeEncode('', 0));
@@ -76,7 +77,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
                 ->will($this->returnValue('http://d-nb.info/263325'));
 
         $this->assertSame('http://d-nb.info/263325', $this->gfService->detailViewUrlDecodeEncode('d-nb.info:263325', 0));
-    }
+    }*/
 
     public function testDetailViewUrlDecodeEncode_Encode()
     {
