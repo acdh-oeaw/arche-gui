@@ -86,7 +86,9 @@ AS $func$
 DECLARE
     /* get the arche gui identifier */
     _main_id bigint := (select i.id from identifiers as i where i.ids =_identifier);
+    _lang2 text := 'de';
 BEGIN
+    IF _lang = 'de' THEN _lang2 = 'en'; ELSE _lang2 = 'de'; END IF;
 RETURN QUERY
     WITH dmetaRel as (
         Select 
@@ -115,31 +117,22 @@ RETURN QUERY
             (CAST(rel.id as INT)) ,  rel.property, 'REL' as type, (CAST(rel.relid as VARCHAR)) as value, rel.value as relvalue, rel.acdhid, rel.vocabsid, '' as accessrestriction, _lang as lang
         FROM (
             select 
-                DISTINCT on (CAST(m.id as VARCHAR)) m.id as relid, m.value, mv.property,  i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id 
+            DISTINCT on (mv.value) mv.value as relid,
+            COALESCE(
+                (select m.value from metadata as m where m.lang = _lang and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
+                (select m.value from metadata as m where m.lang = _lang2 and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
+                (select m.value from metadata as m where m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)	
+            ) as value,	
+            mv.property,
+            i.ids as acdhId, 
+            i2.ids as vocabsid, 
+            _lang as lang,
+            mv.id as id 
             from metadata_view as mv 
-            left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-            where 
-                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang IN (_lang, 'und'))
-            UNION
-            select 
-                DISTINCT on (CAST(m.id as VARCHAR)) m.id as relid, m.value, mv.property, i.ids as acdhId, i2.ids as vocabsid, m.lang, mv.id as id
-            from metadata_view as mv 
-            left join metadata as m on CAST(mv.value as INT) = m.id and m.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'
-            left join identifiers as i on i.id = m.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
-            left join identifiers as i2 on i2.id = m.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
-            where 
-                mv.id = _main_id and mv.type = 'REL' and ((m.lang <> '') IS NOT TRUE or m.lang NOT IN (_lang, 'und'))
-                and not exists (
-                    select 
-                        DISTINCT(CAST(m2.id as VARCHAR)), m2.value, mv2.property, m2.lang, '' as acdhId, '' as vocabsid, m2.lang
-                    from metadata_view as mv2 
-                    left join metadata as m2 on CAST(mv2.value as INT) = m2.id and m2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'			
-                    where 
-                        mv2.id = _main_id and mv2.type = 'REL' and ((m2.lang <> '') IS NOT TRUE or m2.lang IN (_lang, 'und')) and mv.property = mv2.property
-                )
-            order by value
+            left join identifiers as i on i.id = mv.id and i.ids LIKE CAST('%.acdh.oeaw.ac.at/api/%' as varchar)
+            left join identifiers as i2 on i2.id = mv.id and i2.ids LIKE CAST('%vocabs.acdh.oeaw.ac.at/%' as varchar)
+            where mv.id = _main_id and mv.type = 'REL'
+            order by mv.value
         ) as rel
     )
     select 
