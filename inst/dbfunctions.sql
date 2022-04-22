@@ -117,7 +117,7 @@ RETURN QUERY
             (CAST(rel.id as INT)) ,  rel.property, 'REL' as type, (CAST(rel.relid as VARCHAR)) as value, rel.value as relvalue, rel.acdhid, rel.vocabsid, '' as accessrestriction, _lang as lang
         FROM (
             select 
-            DISTINCT on (mv.value) mv.value as relid,
+            mv.value as relid,
             COALESCE(
                 (select m.value from metadata as m where m.lang = _lang and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
                 (select m.value from metadata as m where m.lang = _lang2 and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
