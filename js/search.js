@@ -196,7 +196,7 @@ jQuery(function ($) {
     //Complex search-form behaviour
     //front page search
     $("#sks-form-front").submit(function (event) {
-        let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí:./\s]/gi, '').replace(/[_]/g, '-').replace(/[\s]/g, '+');
+        let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
         if(!metaValueField) {
             window.location.href = '/browser/discover/root';
         } else {
@@ -226,7 +226,7 @@ jQuery(function ($) {
         }
         var urlParams = "";
         //Metavalue field
-        var metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöí:./\s]/gi, '').replace(/[\s]/g, '+');
+        var metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
         if (metaValueField) {
             //metaValueField = metaValueField.replace(/\s/g, '+');
             if (metaValueField.includes('type=') || metaValueField.includes('words=') || metaValueField.includes('mindate=')
