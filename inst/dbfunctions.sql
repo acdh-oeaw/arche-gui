@@ -667,7 +667,7 @@ LANGUAGE 'plpgsql';
 /* PROPERTIES */
 DROP FUNCTION gui.dash_properties_func();
 CREATE FUNCTION gui.dash_properties_func()
-  RETURNS table (property text, cnt bigint )
+  RETURNS table (property text, count bigint )
 AS $func$
 DECLARE 
 BEGIN
@@ -693,7 +693,7 @@ LANGUAGE 'plpgsql';
 /* CLASSES */
 DROP FUNCTION gui.dash_classes_func();
 CREATE FUNCTION gui.dash_classes_func()
-  RETURNS table (property text, cnt bigint )
+  RETURNS table (class text, count bigint )
 AS $func$
 DECLARE 
 BEGIN
@@ -737,7 +737,7 @@ LANGUAGE 'plpgsql';
 /* TOPCOLLECTIONS */
 DROP FUNCTION gui.dash_topcollections_func();
 CREATE FUNCTION gui.dash_topcollections_func()
-    RETURNS table (id bigint, title text, count_items bigint, max integer, sum_size_items numeric, bsize text )
+    RETURNS table (id bigint, title text, count bigint, max_relatives integer, sum_size numeric, binary_size text )
 AS $func$
 DECLARE 
 BEGIN
@@ -779,7 +779,7 @@ LANGUAGE 'plpgsql';
 /* FORMATS */
 DROP FUNCTION gui.dash_formats_func();
 CREATE FUNCTION gui.dash_formats_func()
-  RETURNS table (format text, cnt_format bigint, cnt_size bigint, sum numeric )
+  RETURNS table (format text, count_format bigint, count_rawbinarysize bigint, sum_size numeric )
 AS $func$
 DECLARE 
 BEGIN
@@ -801,7 +801,7 @@ LANGUAGE 'plpgsql';
 /* Formats per Collection */
 DROP FUNCTION gui.dash_formatspercollection_func();
 CREATE FUNCTION gui.dash_formatspercollection_func()
-  RETURNS table (id bigint, title text, type text, format text, count bigint, sum_size numeric )
+  RETURNS table (id bigint, title text, format text, format text, count bigint, sum_size numeric )
 AS $func$
 DECLARE 
 BEGIN
