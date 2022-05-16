@@ -144,63 +144,6 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         );
     }
     
-    public function repo_3d_viewer_v2(string $repoid): array
-    {
-        $basic = array();
-        $result = array();
-        if (!empty($repoid)) {
-            $repoUrl = $this->repo->getBaseUrl() . $repoid;
-            $result = $this->generateView($repoid, '3d');
-            $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
-        }
-        
-        if (!isset($result['result'])) {
-            $result['result'] = "";
-        }
-        
-        return
-                array(
-                    '#theme' => 'acdh-repo-ds-3d-viewer-v2',
-                    '#ObjectUrl' => $result['result'],
-                    '#error' => $result['error'],
-                    '#cache' => ['max-age' => 0],
-                    '#basic' => $basic,
-                    '#attached' => [
-                        'library' => [
-                            'acdh_repo_gui/ds-3d-viewer-kovacs-styles',
-                        ]
-                    ]
-        );
-    }
-    
-    public function repo_3d_viewer_v3(string $repoid): array
-    {
-        $basic = array();
-        $result = array();
-        if (!empty($repoid)) {
-            $repoUrl = $this->repo->getBaseUrl() . $repoid;
-            $result = $this->generateView($repoid, '3d');
-            $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
-        }
-        
-        if (!isset($result['result'])) {
-            $result['result'] = "";
-        }
-        
-        return
-                array(
-                    '#theme' => 'acdh-repo-ds-3d-viewer-v3',
-                    '#ObjectUrl' => $result['result'],
-                    '#error' => $result['error'],
-                    '#cache' => ['max-age' => 0],
-                    '#basic' => $basic,
-                    '#attached' => [
-                        'library' => [
-                            'acdh_repo_gui/ds-3d-viewer-v3-styles',
-                        ]
-                    ]
-        );
-    }
 
     /**
      * Display PDF in viewer

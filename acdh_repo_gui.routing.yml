@@ -48,24 +48,6 @@ repo_3d_viewer:
         _permission: 'access content'
         _access: 'TRUE'
 
-repo_3d_viewer_v2:
-    path: '/3d_viewer/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_3d_viewer_v2'
-    requirements:
-        data: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
-repo_3d_viewer_v3:
-    path: '/3d_viewer_v3/{repoid}'
-    defaults:
-        _controller: '\Drupal\acdh_repo_gui\Controller\DisseminationServicesController::repo_3d_viewer_v3'
-    requirements:
-        data: '^[^\?]*$'
-        _permission: 'access content'
-        _access: 'TRUE'
-
 repo_pdf_viewer:
     path: '/oeaw_pdf_viewer/{repoid}'
     defaults:

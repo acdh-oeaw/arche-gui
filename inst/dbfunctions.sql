@@ -48,11 +48,13 @@ WITH root_data as (
         COALESCE(
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang limit 1),	
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = 'und' limit 1),
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,	
         COALESCE(
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang limit 1),	
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = _lang2 limit 1),
+            (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' and mv.lang = 'und' limit 1),
             (select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasDescription' limit 1)
         ) as description,
         CAST((select mv.value from metadata_view as mv where mv.id = m.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate' LIMIT 1) as timestamp)as avdate,
@@ -121,6 +123,7 @@ RETURN QUERY
             COALESCE(
                 (select m.value from metadata as m where m.lang = _lang and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
                 (select m.value from metadata as m where m.lang = _lang2 and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
+                (select m.value from metadata as m where m.lang = 'und' and m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1),	
                 (select m.value from metadata as m where m.id = CAST(mv.value as bigint) and m.property='https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)	
             ) as value,	
             mv.property,
@@ -475,6 +478,7 @@ WITH inverseIds AS (
         COALESCE(
             (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1),	
             (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 LIMIT 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' LIMIT 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'  LIMIT 1)
         )
     from inverseIds as iv
@@ -586,6 +590,7 @@ WITH query_data as (
     COALESCE(
         (select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
         (select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+        (select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' limit 1),
         (select mv2.value from metadata_view as mv2 where mv.id = mv2.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
     ) as title,
     mv.property,
@@ -612,6 +617,7 @@ WITH query_data as (
     COALESCE(
         (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
         (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+        (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' limit 1),  
         (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
     ) as title,
     mv.property,
@@ -858,6 +864,7 @@ WITH query_data as (
                 COALESCE(
                     (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'en' LIMIT 1),	
                     (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'de' LIMIT 1),
+                    (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' LIMIT 1),
                     (select mv2.value from metadata_view as mv2 where mv2.id = CAST(mv.value as bigint)  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' LIMIT 1)
                 )
             ELSE '' 
@@ -1498,6 +1505,7 @@ RETURN QUERY
         COALESCE(
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' limit 1),                       
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(c.value as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
@@ -1512,6 +1520,7 @@ RETURN QUERY
         COALESCE(
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' limit 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = p.id and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
@@ -1525,6 +1534,7 @@ RETURN QUERY
         COALESCE(
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang limit 1),	
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 limit 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' limit 1),
             (select mv2.value from metadata_view as mv2 where mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
         ) as title,
         (select CAST(mv2.value as timestamp) from metadata_view as mv2 where  mv2.id = CAST(_identifier as bigint) and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasAvailableDate'  limit 1) as avdate,
