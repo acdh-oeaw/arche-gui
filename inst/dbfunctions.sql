@@ -883,6 +883,32 @@ END
 $func$
 LANGUAGE 'plpgsql';
 
+/** count words by property for topcollection/collection/project **/
+DROP FUNCTION IF EXISTS  gui.dash_get_facet_by_property_func(text);
+CREATE FUNCTION gui.dash_get_facet_by_property_func(_property text)
+  RETURNS table (property text, key text, count bigint, sumcount bigint )
+AS $func$
+DECLARE 
+BEGIN
+	
+RETURN QUERY
+WITH query_data as (
+    SELECT        
+        mv2.value as property, mv.value as key, count(mv.*) as count
+    FROM public.metadata_view as mv
+	left join metadata_view as mv2 on mv2.id = mv.id and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' 
+	and mv2.value in ('https://vocabs.acdh.oeaw.ac.at/schema#TopCollection', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', 'https://vocabs.acdh.oeaw.ac.at/schema#Project') 
+    WHERE
+        mv.property = _property
+        and mv2.value is not null
+    GROUP BY mv.value, mv2.value
+    ) select qd.property, qd.key, qd.count, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd order by key;
+END
+$func$
+LANGUAGE 'plpgsql';
+
+
+/***** DASHBOARD SQL END ***/
 
 /** New search test sql **/
 /**
