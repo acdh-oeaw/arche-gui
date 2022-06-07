@@ -66,13 +66,10 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             return array();
         }
 
-        // check if the actual resource is an old version
-        $dv->extra->old_version = $this->checkVersions($dv->basic->getRepoId());
-
         \Drupal::service('page_cache_kill_switch')->trigger();
        
         $dv->extra->clarinVCRUrl = $this->generalFunctions->initClarinVcrUrl();
-        
+      
         $return = [
             '#theme' => 'acdh-repo-gui-detail',
             '#basic' => $dv->basic,
@@ -91,24 +88,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         return $return;
     }
 
-    /**
-     * Check if the actual resource has a newer version
-     * @param string $id
-     * @return bool
-     */
-    private function checkVersions(string $id): string
-    {
-        $blockModel = new \Drupal\acdh_repo_gui\Model\BlocksModel();
-        $params = array('identifier' => $id, 'lang' => $this->siteLang);
-        $data = $blockModel->getViewData("versions", $params);
-
-        if (count((array) $data) > 1) {
-            if ($data[0]->id != $id) {
-                return $data[0]->id;
-            }
-        }
-        return "";
-    }
+    
 
     /**
      * set up the breadcrumb data

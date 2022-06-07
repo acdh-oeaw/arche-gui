@@ -197,6 +197,21 @@ jQuery(function ($) {
         let contentId = id.replace('cite-tab-', 'highlight-');
         $('#' + contentId).removeClass('hidden').addClass('selected');
     }
+    
+    function showVersions() {
+        var acdhid = $('#insideUri').val();
+        $.ajax({
+                url: '/browser/api/versions_list/' + acdhid + '/en',
+                type: "GET",
+                success: function (data, status) {
+                    $('.versions-block-div').html(data);
+                },
+                error: function (message) {
+                    console.log('error');
+                    console.log(message);
+                } 
+        });
+    }
 
     $(document).ready(function () {
         /** add hasTitle value for the document title in every detail view **/
@@ -204,6 +219,8 @@ jQuery(function ($) {
 
         //check the audio player can load the audio file or not
         checkAudioPlayer();
+
+        showVersions();
 
         //CITE Block
         showCiteBlock();

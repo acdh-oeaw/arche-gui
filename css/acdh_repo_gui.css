@@ -203,12 +203,24 @@ div.search-result-warning {
     text-align: center;
 }
 
+.versions-title {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
 .versions-text {
     padding-right: 0px !important;
+     padding-left: 0px !important;
     margin-right: 0px !important;
 }
 #versions-tree {
     overflow-x: auto;
-    overflow-y: hidden;
-    
+    overflow-y: hidden;    
+}
+.container .versions-content-div {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.fieldset-wrapper .versions-list {
+    margin-left: 0px !important;
 }
