@@ -199,14 +199,17 @@ jQuery(function ($) {
     }
     
     function showVersions() {
+        $(".loader-versions-div").show();
         var acdhid = $('#insideUri').val();
         $.ajax({
                 url: '/browser/api/versions_list/' + acdhid + '/en',
                 type: "GET",
                 success: function (data, status) {
+                    $(".loader-versions-div").hide();
                     $('.versions-block-div').html(data);
                 },
                 error: function (message) {
+                    $(".loader-versions-div").hide();
                     console.log('error');
                     console.log(message);
                 } 
