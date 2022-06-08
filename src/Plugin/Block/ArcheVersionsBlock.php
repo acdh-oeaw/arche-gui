@@ -38,7 +38,7 @@ class ArcheVersionsBlock extends BlockBase
             $this->data = $controller->generateView($id);
             $this->checkActualID($id);
         }
-        
+
         if (count($this->data) < 1) {
             $this->data = array();
         }
