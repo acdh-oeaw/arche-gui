@@ -215,11 +215,39 @@ jQuery(function ($) {
                 } 
         });
     }
+    
+    //get related publications and resources table
+    function getRPRData() {
+        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
+            
+            jq2('#rprTableDiv').show("slow");
+            jq2('#showRPR').parent().hide("slow");
+            let id = jq2('#insideUri').val();
 
-    $(document).ready(function () {
-        /** add hasTitle value for the document title in every detail view **/
+            if(id !== undefined){
+                jq2('table.rprTable').DataTable({
+                    "ajax": {
+                        "url": "/browser/api/getRPR/"+id+"/en",
+                        "data": function ( d ) {
+                            d.limit = d.draw;
+                        },
+                        error: function (xhr, error, code)
+                        {
+                            const resp = xhr.responseJSON;
+                            jq2('#rprTableDiv').html();
+                            jq2('#rprTableDiv').html("<div class='messages messages--warning'>"+Drupal.t('The resource has no Related Publication and Resource data.')+"</div>");
+                        }
+                    },
+                    "deferRender": true,
+                    "errMode": 'throw'
+                });
+            }
+        }
+    }
+
+    function reloadAjaxDivs() {
         changeTitle();
-
+        getRPRData();
         //check the audio player can load the audio file or not
         checkAudioPlayer();
 
@@ -232,6 +260,11 @@ jQuery(function ($) {
             e.preventDefault();
             handleCiteTabEvents($(this), $("#cite-selector-div").find(".selected").attr('id'));
         });
+    }
+
+    $(document).ready(function () {
+        /** add hasTitle value for the document title in every detail view **/
+        reloadAjaxDivs();
 
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
@@ -259,6 +292,7 @@ jQuery(function ($) {
                             createNewUrlForInsideClick(id);
                             $('#block-mainpagecontent').html(data);
                             reloadTable = true;
+                            reloadAjaxDivs();
                             $(".loader-div").hide();
                         },
                         error: function (message) {
@@ -380,7 +414,6 @@ jQuery(function ($) {
             $(this).children('span').text(Drupal.t('Switch to Tree-View'));
         }
     });
-    
     
     $(document).delegate(".res-act-button-versions-treeview", "click", function (e) {
         if ($(this).hasClass('basic')) {

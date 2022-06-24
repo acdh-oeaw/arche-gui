@@ -177,36 +177,7 @@ jq2(function( $ ) {
         }
     });
     
-    //get related publications and resources table
-    function getRPRData() {
-        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-            
-            jq2('#rprTableDiv').show("slow");
-            jq2('#showRPR').parent().hide("slow");
-            let id = jq2('#insideUri').val();
-
-            if(id !== undefined){
-                jq2('table.rprTable').DataTable({
-                    "ajax": {
-                        "url": "/browser/api/getRPR/"+id+"/en",
-                        "data": function ( d ) {
-                            d.limit = d.draw;
-                        },
-                        error: function (xhr, error, code)
-                        {
-                            const resp = xhr.responseJSON;
-                            jq2('#rprTableDiv').html();
-                            jq2('#rprTableDiv').html("<div class='messages messages--warning'>"+Drupal.t('The resource has no Related Publication and Resource data.')+"</div>");
-                        }
-                    },
-                    "deferRender": true,
-                    "errMode": 'throw'
-                });
-            }
-        }
-    }
-    
     $(document).ready(function () {
-        getRPRData();
+       
     });
 });
