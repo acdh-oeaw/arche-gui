@@ -1581,3 +1581,45 @@ RETURN QUERY
 END
 $func$
 LANGUAGE 'plpgsql';
+
+/** Arche get ajax table by properties - https://redmine.acdh.oeaw.ac.at/issues/20354 **/
+DROP FUNCTION IF EXISTS gui.get_table_by_property_func(text, text, text[]  );
+CREATE FUNCTION gui.get_table_by_property_func(_identifier text, _lang text DEFAULT 'en', _rdftype text[] DEFAULT '{}')
+  RETURNS table (id bigint, property text, title text, sumcount bigint)
+AS $func$
+DECLARE _lang2 text := 'de';
+BEGIN
+
+DROP TABLE IF EXISTS counted;
+CREATE TEMPORARY TABLE counted AS (
+	select 
+    	COUNT(*) as sumcount
+    from metadata_view as mv
+    where 
+    	mv.value = _identifier
+    	and mv.property = ANY (_rdftype)
+);
+
+RETURN QUERY
+WITH properties AS (
+    select 
+        DISTINCT(mv.id), mv.property
+    from metadata_view as mv
+    where 
+        mv.value = _identifier
+        and mv.property = ANY (_rdftype)
+	) select 
+        iv.id, iv.property, 
+        COALESCE(
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang LIMIT 1),	
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = _lang2 LIMIT 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv2.lang = 'und' LIMIT 1),
+            (select mv2.value from metadata_view as mv2 where mv2.id = iv.id  and mv2.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'  LIMIT 1)
+        ) as title, (select c.sumcount from counted as c limit 1) as sumcount
+    from properties as iv
+    left join resources as rs on rs.id = iv.id
+    where rs.state = 'active'
+	group by iv.id, iv.property;
+END
+$func$
+LANGUAGE 'plpgsql';

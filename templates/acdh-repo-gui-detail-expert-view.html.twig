@@ -86,7 +86,7 @@
         </tbody>
     </table>
 
-    <div class="res-act-button">
+    <div class="res-act-button" style="margin-top:20px; margin-bottom: 20px;">        
         <a href="#" id="showInverse" data-tableuri="{{basic.getRepoId()}}">{{ "Show Inverse Table"|trans }}</a>
     </div>
 
@@ -95,14 +95,32 @@
         <table class="inverseTable table table-striped" cellspacing="0" width="100%">
             <thead>
                 <tr>                        
-                    <th>Property</th>
-                    <th>Value(s)</th>
+                    <th>{{ "Property"|trans }}</th>
+                    <th>{{ "Value(s)"|trans }}</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
+       
+        
+     <!-- PERSON HASActor -->
+    {% if basic.getAcdhType()|lower == 'person' %}
+        <div id="hasactor-person-div">
+            <h3 class="single-res-heading">{{ "Mentioned"|trans }}</h3>
+            
+            <table id="values-by-property-and-id-table" class="table table-striped" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>{{ "Title"|trans }}</th>                                        
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    {% endif%}    
         
 </div>	
 <br>

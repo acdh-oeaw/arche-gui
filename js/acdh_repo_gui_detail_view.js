@@ -261,11 +261,27 @@ jQuery(function ($) {
             handleCiteTabEvents($(this), $("#cite-selector-div").find(".selected").attr('id'));
         });
     }
+    
+    function gethasActorData() {
+        $('#values-by-property-and-id-table').DataTable({
+                "paging": true,
+                "searching": true,
+                "pageLength": 10,
+                "processing": true,
+                "serverSide": true,
+                "serverMethod": "post",
+                "ajax": "/browser/api/getHasActors/" + $('#insideUri').val()+"/en",
+                'columns': [                    
+                    {data: 'title'}
+
+                ]
+            });
+    }
 
     $(document).ready(function () {
         /** add hasTitle value for the document title in every detail view **/
         reloadAjaxDivs();
-
+        gethasActorData();
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */

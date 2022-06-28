@@ -672,4 +672,17 @@ class ResourceObject
         }
         return "";
     }
+    
+    
+    public function isContactDetails(): bool {        
+        $props = ['acdh:hasAddressLine1', 'acdh:hasAddressLine2', 'acdh:Postcode',
+            'acdh:hasCity','acdh:hasRegion', 'acdh:hasCountry', 'acdh:hasEmail',
+            'acdh:hasUrl'];
+        foreach($props as $p) {
+            if (isset($this->properties[$p])) {
+                return true;
+            }
+        }
+        return false;      
+    }
 }
