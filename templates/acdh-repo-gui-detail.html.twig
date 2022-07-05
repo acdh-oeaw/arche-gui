@@ -51,15 +51,9 @@
             </div>
         </div>
 
-        <!-- VERSIONS -->
-        {% if extra.old_version %}
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="version-warning"><i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;{{  "A"|trans}} <a href="/browser/oeaw_detail/{{ extra.old_version }}">{{  "newer version"|trans }}</a> {{  "of this resource is available."|trans }}</div>
-                </div>
-            </div>
-        {% endif%}  
-
+        <!-- VERSIONS DIV -->       
+        <div class="row versions-detail-block"></div>
+       
         <div class="row">
             <div class="col-lg-12">       
                 <!-- get the views based on the type -->

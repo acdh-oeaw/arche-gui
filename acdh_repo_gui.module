@@ -64,6 +64,9 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         'acdh-repo-gui-detail-versions-block-empty' => [
             'variables' => ['result' => NULL]
         ],
+        'acdh-repo-gui-detail-versions-alert' => [
+            'variables' => ['result' => NULL]
+        ],
         'acdh-repo-gui-vcr-block' => [
             'variables' => ['vcrUrl' => NULL]
         ],

@@ -207,6 +207,7 @@ jQuery(function ($) {
                 success: function (data, status) {
                     $(".loader-versions-div").hide();
                     $('.versions-block-div').html(data);
+                    
                 },
                 error: function (message) {
                     $(".loader-versions-div").hide();
@@ -215,6 +216,22 @@ jQuery(function ($) {
                 } 
         });
     }
+    
+    function showVersionsAlert() {
+        var acdhid = $('#insideUri').val();
+        $.ajax({
+                url: '/browser/api/versions_alert/' + acdhid + '/en',
+                type: "GET",
+                success: function (data, status) {
+                    if(data != null) {
+                        $(".versions-detail-block").html(data);
+                    }
+                },
+                error: function (message) {
+                } 
+        });
+    }
+    
     
     //get related publications and resources table
     function getRPRData() {
@@ -282,6 +299,9 @@ jQuery(function ($) {
         /** add hasTitle value for the document title in every detail view **/
         reloadAjaxDivs();
         gethasActorData();
+        
+        showVersionsAlert();
+        
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */
