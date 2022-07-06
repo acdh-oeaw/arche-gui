@@ -279,6 +279,23 @@ jQuery(function ($) {
         });
     }
     
+    function getInverseData() {
+        
+        var uri = $('#showInverse').data('tableuri');
+        //genereate the data
+        if(uri) {
+            $('table.inverseTable').DataTable({
+                "ajax": {
+                    "url": "/browser/api/getInverseData/"+uri,
+                    "data": function ( d ) {
+                        d.limit = d.draw;
+                    }
+                },
+                "deferRender": true
+            });
+        }
+    }
+    
     function gethasActorData() {
         if($('#insideUri').val()) {
             $('#values-by-property-and-id-table').DataTable({
@@ -303,6 +320,7 @@ jQuery(function ($) {
         reloadAjaxDivs();
         gethasActorData();
         
+        getInverseData();
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */

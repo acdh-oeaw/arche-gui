@@ -86,11 +86,8 @@
         </tbody>
     </table>
 
-    <div class="res-act-button" style="margin-top:20px; margin-bottom: 20px;">        
-        <a href="#" id="showInverse" data-tableuri="{{basic.getRepoId()}}">{{ "Show Inverse Table"|trans }}</a>
-    </div>
-
-    <div id="inverseTableDiv" style="display: none;">
+    <input type="hidden" id="showInverse" data-tableuri="{{basic.getRepoId()}}" value="{{basic.getRepoId()}}">
+    <div id="inverseTableDiv" style="margin-top:20px; margin-bottom: 20px;">
         <h3>{{ "Inverse Data"|trans }}</h3>
         <table class="inverseTable table table-striped" cellspacing="0" width="100%">
             <thead>

@@ -116,27 +116,7 @@ jq2(function( $ ) {
 
     /** check the restriction for the dissemination services END */
 
-    //the JS for the inverse table
-    jq2( "#showInverse" ).click(function(e) {
-        e.preventDefault();
-        //show the table
-        jq2('#inverseTableDiv').show("slow");
-        //hide the button
-        jq2('#showInverse').parent().hide("slow");
-        //get the uri
-        var uri = jq2('#showInverse').data('tableuri');
-        //genereate the data
-        jq2('table.inverseTable').DataTable({
-            "ajax": {
-                "url": "/browser/api/getInverseData/"+uri,
-                "data": function ( d ) {
-                    d.limit = d.draw;
-                }
-            },
-            "deferRender": true
-        });
-    });
-
+  
     //the JS for the isMember table
     jq2( "#showIsMember" ).click(function(e) {
         e.preventDefault();
