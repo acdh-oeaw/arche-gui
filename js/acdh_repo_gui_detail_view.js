@@ -280,19 +280,22 @@ jQuery(function ($) {
     }
     
     function gethasActorData() {
-        $('#values-by-property-and-id-table').DataTable({
+        if($('#insideUri').val()) {
+            $('#values-by-property-and-id-table').DataTable({
                 "paging": true,
                 "searching": true,
                 "pageLength": 10,
                 "processing": true,
                 "serverSide": true,
                 "serverMethod": "post",
+                "fixedColumns": true,
                 "ajax": "/browser/api/getHasActors/" + $('#insideUri').val()+"/en",
                 'columns': [                    
-                    {data: 'title'}
-
+                    {data: 'title'},
+                    {data: 'property'}
                 ]
             });
+        }
     }
 
     $(document).ready(function () {
@@ -300,13 +303,12 @@ jQuery(function ($) {
         reloadAjaxDivs();
         gethasActorData();
         
-        showVersionsAlert();
-        
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */
         if (window.location.href.indexOf("browser/oeaw_detail/") >= 0) {
-
+            
+            showVersionsAlert();
             $(document).delegate("a#archeHref", "click", function (e) {
                 var reloadTable = false;
                 $(".loader-div").show();

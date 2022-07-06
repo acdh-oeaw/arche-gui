@@ -108,12 +108,12 @@
      <!-- PERSON HASActor -->
     {% if basic.getAcdhType()|lower == 'person' %}
         <div id="hasactor-person-div">
-            <h3 class="single-res-heading">{{ "Mentioned"|trans }}</h3>
-            
-            <table id="values-by-property-and-id-table" class="table table-striped" cellspacing="0" width="100%">
-                <thead>
+            <h3 class="single-res-heading">{{ "Mentioned in"|trans }}</h3>
+            <table id="values-by-property-and-id-table"  class="table table-striped" cellspacing="0" width="100%">
+               <thead>
                     <tr>
                         <th>{{ "Title"|trans }}</th>                                        
+                        <th>{{ "Type"|trans }}</th>                                        
                     </tr>
                 </thead>
                 <tbody>
