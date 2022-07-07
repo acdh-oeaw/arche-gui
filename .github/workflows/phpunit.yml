@@ -51,7 +51,13 @@ jobs:
       run: composer install
       
     - name: drupal composer update
-      run: composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
+      run: composer update
+    
+    - name: drush update
+      run: composer require drush/drush
+      
+    - name: phpunit update
+      run: composer require phpunit/phpunit && cd -
               
     - name: check drush
       run: |
