@@ -41,9 +41,15 @@ jobs:
         export PATH="$HOME/.composer/vendor/bin:$PATH"
         echo $PATH  
         
-    - name: install drupal
-      run:  composer create-project drupal/recommended-project drupal --no-install && composer config --no-plugins allow-plugins true && composer install
+    - name: create drupal project
+      run:  composer create-project drupal/recommended-project drupal --no-install
   
+    - name: add allow plugins
+      run: composer config allow-plugins true
+      
+    - name: install drupal
+      run: composer install
+      
     - name: drupal composer update
       run: cd drupal && composer config allow-plugins true && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
               
