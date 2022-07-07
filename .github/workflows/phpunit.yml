@@ -54,7 +54,7 @@ jobs:
       run: composer update
     
     - name: drush update
-      run: composer require --dev drush/drush && cd -
+      run: composer require --dev drush/drush 
       
     - name: phpunit update
       run: composer require phpunit/phpunit 
