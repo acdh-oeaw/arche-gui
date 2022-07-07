@@ -42,10 +42,10 @@ jobs:
         echo $PATH  
         
     - name: create drupal project
-      run:  composer create-project drupal/recommended-project drupal --no-install
+      run: composer create-project drupal/recommended-project drupal --no-install
   
     - name: add allow plugins
-      run: composer config allow-plugins true
+      run: cd drupal && composer config allow-plugins true
       
     - name: install drupal
       run: composer install
