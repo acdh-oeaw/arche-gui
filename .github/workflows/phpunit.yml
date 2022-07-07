@@ -53,12 +53,12 @@ jobs:
     - name: drupal composer update
       run: composer update
     
-    - name: vendor dir list
-      run: cd vendor && ls -la && cd -
-    
     - name: drush update
-      run: composer require drush/drush && cd -
+      run: composer require --dev drush/drush && cd -
       
+    - name: phpunit update
+      run: composer require phpunit/phpunit 
+              
     - name: check drush
       run: |
         cd drupal && vendor/drush/drush/drush status && cd -
