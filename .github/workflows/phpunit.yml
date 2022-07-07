@@ -42,10 +42,10 @@ jobs:
         echo $PATH  
         
     - name: create drupal project
-      run: composer create-project drupal/recommended-project drupal --no-install
+      run: mkdir drupal && cd drupal && wget https://github.com/drupal/recommended-project/blob/9.1.x/composer.json
   
     - name: add allow plugins
-      run: cd drupal && composer config allow-plugins true
+      run: composer config allow-plugins true
       
     - name: install drupal
       run: composer install
