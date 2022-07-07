@@ -71,7 +71,7 @@ jobs:
         cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
 
     - name: install drupal base with sqlite
-      run: cd drupal && vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
+      run: cd drupal && ../vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
        
     - name: copy plugin to drupal
       run: |
