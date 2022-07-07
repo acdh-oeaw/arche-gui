@@ -69,8 +69,7 @@ jobs:
         cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
 
     - name: install drupal base with sqlite
-      run: |              
-        cd drupal        
+      run: |        
         vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
         cd -
       
@@ -78,16 +77,10 @@ jobs:
       run: |
         mkdir -p drupal/web/modules/arche-gui
         for d in $(pwd)/*; do ln -s "$d" "drupal/web/modules/arche-gui"; done
-    
-    - name: check directories
-      run: |
-        ls -la  
-        cd drupal/web/modules && ls -la
-        cd arche-gui && ls -la
-  
+   
     - name: start web server
       run: |
-        cd drupal && vendor/drush/drush/drush runserver 127.0.0.1:80 &
+        vendor/drush/drush/drush runserver 127.0.0.1:80 &
         until netstat -an 2>/dev/null | grep '80.*LISTEN'; do true; done  
         
     - name: test
