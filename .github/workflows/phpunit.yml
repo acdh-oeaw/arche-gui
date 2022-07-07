@@ -63,7 +63,7 @@ jobs:
       run: vendor/drush/drush/drush status 
       
     - name: check drush drupal
-      run: drupal/vendor/drush/drush/drush status   
+      run: ls -la drupal/vendor/   
     
     - name: copy sqlite db
       run: |
