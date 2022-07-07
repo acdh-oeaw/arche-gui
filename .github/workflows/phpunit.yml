@@ -52,9 +52,6 @@ jobs:
       
     - name: drupal composer update
       run: composer update
-    
-    - name: drush update
-      run: composer require drush/drush && cd -
       
     - name: check drush
       run: |
