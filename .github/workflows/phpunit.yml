@@ -42,7 +42,7 @@ jobs:
         echo $PATH  
         
     - name: install drupal
-      run:  composer create-project drupal/recommended-project drupal  
+      run:  composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && composer create-project drupal/recommended-project drupal  && composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
   
     - name: drupal composer update
       run: cd drupal && composer config allow-plugins true && composer update && composer require drush/drush && composer require phpunit/phpunit ^8 && cd -
