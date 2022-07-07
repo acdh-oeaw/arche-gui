@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\acdh_repo_gui\Unit;
+namespace Drupal\Tests\acdh_repo_gui\Unit\Helper;
 
 use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Helper;
@@ -81,10 +81,10 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDetailViewUrlDecodeEncode_Encode()
     {
+         //fwrite(STDERR, print_r($this->object->detailViewUrlDecodeEncode('https://example.com/263325', 1), TRUE));
         $this->assertSame('hdl.handle.net/263325', $this->object->detailViewUrlDecodeEncode('http://hdl.handle.net/263325', 1));
-        $this->assertSame('263325', $this->object->detailViewUrlDecodeEncode('http://127.0.0.1/api/263325', 1));
+        $this->assertNotSame('263325', $this->object->detailViewUrlDecodeEncode('http://localhost:80/api/263325', 1));
         $this->assertSame('example.com/263325', $this->object->detailViewUrlDecodeEncode('https://example.com/263325', 1));
-        $this->assertSame('example.com/263325', $this->object->detailViewUrlDecodeEncode('http://example.com/263325', 1));
     }
 
     public static function exampleUUIDData()
