@@ -54,11 +54,8 @@ jobs:
       run: composer update
     
     - name: drush update
-      run: composer require drush/drush
+      run: composer require drush/drush && cd -
       
-    - name: phpunit update
-      run: composer require phpunit/phpunit && cd -
-              
     - name: check drush
       run: |
         cd drupal && vendor/drush/drush/drush status && cd -
