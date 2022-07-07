@@ -60,8 +60,10 @@ jobs:
       run: composer require phpunit/phpunit 
               
     - name: check drush
-      run: |
-        vendor/drush/drush/drush status 
+      run: vendor/drush/drush/drush status 
+      
+    - name: check drush drupal
+      run: drupal/vendor/drush/drush/drush status   
     
     - name: copy sqlite db
       run: |
@@ -69,7 +71,7 @@ jobs:
         cp inst/sites/default/files/.ht.sqlite drupal/web/sites/default/files/.ht.sqlite
 
     - name: install drupal base with sqlite
-      run: vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
+      run: cd drupal && vendor/drush/drush/drush site:install standard -vvv --db-url='sqlite://sites/default/files/.ht.sqlite'
        
     - name: copy plugin to drupal
       run: |
