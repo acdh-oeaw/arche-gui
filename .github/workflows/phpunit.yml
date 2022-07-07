@@ -52,6 +52,12 @@ jobs:
       
     - name: drupal composer update
       run: composer update
+    
+    - name: vendor dir list
+      run: ls -la
+    
+    - name: drush update
+      run: composer require drush/drush && cd -
       
     - name: check drush
       run: |
