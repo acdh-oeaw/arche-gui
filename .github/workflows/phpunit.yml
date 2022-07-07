@@ -61,8 +61,8 @@ jobs:
               
     - name: check drush
       run: |
-        cd drupal && vendor/drush/drush/drush status && cd -
-        drupal/vendor/drush/drush/drush list
+        vendor/drush/drush/drush status && 
+        /drupal/vendor/drush/drush/drush list
     
     - name: copy sqlite db
       run: |
