@@ -54,7 +54,7 @@ jobs:
       run: composer update
     
     - name: vendor dir list
-      run: ls -la
+      run: cd vendor && ls -la && cd -
     
     - name: drush update
       run: composer require drush/drush && cd -
