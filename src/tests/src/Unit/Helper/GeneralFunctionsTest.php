@@ -81,7 +81,7 @@ class GeneralFunctionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDetailViewUrlDecodeEncode_Encode()
     {
-         //fwrite(STDERR, print_r($this->object->detailViewUrlDecodeEncode('https://example.com/263325', 1), TRUE));
+        //fwrite(STDERR, print_r($this->object->detailViewUrlDecodeEncode('https://example.com/263325', 1), TRUE));
         $this->assertSame('hdl.handle.net/263325', $this->object->detailViewUrlDecodeEncode('http://hdl.handle.net/263325', 1));
         $this->assertNotSame('263325', $this->object->detailViewUrlDecodeEncode('http://localhost:80/api/263325', 1));
         $this->assertSame('example.com/263325', $this->object->detailViewUrlDecodeEncode('https://example.com/263325', 1));
