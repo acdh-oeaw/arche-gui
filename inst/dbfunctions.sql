@@ -2,7 +2,7 @@
 * COUNT THE ROOTS
 * we need to count the root ids before we run the bigger sql
 **/
-DROP FUNCTION gui.count_root_views_func();
+DROP FUNCTION IF EXISTS gui.count_root_views_func();
 CREATE FUNCTION gui.count_root_views_func()
   RETURNS table (id bigint)
 AS $func$
@@ -28,7 +28,7 @@ LANGUAGE 'plpgsql';
 * ROOT VIEW FUNCTION 
 * generate the arche gui root view list
 */
-DROP FUNCTION  gui.root_views_func(_lang text);
+DROP FUNCTION IF EXISTS gui.root_views_func(_lang text);
 CREATE FUNCTION gui.root_views_func(_lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, description text, avDate timestamp, acdhid text )
 AS $func$
@@ -163,7 +163,7 @@ LANGUAGE 'plpgsql';
 * Generate the collection and child tree view data tree
 * _pid -> root resource ID
 */
-DROP FUNCTION gui.collection_views_func(text, text);
+DROP FUNCTION IF EXISTS gui.collection_views_func(text, text);
 CREATE FUNCTION gui.collection_views_func(_pid text, _lang text DEFAULT 'en' )
     RETURNS table (mainid bigint, parentid bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, depth integer)
 AS $func$
@@ -255,7 +255,7 @@ LANGUAGE 'plpgsql';
 * select * from gui.child_views_func('https://arche-dev.acdh-dev.oeaw.ac.at/api/8145', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', 'en', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf' ])
 */
 --DROP FUNCTION gui.child_views_func(text, text, text, text, text, text, text[] );
-DROP FUNCTION gui.child_views_func(text, int, int, text, text, text, text[] );
+DROP FUNCTION IF EXISTS gui.child_views_func(text, int, int, text, text, text, text[] );
 CREATE FUNCTION gui.child_views_func(_parentid text, _limit int, _page int, _orderby text, _orderprop text, _lang text DEFAULT 'en',  _rdftype text[] DEFAULT '{}' )
     RETURNS table (id bigint, title text, avDate timestamp, description text, accesres text, titleimage text, acdhtype text, version text, orderid integer)
 AS $func$    
@@ -326,7 +326,7 @@ LANGUAGE 'sql';
 * get the sum of the child gui view resources for the pager
 * _parentid = full url -> https://repo.hephaistos.arz.oeaw.ac.at/api/207984
 */
-DROP FUNCTION gui.child_sum_views_func(text, text[] );
+DROP FUNCTION IF EXISTS gui.child_sum_views_func(text, text[] );
 CREATE FUNCTION gui.child_sum_views_func(_parentid text,  _rdftype text[] DEFAULT '{}')
     RETURNS table (countid bigint)
 AS $func$
@@ -390,7 +390,7 @@ LANGUAGE 'sql';
 * Get Members API SQL
 * _repoid -> id of the root resource
 */
-DROP FUNCTION gui.get_members_func(text, text);
+DROP FUNCTION IF EXISTS gui.get_members_func(text, text);
 CREATE FUNCTION gui.get_members_func(_repoid text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, title text)
 AS $func$
@@ -428,7 +428,7 @@ LANGUAGE 'plpgsql';
 /**
 * API getDATA
 **/
-DROP FUNCTION gui.apiGetData(text, text);
+DROP FUNCTION IF EXISTS gui.apiGetData(text, text);
 CREATE FUNCTION gui.apiGetData(_class text, _searchStr text)
     RETURNS table (id bigint, property text, value text, lang text)
 AS $func$
@@ -462,7 +462,7 @@ LANGUAGE 'plpgsql';
 /**
 *  INVERSE TABLE SQL
 **/
-DROP FUNCTION gui.inverse_data_func(text, text);
+DROP FUNCTION IF EXISTS gui.inverse_data_func(text, text);
 CREATE FUNCTION gui.inverse_data_func(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, property text, title text)
 AS $func$
@@ -500,7 +500,7 @@ LANGUAGE 'plpgsql';
 /**
 * TOOLTIP ONTOLOGY SQL
 **/
-DROP FUNCTION gui.ontology_func(text);
+DROP FUNCTION IF EXISTS gui.ontology_func(text);
 CREATE FUNCTION gui.ontology_func(_lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, description text, type text)
 AS $func$
@@ -530,7 +530,7 @@ LANGUAGE 'sql';
 /**
 * COUNT THE binaries and main collections for the Ckeditor plugin
 **/
-DROP FUNCTION gui.count_binaries_collection_func();
+DROP FUNCTION IF EXISTS gui.count_binaries_collection_func();
 CREATE FUNCTION gui.count_binaries_collection_func()
 RETURNS table (collections bigint, binaries bigint)
 AS $func$
@@ -576,7 +576,7 @@ LANGUAGE 'plpgsql';
 * _identifier = acdh id -> 3425
 * _lang = 'en' / 'de'
 **/
-DROP FUNCTION gui.related_publications_resources_views_func(text, text);
+DROP FUNCTION IF EXISTS gui.related_publications_resources_views_func(text, text);
 CREATE FUNCTION gui.related_publications_resources_views_func(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, title text, relatedtype text, acdhtype text )
 AS $func$
@@ -651,7 +651,7 @@ LANGUAGE 'plpgsql';
 /**
 * Get the repoid REL values HasTitle based on the defined language
 **/
-DROP FUNCTION gui.get_rel_values_func(text, text);
+DROP FUNCTION IF EXISTS gui.get_rel_values_func(text, text);
 CREATE FUNCTION gui.get_rel_values_func(_identifier text, _lang text DEFAULT 'en')
   RETURNS table (id bigint, property text, title text, lang text )
 AS $func$
@@ -677,7 +677,7 @@ LANGUAGE 'plpgsql';
 **/
 
 /* PROPERTIES */
-DROP FUNCTION gui.dash_properties_func();
+DROP FUNCTION IF EXISTS gui.dash_properties_func();
 CREATE FUNCTION gui.dash_properties_func()
   RETURNS table (property text, count bigint )
 AS $func$
@@ -703,7 +703,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /* CLASSES */
-DROP FUNCTION gui.dash_classes_func();
+DROP FUNCTION IF EXISTS gui.dash_classes_func();
 CREATE FUNCTION gui.dash_classes_func()
   RETURNS table (class text, count bigint )
 AS $func$
@@ -723,7 +723,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /* CLASSES PROPERTIES */
-DROP FUNCTION gui.dash_classes_properties_func();
+DROP FUNCTION IF EXISTS gui.dash_classes_properties_func();
 CREATE FUNCTION gui.dash_classes_properties_func()
   RETURNS table (class text, property text, cnt_distinct_value bigint, cnt bigint )
 AS $func$
@@ -747,7 +747,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /* TOPCOLLECTIONS */
-DROP FUNCTION gui.dash_topcollections_func();
+DROP FUNCTION IF EXISTS gui.dash_topcollections_func();
 CREATE FUNCTION gui.dash_topcollections_func()
     RETURNS table (id bigint, title text, count bigint, max_relatives integer, sum_size numeric, binary_size text )
 AS $func$
@@ -789,7 +789,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /* FORMATS */
-DROP FUNCTION gui.dash_formats_func();
+DROP FUNCTION IF EXISTS gui.dash_formats_func();
 CREATE FUNCTION gui.dash_formats_func()
   RETURNS table (format text, count_format bigint, count_rawbinarysize bigint, sum_size numeric )
 AS $func$
@@ -811,7 +811,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /* Formats per Collection */
-DROP FUNCTION gui.dash_formatspercollection_func();
+DROP FUNCTION IF EXISTS gui.dash_formatspercollection_func();
 CREATE FUNCTION gui.dash_formatspercollection_func()
   RETURNS table (id bigint, title text, format text, format text, count bigint, sum_size numeric )
 AS $func$
@@ -855,7 +855,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /** GET Facet **/
-DROP FUNCTION gui.dash_get_facet_func(text);
+DROP FUNCTION IF EXISTS gui.dash_get_facet_func(text);
 CREATE FUNCTION gui.dash_get_facet_func(_property text)
   RETURNS table (title text, type text, key text, cnt bigint )
 AS $func$
@@ -890,7 +890,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /** count words by property for topcollection/collection/project **/
-DROP FUNCTION IF EXISTS  gui.dash_get_facet_by_property_func(text);
+DROP FUNCTION IF EXISTS gui.dash_get_facet_by_property_func(text);
 CREATE FUNCTION gui.dash_get_facet_by_property_func(_property text)
   RETURNS table (property text, key text, count bigint, sumcount bigint )
 AS $func$
@@ -1202,7 +1202,7 @@ $func$
 LANGUAGE 'plpgsql';
 
 /** NEW TITLE DESC BINARY SQL  - for the new full_text_search DB without properties**/
-DROP FUNCTION gui.searchstrData_v3( text, text, bool);
+DROP FUNCTION IF EXISTS gui.searchstrData_v3( text, text, bool);
 CREATE FUNCTION gui.searchstrData_v3(_searchstr text DEFAULT '', _lang text DEFAULT 'en', _binarySearch bool DEFAULT FALSE )
   RETURNS table (id bigint, headline_title text, headline_desc text, headline_binary text)
 AS $func$
@@ -1308,7 +1308,7 @@ LANGUAGE 'plpgsql';
 
 /** NEW TITLE DESC BINARY SQL **/
 
-DROP FUNCTION gui.searchstrData( text, text, bool);
+DROP FUNCTION IF EXISTS gui.searchstrData( text, text, bool);
 CREATE FUNCTION gui.searchstrData(_searchstr text DEFAULT '', _lang text DEFAULT 'en', _binarySearch bool DEFAULT FALSE )
   RETURNS table (id bigint, headline_title text, headline_desc text, headline_binary text)
 AS $func$
