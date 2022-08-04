@@ -9,6 +9,9 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
         return [ new \Twig_SimpleFilter('archeTranslateDateFilter', function ($value, $dateformat) {
             (isset($_SESSION['language'])) ? $lang = strtolower($_SESSION['language'])  : $lang = "en";
             
+            if (strpos($value, "Z") !== false) {
+                $value = str_replace("Z", "", $value);
+            }
             if ($this->checkYearIsMoreThanFourDigit($value)) {
                 return $this->notNormalDate($value, $lang, $dateformat);
             }
@@ -27,7 +30,7 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
 
     private function checkYearIsMoreThanFourDigit($value): bool
     {
-        $explode = explode("-", $value);
+        $explode = explode("-", $value);        
         if (strlen($explode[0]) > 4) {
             return true;
         }
@@ -42,8 +45,13 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      * @return string
      */
     private function returnFormattedDate($dateformat, $value, $lang): string
-    {
+    {    
         $cal = \IntlCalendar::fromDateTime($value." Europe/Vienna");
+        
+        if($cal === null ) {
+            return "";
+        }
+        
         if ($lang == 'de') {
             return \IntlDateFormatter::formatObject($cal, $dateformat, 'de_DE');
         }
