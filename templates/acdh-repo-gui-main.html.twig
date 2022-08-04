@@ -31,7 +31,7 @@
                         {% if item.getData('acdh:hasAvailableDate') %}
                             {{ item.getPropTitle('acdh:hasAvailableDate') }}
                             <div class="res-property">
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d M Y", 'label': "Available Date", 'type': 'date'  } ) }}
+                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d MMM Y", 'label': "Available Date", 'type': 'date'  } ) }}
                             </div>
                         {% endif%}
                     {% endif%}

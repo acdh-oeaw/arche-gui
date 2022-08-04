@@ -12,7 +12,7 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
             if ($this->checkYearIsMoreThanFourDigit($value)) {
                 return $this->notNormalDate($value, $lang, $dateformat);
             }
-            return $this->returnFormattedDate($this->extendDateFormat($dateformat), $value, $lang);
+            return $this->returnFormattedDate($dateformat, $value, $lang);
         })
         ];
     }
@@ -23,20 +23,6 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
     public function getName()
     {
         return 'acdh_repo_gui.twig_extension';
-    }
-
-    /**
-     * change the datefomat to work with strftime
-     *
-     * @param string $dateformat
-     * @return string
-     */
-    private function extendDateFormat(string $dateFormat): string
-    {
-        $search  = array('Y', 'y', 'M', 'm', 'D', 'd');
-        $replace = array('%Y', '%y', '%b', '%m', '%d', '%d');
-
-        return str_replace($search, $replace, $dateFormat);
     }
 
     private function checkYearIsMoreThanFourDigit($value): bool
@@ -57,13 +43,13 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      */
     private function returnFormattedDate($dateformat, $value, $lang): string
     {
+        $cal = \IntlCalendar::fromDateTime($value." Europe/Vienna");
         if ($lang == 'de') {
-            setlocale(LC_TIME, 'de_DE.utf8');
-            return strftime($dateformat, strtotime($value));
+            return \IntlDateFormatter::formatObject($cal, $dateformat, 'de_DE');
         }
-        
-        setlocale(LC_TIME, 'en_US.utf8');
-        return strftime($dateformat, strtotime($value));
+        return \IntlDateFormatter::formatObject($cal, $dateformat, 'en_US');
+        //setlocale(LC_TIME, 'en_US.utf8');
+        //return strftime($dateformat, strtotime($value));
     }
 
     
