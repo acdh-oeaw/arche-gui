@@ -30,7 +30,7 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
 
     private function checkYearIsMoreThanFourDigit($value): bool
     {
-        $explode = explode("-", $value);        
+        $explode = explode("-", $value);
         if (strlen($explode[0]) > 4) {
             return true;
         }
@@ -45,10 +45,10 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      * @return string
      */
     private function returnFormattedDate($dateformat, $value, $lang): string
-    {    
+    {
         $cal = \IntlCalendar::fromDateTime($value." Europe/Vienna");
         
-        if($cal === null ) {
+        if ($cal === null) {
             return "";
         }
         
