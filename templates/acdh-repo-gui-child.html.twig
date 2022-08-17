@@ -85,7 +85,7 @@
                                 <span class="res-prop-label">{{ "Available Date"|trans }}:</span>
                                 
                                 {{ include('/modules/contrib/arche-gui/templates/helpers/helper-date.html.twig', 
-                                {'value': item.getData('acdh:hasAvailableDate')[0],  'dateformat': 'd MMM Y' } ) }}
+                                {'value': item.getData('acdh:hasAvailableDate')[0],  'dateformat': 'd MMM y' } ) }}
                                 
                             {% endif%}
                             {% if item.getData('acdh:hasAvailableDate')[0].value and item.getData('acdh:hasVersion')[0].value %}

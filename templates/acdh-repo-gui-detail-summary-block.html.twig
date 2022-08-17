@@ -26,14 +26,14 @@
     {% if basic.getData('acdh:hasCoverageStartDate')[0] %}
         <div class="res-property">
             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                    {'data': basic.getData('acdh:hasCoverageStartDate'), 'icon': 'info_outline', 'label':  'Coverage Start Date', 'type': 'date', 'dateformat': 'Y' } ) }}
+                    {'data': basic.getData('acdh:hasCoverageStartDate'), 'icon': 'info_outline', 'label':  'Coverage Start Date', 'type': 'date', 'dateformat': 'y' } ) }}
         </div>
     {% endif %}
 
     {% if basic.getData('acdh:hasCoverageEndDate')[0] %}
         <div class="res-property">
             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
-                    {'data': basic.getData('acdh:hasCoverageEndDate'), 'icon': 'info_outline', 'label':  'Coverage End Date', 'type': 'date', 'dateformat': 'Y' } ) }}
+                    {'data': basic.getData('acdh:hasCoverageEndDate'), 'icon': 'info_outline', 'label':  'Coverage End Date', 'type': 'date', 'dateformat': 'y' } ) }}
         </div>
     {% endif %}
 
