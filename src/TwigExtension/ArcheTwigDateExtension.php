@@ -37,10 +37,11 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
         return false;
     }
     
-    private function checkDateTimeValue($value) {
+    private function checkDateTimeValue($value)
+    {
         $datetime = new \DateTime();
         $newDate = $datetime->createFromFormat('Y-m-d', $value);
-        if($newDate) {
+        if ($newDate) {
             return $newDate->format('Y-m-d H:i:s');
         }
         return $value;
@@ -103,15 +104,15 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
             case 'd-m-Y':
                 return $m.'-'.$d.'-'.$y;
             case 'd-m-y':
-                return $m.'-'.$d.'-'.$y;    
+                return $m.'-'.$d.'-'.$y;
             case 'd M Y':
                 return $d.'-'.date('M', $m).'-'.$y;
             case 'd M y':
-                return $d.'-'.date('M', $m).'-'.$y;    
+                return $d.'-'.date('M', $m).'-'.$y;
             case 'Y M d':
                 return $y.'-'.date('M', $m).'-'.$d;
             case 'y M d':
-                return $y.'-'.date('M', $m).'-'.$d;    
+                return $y.'-'.date('M', $m).'-'.$d;
             default:
                 return $y.'-'.$m.'-'.$d;
         }
