@@ -46,18 +46,22 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      */
     private function returnFormattedDate($dateformat, $value, $lang): string
     {
+        /* we have to setup the timezone and locale, otherwise it will mix up the year */
+        ini_set('date.timezone', 'UTC');
+        ini_set('intl.default_locale', 'de_DE');
+        setlocale(LC_TIME, 'de_DE.utf8'); 
         $cal = \IntlCalendar::fromDateTime($value." Europe/Vienna");
-        
+
         if ($cal === null) {
             return "";
         }
         
-        if ($lang == 'de') {
+        if ($lang == 'de') {            
             return \IntlDateFormatter::formatObject($cal, $dateformat, 'de_DE');
         }
+        ini_set('intl.default_locale', 'en_US');
+        setlocale(LC_TIME, 'en_US.utf8');
         return \IntlDateFormatter::formatObject($cal, $dateformat, 'en_US');
-        //setlocale(LC_TIME, 'en_US.utf8');
-        //return strftime($dateformat, strtotime($value));
     }
 
     
@@ -68,9 +72,12 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
      */
     private function notNormalDate($value, $lang, $dateformat): string
     {
-        setlocale(LC_TIME, 'en_US.utf8');
+        ini_set('date.timezone', 'UTC');
+        ini_set('intl.default_locale', 'en_US');
+        setlocale(LC_TIME, 'en_US.utf8'); 
         
         if ($lang == 'de') {
+            ini_set('intl.default_locale', 'de_DE');
             setlocale(LC_TIME, 'de_DE.utf8');
         }
         $e = explode("-", $value);
