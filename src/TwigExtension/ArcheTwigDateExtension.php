@@ -60,9 +60,9 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
         ini_set('intl.default_locale', 'de_DE');
         setlocale(LC_TIME, 'de_DE.utf8');
         
-        $value = $this->checkDateTimeValue($value);        
+        $value = $this->checkDateTimeValue($value);
         $cal = \IntlCalendar::fromDateTime($value);
-       
+        
         if ($cal === null) {
             return "";
         }
@@ -102,10 +102,16 @@ class ArcheTwigDateExtension extends \Twig\Extension\AbstractExtension
                 return $y;
             case 'd-m-Y':
                 return $m.'-'.$d.'-'.$y;
+            case 'd-m-y':
+                return $m.'-'.$d.'-'.$y;    
             case 'd M Y':
                 return $d.'-'.date('M', $m).'-'.$y;
+            case 'd M y':
+                return $d.'-'.date('M', $m).'-'.$y;    
             case 'Y M d':
                 return $y.'-'.date('M', $m).'-'.$d;
+            case 'y M d':
+                return $y.'-'.date('M', $m).'-'.$d;    
             default:
                 return $y.'-'.$m.'-'.$d;
         }
