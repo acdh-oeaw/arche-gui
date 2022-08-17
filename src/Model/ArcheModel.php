@@ -24,7 +24,7 @@ abstract class ArcheModel
         try {
             $this->repo = \acdhOeaw\arche\lib\Repo::factory($this->config);
         } catch (\Exception $ex) {
-            \Drupal::messenger()->addWarning($this->t('Error during the BaseController initialization!').' '.$ex->getMessage());
+            \Drupal::messenger()->addWarning('Error during the BaseController initialization! '.$ex->getMessage());
             return array();
         }
         //set up the DB connections
