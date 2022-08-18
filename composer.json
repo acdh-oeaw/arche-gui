@@ -15,7 +15,7 @@
         "acdh-oeaw/arche-lib-disserv": "^3.0.2",
         "acdh-oeaw/arche-lib-schema": "^6.0.2",
         "zozlak/logging": "*",
-        "acdh-oeaw/easyrdf": "0.15.1",
+        "acdh-oeaw/easyrdf": ">= 0.15.5 <1",
         "twig/extra-bundle": "*",
         "phpunit/phpunit": "^9",
         "phpspec/prophecy-phpunit": "*",
