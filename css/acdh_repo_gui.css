@@ -238,3 +238,7 @@ div.search-result-warning {
 .fieldset-wrapper .versions-list {
     margin-left: 0px !important;
 }
+
+.res-prop-value {
+    word-break: normal !important;
+}
