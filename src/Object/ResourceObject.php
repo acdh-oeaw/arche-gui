@@ -289,9 +289,9 @@ class ResourceObject
                     $result['title'] = $v->title;
                 } elseif (isset($v->value) && !empty($v->value)) {
                     $result['title'] = $v->value;
-                }elseif (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
+                } elseif (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
                     $result['uri'] = $v->accessrestriction;
-                }elseif (isset($v->vocabsid) && !empty($v->vocabsid)) {
+                } elseif (isset($v->vocabsid) && !empty($v->vocabsid)) {
                     $result['vocabsid'] = $v->vocabsid;
                 }
             }
