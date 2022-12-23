@@ -15,7 +15,7 @@ class ResourceObject
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
     private $audioCategories = array('Audio', 'Sound', 'SpeechRecording');
     private $publicAccessValue = 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public';
-     
+    private $publicAccessTitle = ['public', 'öffentlich'];
 
     public function __construct(array $data, $config, string $language = 'en')
     {
@@ -621,6 +621,10 @@ class ResourceObject
                 count((array)$access) > 0 &&
                 isset($access['vocabsid']) &&
                 $access['vocabsid'] = $this->publicAccessValue) {
+            $result = true;
+        } elseif (count((array)$access) > 0 &&
+                isset($access['title']) &&
+                in_array($access['title'], $this->publicAccessTitle)) {
             $result = true;
         }
         
