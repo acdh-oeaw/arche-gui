@@ -15,6 +15,7 @@ class ResourceObject
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
     private $audioCategories = array('Audio', 'Sound', 'SpeechRecording');
     private $publicAccessValue = 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public';
+     
 
     public function __construct(array $data, $config, string $language = 'en')
     {
@@ -289,9 +290,11 @@ class ResourceObject
                     $result['title'] = $v->title;
                 } elseif (isset($v->value) && !empty($v->value)) {
                     $result['title'] = $v->value;
-                } elseif (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
+                }
+                if (isset($v->accessrestriction) && !empty($v->accessrestriction)) {
                     $result['uri'] = $v->accessrestriction;
-                } elseif (isset($v->vocabsid) && !empty($v->vocabsid)) {
+                }
+                if (isset($v->vocabsid) && !empty($v->vocabsid)) {
                     $result['vocabsid'] = $v->vocabsid;
                 }
             }
@@ -613,6 +616,7 @@ class ResourceObject
     {
         $result = false;
         $access = $this->getAccessRestriction();
+        
         if (
                 count((array)$access) > 0 &&
                 isset($access['vocabsid']) &&

@@ -82,14 +82,19 @@ repo-collection-dl:
         - core/jquery    
 
 ds-pdf-styles:  
-    version: 1.0.1
+    header: true
+    version: 1.0.2
     css:
         base:
-            css/arche-pdf-view.css: {}
+            css/pdf_viewer/pdfjs-viewer.css: {}
+            css/pdf_viewer/pdftoolbar.css: {}
+            css/pdf_viewer/arche-pdf-viewer.css: {}
+            https://fonts.googleapis.com/icon?family=Material+Icons: { type: external }
+            https://fonts.googleapis.com/icon?family=Material+Icons+Outlined: { type: external }
     js:
-        js/pdf/pdfjs-dist/build/pdf.js: {}
-        js/pdf/pdfviewer.js: {}
-        js/pdf/arche-ds-pdf.js: {}
+        https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js: { type: external, minified: true }
+        https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js: { type: external, minified: true }
+        js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
         js/search.js: {}
     dependencies:
@@ -97,14 +102,19 @@ ds-pdf-styles:
         - core/jquery
 
 ds-pdf-modal-styles:  
-    version: 1.0.1
+    header: true
+    version: 1.0.2
     css:
         base:
-            css/arche-pdf-view.css: {}
+            css/pdf_viewer/pdfjs-viewer.css: {}
+            css/pdf_viewer/pdftoolbar.css: {}
+            css/pdf_viewer/arche-pdf-viewer.css: {}
+            https://fonts.googleapis.com/icon?family=Material+Icons: { type: external }
+            https://fonts.googleapis.com/icon?family=Material+Icons+Outlined: { type: external }
     js:
-        js/pdf/pdfjs-dist/build/pdf.js: {}
-        js/pdf/pdfviewer.js: {}
-        js/pdf/arche-ds-pdf-modal.js: {}
+        https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js: { type: external, minified: true }
+        https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js: { type: external, minified: true }
+        js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
         js/search.js: {}
     dependencies:
