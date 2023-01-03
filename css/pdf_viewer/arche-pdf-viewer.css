@@ -38,5 +38,13 @@ input[type="file"] {
 }
 
 .modal-body {
-    min-height: 500px;
+    min-height: 550px;
+}
+
+.pdf-viewer-content {
+    height: 500px;
+}
+
+.modal-header-title {
+    width: 100%;
 }
