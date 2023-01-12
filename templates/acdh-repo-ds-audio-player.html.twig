@@ -1,8 +1,11 @@
+<script src="https://unpkg.com/wavesurfer.js@6.4.0/dist/wavesurfer.js"></script>
+
 <div class="modal fade" id="audioModal" role="dialog">
     <div class="modal-dialog modal-lg">
 
         <!-- Modal content-->
         <div class="modal-content">
+
             <div class="modal-header">
 
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -12,12 +15,20 @@
                 <div>
                     {%  if basic.getTitle() %}
                         <center><h2>{{ basic.getTitle() }} </h2></center>
-                    {% endif %}
+                        {% endif %}
                 </div>    
+
                 <div class="arche-audio-player-container">
-                    <audio class="audio" id="arche-audio-player" controls="controls" preload="auto">
-                        <source type="audio/mpeg" src="{{ audio_url }}">
-                    </audio>
+                    <div id="waveform"></div>
+                    <div class="controls" style="text-align: center;">
+                        <button class="btn btn-primary" data-action="play">
+                            <i class="glyphicon glyphicon-play"></i>
+                            Play
+                            /
+                            <i class="glyphicon glyphicon-pause"></i>
+                            Pause
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -27,3 +38,20 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    var btn = document.getElementById("audioPlayerBtn");
+    btn.onclick = function () {
+        var player = WaveSurfer.create({container: '#waveform'});
+        player.load('{{ audio_url }}');
+
+        player.on('ready', function () {
+            player.play();
+        });
+        // toggle play button
+        document
+                .querySelector('[data-action="play"]')
+                .addEventListener('click', player.playPause.bind(player));
+
+    }
+</script>

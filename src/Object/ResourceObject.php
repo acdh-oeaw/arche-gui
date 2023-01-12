@@ -13,7 +13,7 @@ class ResourceObject
     private $language = 'en';
     private $thumbUrl = 'https://arche-thumbnails.acdh.oeaw.ac.at/';
     private $biblatexUrl = 'https://arche-biblatex.acdh.oeaw.ac.at/';
-    private $audioCategories = array('Audio', 'Sound', 'SpeechRecording');
+    private $audioCategories = array('audio', 'sound', 'speechrecording', 'speech');
     private $publicAccessValue = 'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public';
     private $publicAccessTitle = ['public', 'öffentlich'];
 
@@ -564,7 +564,7 @@ class ResourceObject
         //check the sound categories
         if (isset($this->properties["acdh:hasCategory"])) {
             foreach ($this->properties["acdh:hasCategory"] as $category) {
-                if (in_array($category->value, (array)$this->audioCategories)) {
+                if (in_array(strtolower($category->value), (array)$this->audioCategories)) {
                     $cat = true;
                 }
             }
