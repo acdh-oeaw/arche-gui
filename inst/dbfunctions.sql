@@ -856,7 +856,7 @@ LANGUAGE 'plpgsql';
 /** GET Facet **/
 DROP FUNCTION IF EXISTS gui.dash_get_facet_func(text);
 CREATE FUNCTION gui.dash_get_facet_func(_property text)
-  RETURNS table (title text, type text, key text, cnt bigint )
+  RETURNS table (title text, type text, key text, cnt bigint, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -883,7 +883,7 @@ WITH query_data as (
             mv.property = _property
         END
     GROUP BY mv.value, mv.type, title
-    ) select * from query_data order by key;
+    ) select qd.title, qd.type, qd.key, qd.cnt, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd order by key;
 END
 $func$
 LANGUAGE 'plpgsql';
