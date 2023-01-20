@@ -678,7 +678,7 @@ LANGUAGE 'plpgsql';
 /* PROPERTIES */
 DROP FUNCTION IF EXISTS gui.dash_properties_func();
 CREATE FUNCTION gui.dash_properties_func()
-  RETURNS table (property text, count bigint )
+  RETURNS table (property text, count bigint, sumcount bigint)
 AS $func$
 DECLARE
 BEGIN
@@ -696,7 +696,7 @@ WITH query_data as (
     from public.metadata_view as mv
     where mv.property is null
     GROUP BY mv.property, mv.type
-) select * from query_data order by property;
+) select qd.property, qd.cnt, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.property;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -704,7 +704,7 @@ LANGUAGE 'plpgsql';
 /* CLASSES */
 DROP FUNCTION IF EXISTS gui.dash_classes_func();
 CREATE FUNCTION gui.dash_classes_func()
-  RETURNS table (class text, count bigint )
+  RETURNS table (class text, count bigint, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -716,7 +716,7 @@ WITH query_data as (
     from public.metadata_view as mv
     where mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
     group by mv.value
-    ) select * from query_data order by class;
+    ) select qd.class, qd.cnt, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.class;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -724,7 +724,7 @@ LANGUAGE 'plpgsql';
 /* CLASSES PROPERTIES */
 DROP FUNCTION IF EXISTS gui.dash_classes_properties_func();
 CREATE FUNCTION gui.dash_classes_properties_func()
-  RETURNS table (class text, property text, cnt_distinct_value bigint, cnt bigint )
+  RETURNS table (class text, property text, cnt_distinct_value bigint, cnt bigint, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -740,7 +740,7 @@ RETURN QUERY
 	) t_class
 	inner join public.metadata_view tp on t_class.id =tp.id
         group by t_class.value, tp.property
-    ) select * from query_data order by class;
+    ) select qd.class, qd.property, qd.cnt_distinct_value, qd.cnt, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.class;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -748,7 +748,7 @@ LANGUAGE 'plpgsql';
 /* TOPCOLLECTIONS */
 DROP FUNCTION IF EXISTS gui.dash_topcollections_func();
 CREATE FUNCTION gui.dash_topcollections_func()
-    RETURNS table (id bigint, title text, count bigint, max_relatives integer, sum_size numeric, binary_size text )
+    RETURNS table (id bigint, title text, count bigint, max_relatives integer, sum_size numeric, binary_size text, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -759,7 +759,7 @@ WITH query_data as (
 	rootids.rootid id,
 	(select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.id = rootids.rootid limit 1) title,
 	count(rel.id) count_items,
-	max(rel.n),
+	max(rel.n) as max_relatives,
 	sum(CAST(m_rawsize.value as bigint) ) sum_size_items,
 	(select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and mv.id = rootids.rootid) bsize
 	from
@@ -782,7 +782,7 @@ WITH query_data as (
 	left join metadata_view m_rawsize on m_rawsize.id = rel.id
 	and m_rawsize.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
 	group by rootids.rootid, title
-	) select * from query_data order by title;
+	) select qd.id, qd.title, qd.count_items, qd.max_relatives, qd.sum_size_items, qd.bsize, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.title;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -790,7 +790,7 @@ LANGUAGE 'plpgsql';
 /* FORMATS */
 DROP FUNCTION IF EXISTS gui.dash_formats_func();
 CREATE FUNCTION gui.dash_formats_func()
-  RETURNS table (format text, count_format bigint, count_rawbinarysize bigint, sum_size numeric )
+  RETURNS table (format text, count_format bigint, count_rawbinarysize bigint, sum_size numeric, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -804,7 +804,7 @@ WITH query_data as (
         where mf.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFormat'
         and ms.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
         group by mf.value
-	) select * from query_data order by format;
+	) select qd.format, qd.cnt_format, qd.cnt_size, qd.sum_size, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.format;
 END
 $func$
 LANGUAGE 'plpgsql';
@@ -812,7 +812,7 @@ LANGUAGE 'plpgsql';
 /* Formats per Collection */
 DROP FUNCTION IF EXISTS gui.dash_formatspercollection_func();
 CREATE FUNCTION gui.dash_formatspercollection_func()
-  RETURNS table (id bigint, title text, format text, format text, count bigint, sum_size numeric )
+  RETURNS table (id bigint, title text, type text, format text, count bigint, sum_size numeric, sumcount bigint )
 AS $func$
 DECLARE
 BEGIN
@@ -848,7 +848,7 @@ WITH query_data as (
         left join metadata_view as m_size on m_size.id = rel.id
         and m_size.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasRawBinarySize'
 	group by rootids.rootid, title, m_format.value, m_type.value
-    ) select * from query_data order by title;
+    ) select qd.id, qd.title, qd.type, qd.format, qd.count, qd.sum_size, (select count(qd2.*) from query_data as qd2) as sumcount from query_data as qd  order by qd.title;
 END
 $func$
 LANGUAGE 'plpgsql';
