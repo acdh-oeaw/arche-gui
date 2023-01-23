@@ -367,3 +367,60 @@ msgstr "Baumansicht"
 
 msgid "Show as List"
 msgstr "Listenansicht"
+
+msgid "Properties table indicates the count of how many times a property has been used across all entities in ARCHE. To see its instances, simply click on the property of interest. Each instance is a link to the ARCHE entry."
+msgstr "Die Tabelle Properties (Eigenschaften) zeigt an, wie oft eine Eigenschaft in allen ARCHE-Entitäten verwendet wurde. Um die Instanzen zu sehen, klicken Sie einfach auf die Eigenschaft, die Sie interessiert. Jede Instanz ist ein Link zum ARCHE-Eintrag."
+
+msgid "Classes table specifies the count of how many times a class has been used across all entities in ARCHE. To see its instances, simply click on the class of interest. Each instance is a link to the ARCHE entry."
+msgstr "Die Tabelle Classes (Klassen) gibt an, wie oft eine Klasse in allen ARCHE-Entitäten verwendet wurde. Um die Instanzen zu sehen, klicken Sie einfach auf die gewünschte Klasse. Jede Instanz ist ein Link zum ARCHE-Eintrag."
+
+msgid "Classes properties table lists the count of each property per class. One may also distinguish between the count of the distinct value and the total count a property has been used within a certain class. To see the instances of the properties, click on the one of interest."
+msgstr "Die Tabelle der Classes properties (Klasseneigenschaften) listet die Anzahl jeder Eigenschaft pro Klasse auf. Man kann zusätzlich zwischen der Anzahl der distinkten Werte sowie der Gesamtzahl, wie oft eine Eigenschaft in einer bestimmten Klasse verwendet wurde, unterscheiden. Um die Instanzen einer Eigenschaft zu sehen, klicken Sie auf die gewünschte Eigenschaft."
+
+msgid "Top collections table lists all main collections deposited to ARCHE and provides information about the number of items of a particular collection and their size (expressed in bytes)."
+msgstr "Die Tabelle Top collections (Hauptsammlungen) listet alle in ARCHE hinterlegten Sammlungen auf und gibt Auskunft über die Anzahl der Elemente einer bestimmten Sammlung und deren Größe (ausgedrückt in Bytes)."
+
+msgid "Formats table lists the count of formats of all resources deposited to ARCHE. The table provides also information on the total size (expressed in bytes) of resources per file format. To see the objects of a particular file format, simply click on it."
+msgstr "Die Tabelle Formats (Formate) listet die Anzahl der Formate aller in ARCHE hinterlegten Ressourcen auf. Die Tabelle gibt auch Auskunft über die Gesamtgröße (ausgedrückt in Bytes) der Ressourcen pro Dateiformat. Um die Objekte eines bestimmten Dateiformats zu sehen, klicken Sie es einfach an."
+
+msgid "Formats per collection provides similarly to the “Formats” table information about the count of file formats of resources and their size (expressed in bytes), but for every main (top) collection separately. Additional information about the type of the object (Top collection/Collection/Resource) is also listed."
+msgstr "Formats per collection (Formate pro Sammlung) liefert ähnlich wie die Tabelle „Formate“ Informationen über die Anzahl der Dateiformate von Ressourcen und deren Größe (ausgedrückt in Bytes), jedoch für jede Hauptsammlung separat. Zusätzliche Informationen über die Art des Objekts (Top collection/Collection/Resource) werden ebenfalls angeführt."
+
+msgid "Dissemination services table lists all dissemination services provided in ARCHE and their count. Each dissemination service link provides more detail about the service itself as well as a list of items for which the particular dissemination service is provided."
+msgstr "Die Tabelle Dissemination Services (Verbreitungsdienste) listet alle in ARCHE bereitgestellten Verbreitungsdienste und die Anzahl, wie oft sie verwendet wurden, auf. Jeder Link führt zu einem Verbreitungsdienst, der nähere Informationen über den Dienst selbst sowie eine Liste jener Objekte enthält, für die der betreffende Verbreitungsdienst bereitgestellt wird."
+
+msgid "Every entity in ARCHE is enriched with metadata that allow for the resources to be discovered and understood and are thus an essential part of complying with the FAIR Data Principles, to make data Findable, Accessible, Interoperable, and Reusable"
+msgstr "Jede Entität in ARCHE ist mit Metadaten angereichert, die es ermöglichen, die Ressourcen zu erkunden und zu verstehen, und die somit einen wesentlichen Bestandteil der FAIR Data Principles darstellen, um Daten auffindbar, zugänglich, interoperabel und wiederverwendbar zu machen"
+
+msgid "(see FAQ)."
+msgstr "(siehe FAQ)."
+
+msgid "The metadata in ARCHE follow the ARCHE schema. The complete ARCHE schema along with the documentation and annotations is available in an"
+msgstr "Die Metadaten in ARCHE folgen dem ARCHE-Schema. Das vollständige ARCHE-Schema einschließlich der Dokumentation und Anmerkungen ist im"
+
+msgid "and is also represented in a tabular form."
+msgstr "sowie als Tabelle verfügbar."
+
+msgid "here"
+msgstr "hier"
+
+msgid "and"
+msgstr "und"
+
+msgid "A tabular overview of properties per Project, Collection and Resource is available also in the"
+msgstr "Eine Übersichtstabelle der Eigenschaften pro Projekt, Sammlung und Ressource ist auch in den"
+
+msgid "Metadata requirements" 
+msgstr "Metadatenanforderungen"
+
+msgid "for depositing in ARCHE."
+msgstr "für die Dateneinreichung in ARCHE enthalten."
+
+msgid "OWL-format"
+msgstr "OWL-Format"
+
+msgid "This dashboard provides basic statistics about metadata used to describe entities in ARCHE and therefore allows for further exploration of data deposited to ARCHE. The dashboard is divided into tables listed below. Each table includes information about the count and size of a specific item (property, class, file format, dissemination service) for all entities deposited in ARCHE or per the main (top) collection (hover over the table name for a more detailed description)."
+msgstr "Dieses Dashboard liefert grundlegende Statistiken über Metadaten, die zur Beschreibung von Entitäten in ARCHE verwendet werden, und ermöglicht somit eine weitere Untersuchung der in ARCHE hinterlegten Daten. Das Dashboard ist in die unten angeführten Tabellen unterteilt. Jede Tabelle enthält Informationen über die Anzahl und Größe eines bestimmten Elements (Eigenschaft, Klasse, Dateiformat, Verbreitungsdienst) für alle in ARCHE hinterlegten Entitäten oder pro Hauptsammlung."
+
+msgid "The following tables are available:"
+msgstr "Folgende Tabellen sind verfügbar:"
