@@ -889,8 +889,8 @@ $func$
 LANGUAGE 'plpgsql';
 
 /** count words by property for topcollection/collection/project **/
-DROP FUNCTION IF EXISTS gui.dash_get_facet_by_property_func(text);
-CREATE FUNCTION gui.dash_get_facet_by_property_func(_property text)
+DROP FUNCTION IF EXISTS gui.dash_get_facet_by_property_func(text,  _types text[]);
+CREATE FUNCTION gui.dash_get_facet_by_property_func(_property text, _types text[] DEFAULT '{}')
   RETURNS table (property text, key text, count bigint, sumcount bigint )
 AS $func$
 DECLARE
@@ -902,7 +902,7 @@ WITH query_data as (
         mv2.value as property, mv.value as key, count(mv.*) as count
     FROM public.metadata_view as mv
 	left join metadata_view as mv2 on mv2.id = mv.id and mv2.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
-	and mv2.value in ('https://vocabs.acdh.oeaw.ac.at/schema#TopCollection', 'https://vocabs.acdh.oeaw.ac.at/schema#Collection', 'https://vocabs.acdh.oeaw.ac.at/schema#Project')
+	and mv2.value = ANY (_types)
     WHERE
         mv.property = _property
         and mv2.value is not null
