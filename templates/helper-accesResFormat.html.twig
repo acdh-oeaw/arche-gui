@@ -1,0 +1,29 @@
+
+{% set break = false %}
+{%  if data  is iterable %}
+    {% for key,value in data if not break %}
+        {%  if key == 'vocabsid' %}
+            {%  if 'public' in value  %}
+                <span class="green-dot" title="public"></span>
+                {% set break = true %}
+            {%  elseif 'academic' in value %}
+                <span class="orange-dot" title="academic"></span>
+                {% set break = true %}
+            {%  elseif 'restricted' in value %}
+                <span class="red-dot" title="restricted"></span>
+                {% set break = true %}
+            {% endif%} 
+        {%  elseif key == 'title' %}
+            {%  if value == 'public' or value == 'öffentlich' %}
+                <span class="green-dot" title="public"></span>
+                {% set break = true %}
+            {%  elseif value == 'academic' or value == 'akademisch' %}
+                <span class="orange-dot" title="academic"></span>
+                {% set break = true %}
+            {%  elseif value == 'restricted' or value == 'eingeschränkt' %}
+                <span class="red-dot" title="restricted"></span>
+                {% set break = true %}
+            {% endif%} 
+        {% endif%} 
+    {% endfor%}
+{% endif%} 

@@ -1,0 +1,67 @@
+{
+    "name": "acdh-oeaw/arche-gui",
+    "description": "Drupal module to ACDH ARCHE repository",
+    "type": "drupal-module",
+    "homepage": "https://github.com/acdh-oeaw/arche-gui",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Norbert Czirjak",
+            "email": "norbert.czirjak@oeaw.ac.at"
+        }
+    ],
+    "require": {
+        "acdh-oeaw/arche-lib": "^4.0.3",
+        "acdh-oeaw/arche-lib-disserv": "^3.0.2",
+        "acdh-oeaw/arche-lib-schema": "^6.0.2",
+        "zozlak/logging": "*",
+        "acdh-oeaw/easyrdf": ">= 0.15.5 <1",
+        "twig/extra-bundle": "*",
+        "phpunit/phpunit": "^9",
+        "phpspec/prophecy-phpunit": "*",
+	"maennchen/zipstream-php" : "^2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9",
+        "drupal/core-dev": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\acdh_repo_gui\\Object\\": "src/Object",
+            "Drupal\\acdh_repo_gui\\Helper\\": "src/Helper",
+            "Drupal\\acdh_repo_gui\\Controller\\": "src/Controller",
+            "Drupal\\acdh_repo_gui\\Model\\": "src/Model",
+            "Drupal\\acdh_repo_gui\\Traits\\": "src/Traits"
+        }
+    },
+    "extra": {
+        "drupal-scaffold": {
+            "file-mapping": {
+                "[web-root]/.htaccess": "inst/htaccess",
+                "[web-root]/sites/default/default.services.yml": "inst/sites/default/default.services.yml",
+                "[web-root]/sites/default/services.yml": "inst/sites/default/services.yml",
+		"[web-root]/sites/default/default.settings.php": "inst/sites/default/default.settings.php",
+                "[web-root]/sites/default/settings.local.php": "inst/sites/default/settings.local.php",
+                "[web-root]/sites/default/settings.php": "inst/sites/default/settings.php",
+                "[web-root]/sites/default/development.services.yml": "inst/sites/default/development.services.yml",
+                "[web-root]/sites/default/files/.htaccess": "inst/sites/default/files/htaccess",
+                "[web-root]/sites/default/files/.ht.sqlite": "inst/sites/default/files/.ht.sqlite",                
+                "[web-root]/sites/default/files/coll_dl_script/collection_download_repo.py": "inst/sites/default/files/coll_dl_script/collection_download_repo.py",
+                "[web-root]/sites/default/files/inline-images/acdh_repo_graphic_0.png": "inst/sites/default/files/inline-images/acdh_repo_graphic_0.png",
+                "[web-root]/sites/default/files/inline-images/acdh_repo_graphic.png": "inst/sites/default/files/inline-images/acdh_repo_graphic.png",
+                "[web-root]/sites/default/files/inline-images/ARCHE-architecture-public_2017-10-10.png": "inst/sites/default/files/inline-images/ARCHE-architecture-public_2017-10-10.png",
+                "[web-root]/sites/default/files/inline-images/ARCHE-storage_2017-10-07.png": "inst/sites/default/files/inline-images/ARCHE-storage_2017-10-07.png",
+                "[web-root]/sites/default/files/inline-images/dep-bg1.jpg": "inst/sites/default/files/inline-images/dep-bg1.jpg",
+                "[web-root]/sites/default/files/inline-images/dep-bg2.jpg": "inst/sites/default/files/inline-images/dep-bg2.jpg",
+                "[web-root]/sites/default/files/inline-images/dep-bg3.jpg": "inst/sites/default/files/inline-images/dep-bg3.jpg",
+                "[web-root]/sites/default/files/inline-images/tunbg.png": "inst/sites/default/files/inline-images/tunbg.png",
+                "[web-root]/sites/default/files/inline-images/wiebg.png": "inst/sites/default/files/inline-images/wiebg.png",
+                "[web-root]/sites/default/files/inline-images/CoreTrustSeal-Logo.jpg": "inst/sites/default/files/inline-images/CoreTrustSeal-Logo.jpg",
+                "[web-root]/sites/default/files/inline-images/Clarin-Logo.png": "inst/sites/default/files/inline-images/Clarin-Logo.png"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": true
+    }
+}

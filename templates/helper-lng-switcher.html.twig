@@ -1,0 +1,29 @@
+{% if language == 'en' %}
+    {% set enActive = true %}
+{% elseif language == 'de' %}
+    {% set deActive = true %}
+{% endif %}    
+<div>
+    <ul class="nav navbar-nav nav-lang">
+        <li class="lng-switcher">
+            <a href="" class="language-switcher-language-session-oeaw" data-lang="en">
+                {% if language == 'en' %}
+                    <span class="navbar-icons-text" style='color:#88DBDF !important'>EN</span>
+                {% else %}
+                    <span class="navbar-icons-text">EN</span>
+                {% endif %}                   
+                
+            </a> &nbsp;
+        </li>
+        <li class="lng-switcher">
+            <a href="" class="language-switcher-language-session-oeaw" data-lang="de">
+                {% if language == 'de' %}
+                    <span class="navbar-icons-text" style='color:#88DBDF !important'>DE</span>
+                {% else %}
+                    <span class="navbar-icons-text">DE</span>
+                {% endif %}                   
+                
+            </a>
+        </li>
+    </ul>
+</div>

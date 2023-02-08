@@ -1,0 +1,78 @@
+<!--  ARCHE HOME PAGE LEFT LIST BOX TEMPLATE -->
+    {% for item in result %}
+        
+        <div class="res-el col-block col-lg-12">
+            {% set titleimage = item.getTitleImage('150px') %}        
+            {% if titleimage %}<div class="res-inside-wrap col-lg-8 ">{% endif%}
+   
+            {% if item.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title">
+                        {%  if item.getAccessRestriction()  %}
+                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                        {% endif%}
+                            <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
+                    </span>
+                </div>
+            {% endif%}    
+
+            <div class="res-property">
+                <i class="material-icons">&#xE54E;</i>
+                {{ "Type"|trans }}: 
+                <span class="res-rdfType"><a href="{{ url('<front>') }}search/type=acdh:TopCollection&payload=false/titleasc/10/1">{{ "acdh:TopCollection"|trans }} </a></span>
+            </div>
+            
+            {% if item.getData('acdh:hasAvailableDate') %}
+                {{ item.getPropTitle('acdh:hasAvailableDate') }}
+                <div class="res-property">
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'type': 'date', 'dateformat': "d MMM y", 'label': "Available Date"  } ) }}
+                </div>
+            {% endif%}
+
+            
+            
+            
+            
+            {% if titleimage %}</div>{% endif%}
+
+            {% if titleimage %}	
+                <div class="res-inside-wrap col-lg-4 ">	
+                    <div class="single-res-thumb main-left-section">
+                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                            {{ titleimage|raw }}
+                        </a>
+                    </div>
+                </div>
+            {% endif%}   
+            	
+            <div class="res-inside-wrap col-lg-12">
+                <div class="res-actions">
+
+                   {% if item.getData('acdh:hasDescription') %}
+                       <div class="res-act-button res-act-button-summary closed">
+                            <i class="material-icons">&#xE145;</i>
+                            <span class="show_summary" id="show_summary_{{  item.getRepoId() }}">{{ "Show Summary"|trans }}</span>
+                            <span class="hide_summary" id="summary_{{  item.getRepoId() }}">{{ "Hide Summary"|trans }}</span>
+                       </div>
+                   {% endif%}
+
+                   <div class="res-act-button">
+                       <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                           <i class="material-icons">&#xE873;</i>
+                           <span>{{ "Detailed View"|trans }}</span>
+                       </a>	
+                   </div>
+
+               </div>
+
+                {% if item.getData('acdh:hasDescription') %}
+                    <div class="res-property res-property-desc" id="res-property-desc-{{  item.getRepoId() }}">
+                        <span class="res-description">
+                             {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
+                        </span>
+                    </div>
+                {% endif%}        
+            </div>
+        </div>
+    {% endfor %} 
+

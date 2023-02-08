@@ -1,0 +1,426 @@
+# LANGUAGE translation of PROJECT
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2020-06-02 14:19+0200\n"
+"PO-Revision-Date: 2020-06-02 14:41+0200\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: \n"
+"Language: de\n"
+
+msgid "Collections"
+msgstr "Sammlungen"
+
+msgid "with"
+msgstr "mit"
+
+msgid "Copy Resource Link"
+msgstr "Ressourcenlink kopieren"
+
+msgid "Switch to Expert-View"
+msgstr "Zur Expertenansicht wechseln"
+
+msgid "Refine your search using filters"
+msgstr "Suchergebnisse filtern"
+
+msgid "Switch to Basic-View"
+msgstr "Zur Basisansicht wechseln"
+
+msgid "Switch to Tree-View"
+msgstr "Zur Baumansicht wechseln"
+
+msgid "Apply the selected search filters"
+msgstr "Anwendung der gewählten Suchfilter"
+
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgid "Latest Additions"
+msgstr "Neueste Ergänzungen"
+
+msgid "See All Resources"
+msgstr "Siehe alle Ressourcen"
+
+msgid "Discover resources"
+msgstr "Ressourcen entdecken"
+
+msgid "Alternative Title"
+msgstr "Alternativer Titel"
+
+msgid "Identifier(s)" 
+msgstr "Identifikator(en)"
+
+msgid "Author(s)" 
+msgstr "Autor(en)"
+
+msgid "Creator(s)" 
+msgstr "Urheber"
+
+msgid "Contributor(s)" 
+msgstr "Beitragende(r)"
+
+msgid "Contact(s)" 
+msgstr "Kontakt(e)"
+
+msgid "Curator(s)" 
+msgstr "Datenkurator(en)"
+
+msgid "Licensor" 
+msgstr "Lizenzgeber"
+
+msgid "Funder" 
+msgstr "Fördergeber"
+
+msgid "Principal Investigator(s)" 
+msgstr "Primärforscher"
+
+msgid "Principal Investigator" 
+msgstr "Primärforscher"
+
+msgid "Number of Items" 
+msgstr "Anzahl der Elemente"
+
+msgid "Publisher" 
+msgstr "Verlag"
+
+msgid "Series information" 
+msgstr "Reihe"
+
+msgid "Page(s)" 
+msgstr "Seite(n)"
+
+msgid "Note" 
+msgstr "Anmerkung"
+
+msgid "Part of" 
+msgstr "Teil von"
+
+msgid "Member Of" 
+msgstr "Mitglied von"
+
+msgid "Related Discipline(s)" 
+msgstr "Fachdisziplin(en)"
+
+msgid "Subject(s)" 
+msgstr "Betreff"
+
+msgid "Spatial Coverage" 
+msgstr "Geografische Abdeckung"
+
+msgid "Coverage Start Date" 
+msgstr "Zeitliche Abdeckung Beginn"
+
+msgid "Coverage End Date" 
+msgstr "Zeitliche Abdeckung Ende"
+
+msgid "Contact Details" 
+msgstr "Kontakt Details"
+
+msgid "Publisher(s)" 
+msgstr "Verlag(e)"
+
+msgid "Spatial information" 
+msgstr "Geografische Informationen"
+
+msgid "Temporal Coverage" 
+msgstr "Zeitliche Abdeckung"
+
+msgid "Created Start Date" 
+msgstr "Erstellungsdatum Beginn"
+
+msgid "Created End Date"" 
+msgstr "Erstellungsdatum Ende"
+
+msgid "Cite Resource" 
+msgstr "Ressource zitieren"
+
+msgid "Result(s)" 
+msgstr "Ergebnis(se)"
+
+msgid "Life Cycle Status" 
+msgstr "Lebenszyklusstatus"
+
+msgid "End Date" 
+msgstr "Enddatum"
+
+msgid "Member(s)" 
+msgstr "Mitglied(er)"
+
+msgid "Further Information" 
+msgstr "Weitere Informationen"
+
+msgid "Inverse Data" 
+msgstr "Inverse Daten"
+
+msgid "Get Member(s)" 
+msgstr "Mitglied(er) anzeigen"
+
+msgid "Show More" 
+msgstr "Mehr anzeigen"
+
+msgid "Show Inverse Table" 
+msgstr "Inverse Tabelle anzeigen"
+
+msgid "Download Collection" 
+msgstr "Sammlung herunterladen"
+
+msgid "Download Collection Script" 
+msgstr "Skript Sammlung herunterladen"
+
+msgid "View Larger Map" 
+msgstr "Größere Karte zeigen"
+
+msgid "XML Insights" 
+msgstr "XML Einblick"
+
+msgid "Related collection(s)" 
+msgstr "Zugehörige Sammlung(en)"
+
+msgid "Hide View" 
+msgstr "Ansicht ausblenden"
+
+msgid "Hide Summary" 
+msgstr "Zusammenfassung ausblenden"
+
+msgid "Related Publications and Resources" 
+msgstr "Zugehörige Publikationen und Ressourcen"
+
+msgid "Switch to List-View" 
+msgstr "Zur Listenansicht wechseln"
+
+msgid "Child Resource(s)" 
+msgstr "Untergeordnete Sammlung(en)"
+
+msgid "Related Collection(s)" 
+msgstr "Zugehörige Sammlung(en)"
+
+msgid "Related Publication(s) and Resource(s)" 
+msgstr "Zugehörige Publikation(en) und Ressource(n)"
+
+msgid "Spatial Information" 
+msgstr "Geografische Informationen"
+
+msgid "Created End Date" 
+msgstr "Erstellungsdatum Ende"
+
+msgid "Member of" 
+msgstr "Mitglied von"
+
+msgid "Start Date" 
+msgstr "Startdatum"
+
+msgid "Discover Resources"
+msgstr "Ressourcen entdecken"
+
+msgid "Deposit Resources"
+msgstr "Ressourcen enreichen"
+
+msgid "Deposition Process"
+msgstr "Einreichungsprozess"
+
+msgid "Personal Title"
+msgstr "Beruflicher Titel"
+
+msgid "Spatial Coverage in"
+msgstr "Geografische Abdeckung in"
+
+msgid "Related Resource(s)"
+msgstr "Zugehörige Ressource(n)"
+
+msgid "Show Data"
+msgstr "Daten anzeigen"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Previous"
+msgstr "Vorherige"
+
+msgid "Next"
+msgstr "Nächste"
+
+msgid "Contributed to"
+msgstr "Beigetragen zu"
+
+msgid "Involved in"
+msgstr "Involviert in"
+
+msgid "Longitude"
+msgstr "Längengrad"
+
+msgid "Latitude"
+msgstr "Breitengrad"
+
+msgid "Searched for type"
+msgstr " Gesucht nach Typ"
+
+msgid "containing"
+msgstr "enthält"
+
+msgid "Back to the resource"
+msgstr "Zurück zur Ressource"
+
+msgid "License"
+msgstr "Lizenz"
+
+msgid "Number of files"
+msgstr "Anzahl der Dateien"
+
+msgid "Summary Size"
+msgstr "Gesamtgröße"
+
+msgid "By downloading you agree to the"
+msgstr "Mit dem Download erklären Sie sich mit den"
+
+msgid "Terms of Use"
+msgstr "Nutzungsbedingungen"
+
+msgid "which includes compliance with the licenses accompanying every Resource and adhering to the"
+msgstr "einverstanden, einschließlich der Einhaltung der Lizenzen, die jeder Ressource beiliegen, und der Einhaltung des"
+
+msgid "European Code of Conduct for Research Integrity"
+msgstr "Europäischen Verhaltenskodex für die Integrität der Forschung"
+
+msgid "How to Download"
+msgstr "Download-Vorgang"
+
+msgid "For a single file just click on the according file name."
+msgstr "Für eine einzelne Datei klicken Sie einfach auf den entsprechenden Dateinamen."
+
+msgid "For more files or the whole collection click on the corresponding checkboxes in the tree view (click on the triangle to expand it)."
+msgstr "Für weitere Dateien oder die gesamte Sammlung klicken Sie auf die entsprechenden Kontrollkästchen in der Baumansicht (klicken Sie auf das Dreieck, um es zu erweitern)."
+
+msgid "Use the search box to find specific resources by their title."
+msgstr "Verwenden Sie das Suchfeld, um bestimmte Ressourcen anhand ihres Titels zu finden."
+
+msgid "Resources marked in red require appropriate access rights and might not be available to you despite being logged in."
+msgstr "Rot markierte Ressourcen erfordern entsprechende Zugriffsrechte und stehen Ihnen möglicherweise nicht zur Verfügung, obwohl Sie angemeldet sind."
+
+msgid "After selecting the resources please press 'Prepare Collection for Download'. Depending on the collection size this may take a while. You will then be presented with a new button 'Download Collection as .tar', with which the actual download can be started."
+msgstr "Nachdem Sie die Ressourcen ausgewählt haben, klicken Sie bitte auf 'Sammlung für den Download vorbereiten'. Abhängig von der Größe der Sammlung kann dies eine Weile dauern. Daraufhin wird eine neue Schaltfläche 'Sammlung als .tar herunterladen' angezeigt, mit der der eigentliche Download-Vorgang gestartet werden kann."
+
+msgid "Sel. files size"
+msgstr "Größe der ausgew. Dateien"
+
+msgid "Prepare Collection for Download"
+msgstr "Sammlung für den Download vorbereiten"
+
+msgid "You do not have enough rights to download the whole collection! Please try to login with the button below"
+msgstr "Sie haben nicht genügend Rechte, um die gesamte Sammlung herunterzuladen! Bitte versuchen Sie, sich mit der Schaltfläche unten anzumelden"
+
+msgid "Login to download/reach the restricted content"
+msgstr "Login für den Download/Zugriff auf eingeschränkte Inhalte"
+
+msgid "The selected files are ready for downloading"
+msgstr "Die ausgewählten Dateien stehen für den Download bereit"
+
+msgid "You can select max. 4000 files!"
+msgstr "Sie können max. 4000 Dateien auswählen!"
+
+msgid "Max. tar download limit is"
+msgstr "Max. tar Download-Limit ist"
+
+msgid "File(s)"
+msgstr "Datei(en)"
+
+msgid "Login error!"
+msgstr "Anmeldefehler!"
+
+msgid "Login error"
+msgstr "Anmeldefehler"
+
+msgid "Please re-enter your login credentials"
+msgstr "Bitte geben Sie Ihre Anmeldedaten erneut ein"
+
+msgid "Searched for type"
+msgstr "Gesucht nach Typ"
+
+msgid "type"
+msgstr "Typ"
+
+msgid "Searched for"
+msgstr "Gesucht nach"
+
+msgid "containing"
+msgstr "enthält"
+
+msgid "ACDH-CH runs a helpdesk offering advice for questions related to various digital humanities topics."
+msgstr "Das ACDH-CH bietet über das Helpdesk-Service Beratung bei Fragen zu Digital Humanities-bezogenen Themen an."
+
+msgid "ASK US!"
+msgstr "KONTAKT"
+
+msgid "Austrian Academy of Sciences"
+msgstr "Österreichische Akademie der Wissenschaften"
+
+msgid "Vienna"
+msgstr "Wien"
+
+msgid "Search results are limited to 10 000. Please use filters to refine your search."
+msgstr "Suchergebnisse sind auf 10 000 begrenzt. Bitte verwenden Sie Filter, um die Suche zu präzisieren."
+
+msgid "Show as Tree"
+msgstr "Baumansicht"
+
+msgid "Show as List"
+msgstr "Listenansicht"
+
+msgid "Properties table indicates the count of how many times a property has been used across all entities in ARCHE. To see its instances, simply click on the property of interest. Each instance is a link to the ARCHE entry."
+msgstr "Die Tabelle Properties (Eigenschaften) zeigt an, wie oft eine Eigenschaft in allen ARCHE-Entitäten verwendet wurde. Um die Instanzen zu sehen, klicken Sie einfach auf die Eigenschaft, die Sie interessiert. Jede Instanz ist ein Link zum ARCHE-Eintrag."
+
+msgid "Classes table specifies the count of how many times a class has been used across all entities in ARCHE. To see its instances, simply click on the class of interest. Each instance is a link to the ARCHE entry."
+msgstr "Die Tabelle Classes (Klassen) gibt an, wie oft eine Klasse in allen ARCHE-Entitäten verwendet wurde. Um die Instanzen zu sehen, klicken Sie einfach auf die gewünschte Klasse. Jede Instanz ist ein Link zum ARCHE-Eintrag."
+
+msgid "Classes properties table lists the count of each property per class. One may also distinguish between the count of the distinct value and the total count a property has been used within a certain class. To see the instances of the properties, click on the one of interest."
+msgstr "Die Tabelle der Classes properties (Klasseneigenschaften) listet die Anzahl jeder Eigenschaft pro Klasse auf. Man kann zusätzlich zwischen der Anzahl der distinkten Werte sowie der Gesamtzahl, wie oft eine Eigenschaft in einer bestimmten Klasse verwendet wurde, unterscheiden. Um die Instanzen einer Eigenschaft zu sehen, klicken Sie auf die gewünschte Eigenschaft."
+
+msgid "Top collections table lists all main collections deposited to ARCHE and provides information about the number of items of a particular collection and their size (expressed in bytes)."
+msgstr "Die Tabelle Top collections (Hauptsammlungen) listet alle in ARCHE hinterlegten Sammlungen auf und gibt Auskunft über die Anzahl der Elemente einer bestimmten Sammlung und deren Größe (ausgedrückt in Bytes)."
+
+msgid "Formats table lists the count of formats of all resources deposited to ARCHE. The table provides also information on the total size (expressed in bytes) of resources per file format. To see the objects of a particular file format, simply click on it."
+msgstr "Die Tabelle Formats (Formate) listet die Anzahl der Formate aller in ARCHE hinterlegten Ressourcen auf. Die Tabelle gibt auch Auskunft über die Gesamtgröße (ausgedrückt in Bytes) der Ressourcen pro Dateiformat. Um die Objekte eines bestimmten Dateiformats zu sehen, klicken Sie es einfach an."
+
+msgid "Formats per collection provides similarly to the “Formats” table information about the count of file formats of resources and their size (expressed in bytes), but for every main (top) collection separately. Additional information about the type of the object (Top collection/Collection/Resource) is also listed."
+msgstr "Formats per collection (Formate pro Sammlung) liefert ähnlich wie die Tabelle „Formate“ Informationen über die Anzahl der Dateiformate von Ressourcen und deren Größe (ausgedrückt in Bytes), jedoch für jede Hauptsammlung separat. Zusätzliche Informationen über die Art des Objekts (Top collection/Collection/Resource) werden ebenfalls angeführt."
+
+msgid "Dissemination services table lists all dissemination services provided in ARCHE and their count. Each dissemination service link provides more detail about the service itself as well as a list of items for which the particular dissemination service is provided."
+msgstr "Die Tabelle Dissemination Services (Verbreitungsdienste) listet alle in ARCHE bereitgestellten Verbreitungsdienste und die Anzahl, wie oft sie verwendet wurden, auf. Jeder Link führt zu einem Verbreitungsdienst, der nähere Informationen über den Dienst selbst sowie eine Liste jener Objekte enthält, für die der betreffende Verbreitungsdienst bereitgestellt wird."
+
+msgid "Every entity in ARCHE is enriched with metadata that allow for the resources to be discovered and understood and are thus an essential part of complying with the FAIR Data Principles, to make data Findable, Accessible, Interoperable, and Reusable"
+msgstr "Jede Entität in ARCHE ist mit Metadaten angereichert, die es ermöglichen, die Ressourcen zu erkunden und zu verstehen, und die somit einen wesentlichen Bestandteil der FAIR Data Principles darstellen, um Daten auffindbar, zugänglich, interoperabel und wiederverwendbar zu machen"
+
+msgid "(see FAQ)."
+msgstr "(siehe FAQ)."
+
+msgid "The metadata in ARCHE follow the ARCHE schema. The complete ARCHE schema along with the documentation and annotations is available in an"
+msgstr "Die Metadaten in ARCHE folgen dem ARCHE-Schema. Das vollständige ARCHE-Schema einschließlich der Dokumentation und Anmerkungen ist im"
+
+msgid "and is also represented in a tabular form."
+msgstr "sowie als Tabelle verfügbar."
+
+msgid "here"
+msgstr "hier"
+
+msgid "and"
+msgstr "und"
+
+msgid "A tabular overview of properties per Project, Collection and Resource is available also in the"
+msgstr "Eine Übersichtstabelle der Eigenschaften pro Projekt, Sammlung und Ressource ist auch in den"
+
+msgid "Metadata requirements" 
+msgstr "Metadatenanforderungen"
+
+msgid "for depositing in ARCHE."
+msgstr "für die Dateneinreichung in ARCHE enthalten."
+
+msgid "OWL-format"
+msgstr "OWL-Format"
+
+msgid "This dashboard provides basic statistics about metadata used to describe entities in ARCHE and therefore allows for further exploration of data deposited to ARCHE. The dashboard is divided into tables listed below. Each table includes information about the count and size of a specific item (property, class, file format, dissemination service) for all entities deposited in ARCHE or per the main (top) collection (hover over the table name for a more detailed description)."
+msgstr "Dieses Dashboard liefert grundlegende Statistiken über Metadaten, die zur Beschreibung von Entitäten in ARCHE verwendet werden, und ermöglicht somit eine weitere Untersuchung der in ARCHE hinterlegten Daten. Das Dashboard ist in die unten angeführten Tabellen unterteilt. Jede Tabelle enthält Informationen über die Anzahl und Größe eines bestimmten Elements (Eigenschaft, Klasse, Dateiformat, Verbreitungsdienst) für alle in ARCHE hinterlegten Entitäten oder pro Hauptsammlung."
+
+msgid "The following tables are available:"
+msgstr "Folgende Tabellen sind verfügbar:"

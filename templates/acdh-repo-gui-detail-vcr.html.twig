@@ -1,0 +1,10 @@
+<div class="res-act-button">
+    <a href="#" id="getClarinVCR" data-vcrdata="{{ data }}" >{{ "Add to CLARIN Virtual Collection"|trans }}</a>
+    <div id="vcr-div">
+        <form action="{{ url }}" method="POST" target="_blank">
+            <input type="hidden" name="name" value="ArcheCollection"/>
+            <input type="hidden" name="resourceUri" value="{{ data }}"/>
+        </form>
+    </div>
+</div>
+

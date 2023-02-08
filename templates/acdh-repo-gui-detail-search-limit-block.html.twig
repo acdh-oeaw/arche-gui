@@ -1,0 +1,8 @@
+<!--  ARCHE DETAIL VIEW SEARCH LIMIT BLOCK TEMPLATE -->
+{% if data > 9999 %}   
+    <div class="col-block col-lg-12">
+        <div class="search-result-warning">
+            <i class="material-icons" style="font-size:14px !important" >search</i>&nbsp;{{ "Search results are limited to 10 000. Please use filters to refine your search."|trans }} 
+        </div>
+    </div>
+{% endif %} 

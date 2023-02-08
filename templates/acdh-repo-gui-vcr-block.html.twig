@@ -1,0 +1,14 @@
+<!--  ARCHE VCR BLOCK TEMPLATE -->
+<div id="vcr-submit-form">
+    <fieldset class="checkbox-custom actions-on-results fieldgroup js-form-item form-item js-form-wrapper form-wrapper">
+        <legend><span class="fieldset-legend">{{ "Actions on result(s)"|trans }}</span></legend>
+        <div class="fieldset-wrapper">
+            <input type="hidden" id="search-clarinurl" name="search-clarinurl" value="{{ vcrUrl }}"/>
+            <div  id="submit-search-vcr" class="res-act-button res-btn-submit-vcr"><span>{{ "Add to CLARIN Virtual Collection"|trans }}</span></div>
+            <div id="vcr-search-form"></div>
+            <div id="vcr-search-result"><span class="res-title" id="vcr-search-result-text"></span></div>
+            <div id="vcr-data-loading" style="display:none"><span class="res-title">{{ "VCR Data Loading..."|trans }}</span></div>
+        </div>
+    </fieldset>
+</div>    
+

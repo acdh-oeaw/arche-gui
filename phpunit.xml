@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap = "vendor/autoload.php"
+         backupGlobals               = "false"
+         backupStaticAttributes      = "false"
+         colors                      = "true"
+         convertErrorsToExceptions   = "true"
+         convertNoticesToExceptions  = "true"
+         convertWarningsToExceptions = "true"
+         processIsolation            = "false"
+         stopOnFailure               = "false"
+>
+    
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <ini name="xdebug.mode" value="coverage" />
+        <env name="XDEBUG_MODE" value="coverage" />
+    </php>
+    
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory>src/tests/src/Unit/</directory>
+        </testsuite>
+    </testsuites>
+
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src/Helper</directory>
+            <directory suffix=".php">src/Model</directory>
+            <directory suffix=".php">src/Object</directory>
+            
+        </include>
+        <exclude>
+            <directory>src/tests/*</directory>
+            <directory>src/Controller/*</directory>
+            <directory>src/EventSubscriber/*</directory>
+            <directory>src/Form/*</directory>
+            <directory>src/PathProcessor/*</directory>
+            <directory>src/Plugin/*</directory>
+            <directory>src/TwigExtension/*</directory>
+        </exclude>
+        <report>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
+    </coverage>
+    
+
+</phpunit>

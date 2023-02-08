@@ -1,0 +1,102 @@
+rest:
+    urlBase: http://127.0.0.1
+    pathBase: /api/
+    verifyCert: false
+    headers:
+        metadataReadMode: X-METADATA-READ-MODE
+        metadataParentProperty: X-PARENT-PROPERTY
+        metadataWriteMode: X-METADATA-WRITE-MODE
+        transactionId: X-TRANSACTION-ID
+    handlers:
+        methods:
+            get: []
+            create:
+                - type: function
+                  function: \acdhOeaw\acdhRepo\handler\MetadataManager::manage
+            delete: []
+            updateBinary: []
+            updateMetadata:
+                - type: function
+                  function: \acdhOeaw\acdhRepo\handler\MetadataManager::manage
+            txBegin: []
+            txCommit: []
+            txRollback: []
+metadataManagment:
+    nonRelationProperties:
+        - https://vocabs.acdh.oeaw.ac.at/schema#hasPid
+    autoAddIds:
+        denyNamespaces: []
+metadataManager:
+    fixed: []
+    default: []
+    forbidden: []
+    copying:
+        https://vocabs.acdh.oeaw.ac.at/schema#hasPid: https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier
+schema:
+    id: https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier
+    parent: https://vocabs.acdh.oeaw.ac.at/schema#isPartOf
+    label: https://vocabs.acdh.oeaw.ac.at/schema#hasTitle
+    delete: delete://delete
+    searchMatch: search://match
+    searchFts: search://fts
+    binarySize: https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize
+    fileName: http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#filename
+    mime: https://vocabs.acdh.oeaw.ac.at/schema#hasFormat
+    hash: http://www.loc.gov/premis/rdf/v1#hasMessageDigest
+    modificationDate: http://fedora.info/definitions/v4/repository#lastModified
+    modificationUser: http://fedora.info/definitions/v4/repository#lastModifiedBy
+    binaryModificationDate: http://binModDate
+    binaryModificationUser: http://binModUser
+    creationDate: http://fedora.info/definitions/v4/repository#created
+    creationUser: http://fedora.info/definitions/v4/repository#createdBy
+    namespaces:
+        ontology: https://vocabs.acdh.oeaw.ac.at/schema#
+        id: https://id.acdh.oeaw.ac.at/
+        vid: https://id.acdh.oeaw.ac.at/vid/
+        ebucore: http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#
+        fedora: http://fedora.info/definitions/v4/repository#
+        premis: http://www.loc.gov/premis/rdf/v1#
+        rdfs: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+    dissService:
+        class: https://vocabs.acdh.oeaw.ac.at/schema#DisseminationService
+        location: https://vocabs.acdh.oeaw.ac.at/schema#serviceLocation
+        returnFormat: https://vocabs.acdh.oeaw.ac.at/schema#hasReturnType
+        matchProperty: https://vocabs.acdh.oeaw.ac.at/schema#matchesProp
+        matchValue: https://vocabs.acdh.oeaw.ac.at/schema#matchesValue
+        matchRequired: https://vocabs.acdh.oeaw.ac.at/schema#isRequired
+        revProxy: https://vocabs.acdh.oeaw.ac.at/schema#serviceRevProxy
+        parameterClass: https://vocabs.acdh.oeaw.ac.at/schema#DisseminationServiceParameter
+        parameterDefaultValue: https://vocabs.acdh.oeaw.ac.at/schema#hasDefaultValue
+        parameterRdfProperty: https://vocabs.acdh.oeaw.ac.at/schema#usesRdfProperty
+        hasService: https://vocabs.acdh.oeaw.ac.at/schema#hasDissService
+    versioning:
+        isNewOf: https://vocabs.acdh.oeaw.ac.at/schema#isNewVersionOf
+        isPrevOf: https://vocabs.acdh.oeaw.ac.at/schema#isPreviousVersionOf
+    ingest:
+        location: https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath
+        containerToUriPrefix: acdhContainer://
+        defaultBinaryClass: https://vocabs.acdh.oeaw.ac.at/schema#Resource
+        defaultCollectionClass: https://vocabs.acdh.oeaw.ac.at/schema#Collection
+    drupal:
+        vocabsNamespace: https://vocabs.acdh.oeaw.ac.at/schema#
+        uuidNamespace: https://id.acdh.oeaw.ac.at/uuid/
+        idNamespace: https://id.acdh.oeaw.ac.at/
+        epicResolver: http://hdl.handle.net/
+        geonamesUrl: https://www.geonames.org/
+        dnbUrl: http://d-nb.info/
+        viafUrl: http://viaf.org/
+        orcidUrl: https://orcid.org/
+        pelagiosUrl: https://pleiades.stoa.org/
+        gazetteerUrl: https://gazetteer.dainst.org/
+        doiUrl: https://doi.org/
+    dbConnStr:
+        # guest connection should be read-only
+        guest: 'pgsql: host=postgresql user=guest dbname=www-data '
+    uriNorm: []
+# client authorization config
+auth:
+    httpHeader:
+        Eppn: admin
+    httpBasic:
+        user: ''
+        passsword: ''

@@ -1,0 +1,8 @@
+{% if result is not null or result is not empty %}
+<div class="col-lg-12">
+    <div class="version-warning">
+        <i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;       
+        {{  "A"|trans}} <a href="/browser/oeaw_detail/{{ result }}">{{  "newer version"|trans }}</a> {{  "of this resource is available."|trans }}
+    </div>
+</div>
+{% endif %}

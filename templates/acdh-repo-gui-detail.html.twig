@@ -1,0 +1,168 @@
+<div class="row arche_detail_view_main" >
+    <div class="res-el res-info col-block col-lg-12 ">
+        <link rel="stylesheet" type="text/css" href="/browser/core/themes/classy/css/components/messages.css">
+
+        <!--   MAIN DETAIL VIEW -->
+        <input type="hidden" id="insideUri" name="insideUri" value="{{ basic.getRepoId() }}">
+        <input type="hidden" id="apiUrl" name="apiUrl" value="{{ basic.getRepoUrl() }}">
+        <input type="hidden" id="basic_auth" name="basic_auth" value="{{ extras['basic_auth'] }}">
+
+        <!--  set up the numberofitems value for the resource, we will use it to handle the child tree view display -->
+        {% if basic.getData('acdh:hasNumberOfItems')[0].value %}
+            <input type="hidden" id="numberOfItems" name="numberOfItems" value="{{ basic.getData('acdh:hasNumberOfItems')[0].value }}">
+        {% endif %}
+
+        <div class="loader-div">
+            <div class="loader-bg">
+                <div class="loader"></div>
+            </div>
+        </div>
+
+        {% if extra.breadcrumb %}
+            <div class="row mt-3">
+                <div class="col-lg-12">
+                    {{ extra.breadcrumb.getBreadCrumb()|raw }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                <h3 class="single-res-heading">
+                    {{ "Overview"|trans }}
+                    <div class="res-act-button res-act-button-expertview basic">
+                        <i class="material-icons">&#xE896;</i>
+                        <span>{{ "Switch to Expert-View"|trans }}</span>
+                    </div>
+                    {% if basic.getRepoGuiUrl() %}
+                        <div class="res-act-button res-act-button-copy-url" id="res-act-button-copy-url" data-copyuri="{{ basic.getRepoGuiUrl() }}">
+                            <span id="copy-url-button">
+                                <i class="material-icons">&#xE157;</i>
+                                {{ "Copy Resource Link"|trans }}
+                            </span>
+                            <span id="copyLinkTextfield-wrapper">
+                                <span type="text" name="copyLinkInputBtn" id="copyLinkInputBtn" data-copyuri="{{ basic.getCopyResourceLink()}}">
+                                    <i class="material-icons">&#xE14D;</i>
+                                </span>
+                                <input type="text" name="copyLinkTextfield" id="copyLinkTextfield" value="{{ basic.getCopyResourceLink() }}"/>
+                            </span>
+                        </div>
+                    {% endif %}
+                </h3> 
+            </div>
+        </div>
+
+        <!-- VERSIONS DIV -->       
+        <div class="row versions-detail-block"></div>
+       
+        <div class="row">
+            <div class="col-lg-12">       
+                <!-- get the views based on the type -->
+                <div class="single-res-overview single-res-overview-basic">
+                    {% if basic.getAcdhType()|lower == 'person'  %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'result': basic } ) }}
+                    {% elseif basic.getAcdhType()|lower == 'project' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-project.html.twig', {'result': basic  } ) }}
+                    {% elseif basic.getAcdhType()|lower == 'organisation' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'result': basic  } ) }}
+                    {% elseif basic.getAcdhType()|lower == 'place' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-place.html.twig', {'result': basic } ) }}
+                    {% elseif basic.getAcdhType()|lower == 'publication' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'result': basic } ) }} 
+                    {% elseif basic.getSkosType()|lower == 'concept' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'result': basic } ) }}      
+                    {% elseif basic.getSkosType()|lower == 'conceptscheme' %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-conceptscheme.html.twig', {'result': basic } ) }}          
+                    {% else  %}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'result': basic } ) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+                
+        <!-- EXPERT VIEW BLOCK -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="expert-view-div">
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-expert-view.html.twig', {'result': basic, 'extra': extra.tooltip } ) }}
+                </div>
+            </div>
+        </div>          
+
+        <!-- DISSEMINATION BLOCK -->
+        {% if dissemination %}
+            <div class="row mt-4">
+                <div class="col-lg-12">   
+                    <div id="dissemination-view-div">
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-dissemination-block.html.twig', 
+                            {'result': dissemination, 'acdhType':  basic.getAcdhType(), 'repoid': basic.getRepoId(), 
+                                'accessRestriction': basic.getAccessRestriction(), 'isPDF': basic.isPDF(), 'isAudio': basic.isAudio(), 'clarinVCRUrl': extra.clarinVCRUrl  } 
+                        ) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row mt-4">
+            <div class="col-lg-12">   
+                <!-- SUMMARY BLOCK -->
+                <div id="summary-view-div">
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-summary-block.html.twig', {'basic': basic } ) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATED PUBLICATIONS AND RESOURCES BLOCK -->
+        {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or basic.getAcdhType()|lower == 'project' or basic.getAcdhType()|lower == 'publication' %}
+            <!-- Related Publication(s) and Resource(s) VIEW -->
+            <div class="row mt-4">
+                <div class="col-lg-12"> 
+                    <div id="rel-public-div">
+                        {{ extra.relPubResData.getContent()|raw }}
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-related-pub-res-view.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        {% endif%}
+
+        <!-- CITE BLOCK -->
+        {% if basic.getAcdhType()|lower == 'topcollection' or basic.getAcdhType()|lower == 'collection' or  basic.getAcdhType()|lower == 'resource' or  basic.getAcdhType()|lower == 'metadata'
+         or  basic.getAcdhType()|lower == 'publication' or  basic.getAcdhType()|lower == 'project' %}
+            <div class="row mt-4">
+                <div class="col-lg-12"> 
+                    <input type="hidden" id="biblaTexUrl" value="{{ basic.getBiblatexUrl() }}" />
+
+                    <div id="cite-div">
+                        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-cite-block.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        {% endif%} 
+
+        <!-- AUDIO PLAYER -->
+        {% if basic.isAudio() %}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-audio-player.html.twig', {'basic':  basic , 'audio_url':  basic.getRepoUrl() }) }}
+        {% endif%} 
+
+        {% if basic.isPDF() %}
+            {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-pdf-viewer-modal.html.twig', {'basic':  basic }) }}
+        {% endif%} 
+
+        {% 
+                set childTypes = ['topcollection', 'collection', 'organisation', 'project', 'publication', 'place', 'person', 'concept']
+        %}
+
+        {% if basic.getAcdhType()|lower in childTypes or basic.getSkosType()|lower == 'conceptscheme' %}
+            <div class="row">
+                <div class="col-lg-12"> 
+                    <div id="child-div-content">
+                        {{ extra.childData.getContent()|raw }}
+                    </div>
+                </div>
+            </div>
+        {% endif%}
+        <br>
+
+    </div>
+</div>
+

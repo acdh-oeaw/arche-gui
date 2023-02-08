@@ -1,0 +1,227 @@
+
+{% set properties = {
+    'acdh:isPartOf': {
+        'icon': 'device_hub',
+        'label': 'Part Of'
+    },
+    'acdh:hasLicense': {
+	'icon': 'copyright',
+        'label': 'License'
+    },
+    'acdh:hasNumberOfItems': {
+        'icon': 'attachment',
+        'label': 'Number of files'
+    },
+    'acdh:hasBinarySize': {
+        'icon': 'attachment',
+        'label': 'Summary Size',
+        'type': 'binary'
+    }
+}
+%}
+
+{% if  errorMSG %}
+    <span style="color:red; font-size: 20px; font-weight: bold;">{{ errorMSG }}</span>
+{% else %}
+    
+    <style type="text/css">
+        .collectionBrowser_css {
+                width: auto;
+                max-width: 750px;
+                height: auto;
+                border: solid 1px #BBB;
+                background: #FFF;
+                overflow: hidden;
+                padding: 5px;
+        }
+       
+        .loader-bg{
+            position:fixed;
+            padding:0;
+            margin:0;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            background:rgba(255,255,255,0.7);
+        }
+        .loader {
+            border: 11px solid #f3f3f3; /* Light grey */
+            border-top: 11px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            position:absolute;
+            left:50%; 
+            top:50%;
+            margin-left:-30px; /*image width/2 */
+            margin-top:-30px; /*image height/2 */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+    </style>
+    
+    <div id="loader-div">
+        <div class="loader-bg">
+            <div class="loader"></div>
+        </div>
+    </div>
+   
+    <div>
+        
+        {%  if extra.metadata.getRepoId() %}
+            <div>
+                <a href="/browser/oeaw_detail/{{ extra.metadata.getRepoId() }}"><span>{{ "Back to the resource"|trans }}</span></a>
+                <br/><br/>
+            </div>
+        {% endif %}    
+        
+        {%  if extra.metadata.getTitle()  %}
+            <h2>{{ extra.metadata.getTitle()  }} </h2>
+        {% endif %}
+        
+    </div>
+    
+    <input type="hidden" id="repoid" name="repoid" value="{{ extra.metadata.getRepoId() }}">
+    <input type="hidden" id="estDLTime" name="estDLTime" value="{{ extra.estDLTime }}">
+    
+    <div id="content_collection">
+        <div class="single-res-overview single-res-overview-basic">
+            <div class="res-property">
+                <i class="material-icons">&#xE54E;</i>
+                <span class="res-prop-label">{{ "Name"|trans }}:</span> 
+                <span class="res-prop-value">
+                    {% if extra.metadata.getTitle() %}
+                        {{ extra.metadata.getTitle() }}
+                    {% else %}    
+                        {{ "Empty"|trans }}
+                    {% endif %}
+                </span>
+            </div>
+           
+            {% for key, value in properties %}
+                {% if extra.metadata.getData(key) %}
+                     {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': extra.metadata.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                {% endif%}
+            {% endfor %}
+            
+            {% if resourceData['metadata'].data.estDLTime %}                
+            <div class="res-property">
+                <i class="material-icons">&#xE54E;</i>
+                <span class="res-prop-label">{{ "Est. Download Time"|trans }}:</span> 
+                <span class="res-prop-value" >
+                    <span id="dl_time"> </span> <small>{{"with you current download speed"|trans}}.</small>
+                </span>
+            </div>    
+            {% endif %}
+            
+            <div>
+                <br>
+                {{ "By downloading you agree to the"|trans }} <a href='https://arche.acdh.oeaw.ac.at/browser/terms-of-use'>{{ "Terms of Use"|trans }}</a>  
+                {{ "which includes compliance with the licenses accompanying every Resource and adhering to the"|trans }} <a href='http://www.allea.org/wp-content/uploads/2017/03/ALLEA-European-Code-of-Conduct-for-Research-Integrity-2017-1.pdf'>{{ "European Code of Conduct for Research Integrity"|trans }}</a>.
+            </div>
+            
+            <div id="collection_dl_info">
+                <br>
+                <h3>{{ "How to Download"|trans }}</h3>
+                <ul>
+                    <li>
+                        {{ "For a single file just click on the according file name."|trans }}
+                    </li> 
+                    <li>
+                        {{ "For more files or the whole collection click on the corresponding checkboxes in the tree view (click on the triangle to expand it)."|trans }}
+                    </li>
+                    <li>
+                        {{ "Use the search box to find specific resources by their title."|trans }}
+                    </li>
+                    <li>
+                        {{ "Resources marked in red require appropriate access rights and might not be available to you despite being logged in."|trans }}
+                    </li>
+                </ul>
+                {{ "After selecting the resources please press 'Prepare Collection for Download'. Depending on the collection size this may take a while. You will then be presented with a new button 'Download Collection as .tar', with which the actual download can be started."|trans }}
+                <br>
+            </div>
+            
+            <div class="res-property" id="selected_files_size_div" >
+                <i class="material-icons">&#xE54E;</i>
+                <span class="res-prop-label">{{ "Sel. files size"|trans }}:</span> 
+                <span class="res-prop-value" id="selected_files_size">
+                </span>
+            </div>    
+            
+            <div class="col-xs-12 text-center" id="not_enough_permission" style="display:none">
+                <span class="res-prop-value" style="color:red;"><b><center>{{ "You do not have enough rights to download the whole collection! Please try to login with the button below"|trans }}:</center></b></span>
+                <div class="res-act-button">
+                    <a href="#" id="loginToRestrictedResources">{{ "Login to download/reach the restricted content"|trans }}</a>
+                </div>
+                <br>
+            </div>
+            
+            <!-- DISS LOGIN FORM START  -->
+            <div id="col-xs-12 text-center">
+                <div id="dissServLoginform" style="margin: 10px auto;">
+                    <div id="loginInfo">{{ "Please provide your login credentials"|trans }}</div>
+                    <div id="loginErrorDiv"></div>
+                    <input type="text" id="username" placeholder="username" name="username">
+                    <input type="password" id="password" name="password" placeholder="password">
+                    <div>
+                        <input type = "submit" id = "dologin" value = "Login">
+                        <input type = "submit" id = "cancelLogin" value = "Cancel">
+                    </div>
+                </div>
+            </div>
+            <!-- DISS LOGIN FORM END  -->
+            
+            <div class="col-xs-12 text-center" style="display:none;" id="getCollectionDiv" >
+                <div class="res-act-button" style="">
+                    <a href="#" id="getCollectionData" data-tableuri="{{url}}">{{ "Prepare Collection for Download"|trans }}</a>
+                </div>
+            </div>
+                
+            <div class="col-xs-12 text-center" style="display:none;" id="dl_link_txt">
+                <b>{{ "The selected files are ready for downloading"|trans }}:</b>
+            </div>
+                
+            <div class="col-xs-12 text-center" style="display:none;" id="dl_link">
+                <br>
+                 <div class="res-act-button" >
+                    <span class="res-prop-value">
+                        <div id="dl_link_a">{{ "Download Collection"|trans }} .tar</div>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Collection DL request info div start -->
+            <div id="success_login_msg" class="success_box_oeaw text-center justify-content-center align-items-center" >
+                {{ "Login was successful"|trans }}! <br>
+                {{ "Please check the updated tree"|trans }}!
+            </div>
+                
+            <div id="error_login_msg" class="error_box_oeaw text-center justify-content-center align-items-center">
+                {{ "Login error"|trans }}! <br>
+                {{ "Please re-enter your login credentials"|trans }}
+            </div>
+            <!-- Collection DL request info div end -->
+ 
+            <!-- ZIP DL fields  end -->
+            <div class="collection_tree_view">
+                <br>
+                <div style="margin-top: 15px;">
+                    <div class="res-property">
+                        <i class="material-icons">search</i>
+                        <span class="res-prop-label">{{"Search"|trans }}: </span> 
+                        <input id="search-input" class="collection-input-format" />
+                    </div>    
+                </div>
+                <div id="collectionBrowser" class="collectionBrowser_css"></div>
+            </div>
+        </div>
+            
+    </div>            
+{% endif %}
+    
