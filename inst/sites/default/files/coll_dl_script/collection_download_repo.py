@@ -1,4 +1,6 @@
 import argparse
+import getpass
+import json
 import os
 import pip
 import re
@@ -39,37 +41,51 @@ args.add_argument('--pswd', help='User password (for downloading restricted-acce
 args.add_argument('--maxDepth', default=-1, type=int, help='Maximum recursion depth (-1 means do not limit the recursion depth)')
 args.add_argument('--flat', action='store_const', const=True, help='Do not create directory structure (download all resources to the `tagetDir`)')
 args.add_argument('--batch', action='store_const', const=True, help='Do not ask for user input (e.g. for the user name and password)')
+args.add_argument('--overwrite', action='store_const', const=True, help='Should existing files and directories be overwritten?')
 args.add_argument('--targetDir', default='.', help='Directory to store downloaded resources')
 args.add_argument('--matchUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
 args.add_argument('--skipUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
-args.add_argument('url', nargs='*', help='Resource URLs to be downloaded', default=['{resourceUrl}'])
+args.add_argument('url', nargs='*', help='Resource URLs to be downloaded', default=['https://arche.acdh.oeaw.ac.at/api/255841'])
 args = args.parse_args()
 
-def getFilename(url):
-    id = re.sub('^.*/', '', url)
-    resp = requests.get(url + '/metadata', headers={'Accept': 'application/n-triples', '{metadataReadMode}': 'resource'})
-    graph = Graph()
-    graph.parse(data=resp.text, format='nt')
-    location = graph.value(URIRef(url), URIRef('{ingest.location}'), None, default='repo_resource_' + id, any=True)
-    filename = graph.value(URIRef(url), URIRef('{fileName}'), None, default=None, any=True)
-    return (filename, os.path.basename(location))
+repoSchemas = {}
+def getSchema(resUrl):
+    repoUrl = re.sub('[0-9]+$', '', resUrl)
+    if repoUrl not in repoSchemas:
+        resp = requests.get(repoUrl + '/describe', headers={'Accept': 'application/json'})
+        if resp.status_code != 200:
+            raise Exception("Couldn't read " + repoUrl + " repository configuration")
+        repoSchemas[repoUrl] = json.loads(resp.text)['schema']
+    return repoSchemas[repoUrl]
 
-def getChildren(url):
-    searchUrl = re.sub('/[0-9]+$', '/search', url)
-    data = {
-        'sql': 'SELECT id FROM relations WHERE property = ? AND target_id = ?',
-        'sqlParam[0]': '{parent}',
-        'sqlParam[1]': re.sub('^.*/', '', url)
+def resolveUrl(location):
+    url = None
+    while location:
+        urltmp = location
+        resp = requests.head(urltmp)
+        location = resp.headers.get('location')
+        if location is None and resp.status_code == 200:
+            url = re.sub('/metadata$', '', urltmp)
+    return url
+
+def getMetadata(url, schema):
+    params = {
+        'resourceProperties[0]': schema['fileName'],
+        'relativesProperties[0]': schema['parent']
     }
-    resp = requests.post(searchUrl, data=data, headers={'Accept': 'application/n-triples', '{metadataReadMode}': 'resource'})
+    resp = requests.get(url + '/metadata', params=params, headers={'Accept': 'application/n-triples', 'X-METADATA-READ-MODE': '1_0_0_0'})
     graph = Graph()
     graph.parse(data=resp.text, format='nt')
-    children = []
-    for s, p, o in graph.triples((None, URIRef('{searchMatch}'), None)):
-        children.append(str(s))
-    return children
+    filename = graph.value(URIRef(url), URIRef(schema['fileName']), None, default=None, any=True)
+    children = set()
+    for s, p, o in graph.triples((None, URIRef(schema['parent']), None)):
+        children.add(str(s))
+    return (filename, list(children))
 
-def readInput(msg):
+def readInput(msg, private):
+    if private:
+        return getpass.getpass(msg)
+        
     try:
         inp = raw_input(msg)
     except NameError:
@@ -77,45 +93,66 @@ def readInput(msg):
     return inp
 
 def download(res, args):
-    (filename, dirname) = getFilename(res['url'])
-    req = requests.get(res['url'], allow_redirects=True, stream=True, auth=requests.auth.HTTPBasicAuth(args.user, args.pswd))
+    dirname = res['path']
+    schema = getSchema(res['url'])
+    (filename, children) = getMetadata(res['url'], schema)
+    resp = requests.get(res['url'], allow_redirects=False, stream=True, auth=args.auth)
+    hasBinary = resp.headers.get('location') is None
+    if filename is None and (hasBinary or res['depth'] > 0):
+        print("No file name found  for " + res['url'] + "- using the resource id instead")
+        filename = re.sub('^.*/', '', res['url'])
 
     toDwnld = []
-    if req.status_code == 200 or req.status_code == 204:
-        if filename is not None:
-            path = os.path.join(res['path'], filename)
-            print('Downloading %s as %s' % (res['url'], path))
-            if not os.path.exists(res['path']):
-                os.makedirs(res['path'])
-            with open(os.path.join(res['path'], filename), 'wb') as of:
-                for chunk in req.iter_content(chunk_size=8192):
+    if (resp.status_code == 401 or resp.status_code == 403) and args.auth is None and not args.batch:
+        args.auth = requests.auth.HTTPBasicAuth(
+            readInput('A restricted access resource encountered, please provide a username: ', False), 
+            readInput('and a password: ', True)
+        )
+        toDwnld = download(res, args)
+    elif resp.status_code == 302 and not hasBinary:
+        if filename and not args.flat:
+            dirname = os.path.join(dirname, filename)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            elif not args.overwrite:
+                print("Aborting - " + dirname + " already exists")
+                return []
+        if len(children) > 0 and (res['depth'] < args.maxDepth or args.maxDepth == -1):
+            print('Adding ' + str(len(children)) + ' children of ' + res['url'] + ' to the download queue')
+            toDwnld = [{'url': x, 'path': dirname, 'depth': res['depth'] + 1} for x in children]
+    elif resp.status_code == 200 and hasBinary:
+        path = os.path.join(dirname, filename)
+        if not os.path.exists(path) or os.path.isdir(path) or args.overwrite:
+            print('Downloading ' + res['url'] + ' as ' + path)
+            with open(path, 'wb') as of:
+                for chunk in resp.iter_content(chunk_size=8192):
                     if chunk:
                         of.write(chunk)
         else:
-            os.makedirs(os.path.join(res['path'], dirname))
-            if res['depth'] < args.maxDepth or args.maxDepth == -1:
-                print('Going into %s %s' % (res['url'], dirname))
-                if args.flat is None:
-                    path = os.path.join(res['path'], dirname)
-                else:
-                    path = res['path']
-                toDwnld = getChildren(res['url'])
-                toDwnld = [{'url': x, 'path': path, 'depth': res['depth'] + 1} for x in toDwnld]
-    elif req.status_code == 401 and args.user is None and not args.batch:
-        # get login and password and try again
-        args.user = readInput('A restricted access resource encountered, please provide a username: ')
-        args.pswd = readInput('and a password: ')
-        toDwnld = download(res, sparqlUrlTmpl, args)
+            print("Aborting - " + path + " already exists")
     else:
-        sc = req.status_code
-        print('Failed to download %s with code %s' % (res['url'], str(sc) if sc != 401 else 'Access Denied'))
+        sc = resp.status_code
+        if sc == 401:
+            sc = 'Access Denied'
+        print("Failed to download " + res['url'] + " with code " + str(sc))
 
     return toDwnld
 
 stack = []
 for i in args.url:
-    stack.append({'url': i, 'path': args.targetDir, 'depth': 0})
+    ir = resolveUrl(i)
+    if ir:
+        stack.append({'url': ir, 'path': args.targetDir, 'depth': 0})
+        getSchema(ir)
+    else:
+        print("Can't resolve " + i)
 
+args.auth = None
+if args.user and args.pswd:
+    args.auth = requests.auth.HTTPBasicAuth(args.user, args.pswd)
+if not os.path.exists(args.targetDir):
+    os.makedirs(args.targetDir)
+    
 downloaded = set()
 while len(stack) > 0:
     res = stack.pop()
@@ -129,4 +166,4 @@ while len(stack) > 0:
         continue
     stack += download(res, args)
     downloaded.add(res['url'])
-
+print('Download ended')
