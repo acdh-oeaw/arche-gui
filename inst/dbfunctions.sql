@@ -1417,7 +1417,7 @@ LANGUAGE 'plpgsql';
 */
 DROP FUNCTION IF EXISTS gui.collection_v2_views_func(text, text);
 CREATE FUNCTION gui.collection_v2_views_func(_pid text, _lang text DEFAULT 'en' )
-    RETURNS table (id bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text)
+    RETURNS table (id bigint, title text, accesres text, license text, binarysize text, filename text, locationpath text, rdftype text)
 AS $func$
 DECLARE
     _lang2 text := 'de';
@@ -1452,7 +1452,7 @@ BEGIN
     );
 
     DROP TABLE IF EXISTS collectionData;
-    CREATE TEMP TABLE collectionData(id bigint, title text, accesres bigint, license text, binarysize text, filename text, locationpath text);
+    CREATE TEMP TABLE collectionData(id bigint, title text, accesres bigint, license text, binarysize text, filename text, locationpath text, rdftype text);
     INSERT INTO collectionData(
         WITH  c2d AS (
             select
@@ -1467,14 +1467,16 @@ BEGIN
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense' and mv.id = bcd.id limit 1) as license,
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and mv.id = bcd.id limit 1) as binarysize,
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename' and mv.id = bcd.id limit 1) as filename,
-                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and mv.id = bcd.id limit 1) as locationpath
+                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and mv.id = bcd.id limit 1) as locationpath,
+				(select mv.value from metadata_view as mv where mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.id = bcd.id limit 1) as rdftype
+
             from basic_collection_data as bcd
         ) select * from c2d
     );
 
 RETURN QUERY
     select
-        mv.id, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath
+        mv.id, mv.title, ar.value, mv.license, mv.binarysize, mv.filename, mv.locationpath, mv.rdftype
     from collectionData as mv
     left join accessres as ar on mv.accesres  = ar.accessid
     left join resources as rs on rs.id = mv.id
