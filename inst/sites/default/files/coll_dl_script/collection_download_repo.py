@@ -45,7 +45,7 @@ args.add_argument('--overwrite', action='store_const', const=True, help='Should 
 args.add_argument('--targetDir', default='.', help='Directory to store downloaded resources')
 args.add_argument('--matchUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
 args.add_argument('--skipUrl', nargs='*', default=[], help='Explicit list of allowed resource URLs')
-args.add_argument('url', nargs='*', help='Resource URLs to be downloaded', default=['https://arche.acdh.oeaw.ac.at/api/255841'])
+args.add_argument('url', nargs='*', help='Resource URLs to be downloaded', default=[{resourceUrl}])
 args = args.parse_args()
 
 repoSchemas = {}
