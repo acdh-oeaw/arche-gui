@@ -1467,7 +1467,16 @@ BEGIN
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLicense' and mv.id = bcd.id limit 1) as license,
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasBinarySize' and mv.id = bcd.id limit 1) as binarysize,
                 (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename' and mv.id = bcd.id limit 1) as filename,
-                (select mv.value from metadata_view as mv where mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasLocationPath' and mv.id = bcd.id limit 1) as locationpath,
+                (select
+
+		    string_agg(COALESCE(
+                (select mv.value from metadata_view as mv where mv.id = rel.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = 'en' limit 1),
+                (select mv.value from metadata_view as mv where mv.id = rel.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = 'de' limit 1),
+                (select mv.value from metadata_view as mv where mv.id = rel.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' and mv.lang = 'und' limit 1),
+                (select mv.value from metadata_view as mv where mv.id = rel.id and mv.property = 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle' limit 1)
+            ) , '/' ORDER BY rel.n asc) as title
+        from get_relatives(bcd.id, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 0) as rel
+		where rel.n < 0 ) as locationpath,
 				(select mv.value from metadata_view as mv where mv.property = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and mv.id = bcd.id limit 1) as rdftype
 
             from basic_collection_data as bcd
