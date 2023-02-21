@@ -14,6 +14,7 @@
         "acdh-oeaw/arche-lib": "^5.3.3",
         "acdh-oeaw/arche-lib-disserv": "^3.0.3",
         "acdh-oeaw/arche-lib-schema": "^6.1.0",
+	"acdh-oeaw/arche-assets": "^3.9.7",    
         "zozlak/logging": "*",
         "acdh-oeaw/easyrdf": ">= 0.15.5 <1",
         "twig/extra-bundle": "*",
