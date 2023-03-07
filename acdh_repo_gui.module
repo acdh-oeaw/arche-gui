@@ -14,7 +14,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['data' => NULL, 'paging' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-root-view', //include our custom library for this response
+                    'acdh_repo_gui/repo-root-view',
                 ]
             ]
         ],
@@ -46,15 +46,27 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['data' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-styles', //include our custom library for this response
+                    'acdh_repo_gui/repo-styles', 
                 ]
             ]
         ],
         'acdh-repo-gui-main-page-left-block' => [
             'variables' => ['result' => NULL],
+            
+        ],
+        'acdh-repo-gui-main-page-left-block-empty' => [
+            'variables' => ['result' => NULL],
+           
+        ],
+        'acdh-repo-gui-search-left-block-empty' => [
+            'variables' => ['result' => NULL],
+           
+        ],
+        'acdh-repo-gui-search-left-block' => [
+            'variables' => ['result' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-search', //include our custom library for this response
+                    'acdh_repo_gui/repo-search', 
                 ]
             ]
         ],
@@ -74,7 +86,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['basic' => NULL, 'extra' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/repo-collection-dl', //include our custom library for this response
+                    'acdh_repo_gui/repo-collection-dl', 
                 ]
             ]
         ],
@@ -94,7 +106,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['ObjectUrl' => NULL, 'basic' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/ds-pdf-styles', //include our custom library for this response
+                    'acdh_repo_gui/ds-pdf-styles', 
                 ]
             ]
         ],
@@ -102,7 +114,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => ['basic' => NULL, 'lorisUrl' => NULL],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/ds-iiif-viewer-styles', //include our custom library for this response
+                    'acdh_repo_gui/ds-iiif-viewer-styles', 
                 ]
             ]
         ],
@@ -126,6 +138,9 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         ],
         'acdh-repo-gui-detail-skos-concepschema' => [
             'variables' => []
+        ],
+        'arche-detail-main' => [
+            'variables' => ['#basic' => NULL]
         ]
     ];
 }

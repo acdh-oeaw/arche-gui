@@ -27,16 +27,11 @@ class StartPageLeftBlock extends BlockBase
     public function build()
     {
         $data = array();
-        $rvc = new \Drupal\acdh_repo_gui\Controller\RootViewController();
         
-        $data = $rvc->generateRootViewData('3', '0', 'datedesc');
-        if (!isset($data['data'])) {
-            $data['data'] = array();
-        }
-        //getRepoID
         return [
-            '#theme' => 'acdh-repo-gui-main-page-left-block',
-            '#result' => $data['data']
+            '#theme' => 'acdh-repo-gui-main-page-left-block-empty',
+            //'#result' => $data['data']
+            '#result' => []
         ];
     }
 }

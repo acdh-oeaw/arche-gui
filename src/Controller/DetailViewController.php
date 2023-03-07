@@ -188,4 +188,20 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $child = new \Drupal\acdh_repo_gui\Controller\ChildApiController();
         return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
+    
+    public function detailMain(string $identifier): array
+    {
+        
+     
+        return $return = [
+            '#theme' => 'arche-detail-main',
+            '#basic' => [],
+            '#cache' => ['max-age' => 0],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/arche-detail-main-styles',
+                ]
+            ]
+        ];
+    }
 }

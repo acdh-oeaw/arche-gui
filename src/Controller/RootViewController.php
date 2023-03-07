@@ -82,10 +82,12 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
     public function generateRootViewData(int $limit = 10, int $page = 0, string $order = "datedesc"): array
     {
         $data = $this->model->getViewData($limit, $page, $order);
+       
         if (count((array) $data) == 0) {
             return array();
         }
 
+       
         $numPage = ceil((int) $this->numberOfRoots / (int) $limit);
 
         $pagination = $this->pagingHelper->createView(

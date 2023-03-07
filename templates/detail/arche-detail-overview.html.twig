@@ -1,0 +1,82 @@
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-block col-lg-12" >
+            <div class="container-fluid" id="main-info">
+                <div class="row-fluid">
+                    <div class="col-block col-lg-12 overview-block" >
+                        <div class="container-fluid overview-block">
+                            <div class="row">
+                                <div class="col-block col-lg-4" >
+                                    <i class="material-icons"></i>
+                                    <span class="res-prop-label">Type(s):</span> 
+                                </div>
+                                <div class="col-block col-lg-8" >
+                                    <a href="/browser/search/type=acdh:Resource&amp;payload=false/titleasc/10/1">acdh:Resource</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-block col-lg-4" >
+                                    <i class="material-icons">copyright</i>
+                                    <span class="res-prop-label">Access Restriction:</span>
+                                </div>
+                                <div class="col-block col-lg-8" >
+                                    <a id="archeHref" href="/browser/oeaw_detail/277">public</a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-block col-lg-4" >
+                                    <i class="material-icons">label</i>
+                                    <span class="res-prop-label">Identifier(s):</span>
+                                </div>
+                                <div class="col-block col-lg-8" >
+                                    <span class="res-prop-value">
+                                        <a href="https://arche-dev.acdh-dev.oeaw.ac.at/api/212305" target="_blank">https://arche-dev.acdh-dev.oeaw.ac.at/api/212305</a>
+
+                                        ,<br>             
+                                        <a href="https://id.acdh.oeaw.ac.at/wollmilchsau/ACDH-DepositionAgreement.docx" target="_blank">https://id.acdh.oeaw.ac.at/wollmilchsau/ACDH-DepositionAgreement.docx</a>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-block col-lg-4" >
+                                    <i class="material-icons">copyright</i>
+                                    <span class="res-prop-label">Owner:</span>
+                                </div>
+                                <div class="col-block col-lg-8" >
+                                    <a id="archeHref" href="/browser/oeaw_detail/96739">Organisation zum Kampf gegen Monster aller Art</a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-block col-lg-4" >
+                                    <i class="material-icons">copyright</i>
+                                    <span class="res-prop-label">Access Restriction:</span>
+                                </div>
+                                <div class="col-block col-lg-8" >
+                                    <a id="archeHref" href="/browser/oeaw_detail/277">public</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="featurette-divider"/>
+                        <div class="row-fluid">
+                            <div class="col-block-12 overview-block">
+                                {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-summary-view.html.twig' ) }}
+                            </div>
+                        </div>
+                        <hr class="featurette-divider"/>
+                        <div class="row-fluid">
+                            <div class="col-block-12 overview-block">
+                                <h3 class="overview-h3">Child Resource(s)</h3>
+                                {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-child-view.html.twig' ) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

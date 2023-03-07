@@ -22,7 +22,7 @@ class ResourceObject
         $this->properties = array();
         $this->config = $config;
         $this->language = $language;
-
+    
         foreach ($data as $k => $v) {
             if (isset($v[$language])) {
                 $this->setData($k, $v[$language]);

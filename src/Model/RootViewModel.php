@@ -69,7 +69,7 @@ class RootViewModel extends ArcheModel
             );
 
             $this->sqlResult = $query->fetchAll();
-
+           
             $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());

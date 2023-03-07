@@ -105,12 +105,12 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     
     private function formatResultToGui(array $data)
     {
+
         if (count((array) $data) > 0) {
             foreach ($data as $k => $v) {
                 $lang = $this->setLanguage($v);
                 if (isset($v->id)) {
                     $this->fetchProperties($k, $v, $lang);
-                    
                     $this->addTopCollectionProperty($lang, $k, $v);
                 }
             }

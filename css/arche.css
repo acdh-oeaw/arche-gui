@@ -155,3 +155,88 @@
     font-weight: bold;
     color: red !important;
 }
+
+.detail-h2 {
+    font-size: 26px;
+    line-height:26px;
+}
+
+.right-box-h2 {
+    font-size: 26px;
+    line-height: 22px;
+}
+
+.right-box-h3 {
+    font-size: 24px;
+    line-height: 22px;
+}
+
+
+.breadcrumb {
+    width: 100% !important;
+    color: white !important;
+    
+}
+
+nav.breadcrumb > .breadcrumb {
+    margin: -28px 0px 0px 0px !important;
+}
+
+.nav-link.dropdown-toggle {
+    min-width: 150px !important ;
+}
+
+.dropdown-toggle::after {
+    
+    
+}
+
+
+.arche-detail-main-content {
+    width: 90% !important;
+    display: table !important;
+    margin: 0 auto !important;
+}
+
+.overview-h3 {
+    font-size: 24px;
+    line-height: 22px;
+    text-decoration: underline  #88DBDF;  
+    text-decoration-thickness: 5px; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.overview-block {
+    padding-bottom:20px;
+}
+
+.detail-right-divider {
+    border-left: 1px solid rgba(0,0,0,0.1);
+}
+
+#overviewTab li.nav-item > .nav-link {
+    background-color: #F1F1F1;
+    color: #444;
+    margin-right: 1px;
+}
+
+#overviewTab li.nav-item > .nav-link.active {
+    background-color: #444;
+    color: #F1F1F1;
+    margin-right: 1px;
+}
+
+#detail-right-side .card {
+    border-top: 5px solid #3B89A0;
+}
+
+#detail-right-side .res-act-button {
+    background-color: #3B89A0;
+    color: white;
+}
+
+#detail-right-side .res-act-button a {
+    color: white;
+    font-weight: bold;
+}

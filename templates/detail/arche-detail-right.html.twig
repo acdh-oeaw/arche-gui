@@ -1,0 +1,70 @@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="container detail-right-divider">
+    <div class="row">
+        <div class="col-block col-lg-12" >
+            <center>
+                <a href="https://arche-thumbnails.acdh.oeaw.ac.at/id.acdh.oeaw.ac.at/wollmilchsau?width=600" data-lightbox="detail-titleimage">
+                    <img src="https://arche-thumbnails.acdh.oeaw.ac.at/id.acdh.oeaw.ac.at/wollmilchsau?width=400" class="img-fluid">
+                </a>
+            </center>
+
+        </div>
+    </div>
+
+
+    <div class="container border-bottom mb-3 pb-2">
+        <h3 class="right-box-h3">Download</h3>
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="res-act-button">
+                    <a href="#">Download</a>
+                </div>
+                <div class="res-act-button">
+                    <a href="#">Download Collection</a>
+                </div>
+                <div class="res-act-button">
+                    <a href="#">Download Collection Script</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container  border-bottom  mb-3 pb-2">
+        <h3 class="right-box-h3">Dissemination Services</h3>
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="res-act-button">
+                    <a href="#">RDF ACCESS</a>
+                </div>
+                <div class="res-act-button">
+                    <a href="#">Download Thumbnail Service</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="container  border-bottom mb-3 pb-2" >
+        <h3 class="right-box-h3">{{ "Versions"|trans }}</h3>
+        <div class="card" >
+            <div class="col-lg-7 versions-text">
+                <div class="res-act-button res-act-button-reverse res-act-button-versions-treeview basic" style="text-align:left; margin-bottom:5px;">
+                    <i class="material-icons">&#xE335;</i>
+                    <span>{{ "Show as Tree"|trans }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="versions-list">
+            <div class="block versions-list-view">
+                <div class="pl-2 pb-1 arche-versions-row actual">
+                    <i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;<a href="/browser/detail/xxxx">V 2.0 2021-01-01 &ndash; 2.0</a>
+                </div>
+                <div class="pl-2 pb-1 arche-versions-row">
+                    <i class="material-icons" style="font-size:14px !important" >layers</i>&nbsp;<a href="/browser/detail/xxxx">V 1.0 2020-01-01 &ndash; 1.0</a>
+                </div>
+            </div>
+            <div id="versions-tree" class="collectionBrowser_css" style="display:none;"></div>
+        </div>    
+    </div>
+</div>

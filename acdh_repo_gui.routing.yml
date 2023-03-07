@@ -9,6 +9,15 @@ repo_root_view:
     _permission: 'access content'
     _access: 'TRUE'
 
+arche_detail:
+  path: '/detail/{identifier}'
+  defaults:
+    _controller: '\Drupal\acdh_repo_gui\Controller\DetailViewController::detailMain'
+  requirements:
+    identifier: '^[^\?]*$'
+    _permission: 'access content'
+    _access: 'TRUE'      
+
 oeaw_detail:
   path: '/oeaw_detail/{identifier}'
   defaults:

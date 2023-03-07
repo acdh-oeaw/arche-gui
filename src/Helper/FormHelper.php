@@ -25,12 +25,12 @@ class FormHelper
         if (count($data) > 0) {
             foreach ($data as $k => $v) {
                 $result['data'][$k] = new \stdClass();
-                $result['data'][$k]->count = $v->count;
-                $value = ($years) ? $v->year : $v->value ;
+                $result['data'][$k]->count = $v['count'];
+                $value = ($years) ? $v['year'] : $v['value'] ;
                 $title = ltrim(str_replace($this->schema, "", $value));
                 $result['data'][$k]->title = $title;
                 $result['data'][$k]->uri = $value;
-                $fields[$title] = $title." (".$v->count.")";
+                $fields[$title] = $title." (".$v['count'].")";
             }
         }
         $result['fields'] = $fields;
@@ -49,11 +49,11 @@ class FormHelper
         if (count($data) > 0) {
             foreach ($data as $k => $v) {
                 $result['data'][$k] = new \stdClass();
-                $result['data'][$k]->count = $v->count;
-                $title = ltrim(str_replace($this->schema, "", $v->value));
+                $result['data'][$k]->count = $v['count'];
+                $title = ltrim(str_replace($this->schema, "", $v['value']));
                 $result['data'][$k]->title = $title;
-                $result['data'][$k]->uri = $v->value;
-                $fields[Helper::createShortcut($v->value)] = $title." (".$v->count.")";
+                $result['data'][$k]->uri = $v['value'];
+                $fields[Helper::createShortcut($v['value'])] = $title." (".$v['count'].")";
             }
         }
         $result['fields'] = $fields;
@@ -72,12 +72,12 @@ class FormHelper
         if (count($data) > 0) {
             foreach ($data as $k => $v) {
                 $result['data'][$k] = new \stdClass();
-                $result['data'][$k]->count = $v->count;
-                $title = ltrim(str_replace($this->schema, "", $v->value));
+                $result['data'][$k]->count = $v['count'];
+                $title = ltrim(str_replace($this->schema, "", $v['value']));
                 $result['data'][$k]->title = $title;
-                $result['data'][$k]->uri = $v->value;
-                $result['data'][$k]->id = $v->id;
-                $fields[$this->formatCategoryTitleForValue($title).':'.$v->id] =  $v->value." (".$v->count.")";
+                $result['data'][$k]->uri = $v['value'];
+                $result['data'][$k]->id = $v['id'];
+                $fields[$this->formatCategoryTitleForValue($title).':'.$v['id']] =  $v['value']." (".$v['count'].")";
             }
         }
         $result['fields'] = $fields;

@@ -30,19 +30,6 @@ class ArcheVersionsBlock extends BlockBase
     {
         \Drupal::service('page_cache_kill_switch')->trigger();
         
-       
-        /*
-        $id = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-        if (!empty($id)) {
-            $controller = new \Drupal\acdh_repo_gui\Controller\VersionsController();
-            $this->data = $controller->generateView($id);
-            $this->checkActualID($id);
-        }
-
-        if (count($this->data) < 1) {
-            $this->data = array();
-        }
-       */
         return [
             '#theme' => 'acdh-repo-gui-detail-versions-block-empty',
             '#result' => "",

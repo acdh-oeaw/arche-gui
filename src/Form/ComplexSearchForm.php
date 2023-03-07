@@ -6,6 +6,8 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\acdh_repo_gui\Model\BlocksModel;
 use Drupal\acdh_repo_gui\Helper\FormHelper;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
 
 class ComplexSearchForm extends FormBase
 {
@@ -37,6 +39,23 @@ class ComplexSearchForm extends FormBase
     }
 
     /**
+     * Fetch the API with the search facets
+     * @return string
+     */
+    private function doTheRequest()
+    {
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $request = new \GuzzleHttp\Psr7\Request('GET', \Drupal::request()->getSchemeAndHttpHost().'/browser/api/getSearchBlock/en?format=json');
+        //send async request
+        try {
+            $response = $client->send($request);
+            return (string)$response->getBody();
+        } catch (\Exception $ex) {
+            return "";
+        }
+    }
+    
+    /**
      * Build form
      * @param array $form
      * @param FormStateInterface $form_state
@@ -44,21 +63,27 @@ class ComplexSearchForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
+     
+        $response = $this->doTheRequest();
+       
+        if(empty($response)) {
+            return $form;
+        }
+        $response = json_decode($response, true);
+       
         $form['#prefix'] = '<div class="sks-form">';
         //the input field
         $this->createSearchInput($form);
-
         $binarySearch["title"] = 'Search in payload?';
         $binarySearch["type"] = "payloadSearch";
         $binarySearch["fields"] = array('Yes' => 'Yes');
         $this->createBox($form, $binarySearch);
-        $this->lastModifyDateTime = $this->getCacheLastModificationDate();
-        //do we need to recache the data?
-        $this->reCache = $this->helper->checkCacheData('entity', $this->lastModifyDateTime);
-  
-        //get the data based on the recache and type value
-        $this->entityData = $this->getBoxData('entity');
         
+        //$this->lastModifyDateTime = $this->getCacheLastModificationDate();
+        //do we need to recache the data?
+        //$this->reCache = $this->helper->checkCacheData('entity', $this->lastModifyDateTime);
+        //get the data based on the recache and type value
+        $this->entityData = $response['entity'];
         if (count((array)$this->entityData) > 0) {
             $this->entityData = $this->helper->formatEntityTypes($this->entityData);
             $resData["title"] = t('Type of Entity')->__toString();
@@ -67,7 +92,8 @@ class ComplexSearchForm extends FormBase
             $this->createBox($form, $resData);
         }
         
-        $this->categoryData = $this->getBoxData('category');
+        //$this->categoryData = $this->getBoxData('category');
+        $this->categoryData = $response['category'];
         if (count((array)$this->categoryData) > 0) {
             $this->categoryData = $this->helper->formatCategoryTypes($this->categoryData);
             $resData["title"] = t('Category')->__toString();
@@ -77,7 +103,8 @@ class ComplexSearchForm extends FormBase
         }
 
         //the years box section
-        $this->yearsData = $this->getBoxData('years');
+        $this->yearsData = $response['year'];
+        
         if (count((array)$this->yearsData) > 0) {
             $this->yearsData = $this->helper->formatEntityYears($this->yearsData, true);
             $dateData["title"] = t('Entities by Year')->__toString();
@@ -87,7 +114,6 @@ class ComplexSearchForm extends FormBase
         }
       
         $this->addSubmitButton($form);
-       
         $form['#suffix'] = '</div>';
         return $form;
     }

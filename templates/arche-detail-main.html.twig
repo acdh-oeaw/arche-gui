@@ -1,0 +1,211 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>  
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+
+    jQuery(function ($) {
+
+
+        "use strict";
+        $(document).delegate("#extended-search-open", "click", function (e) {
+            e.preventDefault();
+            $('#detail-right-container').hide();
+            $('#extended-search-btn-div-open').hide();
+            $('#detail-right-extended-search').show();
+            $('#extended-search-btn-div-close').show();
+        });
+
+        $(document).delegate("#extended-search-close", "click", function (e) {
+            e.preventDefault();
+            $('#detail-right-container').show();
+            $('#extended-search-btn-div-open').show();
+            $('#detail-right-extended-search').hide();
+            $('#extended-search-btn-div-close').hide();
+        });
+
+        $(function () {
+            var availableCategories = [
+                "3d Data (45)",
+                "Dataset (55)",
+                "Model (20)",
+                "Sound(2)"
+            ];
+            $("#search-categories").autocomplete({
+                source: availableCategories
+            });
+
+            var years = [
+                "2023",
+                "2022",
+                "2021"
+            ];
+            $("#search-years").autocomplete({
+                source: years
+            });
+        });
+
+    });
+</script>
+
+<div class="container-fluid" id="detail-header-menu">
+    <div class="row-fluid">
+        <!-- MAIN CONTENT -->
+        <div class="col-block col-lg-9" >
+            <!-- TITLE -->
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" >
+                    <h3 class="detail-h2"><span class="green-dot" title="public"></span> Die eierlegende Wollmilchsau </h3>
+                </div>
+            </div>
+
+            <!-- CITE -->
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" >
+                    {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-cite-view.html.twig' ) }}
+                </div>
+            </div>
+
+            <!-- TREE VIEW -->
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" >
+                    {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-tree-view.html.twig' ) }}
+                </div>
+            </div>
+
+            
+                
+            <!-- TABS -->
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" >
+                    
+                    <hr class="featurette-divider"/>    
+                    
+                    <ul class="nav nav-tabs" id="overviewTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" role="tab" aria-controls="home" aria-selected="true">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="expert-tab" data-toggle="tab" data-target="#expert" role="tab" aria-controls="expert" aria-selected="false">Expert View</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="child-tab" data-toggle="tab" data-target="#child" role="tab" aria-controls="child" aria-selected="false">Child Resource(s)</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                Curation Data <!-- <i class="material-icons">arrow_drop_down</i>  <span style="font-size: 20px;">&#x2c5;</span> -->
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" data-target="#">Inverse Data</a>
+                                <a class="dropdown-item" data-target="#">Related Publication(s) and Resource(s)</a>
+                                <a class="dropdown-item" data-target="#">Something else here</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" data-target="#">Separated link</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT -->
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" >
+                    <div class="tab-content" id="overviewTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-overview.html.twig' ) }}
+                        </div>
+
+                        <!-- EXPERT TAB -->
+                        <div class="tab-pane fade" id="expert" role="tabpanel" aria-labelledby="expert-tab">
+                            {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-expert-view.html.twig' ) }}
+                        </div>
+
+                        <!-- Child TAB -->
+                        <div class="tab-pane fade" id="child" role="tabpanel" aria-labelledby="child-tab">
+                            {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-child-view.html.twig' ) }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-block col-lg-3" id="detail-right-side" >
+            <div class="row-fluid">
+                <div class="col-block col-lg-12"> 
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control">
+                        <div class="input-group-append">
+                            <button class="btn" type="button">Search</button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="res-act-button" id="extended-search-btn-div-open">
+                            <a href="#" id="extended-search-open">Open Extended Search</a>
+                        </div>
+
+                        <div class="res-act-button" id="extended-search-btn-div-close" style="display:none">
+                            <a href="#" id="extended-search-close">Close Extended Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="col-block col-lg-12" id="detail-right-container"> 
+                    {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-right.html.twig' ) }}
+                </div> 
+            </div>
+
+                
+            <div class="row-fluid">
+                <div class="col-block col-lg-12 hidden" id="detail-right-extended-search" >
+                    <h2 class="right-box-h2">Extended Search</h2>
+                    {{ include('/modules/contrib/arche-gui/templates/detail/arche-detail-search-extended-view.html.twig' ) }}
+                    
+                    <!--
+                    <br>
+                    <div class="container border-bottom mb-3 pb-2">
+                        <h3 class="right-box-h3">Search in Payload?</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <input id="search-categories" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container border-bottom mb-3 pb-2">
+                        <h3 class="right-box-h3">Type of Entity</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <input id="search-categories" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container border-bottom mb-3 pb-2">
+                        <h3 class="right-box-h3">Category</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <input id="search-categories" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container border-bottom mb-3 pb-2">
+                        <h3 class="right-box-h3">Entities by Year</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <input id="search-years" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
