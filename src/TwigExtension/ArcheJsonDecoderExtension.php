@@ -7,8 +7,8 @@ class ArcheJsonDecoderExtension extends \Twig\Extension\AbstractExtension
     public function getFilters()
     {
         return [ new \Twig_SimpleFilter('archeJsonDecoderFilter', function ($value) {
-                return json_decode($value, true);
-            })
+            return json_decode($value, true);
+        })
         ];
     }
 
@@ -19,6 +19,4 @@ class ArcheJsonDecoderExtension extends \Twig\Extension\AbstractExtension
     {
         return 'acdh_repo_gui_json_decoder.twig_extension';
     }
-
-   
 }

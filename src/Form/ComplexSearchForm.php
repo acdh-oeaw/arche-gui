@@ -63,10 +63,9 @@ class ComplexSearchForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-     
         $response = $this->doTheRequest();
        
-        if(empty($response)) {
+        if (empty($response)) {
             return $form;
         }
         $response = json_decode($response, true);

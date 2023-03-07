@@ -105,7 +105,6 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     
     private function formatResultToGui(array $data)
     {
-
         if (count((array) $data) > 0) {
             foreach ($data as $k => $v) {
                 $lang = $this->setLanguage($v);

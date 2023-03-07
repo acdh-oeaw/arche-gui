@@ -191,8 +191,6 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
     
     public function detailMain(string $identifier): array
     {
-        
-     
         return $return = [
             '#theme' => 'arche-detail-main',
             '#basic' => [],
