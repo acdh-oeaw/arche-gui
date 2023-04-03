@@ -107,8 +107,8 @@ class ChildApiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
     {
         if (preg_match("/^\d+$/", $identifier)) {
             $this->repoid = $identifier;
-            $this->identifier = $this->repo->getBaseUrl() . $identifier;
-        } elseif (strpos($identifier, $this->repo->getSchema()->namespaces->id.'uuid/') === false) {
+            $this->identifier = $this->repoDb->getBaseUrl() . $identifier;
+        } elseif (strpos($identifier, $this->repoDb->getSchema()->namespaces->id.'uuid/') === false) {
             $this->repoid = $identifier;
             $this->identifier = $identifier;
         }

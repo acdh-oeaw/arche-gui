@@ -37,7 +37,7 @@ class ChildApiHelper
         }
 
         foreach ($this->data as $k => $v) {
-            $this->childViewObjectArray[] = new ResourceObject($v, $this->repo);
+            $this->childViewObjectArray[] = new ResourceObject($v, $this->repoDb);
         }
         return $this->childViewObjectArray;
     }
@@ -48,13 +48,13 @@ class ChildApiHelper
     private function setProperties()
     {
         $this->properties = array(
-            'version' => array('shortcut' => 'acdh:hasVersion', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology. "hasVersion"),
-            'acdhtype' => array('shortcut' => 'rdf:type', 'property' => $this->repo->getSchema()->__get('namespaces')->rdfs . "type"),
-            'accesres' => array('shortcut' => 'acdh:hasAccessRestriction', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction"),
-            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription"),
-            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repo->getSchema()->creationDate),
-            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->label),
-            'id' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repo->getSchema()->__get('id')),
+            'version' => array('shortcut' => 'acdh:hasVersion', 'property' => $this->repoDb->getSchema()->__get('namespaces')->ontology. "hasVersion"),
+            'acdhtype' => array('shortcut' => 'rdf:type', 'property' => $this->repoDb->getSchema()->__get('namespaces')->rdfs . "type"),
+            'accesres' => array('shortcut' => 'acdh:hasAccessRestriction', 'property' => $this->repoDb->getSchema()->__get('namespaces')->ontology."hasAccessRestriction"),
+            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repoDb->getSchema()->__get('namespaces')->ontology."hasDescription"),
+            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repoDb->getSchema()->creationDate),
+            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repoDb->getSchema()->label),
+            'id' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repoDb->getSchema()->__get('id')),
         );
     }
 

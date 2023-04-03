@@ -11,7 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class DisseminationServicesModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
+    protected $drupalDb;
     private $sqlResult = array();
     
     public function __construct()
@@ -35,14 +36,13 @@ class DisseminationServicesModel extends ArcheModel
     {
         try {
             $this->setSqlTimeout('60000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select * from gui.collection_views_func(:id);",
                 array(
                        'id' => $identifier
                     )
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_ASSOC);
-            $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->sqlResult = array();
@@ -50,5 +50,6 @@ class DisseminationServicesModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $this->sqlResult = array();
         }
+        $this->closeDBConnection();
     }
 }

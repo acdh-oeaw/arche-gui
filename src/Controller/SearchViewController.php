@@ -4,7 +4,6 @@ namespace Drupal\acdh_repo_gui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
-use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Model\SearchViewModel;
 use Drupal\acdh_repo_gui\Helper\SearchViewHelper;
 use Drupal\acdh_repo_gui\Helper\PagingHelper;
@@ -53,7 +52,7 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
             );
 
             $guiData = array('data' => $this->helper->createView($data['data'], 2), 'pagination' => $pagination);
-            $guiData['extra']['baseUrl'] = $this->repo->getBaseUrl();
+            $guiData['extra']['baseUrl'] = $this->repoDb->getBaseUrl();
             $ge = new \Drupal\acdh_repo_gui\Helper\GeneralFunctions();
             $guiData['extra']['clarinUrl'] = $ge->initClarinVcrUrl();
         } else {

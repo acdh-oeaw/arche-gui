@@ -33,7 +33,7 @@ class DetailViewHelper
         }
       
         $this->detailViewObjectArray = array();
-        $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repo, $this->siteLang);
+        $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repoDb, $this->siteLang);
         
         return $this->detailViewObjectArray;
     }

@@ -3,7 +3,6 @@
 namespace Drupal\acdh_repo_gui\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use acdhOeaw\arche\lib\Repo;
 use Drupal\acdh_repo_gui\Controller\RootViewController as RVC;
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 
@@ -19,7 +18,7 @@ class AcdhRepoGuiController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCo
     public function __construct()
     {
         parent::__construct();
-        $this->rootViewController = new RVC($this->repo);
+        $this->rootViewController = new RVC($this->repoDb);
         $this->generalFunctions = new GeneralFunctions();
     }
 

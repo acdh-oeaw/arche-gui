@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Drupal\Core\Url;
-use acdhOeaw\arche\lib\Repo;
 
 class AcdhRepoGuiConfigEventSubscriber implements EventSubscriberInterface
 {

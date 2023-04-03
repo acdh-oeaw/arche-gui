@@ -3,7 +3,7 @@
 namespace Drupal\acdh_repo_gui\Model;
 
 use Drupal\acdh_repo_gui\Model\ArcheModel;
-use acdhOeaw\arche\lib\Repo;
+use acdhOeaw\arche\lib\RepoDb;
 
 /**
  * Description of SearchViewModel
@@ -12,13 +12,15 @@ use acdhOeaw\arche\lib\Repo;
  */
 class SearchViewModel extends ArcheModel
 {
-    private $repolibDB;
+    
     private $sqlResult;
     private $siteLang;
     private $searchCfg;
     private $log;
     private $sqlParams;
     /* ordering */
+    protected $repoDb;
+    protected $drupalDb;
     protected $limit;
     protected $offset;
     protected $orderby;
@@ -34,10 +36,8 @@ class SearchViewModel extends ArcheModel
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
         
         $this->searchCfg = new \acdhOeaw\arche\lib\SearchConfig();
-        $this->repolibDB = \acdhOeaw\arche\lib\RepoDb::factory(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml', 'guest');
-        
         $this->log = new \zozlak\logging\Log(\Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/zozlaklog', \Psr\Log\LogLevel::DEBUG);
-        (isset($this->repo->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repo->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
+        (isset($this->repoDb->getSchema()->__get('namespaces')->ontology)) ? $this->namespace = $this->repoDb->getSchema()->__get('namespaces')->ontology : $this->namespace = 'https://vocabs.acdh.oeaw.ac.at/schema#';
     }
     
     private function setUpPayload(): void
@@ -65,7 +65,7 @@ class SearchViewModel extends ArcheModel
         try {
             $this->setSqlTimeout('60000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                     json_agg(
                         json_build_object(
@@ -88,12 +88,14 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->sqlResult = $query->fetchAll();
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         }
         
@@ -118,7 +120,7 @@ class SearchViewModel extends ArcheModel
         try {
             $this->setSqlTimeout('60000');
             //"select * from gui.search_full_func('Wollmilchsau', ARRAY [ 'https://vocabs.acdh.oeaw.ac.at/schema#Collection'], '%(2020|1997)%', 'en', '10', '0', 'desc', 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle');"
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select * from gui.search_full_v3_func(:wordStr, ".$sqlTypes.", :yearStr, :lang, :limit, :offset, :order, :order_prop, :binarySearch, ".$sqlCategory.");",
                 array(
                     ':wordStr' => (string)$sqlWords,
@@ -133,12 +135,14 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         }
        
@@ -264,7 +268,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                 id
                 from gui.search_count_words_view_func(:wordStr, :lang, ".$typeStr.", :yearStr)",
@@ -277,16 +281,18 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
             if (isset($return->id)) {
                 return (int)$return->id;
             }
             return 0;
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         }
     }
@@ -307,7 +313,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                 id
                 from gui.search_count_years_view_func(:yearStr, :lang, ".$typeStr.")",
@@ -318,16 +324,18 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
             if (isset($return->id)) {
                 return (int)$return->id;
             }
             return 0;
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         }
     }
@@ -348,7 +356,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "
                 SELECT 
                 id
@@ -360,16 +368,18 @@ class SearchViewModel extends ArcheModel
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
             );
             $return = $query->fetch();
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
             if (isset($return->id)) {
                 return (int)$return->id;
             }
             return 0;
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return 0;
         }
     }
@@ -398,7 +408,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                 *
                 from gui.search_words_view_func(
@@ -417,12 +427,14 @@ class SearchViewModel extends ArcheModel
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         }
     }
@@ -443,7 +455,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                 *
                 from gui.search_types_view_func(
@@ -461,12 +473,14 @@ class SearchViewModel extends ArcheModel
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         }
     }
@@ -490,7 +504,7 @@ class SearchViewModel extends ArcheModel
         
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                 *
                 from gui.search_years_view_func(
@@ -508,12 +522,14 @@ class SearchViewModel extends ArcheModel
             );
             
             $this->sqlResult = $query->fetchAll(\PDO::FETCH_CLASS);
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
         } catch (Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
+            $this->closeDBConnection();
             return array();
         }
     }

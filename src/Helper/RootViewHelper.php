@@ -4,7 +4,6 @@ namespace Drupal\acdh_repo_gui\Helper;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
 use Drupal\acdh_repo_gui\Object\ResourceObject;
-use acdhOeaw\acdhRepoLib\Repo;
 use acdhOeaw\acdhRepoDisserv\RepoResource as RR;
 
 /**
@@ -27,10 +26,10 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     private function setProperties()
     {
         $this->properties = array(
-            'acdhid' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repo->getSchema()->__get('id')),
-            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription"),
-            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repo->getSchema()->creationDate),
-            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repo->getSchema()->label)
+            'acdhid' => array('shortcut' => 'acdh:hasIdentifier', 'property' => $this->repoDb->getSchema()->__get('id')),
+            'description' => array('shortcut' => 'acdh:hasDescription', 'property' => $this->repoDb->getSchema()->__get('namespaces')->ontology."hasDescription"),
+            'avdate' => array('shortcut' => 'acdh:hasAvailableDate', 'property' => $this->repoDb->getSchema()->creationDate),
+            'title' => array('shortcut' => 'acdh:hasTitle', 'property' => $this->repoDb->getSchema()->label)
         );
     }
     
@@ -75,7 +74,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
         }
        
         foreach ($this->data as $k => $v) {
-            $this->rootViewObjectArray[] = new ResourceObject($v, $this->repo);
+            $this->rootViewObjectArray[] = new ResourceObject($v, $this->repoDb);
         }
         
         return $this->rootViewObjectArray;
@@ -96,9 +95,9 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
         $this->data[$k]['rdf:type'][$lang] = array(
             $this->createObj(
                 $v->id,
-                $this->repo->getSchema()->namespaces->rdfs.'type',
-                $this->repo->getSchema()->__get('namespaces')->ontology. "TopCollection",
-                $this->repo->getSchema()->__get('namespaces')->ontology. "TopCollection"
+                $this->repoDb->getSchema()->namespaces->rdfs.'type',
+                $this->repoDb->getSchema()->__get('namespaces')->ontology. "TopCollection",
+                $this->repoDb->getSchema()->__get('namespaces')->ontology. "TopCollection"
             )
         );
     }
@@ -141,7 +140,7 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
         $this->formatValuesToObject($data);
         
         foreach ($this->result as  $v) {
-            $this->rootViewObjectArray[] = new ResourceObject($v, $this->repo);
+            $this->rootViewObjectArray[] = new ResourceObject($v, $this->repoDb);
         }
         return $this->rootViewObjectArray;
     }
@@ -165,10 +164,10 @@ class RootViewHelper extends \Drupal\acdh_repo_gui\Helper\ArcheHelper
     {
         $this->viewProperties = [
             
-            'acdh:hasIdentifier' => $this->repo->getSchema()->__get('id'),
-            'acdh:hasTitle' => $this->repo->getSchema()->label,
-            'acdh:hasAvailableDate' =>  $this->repo->getSchema()->creationDate,
-            'acdh:hasDescription' => $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription",
+            'acdh:hasIdentifier' => $this->repoDb->getSchema()->__get('id'),
+            'acdh:hasTitle' => $this->repoDb->getSchema()->label,
+            'acdh:hasAvailableDate' =>  $this->repoDb->getSchema()->creationDate,
+            'acdh:hasDescription' => $this->repoDb->getSchema()->__get('namespaces')->ontology."hasDescription",
             'rdf:type' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
         ];
     }

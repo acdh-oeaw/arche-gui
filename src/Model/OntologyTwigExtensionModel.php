@@ -9,7 +9,8 @@ namespace Drupal\acdh_repo_gui\Model;
  */
 class OntologyTwigExtensionModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
+    protected $drupalDb;
     protected $siteLang;
     private $dbResult = array();
 
@@ -32,7 +33,7 @@ class OntologyTwigExtensionModel extends ArcheModel
     {
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select i.id, 
                 (select mv.value from metadata_view as mv where mv.id = i.id and mv.property = :avdate) 
                 from identifiers as i 
@@ -40,7 +41,7 @@ class OntologyTwigExtensionModel extends ArcheModel
                 i.ids = 'https://vocabs.acdh.oeaw.ac.at/schema' limit 1
                 ",
                 array(
-                        ':avdate' => $this->repo->getSchema()->creationDate
+                        ':avdate' => $this->repoDb->getSchema()->creationDate
                     )
             );
             $this->dbResult = $query->fetchAssoc();
@@ -49,7 +50,7 @@ class OntologyTwigExtensionModel extends ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $this->dbResult;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Helper;
 
-use acdhOeaw\arche\lib\Repo;
+use acdhOeaw\arche\lib\RepoDb;
 
 /**
  * Description of GeneralFunctions
@@ -12,12 +12,12 @@ use acdhOeaw\arche\lib\Repo;
 class GeneralFunctions
 {
     private $config;
-    private $repo;
+    private $repoDb;
     
     public function __construct($cfg = null)
     {
         ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
-        $this->repo = \acdhOeaw\arche\lib\Repo::factory($this->config);
+        $this->repoDb = \acdhOeaw\arche\lib\RepoDb::factory($this->config);
     }
     
     /**
@@ -40,9 +40,9 @@ class GeneralFunctions
                 if (strpos($data, '&') !== false) {
                     $pos = strpos($data, '&');
                     $data = substr($data, 0, $pos);
-                    return $this->repo->getBaseUrl().$data;
+                    return $this->repoDb->getBaseUrl().$data;
                 }
-                return $this->repo->getBaseUrl().$data;
+                return $this->repoDb->getBaseUrl().$data;
             }
             
             $data = explode(":", $data);
@@ -60,10 +60,10 @@ class GeneralFunctions
             
             switch (true) {
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/uuid/') !== false:
-                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/uuid/', $this->repo->getSchema()->namespaces->id.'uuid/');
+                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/uuid/', $this->repoDb->getSchema()->namespaces->id.'uuid/');
                     break;
                 case strpos($identifier, 'id.acdh.oeaw.ac.at/') !== false:
-                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/', $this->repo->getSchema()->namespaces->id);
+                    $identifier = $this->replaceIdString($identifier, 'id.acdh.oeaw.ac.at/', $this->repoDb->getSchema()->namespaces->id);
                     break;
                 case strpos($identifier, 'hdl.handle.net') !== false:
                     $identifier = $this->replaceIdString($identifier, 'hdl.handle.net/', 'http://hdl.handle.net/', true);
@@ -96,8 +96,8 @@ class GeneralFunctions
         if ($code == 1) {
             if (strpos($data, 'hdl.handle.net') !== false) {
                 $data = str_replace("http://", "", $data);
-            } elseif (strpos($data, $this->repo->getBaseUrl()) !== false) {
-                $data = str_replace($this->repo->getBaseUrl(), "", $data);
+            } elseif (strpos($data, $this->repoDb->getBaseUrl()) !== false) {
+                $data = str_replace($this->repoDb->getBaseUrl(), "", $data);
             } elseif (strpos($data, 'https') !== false) {
                 $data = str_replace("https://", "", $data);
             } else {
@@ -132,7 +132,7 @@ class GeneralFunctions
 
         if (count($idsByPid) > 0) {
             foreach ($idsByPid as $d) {
-                $return = $this->repo->getBaseUrl().$d->id;
+                $return = $this->repoDb->getBaseUrl().$d->id;
             }
         }
         return $return;
@@ -150,7 +150,7 @@ class GeneralFunctions
         $result = array();
         //internal id
         $repodb = \acdhOeaw\arche\lib\RepoDb::factory($this->config);
-        $repDiss = new \acdhOeaw\arche\lib\disserv\RepoResourceDb($this->repo->getBaseUrl().$id, $repodb);
+        $repDiss = new \acdhOeaw\arche\lib\disserv\RepoResourceDb($this->repoDb->getBaseUrl().$id, $repodb);
         try {
             $dissServ = array();
             $dissServ = $repDiss->getDissServices();
@@ -162,14 +162,14 @@ class GeneralFunctions
                     if (!isset($shown[$hash])) {
                         try {
                             //if the dissemination services has a title then i will use it, if not then the hasReturnType as a label
-                            if ($v->getGraph()->get($this->repo->getSchema()->label)->__toString()) {
-                                $k = $v->getGraph()->get($this->repo->getSchema()->label)->__toString();
+                            if ($v->getGraph()->get($this->repoDb->getSchema()->label)->__toString()) {
+                                $k = $v->getGraph()->get($this->repoDb->getSchema()->label)->__toString();
                             }
                             $result[$k]['uri'] = (string) $v->getRequest($repDiss)->getUri();
                             $result[$k]['title'] = (string) $k;
                             //if we have a description then we will use it
-                            if ($v->getGraph()->get($this->repo->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString()) {
-                                $result[$k]['description'] = $v->getGraph()->get($this->repo->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString();
+                            if ($v->getGraph()->get($this->repoDb->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString()) {
+                                $result[$k]['description'] = $v->getGraph()->get($this->repoDb->getSchema()->__get('namespaces')->ontology.'hasDescription')->__toString();
                             }
                             $shown[$hash] = true;
                         } catch (\Exception $ex) {
@@ -237,7 +237,7 @@ class GeneralFunctions
         $this->checkShibbolethGroup();
         $user = \Drupal\user\Entity\User::create();
         // Mandatory.
-        (!empty($email) ? $user->setPassword($this->createShibbiolethUserPwd(9)) : $user->setPassword($this->repo->getSchema()->__get('drupal')->shibbolethPwd));
+        (!empty($email) ? $user->setPassword($this->createShibbiolethUserPwd(9)) : $user->setPassword($this->repoDb->getSchema()->__get('drupal')->shibbolethPwd));
         $user->enforceIsNew();
         (!empty($email) ? $user->setEmail($email) : $user->setEmail('sh_guest@acdh.oeaw.ac.at'));
         (!empty($email) ? $user->setUsername($email) : $user->setUsername('shibboleth'));
@@ -306,8 +306,8 @@ class GeneralFunctions
     
     public function getRepoIdFromApiUrl(string $apiUrl): string
     {
-        if (strpos($apiUrl, $this->repo->getBaseUrl()) !== false) {
-            return str_replace($this->repo->getBaseUrl(), '', $apiUrl);
+        if (strpos($apiUrl, $this->repoDb->getBaseUrl()) !== false) {
+            return str_replace($this->repoDb->getBaseUrl(), '', $apiUrl);
         }
         return '';
     }

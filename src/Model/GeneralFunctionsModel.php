@@ -11,7 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class GeneralFunctionsModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repodDb;
+    protected $drupalDb;
     private $identifier;
     private $sqlResult = array();
     
@@ -45,7 +46,7 @@ class GeneralFunctionsModel extends ArcheModel
     {
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select id from identifiers where ids LIKE :id limit 1;",
                 array(
                     ':id' => '%'.$this->identifier.'%'
@@ -53,7 +54,7 @@ class GeneralFunctionsModel extends ArcheModel
             );
             
             $this->sqlResult = $query->fetchAll();
-            $this->changeBackDBConnection();
+            
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
@@ -61,6 +62,7 @@ class GeneralFunctionsModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }
+        $this->closeDBConnection();
         return $this->sqlResult;
     }
 }

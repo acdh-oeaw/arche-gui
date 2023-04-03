@@ -11,8 +11,9 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class BlocksModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
     protected $siteLang;
+    protected $drupalDb;
 
     public function __construct()
     {
@@ -60,7 +61,7 @@ class BlocksModel extends ArcheModel
         //run the actual query
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "
                 select count(value), value
                 from metadata 
@@ -76,7 +77,7 @@ class BlocksModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 
@@ -91,7 +92,7 @@ class BlocksModel extends ArcheModel
         //run the actual query
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "
                 select
                     count(EXTRACT(YEAR FROM to_date(value,'YYYY'))), 
@@ -108,7 +109,7 @@ class BlocksModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
     
@@ -121,7 +122,7 @@ class BlocksModel extends ArcheModel
     {
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "WITH RECURSIVE parent_subordinates AS (
                     SELECT
                         mv.id,
@@ -151,7 +152,7 @@ class BlocksModel extends ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $id;
     }
 
@@ -168,7 +169,7 @@ class BlocksModel extends ArcheModel
        
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select * from gui.getResourceVersion(:id, :lang) order by depth",
                 array(':id' => $id, ':lang' => $params['lang'])
             );
@@ -178,7 +179,7 @@ class BlocksModel extends ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 
@@ -187,7 +188,7 @@ class BlocksModel extends ArcheModel
         $result = array();
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select count(mv.value),  mv2.value, mv2.id
                 from metadata_view as mv
                 left join metadata_view as mv2 on mv2.id = CAST(mv.value as int)
@@ -197,8 +198,8 @@ class BlocksModel extends ArcheModel
                 group by mv2.value, mv2.id
                 order by mv2.value asc",
                 array(
-                    ':category' => $this->repo->getSchema()->__get('namespaces')->ontology.'hasCategory',
-                    ':title' => $this->repo->getSchema()->__get('label'),
+                    ':category' => $this->repoDb->getSchema()->__get('namespaces')->ontology.'hasCategory',
+                    ':title' => $this->repoDb->getSchema()->__get('label'),
                     ':lang' => $this->siteLang
                     )
             );
@@ -209,7 +210,7 @@ class BlocksModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 
@@ -222,10 +223,10 @@ class BlocksModel extends ArcheModel
         $result = new \stdClass();
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select max(value_t) from metadata where property  = :prop",
                 array(
-                    ':prop' => $this->repo->getSchema()->__get('modificationDate')
+                    ':prop' => $this->repoDb->getSchema()->__get('modificationDate')
                     )
             );
             $result = $query->fetch();
@@ -234,7 +235,7 @@ class BlocksModel extends ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 }

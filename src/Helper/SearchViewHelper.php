@@ -35,7 +35,7 @@ class SearchViewHelper
         }
 
         foreach ($this->data as $k => $v) {
-            $this->searchViewObjectArray[] = new ResourceObject($v, $this->repo);
+            $this->searchViewObjectArray[] = new ResourceObject($v, $this->repoDb);
         }
 
         return $this->searchViewObjectArray;
@@ -54,7 +54,7 @@ class SearchViewHelper
                     $this->data[$k]['acdh:hasIdentifier'][$this->objLang] = array(
                         $this->createObj(
                             $v->id,
-                            $this->repo->getSchema()->__get('id'),
+                            $this->repoDb->getSchema()->__get('id'),
                             $v->id,
                             $v->id
                         )
@@ -64,7 +64,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasTitle'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->label,
+                                $this->repoDb->getSchema()->label,
                                 $v->title,
                                 $v->title
                             )
@@ -74,7 +74,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAvailableDate'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->creationDate,
+                                $this->repoDb->getSchema()->creationDate,
                                 $v->avdate,
                                 $v->avdate
                             )
@@ -84,7 +84,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasDescription'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription",
+                                $this->repoDb->getSchema()->__get('namespaces')->ontology."hasDescription",
                                 $v->description,
                                 $v->description
                             )
@@ -94,7 +94,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAccessRestriction'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
+                                $this->repoDb->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accesres),
                                 $v->accesres
                             )
@@ -106,7 +106,7 @@ class SearchViewHelper
                         $this->data[$k]['rdf:type'][$this->objLang] = array(
                             $this->createObj(
                                 $v->id,
-                                $this->repo->getSchema()->namespaces->rdfs.'type',
+                                $this->repoDb->getSchema()->namespaces->rdfs.'type',
                                 $v->acdhtype,
                                 $v->acdhtype
                             )
@@ -269,7 +269,7 @@ class SearchViewHelper
                     $this->data[$k]['acdh:hasIdentifier'][$this->objLang] = array(
                         $this->createObj(
                             $v->acdhid,
-                            $this->repo->getSchema()->__get('id'),
+                            $this->repoDb->getSchema()->__get('id'),
                             $v->acdhid,
                             $v->acdhid
                         )
@@ -281,7 +281,7 @@ class SearchViewHelper
                             $this->data[$k]['acdh:hasIdentifier'][$this->objLang] = array(
                                 $this->createObj(
                                     $v->acdhid,
-                                    $this->repo->getSchema()->__get('id'),
+                                    $this->repoDb->getSchema()->__get('id'),
                                     $id,
                                     $id
                                 )
@@ -292,7 +292,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasTitle'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->label,
+                                $this->repoDb->getSchema()->label,
                                 $v->title,
                                 $v->title
                             )
@@ -302,7 +302,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAvailableDate'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->creationDate,
+                                $this->repoDb->getSchema()->creationDate,
                                 $v->avdate,
                                 $v->avdate
                             )
@@ -312,7 +312,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasDescription'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('namespaces')->ontology."hasDescription",
+                                $this->repoDb->getSchema()->__get('namespaces')->ontology."hasDescription",
                                 $v->description,
                                 $v->description
                             )
@@ -322,7 +322,7 @@ class SearchViewHelper
                         $this->data[$k]['acdh:hasAccessRestriction'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
+                                $this->repoDb->getSchema()->__get('namespaces')->ontology."hasAccessRestriction",
                                 str_replace("https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/", "", $v->accessres),
                                 $v->accessres
                             )
@@ -334,7 +334,7 @@ class SearchViewHelper
                         $this->data[$k]['rdf:type'][$this->objLang] = array(
                             $this->createObj(
                                 $v->acdhid,
-                                $this->repo->getSchema()->__get('namespaces')->rdfs . "type",
+                                $this->repoDb->getSchema()->__get('namespaces')->rdfs . "type",
                                 $v->acdhtype,
                                 $v->acdhtype
                             )

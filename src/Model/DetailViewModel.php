@@ -11,7 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class DetailViewModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
+    protected $drupalDb;
     protected $siteLang;
 
     public function __construct()
@@ -35,7 +36,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.detail_view_func(:id, :lang) order by property, lastname, relvalue, value", array(':id' => $identifier, ':lang' => $this->siteLang));
+            $query = $this->drupalDb->query(" select * from gui.detail_view_func(:id, :lang) order by property, lastname, relvalue, value", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -45,18 +46,19 @@ class DetailViewModel extends ArcheModel
             $result = array();
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 
     public function getViewDataLib(string $identifier = ""): object
     {
+        
         if (empty($identifier)) {
             return array();
         }
         
         try {
-            $res = new \acdhOeaw\arche\lib\RepoResource($identifier, $this->repo);
+            $res = new \acdhOeaw\arche\lib\RepoResource($identifier, $this->repoDb);
             $res->loadMetadata(true, \acdhOeaw\arche\lib\RepoResource::META_RELATIVES);
             return $res->getGraph();
         } catch (\Exception $ex) {
@@ -81,7 +83,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.breadcrumb_view_func(:id, :lang) order by depth desc ", array(':id' => $identifier, ':lang' => $this->siteLang));
+            $query = $this->drupalDb->query(" select * from gui.breadcrumb_view_func(:id, :lang) order by depth desc ", array(':id' => $identifier, ':lang' => $this->siteLang));
             $result = $query->fetchAll();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -90,7 +92,7 @@ class DetailViewModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 
@@ -105,7 +107,7 @@ class DetailViewModel extends ArcheModel
         try {
             $this->setSqlTimeout();
             //run the actual query
-            $query = $this->repodb->query(" select * from gui.ontology_func(:lang) ", array(':lang' => $this->siteLang));
+            $query = $this->drupalDb->query(" select * from gui.ontology_func(:lang) ", array(':lang' => $this->siteLang));
             $result = $query->fetchAll(\PDO::FETCH_CLASS);
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
@@ -114,7 +116,7 @@ class DetailViewModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             $result = array();
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $result;
     }
 }

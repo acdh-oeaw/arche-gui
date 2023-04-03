@@ -32,7 +32,7 @@ class DisseminationServicesHelper
     private function setRepoUrlId(string $identifier = '')
     {
         $this->repoid = $identifier;
-        $this->repoUrl = $this->repo->getBaseUrl() . $this->repoid;
+        $this->repoUrl = $this->repoDb->getBaseUrl() . $this->repoid;
     }
 
     /**
@@ -113,7 +113,7 @@ class DisseminationServicesHelper
     {
         foreach ($this->data as $k => $v) {
             $v['uri'] = $v['mainid'];
-            $v['uri_dl'] = $this->repo->getBaseUrl() . $v['mainid'];
+            $v['uri_dl'] = $this->repoDb->getBaseUrl() . $v['mainid'];
             $v['text'] = $v['title'];
             $v['resShortId'] = $v['mainid'];
             if ($v['accesres'] == 'public') {
@@ -128,7 +128,7 @@ class DisseminationServicesHelper
                 $v['icon'] = "jstree-file";
             }
             $v['accessRestriction'] = $v['accesres'];
-            $v['encodedUri'] = $this->repo->getBaseUrl() . $v['mainid'];
+            $v['encodedUri'] = $this->repoDb->getBaseUrl() . $v['mainid'];
             $this->data[$k] = $v;
         }
     }
@@ -152,7 +152,7 @@ class DisseminationServicesHelper
         $first = array(
             "mainid" => $identifier,
             "uri" => $identifier,
-            "uri_dl" => $this->repo->getBaseUrl() . $identifier,
+            "uri_dl" => $this->repoDb->getBaseUrl() . $identifier,
             "filename" => "main",
             "resShortId" => $identifier,
             "title" => $rootTitle,
@@ -161,7 +161,7 @@ class DisseminationServicesHelper
             "userAllowedToDL" => true,
             "dir" => true,
             "accessRestriction" => 'public',
-            "encodedUri" => $this->repo->getBaseUrl() . $identifier
+            "encodedUri" => $this->repoDb->getBaseUrl() . $identifier
         );
 
         $new = array();

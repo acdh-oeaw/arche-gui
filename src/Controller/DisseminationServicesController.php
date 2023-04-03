@@ -26,9 +26,9 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
     {
         parent::__construct();
         $this->model = new DisseminationServicesModel();
-        $this->helper = new DisseminationServicesHelper($this->repo);
+        $this->helper = new DisseminationServicesHelper($this->repoDb);
         $this->generalFunctions = new GeneralFunctions();
-        $this->detailViewController = new DVC($this->repo);
+        $this->detailViewController = new DVC($this->repoDb);
     }
 
     /**
@@ -93,7 +93,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         //RepoResource->getDissServ()['rawIIIf']->getUrl() -> when it is ready
         $lorisUrl = '';
 
-        $repoUrl = $this->repo->getBaseUrl() . $repoid;
+        $repoUrl = $this->repoDb->getBaseUrl() . $repoid;
         $result = $this->generateView($repoid, 'iiif');
         if (isset($result['lorisUrl']) && !empty($result['lorisUrl'])) {
             $lorisUrl = $result['lorisUrl'];
@@ -125,7 +125,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         $basic = array();
         $result = array();
         if (!empty($repoid)) {
-            $repoUrl = $this->repo->getBaseUrl() . $repoid;
+            $repoUrl = $this->repoDb->getBaseUrl() . $repoid;
             $result = $this->generateView($repoid, '3d');
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         }
@@ -155,7 +155,7 @@ class DisseminationServicesController extends \Drupal\acdh_repo_gui\Controller\A
         $basic = array();
         $repoUrl = "";
         if (!empty($repoid)) {
-            $repoUrl = $this->repo->getBaseUrl() . $repoid;
+            $repoUrl = $this->repoDb->getBaseUrl() . $repoid;
             $basic = $this->detailViewController->generateObjDataForDissService($repoUrl);
         }
 

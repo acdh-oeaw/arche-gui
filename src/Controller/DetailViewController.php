@@ -109,7 +109,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
     {
         $this->repoUrl = $identifier;
         //remove the url from the identifier just to have the repoid
-        $this->repoid = str_replace($this->repo->getBaseUrl(), '', $identifier);
+        $this->repoid = str_replace($this->repoDb->getBaseUrl(), '', $identifier);
         $dv = [];
 
         //get the detail view raw data from the database

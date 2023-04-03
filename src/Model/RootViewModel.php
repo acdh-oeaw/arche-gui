@@ -11,7 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class RootViewModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
+    protected $drupalDb;
     private $sqlResult;
     protected $siteLang = 'en';
     
@@ -55,7 +56,7 @@ class RootViewModel extends ArcheModel
 
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "SELECT 
                     id, title, avdate, string_agg(DISTINCT description, '.') as description, acdhid
                 from gui.root_views_func( :lang ) 
@@ -69,8 +70,6 @@ class RootViewModel extends ArcheModel
             );
 
             $this->sqlResult = $query->fetchAll();
-           
-            $this->changeBackDBConnection();
         } catch (\Exception $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
@@ -78,6 +77,7 @@ class RootViewModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return array();
         }
+        $this->closeDBConnection();
         return $this->sqlResult;
     }
 
@@ -90,9 +90,9 @@ class RootViewModel extends ArcheModel
         $result = array();
         try {
             $this->setSqlTimeout();
-            $query = $this->repodb->query("select id from gui.count_root_views_func();  ");
+            $query = $this->drupalDb->query("select id from gui.count_root_views_func();  ");
             $this->sqlResult = $query->fetch();
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
             if (isset($this->sqlResult->id)) {
                 return (int) $this->sqlResult->id;
             }

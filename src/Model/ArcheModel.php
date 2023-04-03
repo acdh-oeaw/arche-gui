@@ -2,7 +2,7 @@
 
 namespace Drupal\acdh_repo_gui\Model;
 
-use acdhOeaw\arche\lib\Repo;
+use acdhOeaw\arche\lib\RepoDb;
 
 /**
  * Description of ArcheModel
@@ -11,9 +11,9 @@ use acdhOeaw\arche\lib\Repo;
  */
 abstract class ArcheModel
 {
-    protected $repodb;
     protected $config;
-    protected $repo;
+    protected $repoDb;
+    protected $drupalDb;
     protected $limit;
     protected $order;
     protected $offset;
@@ -22,13 +22,11 @@ abstract class ArcheModel
     {
         $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui') . '/config/config.yaml';
         try {
-            $this->repo = \acdhOeaw\arche\lib\Repo::factory($this->config);
+            $this->repoDb = \acdhOeaw\arche\lib\RepoDb::factory($this->config);
         } catch (\Exception $ex) {
             \Drupal::messenger()->addWarning('Error during the BaseController initialization! '.$ex->getMessage());
             return array();
         }
-        //set up the DB connections
-        $this->setActiveConnection();
     }
 
     /**
@@ -37,12 +35,12 @@ abstract class ArcheModel
     protected function setActiveConnection()
     {
         \Drupal\Core\Database\Database::setActiveConnection('repo');
-        $this->repodb = \Drupal\Core\Database\Database::getConnection('repo');
+        $this->drupalDb = \Drupal\Core\Database\Database::getConnection('repo');
     }
 
-    protected function changeBackDBConnection()
+    protected function closeDBConnection()
     {
-        \Drupal\Core\Database\Database::setActiveConnection();
+        \Drupal\Core\Database\Database::closeConnection('repo');
     }
 
     /**
@@ -54,7 +52,7 @@ abstract class ArcheModel
         $this->setActiveConnection();
 
         try {
-            $this->repodb->query(
+            $this->drupalDb->query(
                 "SET statement_timeout TO :timeout;",
                 array(':timeout' => $timeout)
             )->fetch();
@@ -63,6 +61,7 @@ abstract class ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
+        
     }
 
     /**
@@ -131,14 +130,14 @@ abstract class ArcheModel
     protected function ordering(string $orderby = "titleasc"): object
     {
         $result = new \stdClass();
-        $result->property = $this->repo->getSchema()->label;
+        $result->property = $this->repoDb->getSchema()->label;
         $result->order = 'asc';
 
         if ($orderby == "titleasc") {
-            $result->property = $this->repo->getSchema()->label;
+            $result->property = $this->repoDb->getSchema()->label;
             $result->order = 'asc';
         } elseif ($orderby == "titledesc") {
-            $result->property = $this->repo->getSchema()->label;
+            $result->property = $this->repoDb->getSchema()->label;
             $result->order = 'desc';
         } elseif ($orderby == "dateasc") {
             $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
@@ -147,10 +146,10 @@ abstract class ArcheModel
             $result->property = 'http://fedora.info/definitions/v4/repository#lastModified';
             $result->order = 'desc';
         } elseif ($orderby == "typeasc") {
-            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
+            $result->property = $this->repoDb->getSchema()->__get('namespaces')->rdfs . 'type';
             $result->order = 'asc';
         } elseif ($orderby == "typedesc") {
-            $result->property = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
+            $result->property = $this->repoDb->getSchema()->__get('namespaces')->rdfs . 'type';
             $result->order = 'desc';
         }
         return $result;

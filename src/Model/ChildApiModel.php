@@ -11,7 +11,8 @@ use Drupal\acdh_repo_gui\Model\ArcheModel;
  */
 class ChildApiModel extends ArcheModel
 {
-    protected $repodb;
+    protected $repoDb;
+    protected $drupalDb;
     private $data = array();
     private $childProperties = array();
     private $rootAcdhType;
@@ -27,32 +28,32 @@ class ChildApiModel extends ArcheModel
     private function getOrganisationTypes(): array
     {
         return array(
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasFunder',
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasOwner', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasLicensor',
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasRightsHolder'
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasFunder',
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasOwner', $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasLicensor',
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasRightsHolder'
         );
     }
 
     private function getPublicationTypes(): array
     {
         return array(
-            $this->repo->getSchema()->parent
+            $this->repoDb->getSchema()->parent
         );
     }
 
     private function getPersonTypes(): array
     {
         return array(
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasCreator',
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasAuthor', $this->repo->getSchema()->__get('namespaces')->ontology . 'hasEditor',
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasPrincipalInvestigator'
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasContributor', $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasCreator',
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasAuthor', $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasEditor',
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasPrincipalInvestigator'
         );
     }
 
     private function getProjectTypes(): array
     {
         return array(
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasRelatedProject'
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasRelatedProject'
         );
     }
 
@@ -66,21 +67,21 @@ class ChildApiModel extends ArcheModel
     private function getInstituteTypes(): array
     {
         return array(
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasMember'
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasMember'
         );
     }
 
     private function getPlaceTypes(): array
     {
         return array(
-            $this->repo->getSchema()->__get('namespaces')->ontology . 'hasSpatialCoverage'
+            $this->repoDb->getSchema()->__get('namespaces')->ontology . 'hasSpatialCoverage'
         );
     }
 
     private function getChildTypes(): array
     {
         return array(
-            $this->repo->getSchema()->parent
+            $this->repoDb->getSchema()->parent
         );
     }
 
@@ -112,7 +113,7 @@ class ChildApiModel extends ArcheModel
         try {
             $this->setSqlTimeout('30000');
             // distinct is removing the ordering
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select id, title, avdate, description, accesres, titleimage, acdhtype, version from gui.child_views_func(:id, :limit, :page, :order, :orderprop, :lang, $this->sqlTypes);",
                 array(
                         ':id' => $identifier,
@@ -133,7 +134,7 @@ class ChildApiModel extends ArcheModel
             $this->data = array();
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return $this->data;
     }
 
@@ -145,12 +146,12 @@ class ChildApiModel extends ArcheModel
     public function getCount(string $identifier): int
     {
         if (empty($this->sqlTypes)) {
-            $this->sqlTypes = "ARRAY['" . $this->repo->getSchema()->parent . "']";
+            $this->sqlTypes = "ARRAY['" . $this->repoDb->getSchema()->parent . "']";
         }
 
         try {
             $this->setSqlTimeout('10000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select * from gui.child_sum_views_func(:id, $this->sqlTypes);",
                 array(
                         ':id' => $identifier
@@ -159,7 +160,7 @@ class ChildApiModel extends ArcheModel
             );
             $result = $query->fetch();
 
-            $this->changeBackDBConnection();
+            $this->closeDBConnection();
             if (isset($result->countid)) {
                 return (int) $result->countid;
             }
@@ -170,7 +171,7 @@ class ChildApiModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
             return 0;
         }
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return 0;
     }
 
@@ -182,11 +183,11 @@ class ChildApiModel extends ArcheModel
      */
     private function getProperties(string $repoid): string
     {
-        $rdf = $this->repo->getSchema()->__get('namespaces')->rdfs . 'type';
+        $rdf = $this->repoDb->getSchema()->__get('namespaces')->rdfs . 'type';
 
         try {
             $this->setSqlTimeout('30000');
-            $query = $this->repodb->query(
+            $query = $this->drupalDb->query(
                 "select value from metadata_view where id = :id and property = '" . $rdf . "' and value like '%/vocabs.acdh.oeaw.ac.at/schema#%' limit 1",
                 array(':id' => $repoid),
                 ['allow_delimiter_in_query' => true, 'allow_square_brackets' => true]
@@ -202,7 +203,7 @@ class ChildApiModel extends ArcheModel
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
 
-        $this->changeBackDBConnection();
+        $this->closeDBConnection();
         return '';
     }
 
@@ -218,7 +219,7 @@ class ChildApiModel extends ArcheModel
         $this->rootAcdhType = $class;
 
         if (!empty($class)) {
-            $class = strtolower(str_replace($this->repo->getSchema()->__get('namespaces')->ontology, '', $class));
+            $class = strtolower(str_replace($this->repoDb->getSchema()->__get('namespaces')->ontology, '', $class));
         }
         $this->checkChildProperties($class);
 

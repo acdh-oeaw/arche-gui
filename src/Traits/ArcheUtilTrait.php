@@ -3,7 +3,7 @@
 namespace Drupal\acdh_repo_gui\Traits;
 
 use Drupal\acdh_repo_gui\Helper\GeneralFunctions;
-use acdhOeaw\arche\lib\Repo;
+use acdhOeaw\arche\lib\RepoDb;
 use Drupal\acdh_repo_gui\Helper\ArcheHelper as Helper;
 
 /**
@@ -15,14 +15,14 @@ trait ArcheUtilTrait
 {
     protected $generalFunctions;
     protected $config;
-    protected $repo;
+    protected $repoDb;
     protected $siteLang;
    
     public function __construct($cfg = null)
     {
         ($cfg && is_string($cfg)) ?  $this->config = $cfg : $this->config = \Drupal::service('extension.list.module')->getPath('acdh_repo_gui').'/config/config.yaml';
         $this->generalFunctions = new GeneralFunctions($this->config);
-        $this->repo = Repo::factory($this->config);
+        $this->repoDb = RepoDb::factory($this->config);
         (isset($_SESSION['language'])) ? $this->siteLang = strtolower($_SESSION['language'])  : $this->siteLang = "en";
     }
    
@@ -201,7 +201,7 @@ trait ArcheUtilTrait
         $arr = array();
        
         foreach ($data as $k => $v) {
-            $arr[] = new \Drupal\acdh_repo_gui\Object\ResourceObject($v, $this->repo);
+            $arr[] = new \Drupal\acdh_repo_gui\Object\ResourceObject($v, $this->repoDb);
         }
         return $arr;
     }
@@ -240,8 +240,8 @@ trait ArcheUtilTrait
     {
         $result = array();
         for ($i = 0; $i <= count($obj); $i++) {
-            if (isset($obj[$i][$this->repo->getSchema()->id])) {
-                $id = $this->getResourceRepoIdentifier($obj[$i][$this->repo->getSchema()->id]);
+            if (isset($obj[$i][$this->repoDb->getSchema()->id])) {
+                $id = $this->getResourceRepoIdentifier($obj[$i][$this->repoDb->getSchema()->id]);
                 if (!empty($id)) {
                     foreach ($obj[$i] as $ok => $ov) {
                         $sc = Helper::createShortcut($ok);
