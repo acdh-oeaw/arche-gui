@@ -52,7 +52,6 @@ class DetailViewModel extends ArcheModel
 
     public function getViewDataLib(string $identifier = ""): object
     {
-        
         if (empty($identifier)) {
             return array();
         }

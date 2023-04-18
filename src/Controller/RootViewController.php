@@ -9,7 +9,6 @@ namespace Drupal\acdh_repo_gui\Controller;
  */
 class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
 {
-  
     public function __construct()
     {
         parent::__construct();
@@ -37,5 +36,4 @@ class RootViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseContr
             '#cache' => ['max-age' => 0]
         ];
     }
-   
 }
