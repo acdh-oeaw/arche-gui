@@ -34,11 +34,7 @@ class ArcheVersionsBlock extends BlockBase
             '#theme' => 'acdh-repo-gui-detail-versions-block-empty',
             '#result' => "",
             '#cache' => ['max-age' => 0],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles',
-                ]
-            ]
+            
         ];
     }
 

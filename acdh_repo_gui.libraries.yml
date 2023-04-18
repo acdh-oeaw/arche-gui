@@ -3,7 +3,7 @@ repo-styles:
     header: true
     css:
         base:
-            css/acdh_repo_gui.css: {}
+            css/arche.css: {}
             css/dataTables.bootstrap4.min.css: {}
             css/font-awesome/css/font-awesome.min.css: {}
             css/jqtree/themes/default/style.min.css: {}
@@ -14,8 +14,8 @@ repo-styles:
         js/citation-js-0.5.0.min.js: {}
         js/acdh_repo_gui.js: {}
         js/acdh_repo_gui_detail_view.js: {}
-        js/jquery.dataTables.min.js: {}
         js/jstree.min.js: {}
+        js/jquery.dataTables.min.js: {}
         js/dataTables.bootstrap4.min.js: {}
         js/datatable_init.js: {}
         js/acdh_repo_gui_pager.js: {}
@@ -29,12 +29,39 @@ repo-styles:
         - core/drupal
         - core/drupal.form
         
+repo-detail-api:
+    version: 1.0.1
+    header: true
+    css:
+        base:
+            css/arche.css: {}
+            css/dataTables.bootstrap4.min.css: {}
+            css/font-awesome/css/font-awesome.min.css: {}
+            css/jqtree/themes/default/style.min.css: {}
+            css/lightbox.css: {}
+            css/leaflet.css: {}
+    js:
+        js/jquery-1.12.3.min.js: {}
+        js/citation-js-0.5.0.min.js: {}
+        js/jstree.min.js: {}
+        js/jquery.dataTables.min.js: {}
+        js/dataTables.bootstrap4.min.js: {}
+        js/lightbox.js: {}
+        js/leaflet.js: {}
+        js/wicket.js: {}
+        js/wicket-leaflet.js: {}
+        js/vcrSubmit.js: {}
+        js/api_search.js: {}
+        js/arche_detail_api.js: {}
+    dependencies:
+        - core/drupal
+        - core/drupal.form
 
 repo-search:
     version: 1.0.1
     css:
         base:
-            css/acdh_repo_gui.css: {}
+            css/arche.css: {}
             css/font-awesome/css/font-awesome.min.css: {}
             css/lightbox.css: {}
     js:        
@@ -43,6 +70,7 @@ repo-search:
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
         js/search.js: {}
+        js/api_search.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -52,14 +80,17 @@ repo-root-view:
     version: 1.0.1
     css:
         base:
-            css/acdh_repo_gui.css: {}
+            css/arche.css: {}
             css/lightbox.css: {}
+            css/dataTables.bootstrap4.min.css: {}
     js:
         js/jquery-1.12.3.min.js: {}
-        js/acdh_repo_gui_pager.js: {}
+        js/jquery.dataTables.min.js: {}
+        js/dataTables.bootstrap4.min.js: {}
+        js/acdh_repo_gui.js: {}
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
+        js/api_search.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form  

@@ -1,0 +1,41 @@
+
+<div class="child-header">
+    <div class="res-el res-info res-child-info col-block col-lg-12">
+        <div class="result-basic-info">
+            <span class="results-info-bar" id="childTitle">
+
+            </span>
+            <div class="res-act-button res-act-button-reverse res-act-button-treeview basic" style="text-align:left; margin-bottom:5px; display: none;">
+                <i class="material-icons"></i>
+                <span>Switch to Tree-View</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="child-view-table">
+    <table class="child-table table row-border" cellspacing="0" width="100%">
+        <div style="font-size: 14px; font-weight: bold;">
+            <label>{{ "Order the result by"|trans }}:</label>
+            <select name="sortBy" id="sortBy" class="form-control form-control-sm">
+                <option value="1-0">{{ "Title (ASC)"|trans }}</option>        
+                <option value="1-1">{{ "Title (DESC)"|trans }}</option>           
+            </select>
+        </div>
+        <br>
+        <thead >
+            <tr>
+                <th>{{ "title"|trans }}</th>
+                <th>{{ "image"|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>    
+<div class="children-overview children-overview-tree">
+    <div id="content_collection">
+        <div id="child-tree" class="collectionBrowser_css"></div>
+    </div>            
+</div>        
+

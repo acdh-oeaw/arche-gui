@@ -61,6 +61,7 @@ abstract class ArcheModel
         } catch (\Drupal\Core\Database\DatabaseExceptionWrapper $ex) {
             \Drupal::logger('acdh_repo_gui')->notice($ex->getMessage());
         }
+        
     }
 
     /**

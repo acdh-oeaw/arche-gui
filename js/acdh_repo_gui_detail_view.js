@@ -40,7 +40,6 @@ jQuery(function ($) {
             audio.addEventListener('error', function (e) {
                 var noSourcesLoaded = (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
                 if (noSourcesLoaded) {
-                    console.log("could not load audio source");
                     $('#arche-audio-player').hide();
                     $('.arche-audio-player-container').html(Drupal.t('Could not load audio source!')).addClass('messages messages--error');
                 }
@@ -197,54 +196,54 @@ jQuery(function ($) {
         let contentId = id.replace('cite-tab-', 'highlight-');
         $('#' + contentId).removeClass('hidden').addClass('selected');
     }
-    
+
     function showVersions() {
         $(".loader-versions-div").show();
         var acdhid = $('#insideUri').val();
         $.ajax({
-                url: '/browser/api/versions_list/' + acdhid + '/en',
-                type: "GET",
-                success: function (data, status) {
-                    $(".loader-versions-div").hide();
-                    $('.versions-block-div').html(data);
-                    
-                },
-                error: function (message) {
-                    $(".loader-versions-div").hide();
-                    console.log('error');
-                    console.log(message);
-                } 
+            url: '/browser/api/versions_list/' + acdhid + '/en',
+            type: "GET",
+            success: function (data, status) {
+                $(".loader-versions-div").hide();
+                $('.versions-block-div').html(data);
+
+            },
+            error: function (message) {
+                $(".loader-versions-div").hide();
+                console.log('versions error');
+                console.log(message);
+            }
         });
     }
-    
+
     function showVersionsAlert() {
         var acdhid = $('#insideUri').val();
         $.ajax({
-                url: '/browser/api/versions_alert/' + acdhid + '/en',
-                type: "GET",
-                success: function (data, status) {
-                    if(data != null) {
-                        $(".versions-detail-block").html(data);
-                    }
-                },
-                error: function (message) {
-                } 
+            url: '/browser/api/versions_alert/' + acdhid + '/en',
+            type: "GET",
+            success: function (data, status) {
+                if (data != null) {
+                    $(".versions-detail-block").html(data);
+                }
+            },
+            error: function (message) {
+            }
         });
     }
-        
+
     //get related publications and resources table
     function getRPRData() {
-        if(window.location.href.indexOf("browser/oeaw_detail/") >= 0 ){
-            
+        if (window.location.href.indexOf("browser/oeaw_detail/") >= 0) {
+
             $('#rprTableDiv').show("slow");
             $('#showRPR').parent().hide("slow");
             let id = $('#insideUri').val();
 
-            if(id !== undefined){
+            if (id !== undefined) {
                 $('table.rprTable').DataTable({
                     "ajax": {
-                        "url": "/browser/api/getRPR/"+id+"/en",
-                        "data": function ( d ) {
+                        "url": "/browser/api/getRPR/" + id + "/en",
+                        "data": function (d) {
                             d.limit = d.draw;
                         },
                         error: function (xhr, error, code)
@@ -277,16 +276,16 @@ jQuery(function ($) {
             handleCiteTabEvents($(this), $("#cite-selector-div").find(".selected").attr('id'));
         });
     }
-    
+
     function getInverseData() {
-        
+
         var uri = $('#showInverse').data('tableuri');
         //genereate the data
-        if(uri) {
+        if (uri) {
             $('table.inverseTable').DataTable({
                 "ajax": {
-                    "url": "/browser/api/getInverseData/"+uri,
-                    "data": function ( d ) {
+                    "url": "/browser/api/getInverseData/" + uri,
+                    "data": function (d) {
                         d.limit = d.draw;
                     }
                 },
@@ -294,19 +293,22 @@ jQuery(function ($) {
             });
         }
     }
-    
+
     function gethasActorData() {
-        if($('#insideUri').val()) {
+        if ($('#insideUri').val()) {
             $('#values-by-property-and-id-table').DataTable({
                 "paging": true,
                 "searching": true,
                 "pageLength": 10,
                 "processing": true,
+                'language': {
+                    "processing": "<img src='/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif' />"
+                },
                 "serverSide": true,
                 "serverMethod": "post",
                 "fixedColumns": true,
-                "ajax": "/browser/api/getHasActors/" + $('#insideUri').val()+"/en",
-                'columns': [                    
+                "ajax": "/browser/api/getHasActors/" + $('#insideUri').val() + "/en",
+                'columns': [
                     {data: 'title'},
                     {data: 'property'}
                 ]
@@ -318,13 +320,13 @@ jQuery(function ($) {
         /** add hasTitle value for the document title in every detail view **/
         reloadAjaxDivs();
         gethasActorData();
-        
+
         getInverseData();
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */
         if (window.location.href.indexOf("browser/oeaw_detail/") >= 0) {
-            
+
             showVersionsAlert();
             $(document).delegate("a#archeHref", "click", function (e) {
                 var reloadTable = false;
@@ -449,10 +451,10 @@ jQuery(function ($) {
                     if (node.originalEvent.target.id) {
                         var node = $('#child-tree').jstree(true).get_node(node.originalEvent.target.id);
                         if (node.original.uri) {
-                            if(cntrlIsPressed)
+                            if (cntrlIsPressed)
                             {
-                                window.open( "/browser/oeaw_detail/" + node.original.uri, '_blank');
-                            }else {
+                                window.open("/browser/oeaw_detail/" + node.original.uri, '_blank');
+                            } else {
                                 window.location.href = "/browser/oeaw_detail/" + node.original.uri;
                             }
                         }
@@ -469,7 +471,7 @@ jQuery(function ($) {
             $(this).children('span').text(Drupal.t('Switch to Tree-View'));
         }
     });
-    
+
     $(document).delegate(".res-act-button-versions-treeview", "click", function (e) {
         if ($(this).hasClass('basic')) {
             $('.versions-list-view').hide();
@@ -498,21 +500,21 @@ jQuery(function ($) {
                         },
                         themes: {stripes: true},
                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('error');
+                            console.log('versions tree error');
                             $('#versions-tree').html("<h3>Error: </h3><p>" + jqXHR.reason + "</p>");
                         }
                     }
                 });
-              
+
 
                 $('#versions-tree').bind("click.jstree", function (node, data) {
                     if (node.originalEvent.target.id) {
                         var node = $('#versions-tree').jstree(true).get_node(node.originalEvent.target.id);
                         if (node.id) {
-                            if(cntrlIsPressed)
+                            if (cntrlIsPressed)
                             {
-                                window.open( "/browser/oeaw_detail/" + node.id, '_blank');
-                            }else {
+                                window.open("/browser/oeaw_detail/" + node.id, '_blank');
+                            } else {
                                 window.location.href = "/browser/oeaw_detail/" + node.id;
                             }
                         }
@@ -528,7 +530,7 @@ jQuery(function ($) {
             $(this).children('span').text(Drupal.t('Show as Tree'));
         }
     });
-    
-    
+
+
 });
 

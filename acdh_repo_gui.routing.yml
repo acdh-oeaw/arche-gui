@@ -114,3 +114,14 @@ repo_shibboleth_login:
         _permission: 'access content'
     options:
         no_cache: 'TRUE'
+        
+arche_detail_overview_api:
+    path: '/api/gui/overview/{identifier}/{lang}'
+    defaults:
+        _controller: '\Drupal\acdh_repo_gui\Controller\DetailViewController::detailOverviewApi'
+    requirements:
+        identifier: '^[^\?]*$'
+        _permission: 'access content'
+        _access: 'TRUE'      
+    options:
+        no_cache: 'TRUE'    

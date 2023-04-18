@@ -1,0 +1,80 @@
+
+
+{% set accesResVal = 'public' %}
+{%  if accessRestriction  is iterable %}
+    {% for key,value in accessRestriction if not break %}
+        {% set accesResVal = value|replace({'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/': ''}) %}
+    {% endfor%}
+{% endif%} 
+<input type="hidden" id="accessRestriction" value="{{ accesResVal }}" >
+
+<div class="arche-detail-dissemination" id="arche-dv-dissemination">
+
+    {% if result %}
+        <h3 class="single-res-heading">{{ "Dissemination Services"|trans }}</h3>
+        <div class="res-property">
+            <i class="material-icons">&#xE89F;</i>
+            {% for key, value in result %}
+
+                {%  if (logged_in is empty)  %}                    
+                    <input type="hidden" id="userLoggedIn" value="no" >
+                {% endif %} 
+
+                {% set dissUri  = value.uri %}
+                {%  if ( (accesResVal == 'restricted' or accesResVal == 'eingeschränkt') and (key != "gui" or key != "raw") )  %}
+                    {% set dissUri  = '' %}
+                {% endif %} 
+
+                <div class="res-act-button">
+                    <a href="{{ dissUri }}" title="{{ value.description }}" class="dissServAhref" >
+                        <span>{{ value.title|trans }}</span>
+                    </a>
+                </div>
+            {% endfor %} 
+            
+            {% if isPDF %}
+                <div class="res-act-button">
+                    <a href="#" title="{{ pdf }}" id="pdfViewerBtn" data-toggle="modal" data-target="#pdfModal">
+                        <span>{{ 'PDF Viewer'|trans }}</span>
+                    </a>
+                </div>
+            {% endif %}
+            
+            {% if isAudio %}
+                <div class="res-act-button">
+                    <a href="#" title="{{ 'Audio Player'|trans }}" id="audioPlayerBtn" data-toggle="modal" data-target="#audioModal">
+                        <span>{{ 'Audio Player'|trans }}</span>
+                    </a>
+                </div>
+            {% endif %}
+            
+            {%  if clarinVCRUrl %}
+                {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-vcr.html.twig', {'data':  basic.0.getVCRData(), 'url': clarinVCRUrl }) }}
+            {% endif%} 
+
+        </div>
+
+        <div id="shibboleth_login_info" class="shibboleth_login_info" style="display:none"></div>
+
+        <!-- DISS LOGIN FORM START  -->
+        <div id="dissServLoginform" style='display:none'>
+            <div id="loginInfo">
+                {{ "Click here to login with your federated account"|trans }} 
+                <a class="shibboleth" href="/browser/federated_login"><i class="fa fa-sign-in" aria-hidden="true"></i></a>     
+                <br>
+                {{ "or" }}
+                <br>
+                {{ "Please provide your login credentials"|trans }}
+            </div>
+            <div id="loginErrorDiv"></div>
+            <input type="text" id="username" placeholder="username" name="username">
+            <input type="password" id="password" name="password" placeholder="password">
+            <div>
+                <input type = "submit" id = "dologin" value = "Login">
+                <input type = "submit" id = "cancelLogin" value = "Cancel">
+            </div>
+        </div>
+        <!-- DISS LOGIN FORM END  -->
+    {% endif %}  
+
+</div>

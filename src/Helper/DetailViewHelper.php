@@ -37,4 +37,28 @@ class DetailViewHelper
         
         return $this->detailViewObjectArray;
     }
+    
+     
+    /**
+     * Do the API call ti fetch the detail view data
+     * @param string $id
+     * @return array
+     */
+    public function overviewObj(string $id): array {
+      
+        $client = new \GuzzleHttp\Client();
+        try {
+          $response = $client->get(str_replace('/api/', '', $this->repoDb->getBaseUrl()).'/browser/api/overview/'.$id.'/en');
+          
+         
+          $data = json_decode($response->getBody(), TRUE);
+          $this->data = json_decode(json_encode($data));
+          $this->extendActualObj();
+          $this->detailViewObjectArray[] = new ResourceObject($this->data, $this->repoDb, $this->siteLang);
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e) {
+          return [];
+        }
+        return $this->detailViewObjectArray; 
+    }
 }

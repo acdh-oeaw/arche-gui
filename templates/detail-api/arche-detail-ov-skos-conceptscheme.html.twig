@@ -1,0 +1,69 @@
+
+{% set properties = {
+    'dc:description': {
+        'icon': 'label',
+        'label': 'Description'
+    },
+    'acdh:hasNumberOfItems': {
+        'icon': 'attachment',
+        'label': 'Number of Items'
+    }
+}
+%}
+
+<div class="arche-detail-view" >
+    <div class="arche-detail-main" id="arche-dv-main">
+        {% set titleimage = basic.getTitleImage() %}        
+        {% if titleimage %}
+            <div class='row'>
+                <div class="res-inside-wrap col-lg-8 ">
+        {% endif%}
+
+            <div class="res-property">
+                <span class="res-title detail-title-span">
+                    {%  if basic.getData('dc:title') %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('dc:title'), 'type': value.type } ) }}            
+                    {%  elseif basic.getData('rdfs:label') %}
+                        {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData('rdfs:label'), 'type': value.type } ) }}            
+                    {% endif%}  
+
+                </span>
+            </div>
+
+            {% if basic.getSkosType() %}
+                <div class="res-property">
+                    <i class="material-icons">&#xE54E;</i>
+                    <span class="res-prop-label">{{ "Type"|trans }}:</span> 
+                    <span class="res-prop-value">
+                        {{ basic.getSkosType() }}
+                    </span>
+                </div>
+            {% endif%}
+
+            {%  if basic.getNonAcdhIdentifiers() %}
+                <div class="res-property">
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getNonAcdhIdentifiers(), 'icon': "label", 'label': "Identifier(s)" } ) }}
+                </div>
+            {% endif%}
+
+            {% for key, value in properties %}
+                {% if basic.getData(key) %}
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': basic.getData(key), 'icon': value.icon, 'label':  value.label, 'type': value.type, 'dateformat': value.dateformat, 'delimiter': value.delimiter } ) }}
+                {% endif%}
+            {% endfor %}
+
+
+            {% if titleimage %}</div>{% endif%}
+
+            {% if titleimage %}	
+                    <div class="res-inside-wrap col-lg-4 ">	
+                        <div class="single-res-thumb">
+                            <a href="/browser/oeaw_detail/{{ basic.getRepoId() }}">
+                                {{ titleimage|raw }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif%}
+    </div>
+</div>    

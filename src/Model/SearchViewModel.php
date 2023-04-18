@@ -12,6 +12,7 @@ use acdhOeaw\arche\lib\RepoDb;
  */
 class SearchViewModel extends ArcheModel
 {
+    
     private $sqlResult;
     private $siteLang;
     private $searchCfg;

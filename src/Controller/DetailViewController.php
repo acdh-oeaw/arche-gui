@@ -155,6 +155,16 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         }
     }
 
+    private function setToolTipApi(): object
+    {
+        //get the tooltip
+        $tooltip = $this->model->getTooltipOntology();
+        if (count($tooltip) > 0) {
+            return new \Drupal\acdh_repo_gui\Object\ToolTipObject($tooltip);
+        }
+        return new \stdClass();
+    }
+
     /**
      * Generate the basic metadata for the root resource/collection in the dissemination services view
      *
@@ -189,17 +199,72 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         return $child->generateView($this->repoid, '10', '0', 'titleasc');
     }
     
+    
+    
+    /**
+     * Detail view for the API Call template
+     * @param string $identifier
+     * @return array
+     */
     public function detailMain(string $identifier): array
     {
+        $id = $identifier;
+        //we have ti handle hier the handle urls and not just the IDs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
+        
         return $return = [
-            '#theme' => 'arche-detail-main',
-            '#basic' => [],
+            '#theme' => 'acdh-repo-gui-detail-api',
+            '#helper' => array("identifier" => $identifier, 'acdhid' => $id),
             '#cache' => ['max-age' => 0],
             '#attached' => [
                 'library' => [
-                    'acdh_repo_gui/arche-detail-main-styles',
+                    'acdh_repo_gui/repo-detail-api',
                 ]
             ]
         ];
     }
+    
+    /**
+     * Detail view template for the generated API call results.
+     * @param string $identifier
+     * @param string $lang
+     * @return Response
+     */
+    public function detailOverviewApi(string $identifier, string $lang): Response
+    {
+        $id = $identifier;
+        //we have ti handle hier the handle urls and not just the IDs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        $identifier = $this->generalFunctions->detailViewUrlDecodeEncode($identifier, 0);
+        
+        $result = [];
+        $result = $this->helper->overviewObj($id);
+       
+        $diss = $this->generalFunctions->getDissServices($id);
+       
+        if(count($result) === 0) {
+            return new Response(\json_encode(array("There is no data")), 404, ['Content-Type' => 'application/json']);
+        }
+        
+        $build = [
+            '#theme' => 'arche-detail-overview',
+            '#basic' => $result,
+            '#tooltip' => $this->setToolTipApi(),
+            '#dissemination' => $diss,
+            '#clarinVCRUrl' => $this->generalFunctions->initClarinVcrUrl(),
+            '#cache' => ['max-age' => 0],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-detail-api',
+                ]
+            ]
+        ];
+
+        
+        return new Response(render($build));
+       
+    }
+    
+    
 }

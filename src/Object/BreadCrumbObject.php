@@ -68,6 +68,7 @@ class BreadCrumbObject
      */
     private function createSingleBreadcrumb()
     {
+        $this->str = "";
         foreach ($this->data as $k => $v) {
             if ($v->parenttitle) {
                 $this->str .= "<a id='archeHref' href='/browser/oeaw_detail/" . $v->parentid . "' title='" . $v->parenttitle . "'>" . $this->createTitle($k, $v) . "</a> ";

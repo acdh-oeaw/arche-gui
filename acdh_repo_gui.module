@@ -12,11 +12,6 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
     return [
         'acdh-repo-gui-main' => [
             'variables' => ['data' => NULL, 'paging' => NULL],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-root-view',
-                ]
-            ]
         ],
         'acdh-repo-gui-detail' => [
             'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
@@ -42,13 +37,11 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
         'acdh-repo-gui-detail-publications' => [
             'variables' => ['basic' => NULL, 'extra' => NULL, 'dissemination' => NULL],
         ],
+        'acdh-repo-gui-detail-api' => [
+            'variables' => ['helper' => NULL, 'extra' => NULL, 'dissemination' => NULL],
+        ],
         'acdh-repo-gui-child' => [
             'variables' => ['data' => NULL],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-styles', 
-                ]
-            ]
         ],
         'acdh-repo-gui-main-page-left-block' => [
             'variables' => ['result' => NULL],
@@ -63,12 +56,7 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
            
         ],
         'acdh-repo-gui-search-left-block' => [
-            'variables' => ['result' => NULL],
-            '#attached' => [
-                'library' => [
-                    'acdh_repo_gui/repo-search', 
-                ]
-            ]
+            'variables' => ['result' => NULL]
         ],
         'acdh-repo-gui-detail-versions-block' => [
             'variables' => ['result' => NULL]
@@ -130,6 +118,15 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             ]
             
         ],
+        'acdh-repo-gui-search-full-api' => [
+            'variables' => ['data' => NULL],
+            '#attached' => [
+                'library' => [
+                    'acdh_repo_gui/repo-search', //include our custom library for this response
+                ]
+            ]
+            
+        ],
         'acdh-repo-gui-shibboleth-login' => [
             'variables' => []
         ],
@@ -140,8 +137,14 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
             'variables' => []
         ],
         'arche-detail-main' => [
-            'variables' => ['#basic' => NULL]
-        ]
+            'variables' => ['basic' => NULL]
+        ],
+        'arche-detail-overview' => [
+            'variables' => ['basic' => NULL, 'tooltip' => NULL, 'dissemination' => NULL, 'clarinVCRUrl' => NULL]
+        ],
+        'arche-left-block-search' => [
+            'variables' => ['result' => NULL]
+        ],
     ];
 }
 

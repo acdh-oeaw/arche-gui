@@ -1,83 +1,28 @@
 
-{{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': paging } ) }}
-
-{% for item in data %}
-    {% if item.getTitle() %}
-        <div class="res-el col-block col-lg-12">
-            {% set titleimage = item.getTitleImage('150px') %}      
-            {% if titleimage %}<div class="res-inside-wrap col-lg-6 "> {% endif%} 
-
-                {% if item.getTitle() %}
-                    <div class="res-property">
-                        <span class="res-title">
-                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
-                            <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
-                        </span>
-                    </div>
-                {% endif%}    
-
-                {% if item.getRdfTypes() %}
-                    <div class="res-property">
-                        <i class="material-icons">&#xE54E;</i>
-                        <span class="res-prop-label">{{ "Type"|trans }}: </span>
-                        <span class="res-rdfType">
-                            {% for value in item.getRdfTypes() %}
-                                <a id='archeHref' href="/browser/search/type={{ value }}&payload=false/titleasc/10/1">{{ value }}</a>
-                            {% endfor %}
-                        </span>
-                    </div>
-                    <!-- if the type is metdata/resource/collection/project then we will display the availabledate -->
-                    {% if item.getAcdhType() == 'Metadata' or item.getAcdhType() == 'Resource' or item.getAcdhType() == 'TopCollection' or item.getAcdhType() == 'Collection' or item.getAcdhType() == 'Project' %}
-                        {% if item.getData('acdh:hasAvailableDate') %}
-                            {{ item.getPropTitle('acdh:hasAvailableDate') }}
-                            <div class="res-property">
-                                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'dateformat': "d MMM y", 'label': "Available Date", 'type': 'date'  } ) }}
-                            </div>
-                        {% endif%}
-                    {% endif%}
-                {% endif%}  
-
-
-                {% if titleimage %}</div>{% endif%}
-
-            {% if titleimage %}	
-
-                <div class="res-inside-wrap col-lg-6 ">	
-                    <div class="single-res-thumb">
-                        <a href="{{ item.getTitleImageUrl('600px') }}" data-lightbox="detail-titleimage-{{  item.getRepoId() }}">
-                            {{ titleimage|raw }}
-                        </a>
-                    </div>
-                </div>
-            {% endif%}            
-
-            <div class="res-inside-wrap col-lg-12">
-                <div class="res-actions">
-                    {% if item.getData('acdh:hasDescription') %}
-                        <div class="res-act-button res-act-button-summary closed" >
-                            <i class="material-icons">&#xE145;</i>
-                            <span class="show_summary" id="show_summary_{{  item.getRepoId() }}">{{ "Show Summary"|trans }}</span>
-                            <span class="hide_summary" id="summary_{{  item.getRepoId() }}">{{ "Hide Summary"|trans }}</span>
-                        </div>
-                    {% endif%}
-
-                    <div class="res-act-button">
-                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
-                            <i class="material-icons">&#xE873;</i>
-                            <span>{{ "Detailed View"|trans }}</span>
-                        </a>	
-                    </div>
-                </div>
-                {% if item.getData('acdh:hasDescription') %}
-                    <div class="res-property res-property-desc" id="res-property-desc-{{  item.getRepoId() }}">
-                        <span class="res-description">
-                            {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasDescription') , 'icon': 'info' } ) }}
-                        </span>
-                    </div>
-                {% endif%}
-            </div>   
+<div id="root-view-table">
+    <table class="root-table table row-border" cellspacing="0" width="100%">
+        <div style="font-size: 14px; font-weight: bold;">
+        <label>{{ "Order the result by"|trans }}:</label>
+        <select name="sortBy" id="sortBy" class="form-control form-control-sm">
+            <option value="1-0">{{ "Title (ASC)"|trans }}</option>        
+            <option value="1-1">{{ "Title (DESC)"|trans }}</option>        
+            <option value="2-0">{{ "DATE (ASC)"|trans }}</option>              
+            <option value="2-1">{{ "DATE (DESC)"|trans }}</option>              
+        </select>
         </div>
-
-    {% endif %} 
-{% endfor %} 
-{{ include('/modules/contrib/arche-gui/templates/helper-paging.html.twig', {'data': paging } ) }}
+        <br>
+        <thead >
+            <tr>
+                <th>{{ "id"|trans }}</th>
+                <th>{{ "title"|trans }}</th>
+                <th>{{ "avdate"|trans }}</th>
+                <th>{{ "description"|trans }}</th>
+                <th>{{ "acdhid"|trans }}</th>
+                <th>{{ "sumcount"|trans }}</th>
+                <th>{{ "image"|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>       

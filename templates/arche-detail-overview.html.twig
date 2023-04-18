@@ -1,0 +1,74 @@
+
+<div id="overview-div">
+    <input type="hidden" id="biblaTexUrl" value="{{ basic.0.getBiblatexUrl() }}" />
+    <!-- TITLE -->
+    {{ include('/modules/contrib/arche-gui/templates/detail-api/arche-detail-title-sharing.html.twig', {'basic': basic.0 } ) }}
+
+    <!-- BASIC -->
+    <div class="row">
+        <div class="col-lg-12" id="basic-ov-view">       
+            <!-- get the views based on the type -->
+            <div class="single-res-overview single-res-overview-basic">
+                {% if basic.0.getAcdhType()|lower == 'person'  %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-person.html.twig', {'basic': basic.0 } ) }}
+                {% elseif basic.0.getAcdhType()|lower == 'project' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-project.html.twig', {'basic': basic.0  } ) }}
+                {% elseif basic.0.getAcdhType()|lower == 'organisation' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-organisation.html.twig', {'basic': basic.0  } ) }}
+                {% elseif basic.0.getAcdhType()|lower == 'place' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-place.html.twig', {'basic': basic.0 } ) }}
+                {% elseif basic.0.getAcdhType()|lower == 'publication' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-publication.html.twig', {'basic': basic.0 } ) }} 
+                {% elseif basic.0.getSkosType()|lower == 'concept' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-concept.html.twig', {'basic': basic.0 } ) }}      
+                {% elseif basic.0.getSkosType()|lower == 'conceptscheme' %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-skos-conceptscheme.html.twig', {'basic': basic.0 } ) }}          
+                {% else  %}
+                    {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-basic.html.twig', {'basic': basic.0 } ) }}
+                {% endif %}
+            </div>
+            
+            <div class="single-res-overview single-res-overview-expert">
+                {{ include('/modules/contrib/arche-gui/templates/detail-api/arche-detail-expert.html.twig', {'basic': basic.0, 'tooltip': tooltip } ) }}       
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    
+     <div class="row mt-4">
+        <div class="col-lg-12">   
+            <div id="dissemination-view-div">
+                {{ include('/modules/contrib/arche-gui/templates/detail-api/arche-detail-dissemination.html.twig', 
+                            {'result': dissemination, 'acdhType':  basic.0.getAcdhType(), 'repoid': basic.0.getRepoId(), 
+                                'accessRestriction': basic.0.getAccessRestriction(), 'isPDF': basic.0.isPDF(), 'isAudio': basic.0.isAudio(), 'clarinVCRUrl': clarinVCRUrl  } 
+                        ) }}
+            </div>
+        </div>
+    </div>
+    <br>        
+    <!-- SUMMARY -->        
+    <div class="row mt-4">
+        <div class="col-lg-12">   
+            <!-- SUMMARY BLOCK -->
+            <div id="summary-view-div">
+                {{ include('/modules/contrib/arche-gui/templates/acdh-repo-gui-detail-summary-block.html.twig', {'basic': basic.0 } ) }}
+            </div>
+        </div>
+    </div>        
+            
+    {{ include('/modules/contrib/arche-gui/templates/detail-api/arche-detail-related-pub-res.html.twig', {'basic':  basic.0 }) }}        
+
+    {{ include('/modules/contrib/arche-gui/templates/detail-api/arche-detail-cite.html.twig', {'result': basic.0 } ) }}
+    
+    <!-- AUDIO PLAYER -->
+    {% if basic.0.isAudio() %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-audio-player.html.twig', {'basic':  basic.0 , 'audio_url':  basic.0.getRepoUrl() }) }}
+    {% endif%} 
+
+    <!-- PDF -->
+    {% if basic.0.isPDF() %}
+        {{ include('/modules/contrib/arche-gui/templates/acdh-repo-ds-pdf-viewer-modal.html.twig', {'basic':  basic.0 }) }}
+    {% endif%} 
+
+</div>

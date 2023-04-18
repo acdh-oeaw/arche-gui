@@ -1,0 +1,123 @@
+{% set properties = {
+    'acdh:hasBinarySize': {
+        'type': 'binary'
+    },
+    'acdh:hasCreatedDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasCreatedStartDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasCreatedEndDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasAvailableDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasStartDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasEndDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasCoverageStartDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    },
+    'acdh:hasCoverageEndDate': {
+        'type': 'date',
+        'dateformat': 'y-MM-dd'
+    }
+}
+%}
+
+<script type="text/javascript" > 
+ $('#expertTableApi').DataTable({paging: false});
+</script>
+
+{% if  basic.getTitle() %}
+    <div class="res-property">
+        <span class="res-title">
+            {%  if basic.getAccessRestriction() %}
+                {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': basic.getAccessRestriction() } ) }}
+            {% endif%}
+            {{  basic.getTitle() }}
+        </span>
+    </div>
+{% endif%} 
+
+<table class="table table-striped" id='expertTableApi' cellspacing="0" width="100%" style="display: block;">
+    <thead style="width: 100%; display: table;">
+        <tr>
+            <th>Property</th>
+            <th>Value(s)</th>
+        </tr>
+    </thead>
+    <tbody style="width: inherit; display: table; word-break: break-all;">
+        {% for key,value in basic.getExpertTableData() %}
+            <tr>
+                <td width='40%'>
+                    {% if tooltip.getData(key).description %}
+                        <div style='float:left;'>
+                            {{ key }}
+                        </div>
+                        <div style='float:right;'>
+                            <a  class="" data-toggle="tooltip" data-placement="right" data-html="true" title="{{ tooltip.getData(key).description}}">
+                                <i class="material-icons" style='font-size:17px; color: #88DBDF;'>&#xE88F;</i>
+                            </a>
+                        </div>
+                    {% else %}
+                        {{ key }}
+                    {% endif %}
+                </td>
+                <td width='60%'>
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', 
+                            {'data': value, 'type':properties[key].type, 'dateformat': properties[key].dateformat, 'delimiter': properties[key].delimiter } 
+                            ) 
+                    }}  
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div id="inverseTableDiv" style="margin-top:20px; margin-bottom: 20px;">
+    <h3>{{ "Inverse Data"|trans }}</h3>
+    <table class="inverseTable table table-striped" cellspacing="0" width="100%">
+        <thead>
+            <tr>                        
+                <th>{{ "Property"|trans }}</th>
+                <th>{{ "Value(s)"|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- PERSON HASActor -->
+{% if basic.getAcdhType()|lower == 'person' %}
+    <div id="hasactor-person-div">
+        <h3 class="single-res-heading">{{ "Mentioned in"|trans }}</h3>
+        <table id="values-by-property-and-id-table"  class="table table-striped" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>{{ "Title"|trans }}</th>                                        
+                    <th>{{ "Type"|trans }}</th>                                        
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+{% endif%}    
+
+
+<br>
