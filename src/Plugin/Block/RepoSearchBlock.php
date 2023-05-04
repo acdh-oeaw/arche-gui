@@ -27,7 +27,6 @@ class RepoSearchBlock extends BlockBase
      */
     public function build()
     {
-        
         return [
             '#theme' => 'arche-left-block-search',
             //'#result' => $data['data']
