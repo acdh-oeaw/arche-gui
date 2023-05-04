@@ -49,7 +49,7 @@ jQuery(function ($) {
     }
 
     function createNewUrlForInsideClick(id) {
-        var newurl = window.location.protocol + "//" + window.location.host + '/browser/oeaw_detail/' + id;
+        var newurl = window.location.protocol + "//" + window.location.host + '/browser/detail/' + id;
         window.history.pushState({path: newurl}, '', newurl);
     }
 
@@ -233,7 +233,7 @@ jQuery(function ($) {
 
     //get related publications and resources table
     function getRPRData() {
-        if (window.location.href.indexOf("browser/oeaw_detail/") >= 0) {
+        if (window.location.href.indexOf("browser/detail/") >= 0) {
 
             $('#rprTableDiv').show("slow");
             $('#showRPR').parent().hide("slow");
@@ -325,7 +325,7 @@ jQuery(function ($) {
         /**
          * If we are inside the oeaw_detail view, then we will just update the mainpagecontent div
          */
-        if (window.location.href.indexOf("browser/oeaw_detail/") >= 0) {
+        if (window.location.href.indexOf("browser/detail/") >= 0) {
 
             showVersionsAlert();
             $(document).delegate("a#archeHref", "click", function (e) {
@@ -333,13 +333,13 @@ jQuery(function ($) {
                 $(".loader-div").show();
                 var url = $(this).attr('href');
                 //if the url is arche url
-                if (url && url.indexOf("/browser/oeaw_detail/") >= 0 || url && url.indexOf("/browser//oeaw_detail/") >= 0) {
+                if (url && url.indexOf("/browser/detail/") >= 0 || url && url.indexOf("/browser//detail/") >= 0) {
                     $('html, body').animate({scrollTop: '0px'}, 0);
                     url = url.substring(url.indexOf("/browser/"));
                     $(".loader-div").show();
                     var id = url;
-                    id = id.replace("/browser/oeaw_detail/", "");
-                    id = id.replace("/browser//oeaw_detail/", "");
+                    id = id.replace("/browser/detail/", "");
+                    id = id.replace("/browser//detail/", "");
                     url = url + "&ajax=1";
                     $.ajax({
                         url: url,
@@ -375,8 +375,8 @@ jQuery(function ($) {
     function getIDFromUrl(str) {
         var reg = /^\d+$/;
         var res = "";
-        if (str.indexOf('/oeaw_detail/') >= 0) {
-            var n = str.indexOf("/oeaw_detail/");
+        if (str.indexOf('/detail/') >= 0) {
+            var n = str.indexOf("/detail/");
             res = str.substring(n + 13, str.length);
             if (res.indexOf('&') >= 0) {
                 res = res.substring(0, res.indexOf('&'));
@@ -453,9 +453,9 @@ jQuery(function ($) {
                         if (node.original.uri) {
                             if (cntrlIsPressed)
                             {
-                                window.open("/browser/oeaw_detail/" + node.original.uri, '_blank');
+                                window.open("/browser/detail/" + node.original.uri, '_blank');
                             } else {
-                                window.location.href = "/browser/oeaw_detail/" + node.original.uri;
+                                window.location.href = "/browser/detail/" + node.original.uri;
                             }
                         }
                     }
@@ -513,9 +513,9 @@ jQuery(function ($) {
                         if (node.id) {
                             if (cntrlIsPressed)
                             {
-                                window.open("/browser/oeaw_detail/" + node.id, '_blank');
+                                window.open("/browser/detail/" + node.id, '_blank');
                             } else {
-                                window.location.href = "/browser/oeaw_detail/" + node.id;
+                                window.location.href = "/browser/detail/" + node.id;
                             }
                         }
                     }

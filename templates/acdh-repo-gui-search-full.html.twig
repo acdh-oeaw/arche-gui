@@ -16,7 +16,7 @@
                 <div class="res-property">
                     <span class="res-title">
                         {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
-                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
+                        <a href="/browser/detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
                     </span>
                 </div>
             {% endif%}    
@@ -125,7 +125,7 @@
                     {% endif%}
 
                     <div class="res-act-button">
-                        <a href="/browser/oeaw_detail/{{ item.getRepoId() }}">
+                        <a href="/browser/detail/{{ item.getRepoId() }}">
                             <i class="material-icons">&#xE873;</i>
                             <span>{{ "Detailed View"|trans }}</span>
                         </a>	

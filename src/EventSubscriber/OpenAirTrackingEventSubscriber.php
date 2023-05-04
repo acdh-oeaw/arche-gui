@@ -33,7 +33,7 @@ class OpenAirTrackingEventSubscriber implements EventSubscriberInterface
 
     public function checkForOpenAirTracking(GetResponseEvent $event)
     {
-        if (strpos($event->getRequest()->getPathInfo(), '/oeaw_detail/') !== false) {
+        if (strpos($event->getRequest()->getPathInfo(), '/detail/') !== false) {
             error_log('OPENAIR TRACKING....');
         }
     }

@@ -542,9 +542,9 @@ jQuery(function ($) {
                         if (node.original.uri) {
                             if (cntrlIsPressed)
                             {
-                                window.open("/browser/oeaw_detail/" + node.original.uri, '_blank');
+                                window.open("/browser/detail/" + node.original.uri, '_blank');
                             } else {
-                                window.location.href = "/browser/oeaw_detail/" + node.original.uri;
+                                window.location.href = "/browser/detail/" + node.original.uri;
                             }
                         }
                     }
@@ -604,9 +604,9 @@ jQuery(function ($) {
                         if (node.id) {
                             if (cntrlIsPressed)
                             {
-                                window.open("/browser/oeaw_detail/" + node.id, '_blank');
+                                window.open("/browser/detail/" + node.id, '_blank');
                             } else {
-                                window.location.href = "/browser/oeaw_detail/" + node.id;
+                                window.location.href = "/browser/detail/" + node.id;
                             }
                         }
                     }

@@ -71,7 +71,7 @@ class BreadCrumbObject
         $this->str = "";
         foreach ($this->data as $k => $v) {
             if ($v->parenttitle) {
-                $this->str .= "<a id='archeHref' href='/browser/oeaw_detail/" . $v->parentid . "' title='" . $v->parenttitle . "'>" . $this->createTitle($k, $v) . "</a> ";
+                $this->str .= "<a id='archeHref' href='/browser/detail/" . $v->parentid . "' title='" . $v->parenttitle . "'>" . $this->createTitle($k, $v) . "</a> ";
                 if ((int)$this->length - 1 >= (int) $k) {
                     $this->str .= "/";
                 }
@@ -104,7 +104,7 @@ class BreadCrumbObject
         $branch = array();
         foreach ($elements as $element) {
             if ($element->parentid == $parentId) {
-                $this->str .= "<a id='archeHref' href='/browser/oeaw_detail/" . $element->parentid . "' title='" . $element->parenttitle . "'>" . $this->createTitle($this->i, $element) . "</a> / ";
+                $this->str .= "<a id='archeHref' href='/browser/detail/" . $element->parentid . "' title='" . $element->parenttitle . "'>" . $this->createTitle($this->i, $element) . "</a> / ";
                 $this->buildTree($elements, $element->direct_parent);
                 $this->i++;
             }

@@ -251,7 +251,7 @@ class ResourceObject
         if (!isset($this->repoid) && empty($this->repoid)) {
             $this->getRepoID();
         }
-        return str_replace('/api/', '/browser/oeaw_detail/', $this->config->getBaseUrl()) . $this->repoid;
+        return str_replace('/api/', '/browser/detail/', $this->config->getBaseUrl()) . $this->repoid;
     }
 
     /**

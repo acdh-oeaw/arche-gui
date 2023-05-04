@@ -486,3 +486,7 @@ li.paginate_button.page-item.active > a.page-link {
 #basic-ov-view {
    padding: 0px;
 }
+
+.sks-form > form > .form-actions {
+    display: block !important;
+}

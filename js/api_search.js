@@ -10,6 +10,7 @@ jQuery(function ($) {
 
     $(document).ready(function () {
         //searchTable();
+        loadSearchBlock()
     });
 
 
@@ -142,7 +143,7 @@ jQuery(function ($) {
 
                         let payloadSearch = formtPayloadSearchResult(accessStatus, row.headline_desc, row.headline_binary);
 
-                        let title = '<span class="res-title"><a href="/browser/oeaw_detail/' + row.acdhid + '">' + data + '</a></span><br>';
+                        let title = '<span class="res-title"><a href="/browser/detail/' + row.acdhid + '">' + data + '</a></span><br>';
                         let avdate = '<i class="material-icons">today</i> <span class="res-prop-label">' + Drupal.t("Available Date") + ':</span> <span class="res-prop-value">' + row.avdate + '</span>';
 
                         return accessTxt + title + rdf + avdate + payloadSearch;
@@ -398,7 +399,7 @@ jQuery(function ($) {
                     '<div style="flex: 0 0 150px;">' +
                     '<img class="mr-2" src="https://arche-thumbnails.acdh.oeaw.ac.at/?width=150&height=150&id=' + encodeURIComponent(result.url) + '"/>' +
                     '</div><div>' +
-                    '<a href="https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/' + result.id + '" taget="_blank"><h5>' + Object.values(result.title)[0] + '</h5></a>' +
+                    '<a href="https://arche.acdh.oeaw.ac.at/browser/detail/' + result.id + '" taget="_blank"><h5>' + Object.values(result.title)[0] + '</h5></a>' +
                     getParents(result.parent || false, true) +
                     'Class: ' + shorten(result.class[0]) + '<br/>' +
                     'Available date: ' + result.availableDate + '<br/>' +
@@ -417,13 +418,26 @@ jQuery(function ($) {
         }
         parent = parent[0];
         var ret = getParents(parent.parent || false, false);
-        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/' + parent.id + '">' + Object.values(parent.title)[0] + '</a>';
+        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="https://arche.acdh.oeaw.ac.at/browser/detail/' + parent.id + '">' + Object.values(parent.title)[0] + '</a>';
         if (top) {
             ret = 'In: ' + ret + '<br/>';
         }
         return ret;
     }
 
+
+    function loadSearchBlock() {
+        $.ajax({
+            url: '/browser/search_form',
+            type: "GET",
+            success: function (data, status) {
+                $('.old-search').html(data.form_html);
+            },
+            error: function (message) {
+                $('.old-search').html(message);
+            }
+        });
+    }
 
 });
 

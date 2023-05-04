@@ -60,7 +60,7 @@
                                 {%  if item.getAccessRestriction()  %}
                                     {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
                                 {% endif%}
-                                <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">{{ item.getTitle() }}</a>
+                                <a href="/browser/detail/{{ item.getRepoID() }}">{{ item.getTitle() }}</a>
                             </span>
                         </div>
                     {% endif%}    
@@ -109,7 +109,7 @@
                             {% endif%}
 
                             <div class="res-act-button">
-                                <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
+                                <a href="/browser/detail/{{ item.getRepoID() }}">
                                     <i class="material-icons">&#xE873;</i>
                                     <span>{{ "Detailed View"|trans }}</span>
                                 </a>	
@@ -130,7 +130,7 @@
                 {% if titleimage %}	
                     <div class="res-inside-wrap col-lg-6 ">	
                         <div class="single-res-thumb">
-                            <a href="/browser/oeaw_detail/{{ item.getRepoID() }}">
+                            <a href="/browser/detail/{{ item.getRepoID() }}">
                                 {{ titleimage|raw }}
                             </a>
                         </div>

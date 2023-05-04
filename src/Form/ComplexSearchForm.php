@@ -64,10 +64,11 @@ class ComplexSearchForm extends FormBase
     public function buildForm(array $form, FormStateInterface $form_state)
     {
         $response = $this->doTheRequest();
-       
+        sleep(5);
         if (empty($response)) {
             return $form;
         }
+        
         $response = json_decode($response, true);
        
         $form['#prefix'] = '<div class="sks-form">';

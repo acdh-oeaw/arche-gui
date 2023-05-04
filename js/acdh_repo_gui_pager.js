@@ -2,7 +2,7 @@ jQuery(function ($) {
     "use strict";
     var actionPage = '';
 
-    if (window.location.href.indexOf("/oeaw_detail/") > -1) {
+    if (window.location.href.indexOf("/detail/") > -1) {
         actionPage = 'detail_view';
     }
 
@@ -29,7 +29,7 @@ jQuery(function ($) {
 
         var params = getUrlParams(actionPage);
         //we already have an url
-        if (window.location.href.indexOf("/oeaw_detail/") > -1) {
+        if (window.location.href.indexOf("/detail/") > -1) {
             if (window.location.href.indexOf("&page=") > -1) {
                 //get the uuid/repoid
                 var repoid = getIDFromUrl(window.location.href);
@@ -361,8 +361,8 @@ jQuery(function ($) {
     function getIDFromUrl(str) {
         var reg = /^\d+$/;
         var res = "";
-        if (str.indexOf('/oeaw_detail/') >= 0) {
-            var n = str.indexOf("/oeaw_detail/");
+        if (str.indexOf('/detail/') >= 0) {
+            var n = str.indexOf("/detail/");
             res = str.substring(n + 13, str.length);
 
             if (res.indexOf('&') >= 0) {

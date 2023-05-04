@@ -135,7 +135,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         
         //get the child view data, if we dont have any arg in the url, then the ajax call will handle the child views
         $path = \Drupal::request()->getpathInfo();
-        if (strpos($path, '/oeaw_detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
+        if (strpos($path, '/detail/') !== false && strpos($path, '&page=') === false && strpos($path, '&order=') === false && strpos($path, '&limit=') === false) {
             $this->basicViewData->extra->childData = $this->getChildData();
         }
         

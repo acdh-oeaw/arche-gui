@@ -26,6 +26,26 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
         $this->pagingHelper = new PagingHelper();
     }
 
+    public function displayLeftSideSearchBlock() {
+        
+        $myForm = $this->formBuilder()->getForm('Drupal\acdh_repo_gui\Form\ComplexSearchForm');
+        $renderer = \Drupal::service('renderer');
+        $myFormHtml = $renderer->renderRoot($myForm);
+        $response['form_html'] = $myFormHtml;
+
+    return new \Symfony\Component\HttpFoundation\JsonResponse($response);
+        return [
+            '#markup' => \Drupal\Core\Render\Markup::create("
+                <h2>My Form is Below</h2>
+                {$myFormHtml}
+                <h2>My Form is Above</h2>
+            ")
+        ];
+        
+        //$form = \Drupal::formBuilder()->getForm('Drupal\acdh_repo_gui\Form\ComplexSearchForm');
+        //return $form;
+    }
+    
     public function generateView(string $metavalue): array
     {
         $this->searchParams = $this->helper->paramsToSqlParams($metavalue);
