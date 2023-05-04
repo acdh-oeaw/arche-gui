@@ -243,7 +243,7 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
        
         $diss = $this->generalFunctions->getDissServices($id);
        
-        if(count($result) === 0) {
+        if (count($result) === 0) {
             return new Response(\json_encode(array("There is no data")), 404, ['Content-Type' => 'application/json']);
         }
         
@@ -263,8 +263,5 @@ class DetailViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
 
         
         return new Response(render($build));
-       
     }
-    
-    
 }
