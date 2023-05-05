@@ -28,6 +28,7 @@ repo-styles:
     dependencies:
         - core/drupal
         - core/drupal.form
+        - core/drupalSettings
         
 repo-detail-api:
     version: 1.0.1
@@ -56,6 +57,7 @@ repo-detail-api:
     dependencies:
         - core/drupal
         - core/drupal.form
+        - core/drupalSettings
 
 repo-search:
     version: 1.0.1
@@ -74,7 +76,8 @@ repo-search:
     dependencies:
         - core/drupal
         - core/drupal.form
-        - core/jquery    
+        - core/jquery   
+        - core/drupalSettings
 
 repo-root-view:
     version: 1.0.1
@@ -94,6 +97,7 @@ repo-root-view:
     dependencies:
         - core/drupal
         - core/drupal.form  
+        - core/drupalSettings
 
 repo-collection-dl:
     version: 1.0.1
@@ -102,7 +106,9 @@ repo-collection-dl:
             css/arche.css: {}
             css/jqtree/themes/default/style.min.css: {}
     js:
-        js/jquery-1.12.3.min.js: {}        
+        js/jquery-1.12.3.min.js: {}    
+        js/jquery.dataTables.min.js: {}
+        js/dataTables.bootstrap4.min.js: {}
         js/jstree.min.js: {}
         js/dl_collection.js: {}
         js/vcrSubmit.js: {}
@@ -111,6 +117,7 @@ repo-collection-dl:
         - core/drupal
         - core/drupal.form
         - core/jquery    
+        - core/drupalSettings
 
 ds-pdf-styles:  
     header: true
@@ -131,6 +138,7 @@ ds-pdf-styles:
     dependencies:
         - core/drupal
         - core/jquery
+        - core/drupalSettings
 
 ds-pdf-modal-styles:  
     header: true
@@ -151,3 +159,4 @@ ds-pdf-modal-styles:
     dependencies:
         - core/drupal
         - core/jquery
+        - core/drupalSettings
