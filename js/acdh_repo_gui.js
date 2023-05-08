@@ -44,7 +44,7 @@ jQuery(function ($) {
             {data: 'sumcount', visible: false},
             {data: 'image', width: "20%", render: function (data, type, row, meta) {
                     let acdhid = row.acdhid.replace('https://', '');
-                    return '<div class="dt-single-res-thumb">\n\
+                    return '<div class="dt-single-res-thumb bg-white">\n\
                             <center><a href="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=600" data-lightbox="detail-titleimage-' + row.id + '">\n\
                                 <img class="img-responsive" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=150">\n\
                             </a></center>\n\

@@ -112,7 +112,7 @@ jQuery(function ($) {
                         let acdhid = row.acdhid.replace('https://', '');
                         return '<div class="dt-single-res-thumb">\n\
                             <center><a href="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=600" data-lightbox="detail-titleimage-' + row.id + '">\n\
-                                <img class="img-responsive" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=75">\n\
+                                <img class="img-responsive bg-white" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=75">\n\
                             </a></center>\n\
                             </div>';
                     }
