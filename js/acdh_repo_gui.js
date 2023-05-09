@@ -33,6 +33,7 @@ jQuery(function ($) {
             {data: 'id', visible: false},
             {data: 'title',
                 render: function (data, type, row, meta) {
+                    let acdhid = row.acdhid.replace('https://', '');
                     return '<span class="res-title"><a href="/browser/detail/' + row.id + '">' + data + '</a></span><br>\n\
                 <i class="material-icons">today</i> <span class="res-prop-label">' + Drupal.t("Type") + ': </span> <span class="res-rdfType"><a id="archeHref" href="/browser/search/type=acdh:TopCollection&payload=false/titleasc/10/1">acdh:TopCollection</a></span><br>\n\
                 <i class="material-icons">today</i> <span class="res-prop-label">' + Drupal.t("Available Date") + ':</span> <span class="res-prop-value">' + row.avdate + '</span>';
@@ -44,15 +45,15 @@ jQuery(function ($) {
             {data: 'sumcount', visible: false},
             {data: 'image', width: "20%", render: function (data, type, row, meta) {
                     let acdhid = row.acdhid.replace('https://', '');
-                    return '<div class="dt-single-res-thumb bg-white">\n\
+                    return '<div class="dt-single-res-thumb text-center" style="min-width: 120px;">\n\
                             <center><a href="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=600" data-lightbox="detail-titleimage-' + row.id + '">\n\
-                                <img class="img-responsive" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=150">\n\
+                                <img class="img-fluid bg-white" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + acdhid + '?width=150">\n\
                             </a></center>\n\
                             </div>';
                 }
             }
         ],
-        fnDrawCallback: function () {
+        drawCallback: function () {
             $(".root-table thead").remove();
         }
     });

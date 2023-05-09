@@ -163,9 +163,9 @@ jQuery(function ($) {
                 {data: 'image', width: "20%", render: function (data, type, row, meta) {
                         if (row.pid) {
                             let pid = row.pid.replace('https://', '');
-                            return '<div class="dt-single-res-thumb bg-white">\n\
+                            return '<div class="dt-single-res-thumb text-center" style="min-width: 120px;">\n\
                                     <center><a href="https://arche-thumbnails.acdh.oeaw.ac.at/' + pid + '?width=600" data-lightbox="detail-titleimage-' + row.acdhid + '">\n\
-                                        <img class="img-responsive" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + pid + '?width=150">\n\
+                                        <img class="img-fluid bg-white" src="https://arche-thumbnails.acdh.oeaw.ac.at/' + pid + '?width=150">\n\
                                     </a></center>\n\
                                     </div>';
                         }

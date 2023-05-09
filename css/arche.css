@@ -490,3 +490,20 @@ li.paginate_button.page-item.active > a.page-link {
 .sks-form > form > .form-actions {
     display: block !important;
 }
+
+table.table.dataTable.child-table {
+    border: none;
+}
+
+table.table.dataTable.root-table {
+    border: none;
+}
+
+table.dataTable.child-table td {
+    padding: 15px 15px !important;
+}
+
+table.dataTable.root-table td {
+    padding: 15px 15px !important;
+}
+
