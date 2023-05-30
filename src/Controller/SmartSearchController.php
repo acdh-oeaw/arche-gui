@@ -12,12 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class SmartSearchController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
 {
-    
-    public function display() {
-        
+    public function display()
+    {
         return [
             '#theme' => 'arche-smart-search-view',
-            '#data' => NULL,
+            '#data' => null,
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/smart-search-style',
@@ -26,6 +25,4 @@ class SmartSearchController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCo
             '#cache' => ['max-age' => 0]
         ];
     }
-    
 }
-

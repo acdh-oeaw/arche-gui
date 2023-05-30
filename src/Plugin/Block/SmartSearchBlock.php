@@ -30,8 +30,8 @@ class SmartSearchBlock extends BlockBase
         
         return [
             '#theme' => 'arche-smart-search-view',
-            '#data' => NULL,
-            '#properties' => NULL,
+            '#data' => null,
+            '#properties' => null,
             '#attached' => [
                 'library' => [
                     'acdh_repo_gui/smart-search-style',
