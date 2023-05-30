@@ -1,0 +1,113 @@
+<h3>Search</h3>
+<input type="hidden" id="arche_url" value="{{ archeUrl }}"/>
+<form class="row gy-2 gx-3 align-items-center">
+
+    <div class="col-lg-12">
+        <div class="form-outline">
+            <input class="form-control mr-sm-2 w-100" type="search" placeholder="Search" aria-label="Search" id="q"/>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mt-2">
+        <div class="form-outline">
+            <input class="form-check-input ml-2" type="checkbox" id="inBinary">&nbsp;
+            <label class="form-check-label mr-2" for="inBinary">{{ "Search in binary content"|trans }}</label>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mt-2">
+        <div class="form-outline">
+            <input class="form-check-input ml-2" type="checkbox" checked="checked" id="linkNamedEntities">&nbsp;
+            <label class="form-check-label mr-2" for="followNamedEntities">{{ "Follow named entities"|trans }}</label>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="form-outline">
+            <label class="mx-2 font-weight-bold" for="preferredLang">{{ "Preferred language"|trans }}:</label>
+            <select class="form-control mr-sm-2 w-100" id="preferredLang">
+                <option value="">{{ "No Preferences"|trans }}</option>
+                <option value="en">{{ "English"|trans }}</option>
+                <option value="de">{{ "German"|trans }}</option>
+            </select>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="form-outline">        
+            <label class="mx-2 font-weight-bold" for="pageSize">{{ "Page size"|trans }}:</label>
+            <input class="form-control  mr-sm-2 w-100" type="number" value="10" min="1" id="pageSize"/>
+        </div>
+        <div class="form-outline  mt-2">
+            <label class="mx-2 font-weight-bold" for="page">{{ "Page"|trans }}:</label>
+            <div class="input-group  mr-sm-2 w-100">
+                <select class="form-control" id="page" onchange="search();">
+                    <option value="0" selected="selected">1</option>
+                </select>
+                <div class="input-group-append">
+                    <div class="input-group-text" id="pageCount">/ 1</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mt-2 mb-2">
+        <input class="smartsearch-btn btn btn-info w-100" data-drupal-selector="edit-submit" type="submit" id="edit-submit" name="op" value="Search">
+    </div>
+
+</form>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <form class="form">
+                <div id="facets"></div>
+                <div>
+                    <h4 class="mt-3">{{ "Spatial area"|trans }}</h4>
+                    <div>
+                        <select class="" id="spatialSelect">
+                            <option value="">{{ "No filter"|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="mt-2">
+                        <select class="form-control" id="spatialSource">
+                            <option value="arche">{{ "In ARCHE"|trans }}</option>
+                            <option value="geonames">{{ "In Geonames"|trans }}</option>
+                        </select>
+                    </div>    
+                </div>
+                <div id="dateFacets"></div>
+            </form>
+            <hr/>
+        </div>
+        <div class="col-12">
+            <h5>
+                <form class="form-inline">
+                    <button type="button" class="btn btn-info w-100" onclick="$(this).parent().parent().children('div').html('');">{{ "Reset"|trans }}</button>
+                    <br/>
+
+                </form>
+            </h5>
+            <div id="searchIn"></div>
+        </div>
+
+        <div class="col-lg-12 mt-2">
+            <div class="form-outline">
+                <input class="form-check-input ml-2" type="checkbox" id="searchInChb" checked="checked">&nbsp;
+                <label class="form-check-label mr-2" for="searchInChb">{{ "Search only in"|trans }}</label>
+            </div>
+        </div>
+            
+      
+
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <input class="smartsearch-btn btn btn-info w-100" data-drupal-selector="edit-submit" type="submit" id="edit-submit" name="op" value="Search">
+            <hr/>
+        </div>
+    </div>
+
+</div>            
