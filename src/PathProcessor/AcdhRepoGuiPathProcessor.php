@@ -38,7 +38,7 @@ class AcdhRepoGuiPathProcessor implements InboundPathProcessorInterface
             $names = str_replace('/', ':', $names);
             return "/api/smartsearch/$names";
         }
-         * 
+         *
          */
         
         return $path;

@@ -13,8 +13,6 @@ use Drupal\acdh_repo_gui\Helper\PagingHelper;
  */
 class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseController
 {
-    
-    
     public function displayLeftSideSearchBlock()
     {
         $myForm = $this->formBuilder()->getForm('Drupal\acdh_repo_gui\Form\ComplexSearchForm');
@@ -37,8 +35,6 @@ class SearchViewController extends \Drupal\acdh_repo_gui\Controller\ArcheBaseCon
     
     public function generateView(string $metavalue): array
     {
-        
-
         return [
             '#theme' => 'arche-smart-search-result-view',
             '#attached' => [
