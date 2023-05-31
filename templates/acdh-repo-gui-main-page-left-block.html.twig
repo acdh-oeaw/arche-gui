@@ -1,38 +1,51 @@
 <!--  ARCHE HOME PAGE LEFT LIST BOX TEMPLATE -->
 
+<form action="" method="post" id="sks-form-front" class="index-keyword-search" accept-charset="UTF-8" data-drupal-form-fields="edit-metavalue,edit-searchbox-types-collection,edit-searchbox-types-person,edit-searchbox-types-disseminationservice,edit-date-start-date,edit-date-end-date,edit-submit">
+
+    <div class="js-form-item form-item js-form-type-textfield form-item-metavalue js-form-item-metavalue form-no-label">
+        <input class="form-control form-text" data-drupal-selector="edit-metavalue" type="search" id="q" name="q" value="" size="60" maxlength="128" placeholder="Search for titles, authors, institutes or resource types.">
+    </div>
+
+    <div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper form-wrapper" id="edit-actions">
+        <input class="keywordsearch-btn button button--primary js-form-submit form-submit" data-drupal-selector="edit-submit" type="submit" id="edit-submit" name="op" value="search">
+    </div>
+
+</form>
+<h3 class="latest-additions">{{ "Latest Additions"|trans }}</h3>
+
 {% for item in result %}
 
     <div class="res-el col-block col-lg-12">
         {% set titleimage = item.getTitleImage('150px') %}        
         {% if titleimage %}
             <div class="res-inside-wrap col-lg-8 ">
-        {% endif%}
+            {% endif%}
 
-        {% if item.getTitle() %}
+            {% if item.getTitle() %}
+                <div class="res-property">
+                    <span class="res-title">
+                        {%  if item.getAccessRestriction()  %}
+                            {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
+                        {% endif%}
+                        <a href="/browser/detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
+                    </span>
+                </div>
+            {% endif%}    
+
             <div class="res-property">
-                <span class="res-title">
-                    {%  if item.getAccessRestriction()  %}
-                        {{ include('/modules/contrib/arche-gui/templates/helper-accesResFormat.html.twig', {'data': item.getAccessRestriction()  } ) }}
-                    {% endif%}
-                    <a href="/browser/detail/{{ item.getRepoId() }}">{{ item.getTitle() }}</a>
-                </span>
+                <i class="material-icons">&#xE54E;</i>
+                {{ "Type"|trans }}: 
+                <span class="res-rdfType"><a href="{{ url('<front>') }}search/type=acdh:TopCollection&payload=false&order=titleasc&limit=10&page=1">{{ "acdh:TopCollection"|trans }} </a></span>
             </div>
-        {% endif%}    
 
-        <div class="res-property">
-            <i class="material-icons">&#xE54E;</i>
-            {{ "Type"|trans }}: 
-            <span class="res-rdfType"><a href="{{ url('<front>') }}search/type=acdh:TopCollection&payload=false&order=titleasc&limit=10&page=1">{{ "acdh:TopCollection"|trans }} </a></span>
-        </div>
+            {% if item.getData('acdh:hasAvailableDate') %}
+                {{ item.getPropTitle('acdh:hasAvailableDate') }}
+                <div class="res-property">
+                    {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'type': 'date', 'dateformat': "d MMM y", 'label': "Available Date"  } ) }}
+                </div>
+            {% endif%}
 
-        {% if item.getData('acdh:hasAvailableDate') %}
-            {{ item.getPropTitle('acdh:hasAvailableDate') }}
-            <div class="res-property">
-                {{ include('/modules/contrib/arche-gui/templates/helper-displayFields.html.twig', {'data': item.getData('acdh:hasAvailableDate') , 'icon': 'today', 'type': 'date', 'dateformat': "d MMM y", 'label': "Available Date"  } ) }}
-            </div>
-        {% endif%}
-
-        {% if titleimage %}</div>{% endif%}
+            {% if titleimage %}</div>{% endif%}
 
         {% if titleimage %}	
             <div class="res-inside-wrap col-lg-4 ">	
@@ -43,7 +56,7 @@
                 </div>
             </div>
         {% endif%}   
-        
+
     </div>
 {% endfor %} 
 

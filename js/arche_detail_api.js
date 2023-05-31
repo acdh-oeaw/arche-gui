@@ -264,7 +264,7 @@ jQuery(function ($) {
             },
             error: function (message) {
                 $(".loader-versions-div").hide();
-                console.log('versions error');
+                console.log('versions error api');
                 console.log(message);
             }
         });

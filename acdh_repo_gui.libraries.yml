@@ -24,7 +24,7 @@ repo-styles:
         js/wicket.js: {}
         js/wicket-leaflet.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -52,7 +52,7 @@ repo-detail-api:
         js/wicket.js: {}
         js/wicket-leaflet.js: {}
         js/vcrSubmit.js: {}
-        js/api_search.js: {}
+        js/smartsearch.js: {}
         js/arche_detail_api.js: {}
     dependencies:
         - core/drupal
@@ -71,13 +71,32 @@ repo-search:
         js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
-        js/api_search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
         - core/jquery   
         - core/drupalSettings
+        
+smart-search-style:
+    version: 1.0.1
+    css:
+        base:
+            css/arche.css: {}
+            css/font-awesome/css/font-awesome.min.css: {}
+            css/lightbox.css: {}
+            css/slimselect.css: {}
+    js:        
+        js/acdh_repo_gui.js: {}
+        js/lightbox.js: {}
+        js/vcrSubmit.js: {}
+        js/slimselect.js: {}
+        js/smartsearch.js: {}
+    dependencies:
+        - core/drupal
+        - core/drupal.form
+        - core/jquery   
+        - core/drupalSettings        
 
 repo-root-view:
     version: 1.0.1
@@ -93,7 +112,7 @@ repo-root-view:
         js/acdh_repo_gui.js: {}
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
-        js/api_search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form  
@@ -112,7 +131,7 @@ repo-collection-dl:
         js/jstree.min.js: {}
         js/dl_collection.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -134,7 +153,7 @@ ds-pdf-styles:
         https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js: { type: external, minified: true }
         js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/jquery
@@ -155,7 +174,7 @@ ds-pdf-modal-styles:
         https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js: { type: external, minified: true }
         js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
-        js/search.js: {}
+        js/smartsearch.js: {}
     dependencies:
         - core/drupal
         - core/jquery

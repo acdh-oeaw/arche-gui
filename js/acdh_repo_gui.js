@@ -5,9 +5,6 @@ jQuery(function ($) {
 
     });
 
-
-
-
     /* Root table query */
     var oTable = $('.root-table').DataTable({
         "paging": true,

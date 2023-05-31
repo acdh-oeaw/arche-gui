@@ -8,19 +8,26 @@ jQuery(function ($) {
 
     /********************** EVENTS *************************************/
 
-    //Complex search-form behaviour
-    //front page search !!!!!
-    // let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
-    $("#sks-form-front").submit(function (event) {
 
-        event.preventDefault();
+    // let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
+    $(document).delegate("#sks-form-front", "submit", function (e) {
+        e.preventDefault();
+
+        let searchParam = $('#q').val();
+
+        $('#block-mainpagecontent').html('<div class="container">' +
+                '<div class="row">' +
+                '<div class="col-12 mt-5">' +
+                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                ' </div>' +
+                '</div>');
+        window.location.href = '/browser/search/?q=' + searchParam;
     });
-    
-    
+
+
     $(document).delegate(".smartSearchInAdd", "click", function (e) {
         e.preventDefault();
         var id = $(this).attr("data-resourceid");
-        console.log(id);
         if ($('#in' + id).length === 1) {
             return;
         }
@@ -33,26 +40,38 @@ jQuery(function ($) {
         element.attr('id', 'in' + id);
         $('#searchIn').append(element);
     });
-    
+
     //main search block
     $(document).delegate(".smartsearch-btn", "click", function (e) {
-        $('#block-mainpagecontent').html('<div class="container">'+
-            '<div class="row">'+
-                '<div class="col-12 mt-5">'+
-                    '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">'+
-               ' </div>'+
-        '</div>');
-        searchMethod();
+        $('#block-mainpagecontent').html('<div class="container">' +
+                '<div class="row">' +
+                '<div class="col-12 mt-5">' +
+                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                ' </div>' +
+                '</div>');
+        search();
         e.preventDefault();
     });
 
-    /**
-     * This method contains the search functionality
-     * @returns {undefined}
-     */
-    function searchMethod() {
-        search();
-        //window.location.href = '/browser/search/' + urlParams + '&order=' + resultsOrderSetting + '&limit=' + resultsPerPageSetting + '&page=1';
+    if (window.location.href.indexOf("browser/search/") >= 0) {
+        let searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has('q')) {
+            $('#block-mainpagecontent').html('<div class="container">' +
+                '<div class="row">' +
+                '<div class="col-12 mt-5">' +
+                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                ' </div>' +
+                '</div>');
+            let param = searchParams.get('q');
+            $('#q').val(param);
+            //we have to wait 2 secs to download all facets
+            setTimeout(
+                    function ()
+                    {
+                        search();
+                    }, 2000);
+
+        }
     }
 
     //////////////// SMART SEARCH ///////////////////
@@ -80,20 +99,20 @@ jQuery(function ($) {
             url: '/browser/api/searchDateFacet',
             success: function (data) {
                 data = jQuery.parseJSON(data);
-                console.log(data);
+                
                 $.each(data, function (k, v) {
-                    var facet = '<div class="mt-2">' + 
+                    var facet = '<div class="mt-2">' +
                             '<label class="mt-2 font-weight-bold" >' + v.label + '</label><br/>' +
                             '<input type="checkbox" class="distribution mt-2" value="1" data-value="' + k + '"/> show distribution<br/>' +
                             '<input type="checkbox" class="range mt-2" value="1" data-value="' + k + '"/> show range' +
                             '<div id="' + k + 'Values" class="dateValues"></div>' +
                             '<div class="row mt-2">' +
-                            '<div class="col-lg-5"> <input class="facet-min w-100" type="number" data-value="' + k + '"/> </div>' + 
+                            '<div class="col-lg-5"> <input class="facet-min w-100" type="number" data-value="' + k + '"/> </div>' +
                             '<div class="col-lg-1"> - </div>' +
                             '<div class="col-lg-5"><input class="facet-max w-100" type="number" data-value="' + k + '"/> </div>' +
                             '</div>'
-                            '</div>'
-                            '<hr/>';
+                    '</div>'
+                    '<hr/>';
                     $('#dateFacets').append(facet);
                 });
             }
@@ -121,8 +140,7 @@ jQuery(function ($) {
                                             }
                                         });
                                         data.unshift({text: 'No filter', value: ''});
-                                        console.log("Spatial Source");
-                                        console.log(data);
+                                
                                         resolve(data);
                                     });
                         } else {
@@ -158,9 +176,8 @@ jQuery(function ($) {
                                     bbox = 'POINT( ' + d.lng + ' ' + d.lat + ')';
                                 }
                                 $('#linkNamedEntities').prop('checked', true);
-                            }, 
+                            },
                             error: function (xhr, error, code) {
-                                console.log(xhr);
                                 $('#block-mainpagecontent').html(error);
                             }
                         });
@@ -175,14 +192,18 @@ jQuery(function ($) {
     }
     var token = 1;
 
-    function search() {
+    function search(searchStr = "") {
         token++;
         var localToken = token;
+        if (!searchStr) {
+            searchStr = $('#q').val();
+        }
+       
         var param = {
             url: '/browser/api/smartsearch',
             method: 'get',
             data: {
-                q: $('#q').val(),
+                q: searchStr,
                 preferredLang: $('#preferredLang').val(),
                 includeBinaries: $('#inBinary').is(':checked') ? 1 : 0,
                 linkNamedEntities: $('#linkNamedEntities').is(':checked') ? 1 : 0,
@@ -190,7 +211,6 @@ jQuery(function ($) {
                 pageSize: $('#pageSize').val(),
                 facets: {},
                 searchIn: []
-                        //debug: $('#debug').get(0).checked ? 1 : 0
             }
         };
 
@@ -202,6 +222,7 @@ jQuery(function ($) {
             }
             param.data.facets[prop].push(val);
         });
+        
         $('input.facet-min').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             var val = $(facet).val();
@@ -212,6 +233,7 @@ jQuery(function ($) {
                 param.data.facets[prop].min = val;
             }
         });
+        
         $('input.facet-max').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             var val = $(facet).val();
@@ -222,6 +244,7 @@ jQuery(function ($) {
                 param.data.facets[prop].max = val;
             }
         });
+        
         $('input.range:checked').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             if (!(prop in param.data.facets)) {
@@ -229,6 +252,7 @@ jQuery(function ($) {
             }
             param.data.facets[prop].distribution = 1;
         });
+        
         $('input.distribution:checked').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             if (!(prop in param.data.facets)) {
@@ -236,20 +260,37 @@ jQuery(function ($) {
             }
             param.data.facets[prop].distribution = (param.data.facets[prop].distribution || 0) + 2;
         });
+        
         if ($('#searchInChb:checked').length === 1) {
             $('#searchIn > div').each(function (n, el) {
                 param.data.searchIn.push($(el).attr('data-value'));
             });
         }
+        
         if (bbox !== '') {
             param.data.facets['bbox'] = bbox;
         }
+        
         var t0 = new Date();
+
         param.success = function (x) {
             if (token === localToken) {
                 showResults(x, param.data, t0);
             }
         };
+        param.fail = function (xhr, textStatus, errorThrown) {
+            alert(xhr.responseText);
+        };
+
+        param.statusCode = function (response) {
+            console.log(response);
+        };
+
+        param.error = function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            console.log(err.Message);
+        };
+       
         $.ajax(param);
     }
 
@@ -264,8 +305,7 @@ jQuery(function ($) {
     function showResults(data, param, t0) {
         t0 = (new Date() - t0) / 1000;
         data = jQuery.parseJSON(data);
-        console.log("SHOW RESULT: ");
-        console.log(data);
+        
         var pages = $('#page').get(0);
         var pageCount = Math.ceil(data.totalCount / data.pageSize);
         $('#pageCount').text('/ ' + pageCount);
@@ -274,7 +314,7 @@ jQuery(function ($) {
             pages.add(new Option(i + 1, i));
         }
         $('#page').val(data.page);
-        
+
 
         $('div.dateValues').text('');
         if (data.results.length > 0) {
@@ -303,7 +343,7 @@ jQuery(function ($) {
                         }
                         facets += '<label class="mt-2 font-weight-bold">' + fd.label + '</label><br/>' + text + '<br/>';
                     } else {
-                        div.html(text+ '<br/>');
+                        div.html(text + '<br/>');
                     }
                 }
                 if (fdp.distribution === 1 || fdp.distribution === 3) {
@@ -329,7 +369,7 @@ jQuery(function ($) {
         $.each(data.results, function (k, result) {
             results += '<div class="row my-3" id="res' + result.id + '" data-value="' + result.id + '">' +
                     '<div class="col-lg-2">' +
-                    '<a href="https://arche-thumbnails.acdh.oeaw.ac.at/?width=600&id=' + encodeURIComponent(result.url) + '" data-lightbox="detail-titleimage-'+ result.id + '" style="border-bottom: none;"><img class="mr-2" src="https://arche-thumbnails.acdh.oeaw.ac.at/?width=150&height=150&id=' + encodeURIComponent(result.url) + '"/></a><br/>' +
+                    '<a href="https://arche-thumbnails.acdh.oeaw.ac.at/?width=600&id=' + encodeURIComponent(result.url) + '" data-lightbox="detail-titleimage-' + result.id + '" style="border-bottom: none;"><img class="mr-2" src="https://arche-thumbnails.acdh.oeaw.ac.at/?width=150&height=150&id=' + encodeURIComponent(result.url) + '"/></a><br/>' +
                     '<button type="button" class="btn btn-info mt-4 btn-xs smartSearchInAdd" data-resourceid="' + result.id + '" style="white-space: normal;">Add to search only in</button> ' +
                     '</div>' +
                     '<div class="col-lg-10">' +
@@ -355,8 +395,8 @@ jQuery(function ($) {
         });
         $('#block-mainpagecontent').html(results);
     }
-   
-   
+
+
     function getParents(parent, top, prefLang) {
         if (parent === false) {
             return '';

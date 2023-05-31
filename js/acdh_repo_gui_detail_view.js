@@ -210,7 +210,7 @@ jQuery(function ($) {
             },
             error: function (message) {
                 $(".loader-versions-div").hide();
-                console.log('versions error');
+                console.log('versions error detail');
                 console.log(message);
             }
         });
@@ -265,9 +265,9 @@ jQuery(function ($) {
         getRPRData();
         //check the audio player can load the audio file or not
         checkAudioPlayer();
-
-        showVersions();
-
+        if (window.location.href.indexOf("browser/detail/") >= 0) {
+            showVersions();
+        }
         //CITE Block
         showCiteBlock();
 

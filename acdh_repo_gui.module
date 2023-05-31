@@ -45,8 +45,13 @@ function acdh_repo_gui_theme($existing, $type, $theme, $path)
            
         ],
         'acdh-repo-gui-search-left-block-empty' => [
-            'variables' => ['result' => NULL],
-           
+            'variables' => ['result' => NULL], 
+        ],
+        'arche-smart-search-view' => [
+            'variables' => ['data' => NULL, 'properties' => NULL],
+        ],
+        'arche-smart-search-result-view' => [
+            'variables' => ['data' => NULL, 'properties' => NULL],
         ],
         'acdh-repo-gui-search-left-block' => [
             'variables' => ['result' => NULL]
