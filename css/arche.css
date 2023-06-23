@@ -507,3 +507,7 @@ table.dataTable.root-table td {
     padding: 15px 15px !important;
 }
 
+.searchInElement {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}

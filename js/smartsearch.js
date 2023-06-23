@@ -1,20 +1,14 @@
 jQuery(function ($) {
 
     "use strict";
-    $(document).ready(function () {
-        // update the breadcrumb!!!!
-    });
-
 
     /********************** EVENTS *************************************/
-
 
     // let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
     $(document).delegate("#sks-form-front", "submit", function (e) {
         e.preventDefault();
 
         let searchParam = $('#q').val();
-
         $('#block-mainpagecontent').html('<div class="container">' +
                 '<div class="row">' +
                 '<div class="col-12 mt-5">' +
@@ -24,6 +18,18 @@ jQuery(function ($) {
         window.location.href = '/browser/search/?q=' + searchParam;
     });
 
+    function countSearchIn() {
+        var count = $('.searchInElement').length;
+        $(".searchOnlyInBtn").html('Search only in ( ' + count + ' ) ');
+    }
+
+    $(document).delegate(".remove_search_only_in", "click", function (e) {
+        e.preventDefault();
+        var id = $(this).attr("data-removeid");
+        // #in17722
+        $('#searchIn #in' + id).remove();
+        countSearchIn();
+    });
 
     $(document).delegate(".smartSearchInAdd", "click", function (e) {
         e.preventDefault();
@@ -31,18 +37,36 @@ jQuery(function ($) {
         if ($('#in' + id).length === 1) {
             return;
         }
+
         var element = $('#res' + id).clone();
-        element.find('div:first-child').remove();
-        element.find('div:last-child').children('div').remove();
+        console.log('element');
+        console.log(element);
+        element.find('div:first-child').html('<a data-removeid="' + id + '" href="#" class="remove_search_only_in">Remove</a>');
+        //element.find('div:last-child').children('div').remove();
         var btn = element.find('button');
         btn.text('-');
         btn.attr('onclick', '$(this).parent().parent().parent().remove();');
         element.attr('id', 'in' + id);
+        element.attr('class', 'searchInElement');
+        element.addClass('row');
         $('#searchIn').append(element);
+        countSearchIn();
+    });
+
+    $(document).delegate(".resetSmartSearch", "click", function (e) {
+        console.log('clicked');
+        e.preventDefault();
+        $('#block-smartsearchblock input[type="text"]').val('');
+        $('#block-smartsearchblock input[type="search"]').val('');
+        $('#block-smartsearchblock input[type="checkbox"]').prop('checked', false);
+        $('#block-smartsearchblock textarea').val('');
+        $('#block-smartsearchblock select').val('');
     });
 
     //main search block
     $(document).delegate(".smartsearch-btn", "click", function (e) {
+        console.log("search clicked");
+        $('.arche-smartsearch-page-div').show();
         $('#block-mainpagecontent').html('<div class="container">' +
                 '<div class="row">' +
                 '<div class="col-12 mt-5">' +
@@ -50,6 +74,7 @@ jQuery(function ($) {
                 ' </div>' +
                 '</div>');
         search();
+
         e.preventDefault();
     });
 
@@ -57,11 +82,11 @@ jQuery(function ($) {
         let searchParams = new URLSearchParams(window.location.search);
         if (searchParams.has('q')) {
             $('#block-mainpagecontent').html('<div class="container">' +
-                '<div class="row">' +
-                '<div class="col-12 mt-5">' +
-                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
-                ' </div>' +
-                '</div>');
+                    '<div class="row">' +
+                    '<div class="col-12 mt-5">' +
+                    '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                    ' </div>' +
+                    '</div>');
             let param = searchParams.get('q');
             $('#q').val(param);
             //we have to wait 2 secs to download all facets
@@ -99,7 +124,7 @@ jQuery(function ($) {
             url: '/browser/api/searchDateFacet',
             success: function (data) {
                 data = jQuery.parseJSON(data);
-                
+
                 $.each(data, function (k, v) {
                     var facet = '<div class="mt-2">' +
                             '<label class="mt-2 font-weight-bold" >' + v.label + '</label><br/>' +
@@ -118,6 +143,7 @@ jQuery(function ($) {
             }
         });
     }
+
     $(document).ready(function () {
 
         fetchFacet();
@@ -140,7 +166,7 @@ jQuery(function ($) {
                                             }
                                         });
                                         data.unshift({text: 'No filter', value: ''});
-                                
+
                                         resolve(data);
                                     });
                         } else {
@@ -198,7 +224,7 @@ jQuery(function ($) {
         if (!searchStr) {
             searchStr = $('#q').val();
         }
-       
+
         var param = {
             url: '/browser/api/smartsearch',
             method: 'get',
@@ -222,7 +248,7 @@ jQuery(function ($) {
             }
             param.data.facets[prop].push(val);
         });
-        
+
         $('input.facet-min').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             var val = $(facet).val();
@@ -233,7 +259,7 @@ jQuery(function ($) {
                 param.data.facets[prop].min = val;
             }
         });
-        
+
         $('input.facet-max').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             var val = $(facet).val();
@@ -244,7 +270,7 @@ jQuery(function ($) {
                 param.data.facets[prop].max = val;
             }
         });
-        
+
         $('input.range:checked').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             if (!(prop in param.data.facets)) {
@@ -252,7 +278,7 @@ jQuery(function ($) {
             }
             param.data.facets[prop].distribution = 1;
         });
-        
+
         $('input.distribution:checked').each(function (n, facet) {
             var prop = $(facet).attr('data-value');
             if (!(prop in param.data.facets)) {
@@ -260,17 +286,17 @@ jQuery(function ($) {
             }
             param.data.facets[prop].distribution = (param.data.facets[prop].distribution || 0) + 2;
         });
-        
+
         if ($('#searchInChb:checked').length === 1) {
             $('#searchIn > div').each(function (n, el) {
                 param.data.searchIn.push($(el).attr('data-value'));
             });
         }
-        
+
         if (bbox !== '') {
             param.data.facets['bbox'] = bbox;
         }
-        
+
         var t0 = new Date();
 
         param.success = function (x) {
@@ -290,7 +316,8 @@ jQuery(function ($) {
             var err = eval("(" + xhr.responseText + ")");
             console.log(err.Message);
         };
-       
+        console.log("param: ");
+        console.log(param);
         $.ajax(param);
     }
 
@@ -305,7 +332,7 @@ jQuery(function ($) {
     function showResults(data, param, t0) {
         t0 = (new Date() - t0) / 1000;
         data = jQuery.parseJSON(data);
-        
+
         var pages = $('#page').get(0);
         var pageCount = Math.ceil(data.totalCount / data.pageSize);
         $('#pageCount').text('/ ' + pageCount);
