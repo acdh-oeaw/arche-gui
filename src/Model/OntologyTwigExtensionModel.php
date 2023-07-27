@@ -31,7 +31,6 @@ class OntologyTwigExtensionModel extends ArcheModel
      */
     private function getImportDate(): array
     {
- 
         try {
             $this->setSqlTimeout();
             $query = $this->drupalDb->query(
