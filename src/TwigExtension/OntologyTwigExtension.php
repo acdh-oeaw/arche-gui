@@ -42,7 +42,12 @@ class OntologyTwigExtension extends \Twig_Extension
         if (isset($importDate['value'])) {
             $date = new \DateTime($importDate['value']);
             $this->str = "Ontology import date: ".$date->format('Y-m-d H:i:s');
+            
         }
+        
+         if (isset($importDate['version'])) {
+             $this->str .= " | Ontology version: ".$importDate['version'];
+         }
          
         return $this->str;
     }

@@ -31,17 +31,20 @@ class OntologyTwigExtensionModel extends ArcheModel
      */
     private function getImportDate(): array
     {
+ 
         try {
             $this->setSqlTimeout();
             $query = $this->drupalDb->query(
                 "select i.id, 
-                (select mv.value from metadata_view as mv where mv.id = i.id and mv.property = :avdate) 
+                (select mv.value from metadata_view as mv where mv.id = i.id and mv.property = :avdate),
+                (select mv2.value as version from metadata_view as mv2 where mv2.id = i.id and mv2.property = :version) 
                 from identifiers as i 
                 where 
                 i.ids = 'https://vocabs.acdh.oeaw.ac.at/schema' limit 1
                 ",
                 array(
-                        ':avdate' => $this->repoDb->getSchema()->creationDate
+                        ':avdate' => $this->repoDb->getSchema()->creationDate,
+                        ':version' => $this->repoDb->getSchema()->ontology->version
                     )
             );
             $this->dbResult = $query->fetchAssoc();
