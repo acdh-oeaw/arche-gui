@@ -18,7 +18,6 @@ repo-styles:
         js/jquery.dataTables.min.js: {}
         js/dataTables.bootstrap4.min.js: {}
         js/datatable_init.js: {}
-        js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
         js/leaflet.js: {}
         js/wicket.js: {}
@@ -68,7 +67,6 @@ repo-search:
             css/lightbox.css: {}
     js:        
         js/acdh_repo_gui.js: {}
-        js/acdh_repo_gui_pager.js: {}
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
