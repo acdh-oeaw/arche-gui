@@ -20,6 +20,7 @@ jQuery(function ($) {
 
     function countSearchIn() {
         var count = $('.searchInElement').length;
+        if(count > 0) {$(".searchOnlyInBtn").removeClass('d-none');}
         $(".searchOnlyInBtn").html('Search only in ( ' + count + ' ) ');
     }
 
@@ -39,8 +40,6 @@ jQuery(function ($) {
         }
 
         var element = $('#res' + id).clone();
-        console.log('element');
-        console.log(element);
         element.find('div:first-child').html('<a data-removeid="' + id + '" href="#" class="remove_search_only_in">Remove</a>');
         //element.find('div:last-child').children('div').remove();
         var btn = element.find('button');
@@ -54,7 +53,6 @@ jQuery(function ($) {
     });
 
     $(document).delegate(".resetSmartSearch", "click", function (e) {
-        console.log('clicked');
         e.preventDefault();
         $('#block-smartsearchblock input[type="text"]').val('');
         $('#block-smartsearchblock input[type="search"]').val('');
@@ -65,7 +63,6 @@ jQuery(function ($) {
 
     //main search block
     $(document).delegate(".smartsearch-btn", "click", function (e) {
-        console.log("search clicked");
         $('.arche-smartsearch-page-div').show();
         $('#block-mainpagecontent').html('<div class="container">' +
                 '<div class="row">' +
@@ -313,11 +310,10 @@ jQuery(function ($) {
         };
 
         param.error = function (xhr, status, error) {
-            var err = eval("(" + xhr.responseText + ")");
+            var err = eval(xhr.responseText);
             console.log(err.Message);
         };
-        console.log("param: ");
-        console.log(param);
+        
         $.ajax(param);
     }
 
