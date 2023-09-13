@@ -39,7 +39,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12 mt-2">
-            <button type="button" class="btn btn-info w-100" onclick="jQuery('#extendedSearch').toggle();">{{ "Extended Search"|trans }}</button>
+            <button type="button" class="btn btn-info w-100 extendedSearcBtn" onclick="jQuery('#extendedSearch').toggle();">{{ "Extended Search"|trans }}</button>
             <div class="arche_search_toggle_div" id="extendedSearch">
                 <div id="facets"></div>
                 <div>
@@ -59,14 +59,16 @@
                 <div id="dateFacets"></div>
             </div>
         </div>
-                        <!--
+                        
+        <!--
         <div class="col-12 mt-2">
-            <button type="button" class="btn btn-info" onclick="jQuery('#searchMap').toggle();">{{ "Map"|trans }}</button>
-            <div class="arche_search_toggle_div"  id="searchMap">
-                map goes here
+            <button type="button" class="btn btn-info w-100" onclick="jQuery('#searchMap').toggle();">{{ "Map"|trans }}</button>
+            <div class="arche_search_toggle_div"  id="searchMap" style="width: 400px; height: 400px;">
+             
             </div>
         </div>
-                        -->
+        -->
+        
         <div class="col-12 mt-2">
             <button type="button" class="btn btn-info searchOnlyInBtn w-100 d-none" onclick="jQuery('#searchIn').toggle();">{{ "Search only in"|trans }}</button>
             <div class="arche_search_toggle_div" id="searchIn">
