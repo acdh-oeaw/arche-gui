@@ -20,7 +20,9 @@ jQuery(function ($) {
 
     function countSearchIn() {
         var count = $('.searchInElement').length;
-        if(count > 0) {$(".searchOnlyInBtn").removeClass('d-none');}
+        if (count > 0) {
+            $(".searchOnlyInBtn").removeClass('d-none');
+        }
         $(".searchOnlyInBtn").html('Search only in ( ' + count + ' ) ');
     }
 
@@ -74,6 +76,35 @@ jQuery(function ($) {
 
         e.preventDefault();
     });
+
+
+    /* SUBMIT THE SMART SEARCH FORM WITH ENTER*/
+    var form = document.getElementById("smartsearch-left");
+    form.addEventListener("keydown", function (event) {
+        // Check if the pressed key is "Enter" (key code 13)
+        if (event.key === "Enter") {
+            $('.arche-smartsearch-page-div').show();
+            $('#block-mainpagecontent').html('<div class="container">' +
+                    '<div class="row">' +
+                    '<div class="col-12 mt-5">' +
+                    '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                    ' </div>' +
+                    '</div>');
+            search();
+            event.preventDefault();
+        }
+    });
+    
+    /* HIDE THE EXTENDED SEARCH IF THE USER CLICKED OUTSIDE */
+    $(document).on("click", function (event) {
+        var popupExtSearch = $("#extendedSearch");
+        var extSearchButton = $(".extendedSearcBtn");
+        // Check if the clicked element is not the popup or the toggle button
+        if (!popupExtSearch.is(event.target) && !extSearchButton.is(event.target) && popupExtSearch.has(event.target).length === 0) {
+            popupExtSearch.hide();
+        }
+    });
+
 
     if (window.location.href.indexOf("browser/search/") >= 0) {
         let searchParams = new URLSearchParams(window.location.search);
@@ -313,7 +344,7 @@ jQuery(function ($) {
             var err = eval(xhr.responseText);
             console.log(err.Message);
         };
-        
+
         $.ajax(param);
     }
 
@@ -393,7 +424,7 @@ jQuery(function ($) {
             results += '<div class="row my-3" id="res' + result.id + '" data-value="' + result.id + '">' +
                     '<div class="col-lg-2">' +
                     '<a href="https://arche-thumbnails.acdh.oeaw.ac.at/?width=600&id=' + encodeURIComponent(result.url) + '" data-lightbox="detail-titleimage-' + result.id + '" style="border-bottom: none;"><img class="mr-2" src="https://arche-thumbnails.acdh.oeaw.ac.at/?width=150&height=150&id=' + encodeURIComponent(result.url) + '"/></a><br/>' +
-                    '<button type="button" class="btn btn-info mt-4 btn-xs smartSearchInAdd" data-resourceid="' + result.id + '" style="white-space: normal;">Add to search only in</button> ' +
+                    //'<button type="button" class="btn btn-info mt-4 btn-xs smartSearchInAdd" data-resourceid="' + result.id + '" style="white-space: normal;">Add to search only in</button> ' +
                     '</div>' +
                     '<div class="col-lg-10">' +
                     '<h5>' +
