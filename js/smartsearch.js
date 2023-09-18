@@ -2,7 +2,13 @@ jQuery(function ($) {
 
     "use strict";
 
+
+    var selectedSearchValues = [];
+
     /********************** EVENTS *************************************/
+
+
+
 
     // let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
     $(document).delegate("#sks-form-front", "submit", function (e) {
@@ -61,40 +67,26 @@ jQuery(function ($) {
         $('#block-smartsearchblock input[type="checkbox"]').prop('checked', false);
         $('#block-smartsearchblock textarea').val('');
         $('#block-smartsearchblock select').val('');
+        // do a topcollection search
+        
     });
 
     //main search block
     $(document).delegate(".smartsearch-btn", "click", function (e) {
-        $('.arche-smartsearch-page-div').show();
-        $('#block-mainpagecontent').html('<div class="container">' +
-                '<div class="row">' +
-                '<div class="col-12 mt-5">' +
-                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
-                ' </div>' +
-                '</div>');
-        search();
-
+        executeTheSearch()
         e.preventDefault();
     });
-
 
     /* SUBMIT THE SMART SEARCH FORM WITH ENTER*/
     var form = document.getElementById("smartsearch-left");
     form.addEventListener("keydown", function (event) {
         // Check if the pressed key is "Enter" (key code 13)
         if (event.key === "Enter") {
-            $('.arche-smartsearch-page-div').show();
-            $('#block-mainpagecontent').html('<div class="container">' +
-                    '<div class="row">' +
-                    '<div class="col-12 mt-5">' +
-                    '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
-                    ' </div>' +
-                    '</div>');
-            search();
+            executeTheSearch();
             event.preventDefault();
         }
     });
-    
+
     /* HIDE THE EXTENDED SEARCH IF THE USER CLICKED OUTSIDE */
     $(document).on("click", function (event) {
         var popupExtSearch = $("#extendedSearch");
@@ -104,7 +96,6 @@ jQuery(function ($) {
             popupExtSearch.hide();
         }
     });
-
 
     if (window.location.href.indexOf("browser/search/") >= 0) {
         let searchParams = new URLSearchParams(window.location.search);
@@ -172,7 +163,42 @@ jQuery(function ($) {
         });
     }
 
+    function createSelectedValuesForForm(obj) {
+        // Fetch the id attribute
+        var idValue = obj.attr("id");
+        var classValue = obj.attr("class");
+        var dataValue = obj.attr("data-value");
+        var value = obj.val();
+        var object = new Object();
+
+        if (idValue) {
+            object.id = idValue;
+        }
+        if (classValue) {
+            object.class = classValue;
+        }
+        if (dataValue) {
+            object.data = dataValue;
+        }
+        if (value) {
+            object.value = value;
+        }
+        return object;
+    }
+
     $(document).ready(function () {
+
+        $("#block-smartsearchblock").on("change", "input", function () {
+            executeTheSearch();
+            selectedSearchValues.push(createSelectedValuesForForm($(this)));
+            event.preventDefault();
+        });
+
+        $("#block-smartsearchblock").on("change", "select", function () {
+            executeTheSearch();
+            selectedSearchValues.push(createSelectedValuesForForm($(this)));
+            event.preventDefault();
+        });
 
         fetchFacet();
 
@@ -240,6 +266,45 @@ jQuery(function ($) {
             }
         });
     });
+
+    function updateSearchGui(data) {
+        $.each(data, function (k, v) {
+            var elementId = "";
+            var dataValue = "";
+            var elementValue = "";
+            $.each(v, function (key, val) {
+
+                if (key === "id") {
+                    elementId = "#" + val;
+                }
+
+                if (key === "value") {
+                    elementValue = val;
+                }
+
+                if (key === "data") {
+                    dataValue = val;
+                }
+            });
+            if (elementId) {
+                $('#block-smartsearchblock')
+                        .find('[id="' + elementId + '"][value="' + elementValue + '"]')
+                        .each(function () {
+                            $(this).addClass("selected");
+                        });
+            }
+            if (dataValue) {
+                $('#block-smartsearchblock')
+                        .find('[data-value="' + dataValue + '"][value="' + elementValue + '"]')
+                        .each(function () {
+                            $(this).prop("checked", true);
+                        });
+            }
+
+        });
+
+    }
+
     function getLangValue(data, prefLang) {
         prefLang = prefLang || 'en';
         return data[prefLang] || Object.values(data)[0];
@@ -330,6 +395,7 @@ jQuery(function ($) {
         param.success = function (x) {
             if (token === localToken) {
                 showResults(x, param.data, t0);
+                updateSearchGui(selectedSearchValues);
             }
         };
         param.fail = function (xhr, textStatus, errorThrown) {
@@ -342,10 +408,14 @@ jQuery(function ($) {
 
         param.error = function (xhr, status, error) {
             var err = eval(xhr.responseText);
-            console.log(err.Message);
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+            console.log(xhr.responseText);
         };
 
         $.ajax(param);
+
     }
 
     function resetSearch() {
@@ -462,6 +532,17 @@ jQuery(function ($) {
             ret = 'In: ' + ret + '<br/>';
         }
         return ret;
+    }
+
+    function executeTheSearch() {
+        $('.arche-smartsearch-page-div').show();
+        $('#block-mainpagecontent').html('<div class="container">' +
+                '<div class="row">' +
+                '<div class="col-12 mt-5">' +
+                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                ' </div>' +
+                '</div>');
+        search();
     }
 
 
