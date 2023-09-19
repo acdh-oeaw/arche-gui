@@ -8,7 +8,7 @@ jQuery(function ($) {
     /********************** EVENTS *************************************/
 
 
-
+    var archeBaseUrl = getInstanceUrl();
 
     // let metaValueField = $("input[name='metavalue']").val().replace(/[^a-z0-9öüäéáűúőóüöíß:./-\s]/gi, '').replace(/[\s]/g, '+');
     $(document).delegate("#sks-form-front", "submit", function (e) {
@@ -24,13 +24,7 @@ jQuery(function ($) {
         window.location.href = '/browser/search/?q=' + searchParam;
     });
 
-    function countSearchIn() {
-        var count = $('.searchInElement').length;
-        if (count > 0) {
-            $(".searchOnlyInBtn").removeClass('d-none');
-        }
-        $(".searchOnlyInBtn").html('Search only in ( ' + count + ' ) ');
-    }
+
 
     $(document).delegate(".remove_search_only_in", "click", function (e) {
         e.preventDefault();
@@ -68,7 +62,7 @@ jQuery(function ($) {
         $('#block-smartsearchblock textarea').val('');
         $('#block-smartsearchblock select').val('');
         // do a topcollection search
-        
+
     });
 
     //main search block
@@ -118,6 +112,21 @@ jQuery(function ($) {
         }
     }
 
+
+
+    function getInstanceUrl() {
+        var baseUrl = window.location.origin + window.location.pathname;
+        console.log(baseUrl.split("/browser")[0]);
+        return baseUrl.split("/browser")[0];
+    }
+
+    function countSearchIn() {
+        var count = $('.searchInElement').length;
+        if (count > 0) {
+            $(".searchOnlyInBtn").removeClass('d-none');
+        }
+        $(".searchOnlyInBtn").html('Search only in ( ' + count + ' ) ');
+    }
     //////////////// SMART SEARCH ///////////////////
 
     var nmsp = [
@@ -498,7 +507,7 @@ jQuery(function ($) {
                     '</div>' +
                     '<div class="col-lg-10">' +
                     '<h5>' +
-                    '<a href="https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/' + result.id + '" taget="_blank">' + getLangValue(result.title, prefLang) + '</a>' +
+                    '<a href="'+archeBaseUrl+'/browser/oeaw_detail/' + result.id + '" taget="_blank">' + getLangValue(result.title, prefLang) + '</a>' +
                     '</h5>' +
                     getParents(result.parent || false, true, prefLang) +
                     'Class: ' + shorten(result.class[0]) + '<br/>' +
@@ -520,14 +529,13 @@ jQuery(function ($) {
         $('#block-mainpagecontent').html(results);
     }
 
-
     function getParents(parent, top, prefLang) {
         if (parent === false) {
             return '';
         }
         parent = parent[0];
         var ret = getParents(parent.parent || false, false, prefLang);
-        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/' + parent.id + '">' + getLangValue(parent.title) + '</a>';
+        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="'+ archeBaseUrl +'/browser/oeaw_detail/' + parent.id + '">' + getLangValue(parent.title) + '</a>';
         if (top) {
             ret = 'In: ' + ret + '<br/>';
         }
@@ -544,7 +552,4 @@ jQuery(function ($) {
                 '</div>');
         search();
     }
-
-
-
 });
