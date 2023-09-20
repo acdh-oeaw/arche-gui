@@ -60,29 +60,30 @@
             </div>
         </div>
                         
-        <!--
+                   
         <div class="col-12 mt-2">
-            <button type="button" class="btn btn-info w-100" onclick="jQuery('#searchMap').toggle();">{{ "Map"|trans }}</button>
-            <div class="arche_search_toggle_div"  id="searchMap" style="width: 400px; height: 400px;">
-             
+            <button type="button" class="btn btn-info w-100" id="mapToggleBtn">{{ "Map"|trans }}</button>
+            <div class="arche_search_toggle_div"  id="mapContainer" style="display: none;">
+                {{ include('/modules/contrib/arche-gui/templates/arche-smart-search-map-view.html.twig' ) }}
             </div>
         </div>
-        -->
-        
+        <!-- 
         <div class="col-12 mt-2">
             <button type="button" class="btn btn-info searchOnlyInBtn w-100 d-none" onclick="jQuery('#searchIn').toggle();">{{ "Search only in"|trans }}</button>
             <div class="arche_search_toggle_div" id="searchIn">
                 <div id="searchInInside"></div>
             </div>
         </div>
+        
         <div class="col-lg-12 mt-2">
             <div class="form-outline">
                 <input class="form-check-input ml-2" type="checkbox" id="searchInChb" checked="checked">&nbsp;
                 <label class="form-check-label mr-2" for="searchInChb">{{ "Search only in"|trans }}</label>
             </div>
-        </div>    
+        </div>
+        -->
         <hr/>
-        <div class="col-12">
+        <div class="col-12 mt-2">
             <h5>
                 <form class="form-inline">
                     <button type="button" class="btn btn-info w-100 resetSmartSearch" >{{ "Reset"|trans }}</button>

@@ -1,12 +1,14 @@
-.res-highlighting em{ color: #20bf6b;}
+.res-highlighting em{
+    color: #20bf6b;
+}
 
 .search-form .contextual-region .block .block-oeaw .block-searchsb-block {
     background-color: red;
-    
+
 }
 
-.search-form, 
-.class-form {   
+.search-form,
+.class-form {
     -webkit-box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
     -moz-box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
     box-shadow: 0px 5px 8px 2px rgba(0,0,0,0.86)!important;
@@ -22,14 +24,14 @@
 
 /** Download collection css  **/
 .collection_info {
-  background: #fff;
-  border-color: #88DBDF;
-  border-radius: 5px;
-  height: auto;
-  padding: 10px;
-  width: 50%;
-  margin: 0 auto;
-  text-align:center;
+    background: #fff;
+    border-color: #88DBDF;
+    border-radius: 5px;
+    height: auto;
+    padding: 10px;
+    width: 50%;
+    margin: 0 auto;
+    text-align:center;
 }
 .size_text{
     font-size: 18px;
@@ -41,21 +43,21 @@
     font-weight: bold;
 }
 .coll_info_green {
-  box-shadow: 0 1px 3px rgba(99,206,108,0.12), 0 1px 2px rgba(99,206,108,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 1px 3px rgba(99,206,108,0.12), 0 1px 2px rgba(99,206,108,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
 .coll_info_green:hover {
-  box-shadow: 0 14px 28px rgba(99,206,108,0.25), 0 10px 10px rgba(99,206,108,0.22);
+    box-shadow: 0 14px 28px rgba(99,206,108,0.25), 0 10px 10px rgba(99,206,108,0.22);
 }
 
 .coll_info_red {
-  box-shadow: 0 1px 3px rgba(225,55,55,0.12), 0 1px 2px rgba(225,55,55,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 1px 3px rgba(225,55,55,0.12), 0 1px 2px rgba(225,55,55,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
 .coll_info_red:hover {
-  box-shadow: 0 14px 28px rgba(225,55,55,0.25), 0 10px 10px rgba(225,55,55,0.22);
+    box-shadow: 0 14px 28px rgba(225,55,55,0.25), 0 10px 10px rgba(225,55,55,0.22);
 }
 
 .collection-input-format {
@@ -137,7 +139,7 @@
     width: 60px;
     height: 60px;
     position:absolute;
-    left:50%; 
+    left:50%;
     top:50%;
     margin-left:-30px; /*image width/2 */
     margin-top:-30px; /*image height/2 */
@@ -167,7 +169,7 @@
 .breadcrumb {
     width: 100% !important;
     color: white !important;
-    
+
 }
 
 nav.breadcrumb > .breadcrumb {
@@ -179,8 +181,8 @@ nav.breadcrumb > .breadcrumb {
 }
 
 .dropdown-toggle::after {
-    
-    
+
+
 }
 
 
@@ -193,8 +195,8 @@ nav.breadcrumb > .breadcrumb {
 .overview-h3 {
     font-size: 24px;
     line-height: 22px;
-    text-decoration: underline  #88DBDF;  
-    text-decoration-thickness: 5px; 
+    text-decoration: underline  #88DBDF;
+    text-decoration-thickness: 5px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -265,7 +267,7 @@ nav.breadcrumb > .breadcrumb {
     margin-top: 20px;
 }
 
-/***  DISSERV LOGIN FORM START  ***/ 
+/***  DISSERV LOGIN FORM START  ***/
 
 #dissServLoginform
 {
@@ -339,7 +341,7 @@ nav.breadcrumb > .breadcrumb {
     font-size:14px;
     text-align: center;
 }
-/***  DISSERV LOGIN FORM END  ***/ 
+/***  DISSERV LOGIN FORM END  ***/
 
 .row {
     margin-left: 0px !important;
@@ -357,11 +359,21 @@ nav.breadcrumb > .breadcrumb {
 }
 
 @keyframes citeloadanim {
-    0%   {background-color: white;}
-    25%  {background-color: #ecf0f1;}
-    50%  {background-color: #bdc3c7;}
-    100% {background-color: #95a5a6;}
-    from {background-color: #7f8c8d;}
+    0%   {
+        background-color: white;
+    }
+    25%  {
+        background-color: #ecf0f1;
+    }
+    50%  {
+        background-color: #bdc3c7;
+    }
+    100% {
+        background-color: #95a5a6;
+    }
+    from {
+        background-color: #7f8c8d;
+    }
 }
 
 .cite-style {
@@ -397,7 +409,7 @@ div.version-warning i.material-icons{
     margin: 0 auto;
 }
 .audio {
-    width: 100%; 
+    width: 100%;
     box-shadow: 5px 5px 20px rgba(0,0, 0, 0.4);
     border-radius: 90px;
     transform: scale(1.05);
@@ -428,12 +440,12 @@ div.search-result-warning {
 }
 .versions-text {
     padding-right: 0px !important;
-     padding-left: 0px !important;
+    padding-left: 0px !important;
     margin-right: 0px !important;
 }
 #versions-tree {
     overflow-x: auto;
-    overflow-y: hidden;    
+    overflow-y: hidden;
 }
 .container .versions-content-div {
     padding-left: 0px !important;
@@ -470,21 +482,25 @@ li.paginate_button.page-item.active > a.page-link {
     -moz-animation:spin 4s linear infinite;
     animation:spin 4s linear infinite;
 }
-@-moz-keyframes spin { 
-    100% { -moz-transform: rotate(360deg); } 
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
 }
-@-webkit-keyframes spin { 
-    100% { -webkit-transform: rotate(360deg); } 
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
-@keyframes spin { 
-    100% { 
-        -webkit-transform: rotate(360deg); 
-        transform:rotate(360deg); 
-    } 
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform:rotate(360deg);
+    }
 }
 
 #basic-ov-view {
-   padding: 0px;
+    padding: 0px;
 }
 
 .sks-form > form > .form-actions {
@@ -510,4 +526,49 @@ table.dataTable.root-table td {
 .searchInElement {
     padding: 10px;
     border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.leaflet-popup-content {
+    text-align: center;
+}
+
+#smMapSearchResults {
+    color: white;
+    width: 100%;
+    height: auto;
+}
+
+#smMapSearchResults p {
+    padding: 10px;
+}
+
+#smMapSearchResults p:hover {
+    background-color: white;
+    color: black;
+}
+.smMapSearchResultsContainer {
+    background-color: rgba(0,0,0,0.7);
+    position: absolute;
+    left: 10px;
+    width: 90%;
+    height: auto;
+    z-index: 1000;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 5px;
+}
+
+.map-loader {
+    background-image: url("../images/arche_logo_flip_47px.gif");
+    width: 45px;
+    height: 45px;
+    position:absolute;
+    left:50%;
+    top:50%;
+    margin-left:-30px; /*image width/2 */
+    margin-top:-30px; /*image height/2 */
+    display: none;
+    z-index: 2000;
 }

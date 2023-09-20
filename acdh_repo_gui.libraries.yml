@@ -24,6 +24,7 @@ repo-styles:
         js/wicket-leaflet.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -52,6 +53,7 @@ repo-detail-api:
         js/wicket-leaflet.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
         js/arche_detail_api.js: {}
     dependencies:
         - core/drupal
@@ -70,6 +72,7 @@ repo-search:
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -90,6 +93,7 @@ smart-search-style:
         js/vcrSubmit.js: {}
         js/slimselect.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -111,6 +115,7 @@ repo-root-view:
         js/lightbox.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form  
@@ -130,6 +135,7 @@ repo-collection-dl:
         js/dl_collection.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/drupal.form
@@ -152,6 +158,7 @@ ds-pdf-styles:
         js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/jquery
@@ -173,6 +180,7 @@ ds-pdf-modal-styles:
         js/pdf_viewer/pdfjs-viewer.min.js: {}
         js/vcrSubmit.js: {}
         js/smartsearch.js: {}
+        js/smartsearch-map.js: {}
     dependencies:
         - core/drupal
         - core/jquery

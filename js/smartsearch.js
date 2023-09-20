@@ -2,8 +2,11 @@ jQuery(function ($) {
 
     "use strict";
 
-
     var selectedSearchValues = [];
+
+
+    var archeSmartSearchUrl = getSmartUrl();
+
 
     /********************** EVENTS *************************************/
 
@@ -25,6 +28,20 @@ jQuery(function ($) {
     });
 
 
+    $(document).delegate("#SMMapBtn", "click", function (e) {
+        e.preventDefault();
+        var coordinates = $(this).attr("data-coordinates");
+        console.log(coordinates);
+        $('.arche-smartsearch-page-div').show();
+        $('#block-mainpagecontent').html('<div class="container">' +
+                '<div class="row">' +
+                '<div class="col-12 mt-5">' +
+                '<img class="mx-auto d-block" src="/browser/modules/contrib/arche-gui/images/arche_logo_flip_47px.gif">' +
+                ' </div>' +
+                '</div>');
+        search("", coordinates);
+    });
+    
 
     $(document).delegate(".remove_search_only_in", "click", function (e) {
         e.preventDefault();
@@ -113,10 +130,23 @@ jQuery(function ($) {
     }
 
 
+    function getSmartUrl() {
+        var baseUrl = window.location.origin + window.location.pathname;
+        let instanceUrl = baseUrl.split("/browser")[0];
+        console.log(instanceUrl);
+        var smartUrl = "https://arche-smartsearch.acdh.oeaw.ac.at";
 
+        if (instanceUrl.indexOf('arche-dev.acdh-dev.oeaw.ac.at') !== -1) {
+            smartUrl = "https://arche-smartsearch.acdh-dev.oeaw.ac.at";
+        } else if (instanceUrl.indexOf('arche-curation.acdh-dev.oeaw.ac.at' !== -1)) {
+            smartUrl = "https://arche-smartsearch.acdh-dev.oeaw.ac.at";
+        }
+        return smartUrl;
+
+
+    }
     function getInstanceUrl() {
         var baseUrl = window.location.origin + window.location.pathname;
-        console.log(baseUrl.split("/browser")[0]);
         return baseUrl.split("/browser")[0];
     }
 
@@ -217,7 +247,7 @@ jQuery(function ($) {
                 search: function (phrase, curData) {
                     return new Promise((resolve, reject) => {
                         if ($('#spatialSource').val() === 'arche') {
-                            fetch('https://arche-smartsearch.acdh-dev.oeaw.ac.at/places.php?q=' + encodeURIComponent(phrase))
+                            fetch(archeSmartSearchUrl + '/places.php?q=' + encodeURIComponent(phrase))
                                     .then(function (response) {
                                         return response.json();
                                     })
@@ -320,7 +350,8 @@ jQuery(function ($) {
     }
     var token = 1;
 
-    function search(searchStr = "") {
+    function search(searchStr = "", coordinates = "") {
+        
         token++;
         var localToken = token;
         if (!searchStr) {
@@ -422,9 +453,10 @@ jQuery(function ($) {
             console.log(error);
             console.log(xhr.responseText);
         };
-
+        if(coordinates) {
+            param.data.facets['bbox'] = coordinates;
+        }
         $.ajax(param);
-
     }
 
     function resetSearch() {
@@ -433,6 +465,7 @@ jQuery(function ($) {
         $('input.facet-max').val('');
         $('#preferredLang').val('');
         spatialSelect.setData([{text: 'No filter', value: ''}]);
+        search();
     }
 
     function showResults(data, param, t0) {
@@ -507,7 +540,7 @@ jQuery(function ($) {
                     '</div>' +
                     '<div class="col-lg-10">' +
                     '<h5>' +
-                    '<a href="'+archeBaseUrl+'/browser/oeaw_detail/' + result.id + '" taget="_blank">' + getLangValue(result.title, prefLang) + '</a>' +
+                    '<a href="' + archeBaseUrl + '/browser/oeaw_detail/' + result.id + '" taget="_blank">' + getLangValue(result.title, prefLang) + '</a>' +
                     '</h5>' +
                     getParents(result.parent || false, true, prefLang) +
                     'Class: ' + shorten(result.class[0]) + '<br/>' +
@@ -535,7 +568,7 @@ jQuery(function ($) {
         }
         parent = parent[0];
         var ret = getParents(parent.parent || false, false, prefLang);
-        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="'+ archeBaseUrl +'/browser/oeaw_detail/' + parent.id + '">' + getLangValue(parent.title) + '</a>';
+        ret += (ret !== '' ? ' &gt; ' : '') + '<a href="' + archeBaseUrl + '/browser/oeaw_detail/' + parent.id + '">' + getLangValue(parent.title) + '</a>';
         if (top) {
             ret = 'In: ' + ret + '<br/>';
         }
