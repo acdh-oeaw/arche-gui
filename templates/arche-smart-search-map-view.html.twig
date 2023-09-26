@@ -9,11 +9,23 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
 <!-- <input type="text" id="searchInput" placeholder="Search for a location">
 <button onclick="searchMarkers()">Search</button> -->
-<input type="text" id="searchInput" placeholder="Search for markers">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-11">
+            <input type="text" id="searchInput" placeholder="Search for markers">
+        </div>
+        <div class="col-lg-1">
+            <button id="closeSMSMapButton">Close Map</button>
+        </div>
+    </div>
+</div>
+
+
 <div class="smMapSearchResultsContainer">
     <div id="smMapSearchResults"></div>
 </div>
-<div id="map" style="width: 400px; height: 300px;"></div>
+<div id="map" class="sms-map"></div>
 <div id="map-loader" class="map-loader"></div>
 
 

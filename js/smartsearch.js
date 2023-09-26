@@ -40,6 +40,8 @@ jQuery(function ($) {
                 ' </div>' +
                 '</div>');
         search("", coordinates);
+        var mapContainer = $('#mapContainer');
+        mapContainer.hide();
     });
     
 

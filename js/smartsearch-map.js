@@ -4,12 +4,12 @@ jQuery(function ($) {
     var archeBaseUrl = getInstanceUrl();
     var markersArr = [];
     var map;
-    
+
     function getInstanceUrl() {
         var baseUrl = window.location.origin + window.location.pathname;
         return baseUrl.split("/browser")[0];
     }
-    
+
     function initializeMap() {
         $(".map-loader").css('display', 'block');
         map = L.map('map', {
@@ -70,7 +70,7 @@ jQuery(function ($) {
                         console.error('Error loading JSON data: ', error);
                     });
         }, 2000);
-        
+
     }
 
     // Function to destroy the map
@@ -88,8 +88,8 @@ jQuery(function ($) {
         // Filter markers and display matching ones
         markersArr.forEach(function (marker) {
             var markerName = marker.options.title.toLowerCase();
-
             if (markerName.includes(query)) {
+               $('.smMapSearchResultsContainer').show();
                 marker.addTo(map);
                 $("#smMapSearchResults").append("<p>" + marker.options.title + "</p>");
             } else {
@@ -116,6 +116,13 @@ jQuery(function ($) {
         });
     });
 
+
+
+    $('#closeSMSMapButton').click(function () {
+        var mapContainer = $('#mapContainer');
+        mapContainer.hide();
+        destroyMap(); // Destroy the map when hiding
+    });
 
     $('#mapToggleBtn').click(function () {
         var mapContainer = $('#mapContainer');
