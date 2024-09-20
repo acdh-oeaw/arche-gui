@@ -767,25 +767,24 @@ $databases['default']['default'] = array (
   'driver' => 'sqlite',
 );
 
-$pswd = "";
-if(file_exists("/home/www-data/.pgpass")) {
-    foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
-        $i = explode(':', $i);
-        if (isset($i[3]) && $i[3] == 'gui' && isset($i[4])) {
-            $pswd = $i[4];
-            break;
-        }   
+if (!file_exists("/home/www-data/.pgpass")) die("Database connection settings are missing");
+foreach (explode("\n", file_get_contents("/home/www-data/.pgpass")) as $i) {
+    if(empty($i)) continue;
+    list($host, $port, $dbname, $user, $pswd) = explode(':', $i);
+    if (str_contains($user, 'gui')) {
+        $databases['repo']['default'] = array(
+            'database' => $dbname,
+            'username' => $user,
+            'password' => $pswd,
+            'host' => $host,
+            'port' => $port,
+            'namespace' => 'Drupal\\Core\\Database\\Driver\\pgsql',
+            'driver' => 'pgsql',
+        );
+        break;
     }
 }
-
-$databases['repo']['default'] = array (
-  'database' => 'www-data',
-  'username' => 'gui',
-  'password' => $pswd,
-  'host' => '127.0.0.1',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\pgsql',
-  'driver' => 'pgsql',
-);
+unset($host, $port, $dbname, $user, $pswd);
 
 if( substr(\Drupal::VERSION, 0, 1) == "8") {
     $settings['config_sync_directory']   = 'sites/default/files/config_tlpXNA-ReYSeqYjmFBBCPxdygkZ95C_n73LVRKAXtzVywwEXIa2HSiI8OMNjzjxZcXYpMKd3ug/sync';
