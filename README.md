@@ -1,4 +1,3 @@
-
 # ACDH-repo-gui
 
 Drupal module to provide GUI to ACDH-CH ARCHE repository solution.
@@ -10,5 +9,6 @@ The plugin is generating cache files from the downloaded collections and 3d file
 For maintenance reasons we use a cron job to delete these files every day at 7:00.
 The file is available here: https://github.com/acdh-oeaw/arche-gui/blob/master/inst/delete_tmp_files.sh
 
+## Deprecation notice
 
-
+Superseeded by the https://github.com/acdh-oeaw/arche_core_gui/
